@@ -1,0 +1,78 @@
+﻿@using AriD.GerenciamentoDePonto.Helpers
+
+@model Endereco
+
+@{
+    string prefixo = ViewBag.PrefixoEndereco ?? string.Empty;
+
+    string formLabelCep = ViewBag.LabelCep ?? "CEP";
+    string formLabelLogradouro = ViewBag.LabelLogradouro ?? "Logradouro";
+    string formLabelNumero = ViewBag.LabelNumero ?? "Número";
+    string formLabelComplemento = ViewBag.LabelComplemento ?? "Complemento";
+    string formLabelBairro = ViewBag.LabelBairro ?? "Bairro";
+    string formLabelCidade = ViewBag.LabelCidade ?? "Cidade";
+    string formLabelUF = ViewBag.LabelUF ?? "Estado";
+}
+
+<div class="row">
+    <div class="col col-lg-3 col-md-4 col-sm-12">
+        <label class="form-label">@formLabelCep</label>
+        @Html.TextBox($"{prefixo}Cep", Model?.Cep, new { @class = "form-control cep cep-endereco-partial" })
+    </div>
+
+    <div class="col col-lg-9 col-md-8 col-sm-12">
+        <label class="form-label">@formLabelLogradouro</label>
+        @Html.TextBox($"{prefixo}Logradouro", Model?.Logradouro, new { @class = "form-control logradouro-endereco-partial", @maxlength = "100" })
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-3 col-md-4 col-sm-12">
+        <label class="form-label">@formLabelNumero</label>
+        @Html.TextBox($"{prefixo}Numero", Model?.Numero, new { @class = "form-control numero-endereco-partial", @maxlength = "10" })
+    </div>
+
+    <div class="col col-lg-9 col-md-8 col-sm-12">
+        <label class="form-label">@formLabelComplemento</label>
+        @Html.TextBox($"{prefixo}Complemento", Model?.Complemento, new { @class = "form-control complemento-endereco-partial", @maxlength = "100" })
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-4 col-md-4 col-sm-12">
+        <label class="form-label">@formLabelBairro</label>
+        @Html.TextBox($"{prefixo}Bairro", Model?.Bairro, new { @class = "form-control bairro-endereco-partial", @maxlength = "100" })
+    </div>
+
+    <div class="col col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">@formLabelCidade</label>
+        @Html.TextBox($"{prefixo}Cidade", Model?.Cidade, new { @class = "form-control cidade-endereco-partial", @maxlength = "100" })
+    </div>
+
+    <div class="col col-lg-2 col-md-2 col-sm-12">
+        <label class="form-label">@formLabelUF</label>
+        @Html.EnumDropDownList($"{prefixo}UF", Model?.UF, string.Empty, new { @class = "form-select", @maxlength = "100" })
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+         $('.cep-endereco-partial').on('change', function () {
+            let cep = $(this).val();
+            if (cep) {
+                $.ajax({
+                    url: '/Cep/ConsulteCEP',
+                    type: 'GET',
+                    data: { cep }
+                }).done(function (data) {
+                    const dados = data.dados;
+                    $('.logradouro-endereco-partial').val(dados.logradouro);
+                    $('.numero-endereco-partial').val(dados.numero);
+                    $('.complemento-endereco-partial').val(dados.complemento);
+                    $('.bairro-endereco-partial').val(dados.bairro);
+                    $('.cidade-endereco-partial').val(dados.localidade);
+                });
+            }
+        });
+    });
+</script>

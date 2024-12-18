@@ -1,0 +1,47 @@
+﻿@model Organizacao
+
+@{
+    var adicao = Model.Id == 0;
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            @(adicao ? "Adicionar" : "Alterar") Organização
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-organizacao">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.EnderecoId)
+            <div class="row">
+                <div class="col col-lg-8 col-md-8 col-sm-12">
+                    <label class="form-label obrigatorio">Nome</label>
+                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                </div>
+
+                <div class="col col-lg-2 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Ativa</label>
+                    @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-2 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Qtd Unidades</label>
+                    @Html.TextBox("QuantidadeDeUnidadesAtivas", adicao ? string.Empty : Model.QuantidadeDeUnidadesAtivas.ToString(), new { @class = "form-control somente-numeros", @maxlength = "4" })
+                </div>
+            </div>
+            <br />
+            @{
+                ViewBag.PrefixoEndereco = "Endereco.";
+            }
+            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
+            <br />
+            <button type="button" class="btn btn-primary">
+                Salvar
+            </button>
+        </form>
+    </div>
+</div>

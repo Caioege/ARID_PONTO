@@ -1,0 +1,44 @@
+@{
+  TempData.Keep();
+  string? currentPage = ViewContext.HttpContext.Request.Path;
+}
+
+@{
+    var menuControlador = TempData[VariaveisDeMenu.MenuControlador] ?? string.Empty;
+    var paginaAtual = TempData[VariaveisDeMenu.MenuPaginaAtual] ?? string.Empty;
+}
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+  <div
+    class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
+    <div class="app-brand-link">
+      <span class="app-brand-logo demo">
+        @await Html.PartialAsync("../_Partials/_Macros")
+      </span>
+      <span class="app-brand-text demo menu-text fw-bold ms-2">@TempData.Peek("appName")</span>
+    </div>
+
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text- large ms-auto d-block d-xl-none">
+      <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  <ul class="menu-inner py-1">
+        <li class='menu-item open @(menuControlador.Equals(VariaveisDeMenu.MenuAdministracao) ? " active" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-slider-alt"></i>
+        <div class="text-truncate" data-i18n="Administração">Administração</div>
+      </a>
+      <ul class="menu-sub">
+                <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+          <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
+            <div>Organização</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+</aside>

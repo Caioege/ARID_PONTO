@@ -1,0 +1,47 @@
+.pagination > li {
+    border: solid 2px #e4e6e8 !important;
+    padding: 5px !important;
+    background: white !important;
+    border-radius: 5px !important;
+    min-width: 30px !important;
+    text-align: center !important;
+}
+
+.pagination > li.disabled > a {
+    color: gray !important;
+}
+
+.pagination > li:hover {
+    background-color: gray !important;
+    cursor: pointer;
+}
+
+.pagination > li > a:hover {
+    color: white !important;
+    background-color: none !important;
+    background: none !important;
+}
+
+.pagination > li.disabled > a:hover,
+.pagination > li.disabled:hover {
+    cursor: not-allowed !important;
+}
+
+.pagination > li.active {
+    background-color: #66b2e3 !important;
+    color: white !important;
+}
+
+.pagination > li.active > a {
+    background-color: none !important;
+    background: none !important;
+}
+
+.row {
+    margin-bottom: 5px;
+}
+
+.obrigatorio::after {
+    content: ' *';
+    color: red;
+}

@@ -1,0 +1,24 @@
+﻿@model ListaPaginada<Organizacao>
+
+@{
+    var tabela = new WebGrid<Organizacao>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Nome", "Nome", width: 65f),
+        tabela.Column("Tipo", "Tipo", width: 30f),
+        tabela.Column("Ativa", "Ativa", format:
+    @<text>
+        @if (item.Ativa)
+    {
+        <i class="bx bx-check-square text-success"></i>
+    }
+    else
+    {
+        <i class="bx bx-checkbox-minus text-danger"></i>
+    }
+    </text>, width: 5f),
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))
