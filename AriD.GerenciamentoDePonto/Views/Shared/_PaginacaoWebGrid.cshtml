@@ -124,13 +124,9 @@
             </div>
         </div>
     }
-    else
-    {
-        <div class="empty-grid">
-            &lt;Nenhum resultado&gt;
-        </div>
-    }
 </div>
 <script type="text/javascript">
-    onGridLoadCallBack('@Model.GridId');
+    if (onGridLoadCallBack) {
+        onGridLoadCallBack('@Model.GridId');
+    }
 </script>

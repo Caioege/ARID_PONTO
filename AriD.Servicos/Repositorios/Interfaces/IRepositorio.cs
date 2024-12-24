@@ -16,5 +16,7 @@ namespace AriD.Servicos.Repositorios.Interfaces
         void Add(T entidade);
         void Atualizar(T entidade);
         void Remover(T entidade);
+
+        void Commit();
     }
 }

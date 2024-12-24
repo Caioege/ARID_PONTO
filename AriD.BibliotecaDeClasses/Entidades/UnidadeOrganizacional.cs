@@ -14,7 +14,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(EnderecoId))]
         public virtual Endereco Endereco { get; set; }
 
-        public eTipoUnidadeOrganizacional Tipo { get; set; }
+        public eTipoUnidadeOrganizacional? Tipo { get; set; }
 
         public bool Ativa { get; set; }
     }

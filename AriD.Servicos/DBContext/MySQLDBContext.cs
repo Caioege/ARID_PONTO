@@ -23,6 +23,10 @@ namespace AriD.Servicos.DBContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) { }
 
+        public DbSet<Endereco> Endereco { get; set; }
         public DbSet<Organizacao> Organizacao { get; set; }
+        public DbSet<UnidadeOrganizacional> UnidadeOrganizacional { get; set; }
+        public DbSet<Departamento> Departamento { get; set; }
+        public DbSet<Funcao> Funcao { get; set; }
     }
 }

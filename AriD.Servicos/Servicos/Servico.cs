@@ -14,14 +14,18 @@ namespace AriD.Servicos.Servicos
             _repositorio = repositorio;
         }
 
-        public void Adicionar(T entidade)
+        public int Adicionar(T entidade)
         {
             _repositorio.Add(entidade);
+            _repositorio.Commit();
+
+            return entidade.Id;
         }
 
         public void Atualizar(T entidade)
         {
             _repositorio.Atualizar(entidade);
+            _repositorio.Commit();
         }
 
         public T Obtenha(int id)
@@ -56,6 +60,7 @@ namespace AriD.Servicos.Servicos
         public void Remover(T entidade)
         {
             _repositorio.Remover(entidade);
+            _repositorio.Commit();
         }
     }
 }

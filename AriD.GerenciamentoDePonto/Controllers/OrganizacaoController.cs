@@ -55,17 +55,32 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Alterar(int id)
+        {
+            try
+            {
+                return View("Alterar", _servico.Obtenha(id));
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
         [HttpPost]
         public IActionResult Salvar(Organizacao organizacao)
         {
             try
             {
+                int id = organizacao.Id;
+
                 if (organizacao.Id == 0)
-                    _servico.Adicionar(organizacao);
+                    id = _servico.Adicionar(organizacao);
                 else 
                     _servico.Atualizar(organizacao);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
+                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
             }
             catch (Exception ex)
             {

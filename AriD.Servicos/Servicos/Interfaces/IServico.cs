@@ -12,7 +12,7 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<T> ObtenhaLista(Expression<Func<T, bool>> predicate);
         (int Total, List<T> Itens) ObtenhaListaPaginada(Expression<Func<T, bool>> predicate, int pagina, int limite);
 
-        void Adicionar(T entidade);
+        int Adicionar(T entidade);
         void Atualizar(T entidade);
         void Remover(T entidade);
     }

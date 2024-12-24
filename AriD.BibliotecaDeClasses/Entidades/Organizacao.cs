@@ -13,7 +13,5 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [ForeignKey(nameof(EnderecoId))]
         public virtual Endereco Endereco { get; set; }
-
-        public int QuantidadeDeUnidadesAtivas { get; set; }
     }
 }

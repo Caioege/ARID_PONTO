@@ -6,5 +6,6 @@
         public static string MenuPaginaAtual => "MenuPaginaAtual";
 
         public static string MenuAdministracao => "MenuAdministracao";
+        public static string MenuServidor => "MenuServidor";
     }
 }

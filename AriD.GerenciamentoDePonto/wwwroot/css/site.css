@@ -45,3 +45,12 @@
     content: ' *';
     color: red;
 }
+
+.swal2-toast {
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+.swal2-container {
+    z-index: 1100 !important;
+}

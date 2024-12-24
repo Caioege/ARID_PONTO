@@ -1,0 +1,62 @@
+﻿@model UnidadeOrganizacional
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Adicionar Unidade Organizacional
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-unidade">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.EnderecoId)
+            @Html.HiddenFor(model => model.OrganizacaoId)
+            <div class="row">
+                <div class="col col-md-12">
+                    <label class="form-label">Organização</label>
+                    @Html.TextBox("OrganizacaoNome", Model.Organizacao.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-lg-10 col-md-8 col-xs-12">
+                    <label class="form-label obrigatorio">Nome</label>
+                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                </div>
+
+                <div class="col col-lg-2 col-md-4 col-xs-12">
+                    <label class="form-label obrigatorio">Ativa</label>
+                    @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-lg-3 col-md-4 col-xs-12">
+                    <label class="form-label obrigatorio">CNPJ</label>
+                    @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control", @maxlength = "18" })
+                </div>
+
+                <div class="col col-lg-9 col-md-8 col-xs-12">
+                    <label class="form-label obrigatorio">Tipo</label>
+                    @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
+                </div>
+            </div>
+            <br />
+            @{
+                ViewBag.PrefixoEndereco = "Endereco.";
+            }
+            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = Model.OrganizacaoId })')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/UnidadeOrganizacional/alterar.js?t=@DateTime.Now.Ticks"></script>

@@ -23,21 +23,53 @@ var FecharCaixaDeCarregamento = function () {
     swal.close();
 }
 
+var RequisicaoAjaxComCarregamento = function (url, tipo, data, callbackSucesso, mensagem) {
+    AbrirCaixaDeCarregamento('Carregando...');
+
+    setTimeout(function () {
+        $.ajax({
+            url: url,
+            type: tipo,
+            data: data,
+            error: function (jqXHR, textStatus, errorThrown) {
+                FecharCaixaDeCarregamento();
+                MensagemRodape('warning', 'Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.');
+            }
+        }).done(function (data) {
+            FecharCaixaDeCarregamento();
+
+            if (callbackSucesso) {
+                callbackSucesso(data);
+            }
+        });
+    }, 750);
+}
+
 var CarregarPagina = function (url) {
-    AbrirCaixaDeCarregamento('Carregando página...');
+    $(".content-wrapper").loading({
+        message: 'Carregando Página...',
+        onStart: function (loading) {
+            loading.overlay.slideDown(250);
+        },
+        onStop: function (loading) {
+            loading.overlay.slideUp(250);
+        }
+    });
+
     setTimeout(function () {
         $.ajax({
             url: url,
             type: 'GET',
             data: {},
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
+                $(".content-wrapper").loading('stop');
+                setTimeout(() => { $('#content-body').html('<h5>Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.</h5>'); }, 200);
             }
         }).done(function (data) {
-            FecharCaixaDeCarregamento();
-            $('#content-body').html(data);
+            $(".content-wrapper").loading('stop');
+            setTimeout(() => { $('#content-body').html(data); }, 200);
         });
-    }, 500);
+    }, 750);
 }
 
 function ObtenhaFormularioSerializado(formId) {
@@ -72,4 +104,22 @@ function ObtenhaFormularioSerializado(formId) {
     });
 
     return formData;
+}
+
+function MensagemRodape(icone, mensagem) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "bottom-end",
+        showConfirmButton: false,
+        timer: 10000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: icone,
+        html: mensagem
+    });
 }

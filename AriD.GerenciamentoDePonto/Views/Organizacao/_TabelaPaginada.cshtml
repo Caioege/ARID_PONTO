@@ -6,18 +6,23 @@
     var listaDeColunas = new List<WebGridColumn>
     {
         tabela.Column("Nome", "Nome", width: 65f),
-        tabela.Column("Tipo", "Tipo", width: 30f),
         tabela.Column("Ativa", "Ativa", format:
-    @<text>
-        @if (item.Ativa)
-    {
-        <i class="bx bx-check-square text-success"></i>
-    }
-    else
-    {
-        <i class="bx bx-checkbox-minus text-danger"></i>
-    }
-    </text>, width: 5f),
+            @<text>
+                @if (item.Ativa)
+            {
+                <i class="bx bx-check-square text-success"></i>
+            }
+            else
+            {
+                <i class="bx bx-checkbox-minus text-danger"></i>
+            }
+            </text>, width: 5f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+        <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = item.Id })')">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f)
     };
 }
 

@@ -25,19 +25,52 @@
 
   <div class="menu-inner-shadow"></div>
 
-  <ul class="menu-inner py-1">
-        <li class='menu-item open @(menuControlador.Equals(VariaveisDeMenu.MenuAdministracao) ? " active" : "")'>
+<ul class="menu-inner py-1">
+     <li class='menu-item open @(menuControlador.Equals(VariaveisDeMenu.MenuAdministracao) ? " active" : "")'>
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-slider-alt"></i>
         <div class="text-truncate" data-i18n="Administração">Administração</div>
       </a>
       <ul class="menu-sub">
-                <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+        <li class='menu-item@(paginaAtual.Equals("Departamento") ? " active" : "")'>
+          <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
+            <div>Departamento</div>
+          </a>
+        </li>
+        <li class='menu-item@(paginaAtual.Equals("Funcao") ? " active" : "")'>
+          <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
+            <div>Função</div>
+          </a>
+        </li>
+        <li class='menu-item@(paginaAtual.Equals("HorarioDeTrabalho") ? " active" : "")'>
+          <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
+            <div>Horário de Trabalho</div>
+          </a>
+        </li>
+        <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
           <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
             <div>Organização</div>
           </a>
         </li>
       </ul>
+    </li>
+    <li class='menu-item @(menuControlador.Equals(VariaveisDeMenu.MenuServidor) ? " active" : "")'>
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bxs-user-account"></i>
+            <div class="text-truncate" data-i18n="Servidor">Servidor</div>
+        </a>
+        <ul class="menu-sub">
+                <li class='menu-item@(paginaAtual.Equals("FolhaDePonto") ? " active" : "")'>
+                <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
+                    <div>Folha de Ponto</div>
+                </a>
+            </li>
+                <li class='menu-item@(paginaAtual.Equals("Servidor") ? " active" : "")'>
+                <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                    <div>Cadastro de Servidores</div>
+                </a>
+            </li>
+        </ul>
     </li>
   </ul>
 
