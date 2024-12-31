@@ -1,0 +1,13 @@
+﻿@model ListaPaginada<HorarioDeTrabalho>
+
+<button type="button" onclick="CarregarPagina('@Url.Action("Adicionar")')" class="btn btn-primary">
+    <i class="bx bx-plus"></i> Adicionar
+</button>
+<br />
+<br />
+
+<div id="grid">
+    @await Html.PartialAsync("_TabelaPaginada")
+</div>
+
+<script src="/Scripts/Paginas/HorarioDeTrabalho/index.js?t=@DateTime.Now.Ticks"></script>

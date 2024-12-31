@@ -11,25 +11,18 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class HorarioDeTrabalho : EntidadeOrganizacaoBase
     {
-        public HorarioDeTrabalho()
-        {
-            Dias =
-            [
-                new() { DiaDaSemana = eDiaDaSemana.Segunda },
-                new() { DiaDaSemana = eDiaDaSemana.Terca },
-                new() { DiaDaSemana = eDiaDaSemana.Quarta },
-                new() { DiaDaSemana = eDiaDaSemana.Quinta },
-                new() { DiaDaSemana = eDiaDaSemana.Sexta },
-                new() { DiaDaSemana = eDiaDaSemana.Sabado },
-                new() { DiaDaSemana = eDiaDaSemana.Domingo }
-            ];
-        }
-
         [Required, MaxLength(5)]
         public string Sigla { get; set; }
 
         [Required, MaxLength(100)]
         public string Descricao { get; set; }
+
+        public bool Ativo { get; set; }
+
+        public bool UtilizaCincoPeriodos { get; set; }
+
+        public bool UtilizaBancoDeHoras { get; set; }
+        public DateTime? InicioBancoDeHoras { get; set; }
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }
     }

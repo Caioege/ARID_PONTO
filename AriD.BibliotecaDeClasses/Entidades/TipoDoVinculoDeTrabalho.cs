@@ -5,6 +5,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class TipoDoVinculoDeTrabalho : EntidadeOrganizacaoBase
     {
+        [Required, MaxLength(5)]
         public string Sigla { get; set; }
 
         [Required, MaxLength(100)]

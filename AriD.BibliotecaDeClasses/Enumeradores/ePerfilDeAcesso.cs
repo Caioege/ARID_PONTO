@@ -3,8 +3,7 @@
     public enum ePerfilDeAcesso
     {
         AdministradorDeSistema,
-        RedeDeEnsino,
-        Escola,
-        Professor
+        Organizacao,
+        UnidadeOrganizacional
     }
 }

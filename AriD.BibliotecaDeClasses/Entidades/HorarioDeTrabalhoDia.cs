@@ -31,5 +31,51 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public TimeSpan? Entrada5 { get; set; }
         public TimeSpan? Saida5 { get; set; }
 
+        public TimeSpan? CalculeCargaHorariaTotal()
+        {
+            TimeSpan? chPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?
+                Saida1.Value.Subtract(Entrada1.Value) :
+                null;
+
+            TimeSpan? chPeriodo_2 = Entrada2.HasValue && Saida2.HasValue ?
+                Saida2.Value.Subtract(Entrada2.Value) :
+                null;
+
+            TimeSpan? chPeriodo_3 = Entrada3.HasValue && Saida3.HasValue ?
+                Saida3.Value.Subtract(Entrada3.Value) :
+                null;
+
+            TimeSpan? chPeriodo_4 = Entrada4.HasValue && Saida4.HasValue ?
+                Saida4.Value.Subtract(Entrada4.Value) :
+                null;
+
+            TimeSpan? chPeriodo_5 = Entrada5.HasValue && Saida5.HasValue ?
+                Saida5.Value.Subtract(Entrada5.Value) :
+                null;
+
+            TimeSpan? chTotal = null;
+
+            if (chPeriodo_1.HasValue || chPeriodo_2.HasValue || chPeriodo_3.HasValue || chPeriodo_4.HasValue || chPeriodo_5.HasValue)
+            {
+                chTotal = TimeSpan.Zero;
+
+                if (chPeriodo_1.HasValue)
+                    chTotal = chTotal.Value.Add(chPeriodo_1.Value);
+
+                if (chPeriodo_2.HasValue)
+                    chTotal = chTotal.Value.Add(chPeriodo_2.Value);
+
+                if (chPeriodo_3.HasValue)
+                    chTotal = chTotal.Value.Add(chPeriodo_3.Value);
+
+                if (chPeriodo_4.HasValue)
+                    chTotal = chTotal.Value.Add(chPeriodo_4.Value);
+
+                if (chPeriodo_5.HasValue)
+                    chTotal = chTotal.Value.Add(chPeriodo_5.Value);
+            }
+
+            return chTotal;
+        }
     }
 }

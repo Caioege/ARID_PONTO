@@ -3,6 +3,8 @@
 @model Endereco
 
 @{
+    var cadastroObrigatorio = ((bool?)ViewBag.EnderecoObrigatorio ?? false) ? "obrigatorio" : string.Empty;
+
     string prefixo = ViewBag.PrefixoEndereco ?? string.Empty;
 
     string formLabelCep = ViewBag.LabelCep ?? "CEP";
@@ -16,12 +18,12 @@
 
 <div class="row">
     <div class="col col-lg-3 col-md-4 col-xs-12">
-        <label class="form-label">@formLabelCep</label>
+        <label class="form-label @cadastroObrigatorio">@formLabelCep</label>
         @Html.TextBox($"{prefixo}Cep", Model?.Cep, new { @class = "form-control cep cep-endereco-partial" })
     </div>
 
     <div class="col col-lg-9 col-md-8 col-xs-12">
-        <label class="form-label">@formLabelLogradouro</label>
+        <label class="form-label @cadastroObrigatorio">@formLabelLogradouro</label>
         @Html.TextBox($"{prefixo}Logradouro", Model?.Logradouro, new { @class = "form-control logradouro-endereco-partial", @maxlength = "100" })
     </div>
 </div>
@@ -40,17 +42,17 @@
 
 <div class="row">
     <div class="col col-lg-4 col-md-4 col-xs-12">
-        <label class="form-label">@formLabelBairro</label>
+        <label class="form-label @cadastroObrigatorio">@formLabelBairro</label>
         @Html.TextBox($"{prefixo}Bairro", Model?.Bairro, new { @class = "form-control bairro-endereco-partial", @maxlength = "100" })
     </div>
 
     <div class="col col-lg-6 col-md-6 col-xs-12">
-        <label class="form-label">@formLabelCidade</label>
+        <label class="form-label @cadastroObrigatorio">@formLabelCidade</label>
         @Html.TextBox($"{prefixo}Cidade", Model?.Cidade, new { @class = "form-control cidade-endereco-partial", @maxlength = "100" })
     </div>
 
     <div class="col col-lg-2 col-md-2 col-xs-12">
-        <label class="form-label">@formLabelUF</label>
+        <label class="form-label @cadastroObrigatorio">@formLabelUF</label>
         @Html.EnumDropDownList($"{prefixo}UF", Model?.UF, string.Empty, new { @class = "form-select uf-endereco-partial", @maxlength = "100" })
     </div>
 </div>

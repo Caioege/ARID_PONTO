@@ -1,0 +1,59 @@
+﻿@model List<VinculoDeTrabalho>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" width="20%">Matrícula</th>
+            <th class="text-center" width="25%">Tipo</th>
+            <th class="text-center" width="20%">Situação</th>
+            <th class="text-center" width="15%">Início</th>
+            <th class="text-center" width="15%">Fim</th>
+            <th class="text-center" width="5%">
+                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalVinculoDeTrabalho(0)">
+                    <i class='bx bx-list-plus'></i>
+                </button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0) 
+        {
+            foreach (var vinculo in Model.OrderBy(c => c.Inicio).ThenBy(c => c.Id)) 
+            {
+                <tr>
+                    <td class="text-center">
+                        @vinculo.Matricula
+                    </td>
+                    <td class="text-center">
+                        @vinculo.TipoDoVinculoDeTrabalho.Descricao
+                    </td>
+                    <td class="text-center">
+                        @vinculo.Situacao.ToString()
+                    </td>
+                    <td class="text-center">
+                        @vinculo.Inicio.ToShortDateString()
+                    </td>
+                    <td class="text-center">
+                        @if (vinculo.Fim.HasValue) 
+                        {
+                            <span>@vinculo.Fim.Value.ToShortDateString()</span>
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalVinculoDeTrabalho(@vinculo.Id)">
+                            <i class='bx bxs-edit-alt'></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else 
+        {
+            <tr>
+                <td class="text-center" colspan="99">
+                    Nenhum vínculo de trabalho foi cadastrado.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

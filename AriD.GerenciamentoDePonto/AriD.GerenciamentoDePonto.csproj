@@ -8,11 +8,35 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AriD.BibliotecaDeClasses\AriD.BibliotecaDeClasses.csproj" />
     <ProjectReference Include="..\AriD.Servicos\AriD.Servicos.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\pessoas\organizacao\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Controllers\TipoDoVinculoDeTrabalhoController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\TipoDoVinculoDeTrabalho\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\TipoDoVinculoDeTrabalho\_Modal.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\TipoDoVinculoDeTrabalho\_TabelaPaginada.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

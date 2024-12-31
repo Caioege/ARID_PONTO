@@ -1,0 +1,142 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@model HorarioDeTrabalho
+
+<style>
+    .linha > td:not(:first-child) {
+        padding: 5px !important;
+    }
+
+    .linha > td > input {
+        text-align: center !important;
+    }
+</style>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Alterar Horário de Trabalho
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-horario-trabalho">
+            @Html.HiddenFor(model => model.Id)
+            <div class="row">
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Sigla</label>
+                    @Html.TextBoxFor(model => model.Sigla, new { @class = "form-control", @maxlength = "5" })
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Ativo</label>
+                    @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-6 col-md-12 col-sm-12">
+                    <label class="form-label obrigatorio">Descrição</label>
+                    @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Utilizar Cinco Períodos</label>
+                    @Html.CheckboxDropDownListFor(model => model.UtilizaCincoPeriodos, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Utiliza Banco De Horas</label>
+                    @Html.CheckboxDropDownListFor(model => model.UtilizaBancoDeHoras, new { @class = "form-select" })
+                </div>
+
+                <div id="div-data-bh" class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? string.Empty : "display:none")">
+                    <label class="form-label">Início do Banco de Horas</label>
+                    @Html.TextBoxFor(model => model.InicioBancoDeHoras, new { @class = "form-control data" })
+                </div>
+            </div>
+
+            <br />
+            <div class="table-responsive text-nowrap">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><i class='bx bxs-calendar'></i></th>
+                            <th width="7.5%"><b>Ent. 1</b></th>
+                            <th width="7.5%"><b>Sai. 1</b></th>
+                            <th width="7.5%"><b>Ent. 2</b></th>
+                            <th width="7.5%"><b>Sai. 2</b></th>
+                            <th width="7.5%"><b>Ent. 3</b></th>
+                            <th width="7.5%"><b>Sai. 3</b></th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 4</b></th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Sai. 4</b></th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 5</b></th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Sai. 5</b></th>
+                            <th width="7.5%" class="text-center"><b>CH</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var diaDaSemana in Model.Dias) 
+                        {
+                            <tr class="linha" data-diadasemana="@((int)diaDaSemana.DiaDaSemana)" data-id="@diaDaSemana.Id">
+                                <td class="text-center">
+                                    <b>@(diaDaSemana.DiaDaSemana.ToString())</b>
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent1", diaDaSemana.Entrada1, new { @class = "form-control hora entrada1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai1", diaDaSemana.Saida1, new { @class = "form-control hora saida1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent2", diaDaSemana.Entrada2, new { @class = "form-control hora entrada2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai2", diaDaSemana.Saida2, new { @class = "form-control hora saida2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent3", diaDaSemana.Entrada3, new { @class = "form-control hora entrada3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai3", diaDaSemana.Saida3, new { @class = "form-control hora saida3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent4", diaDaSemana.Entrada4, new { @class = "form-control hora entrada4", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai4", diaDaSemana.Saida4, new { @class = "form-control hora saida4", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent5", diaDaSemana.Entrada5, new { @class = "form-control hora entrada5", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai5", diaDaSemana.Saida5, new { @class = "form-control hora saida5", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center carga-horaria">
+                                    @(diaDaSemana.CalculeCargaHorariaTotal()?.ToString(@"hh\:mm"))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/HorarioDeTrabalho/alterar.js"></script>

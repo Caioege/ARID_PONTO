@@ -67,7 +67,10 @@ var CarregarPagina = function (url) {
             }
         }).done(function (data) {
             $(".content-wrapper").loading('stop');
-            setTimeout(() => { $('#content-body').html(data); }, 200);
+            setTimeout(() => {
+                $('#content-body').html(data);
+                assineMascarasDoComponente($('#content-body'));
+            }, 200);
         });
     }, 750);
 }
@@ -122,4 +125,22 @@ function MensagemRodape(icone, mensagem) {
         icon: icone,
         html: mensagem
     });
+}
+
+function assineMascarasDoComponente(componente) {
+    componente.find('.hora').mask('00:00');
+    //componente.find('.hora').clockpicker({
+    //    placement: 'top',
+    //    align: 'left',
+    //    donetext: 'Pronto'
+    //});
+
+    componente.find('.data').mask('00/00/0000');
+    componente.find('.cpf').mask('000.000.000-00');
+    componente.find('.cpf').on('change', function () {
+        if ($(this).val().length > 0 && $(this).val().length != 14) {
+            $(this).val('');
+        }
+    });
+    componente.find('.cnpj').mask('00.000.000/0000-00');
 }

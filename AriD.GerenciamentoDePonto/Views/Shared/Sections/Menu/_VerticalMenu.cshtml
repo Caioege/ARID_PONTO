@@ -1,3 +1,5 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+
 @{
   TempData.Keep();
   string? currentPage = ViewContext.HttpContext.Request.Path;
@@ -6,6 +8,8 @@
 @{
     var menuControlador = TempData[VariaveisDeMenu.MenuControlador] ?? string.Empty;
     var paginaAtual = TempData[VariaveisDeMenu.MenuPaginaAtual] ?? string.Empty;
+
+    var dadosDaSessao = this.Context.DadosDaSessao();
 }
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -32,26 +36,45 @@
         <div class="text-truncate" data-i18n="Administração">Administração</div>
       </a>
       <ul class="menu-sub">
-        <li class='menu-item@(paginaAtual.Equals("Departamento") ? " active" : "")'>
-          <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
-            <div>Departamento</div>
-          </a>
-        </li>
-        <li class='menu-item@(paginaAtual.Equals("Funcao") ? " active" : "")'>
-          <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
-            <div>Função</div>
-          </a>
-        </li>
-        <li class='menu-item@(paginaAtual.Equals("HorarioDeTrabalho") ? " active" : "")'>
-          <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-            <div>Horário de Trabalho</div>
-          </a>
-        </li>
-        <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
-          <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
-            <div>Organização</div>
-          </a>
-        </li>
+          @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) 
+          {
+              <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
+                    <div>Minha Organização</div>
+                  </a>
+              </li>
+          }
+          else 
+          {
+              <li class='menu-item@(paginaAtual.Equals("Departamento") ? " active" : "")'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
+                    <div>Departamento</div>
+                  </a>
+                </li>
+                <li class='menu-item@(paginaAtual.Equals("Funcao") ? " active" : "")'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
+                    <div>Função</div>
+                  </a>
+                </li>
+                <li class='menu-item@(paginaAtual.Equals("HorarioDeTrabalho") ? " active" : "")'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
+                    <div>Horário de Trabalho</div>
+                  </a>
+                </li>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao) 
+                {
+                    <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+                        <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
+                        <div>Minha Organização</div>
+                        </a>
+                    </li>
+                }
+                <li class='menu-item@(paginaAtual.Equals("TipoDoVinculoDeTrabalho") ? " active" : "")'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
+                    <div style="white-space: normal !important;" >Tipo do Vínculo de Trabalho</div>
+                  </a>
+                </li>
+          }
       </ul>
     </li>
     <li class='menu-item @(menuControlador.Equals(VariaveisDeMenu.MenuServidor) ? " active" : "")'>

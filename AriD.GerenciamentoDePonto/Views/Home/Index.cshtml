@@ -1,8 +1,10 @@
 ﻿@{
     Layout = "_ContentNavbarLayout";
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Sistema de Gerenciamento de Ponto";
+
+    var dadosDaSessao = this.Context.DadosDaSessao();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Bem-vindo, John Doe!</h1>
+    <h1 class="display-4">Bem-vindo, @dadosDaSessao.UsuarioNome!</h1>
 </div>

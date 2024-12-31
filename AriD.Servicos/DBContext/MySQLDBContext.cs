@@ -28,5 +28,9 @@ namespace AriD.Servicos.DBContext
         public DbSet<UnidadeOrganizacional> UnidadeOrganizacional { get; set; }
         public DbSet<Departamento> Departamento { get; set; }
         public DbSet<Funcao> Funcao { get; set; }
+        public DbSet<HorarioDeTrabalho> HorarioDeTrabalho { get; set; }
+        public DbSet<HorarioDeTrabalhoDia> HorarioDeTrabalhoDia { get; set; }
+        public DbSet<Pessoa> Pessoa { get; set; }
+        public DbSet<Servidor> Servidor { get; set; }
     }
 }

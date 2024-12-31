@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
+using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +74,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             try
             {
                 int id = funcao.Id;
-                funcao.OrganizacaoId = 1;
+                funcao.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
                 if (funcao.Id == 0)
                     id = _funcaoServico.Adicionar(funcao);
@@ -92,7 +93,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
-            parametros.OrganizacaoId = 1;
+            parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
             var dados = _funcaoServico.ObtenhaListaPaginada(c => c.OrganizacaoId == parametros.OrganizacaoId, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
