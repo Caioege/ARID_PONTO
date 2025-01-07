@@ -29,6 +29,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 Model = model
             };
 
+            // Adicione os valores da ViewBag ao ViewData
+            foreach (var key in ViewData.Keys)
+            {
+                viewData[key] = ViewData[key];
+            }
+
             var tempData = new TempDataDictionary(HttpContext, tempDataProvider);
 
             // Cria o contexto da view
@@ -45,6 +51,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             await viewResult.View.RenderAsync(viewContext);
 
             return stringWriter.ToString();
+
         }
     }
 }

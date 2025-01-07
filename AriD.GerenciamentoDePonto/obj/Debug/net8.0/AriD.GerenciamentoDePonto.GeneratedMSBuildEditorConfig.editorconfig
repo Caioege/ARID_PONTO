@@ -1,0 +1,217 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = AriD.GerenciamentoDePonto
+build_property.RootNamespace = AriD.GerenciamentoDePonto
+build_property.ProjectDir = C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Autenticacao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0ZW50aWNhY2FvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Departamento/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Departamento/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXF9Nb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Departamento/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Funcao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2FvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Funcao/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2FvXF9Nb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Funcao/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2FvXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/HorarioDeTrabalho/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb0RlVHJhYmFsaG9cQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/HorarioDeTrabalho/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb0RlVHJhYmFsaG9cQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/HorarioDeTrabalho/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb0RlVHJhYmFsaG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/HorarioDeTrabalho/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb0RlVHJhYmFsaG9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_Lotacoes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX0xvdGFjb2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_VinculosDeTrabalho.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX1ZpbmN1bG9zRGVUcmFiYWxoby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/Footer/_Footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXEZvb3RlclxfRm9vdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/Menu/_VerticalMenu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE1lbnVcX1ZlcnRpY2FsTWVudS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/Navbar/_Navbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE5hdmJhclxfTmF2YmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/Navbar/_NavbarPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE5hdmJhclxfTmF2YmFyUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/_Scripts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TY3JpcHRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/_ScriptsIncludes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TY3JpcHRzSW5jbHVkZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/_Styles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TdHlsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/Sections/_Variables.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9WYXJpYWJsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_BlankLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CbGFua0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_CommonMasterLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db21tb25NYXN0ZXJMYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_ContentNavbarLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db250ZW50TmF2YmFyTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_EnderecoPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9FbmRlcmVjb1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_PaginacaoWebGrid.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdpbmFjYW9XZWJHcmlkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/TipoDoVinculoDeTrabalho/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0RvVmluY3Vsb0RlVHJhYmFsaG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/TipoDoVinculoDeTrabalho/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0RvVmluY3Vsb0RlVHJhYmFsaG9cX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/TipoDoVinculoDeTrabalho/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlwb0RvVmluY3Vsb0RlVHJhYmFsaG9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/UnidadeOrganizacional/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU9yZ2FuaXphY2lvbmFsXEFkaWNpb25hci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/UnidadeOrganizacional/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU9yZ2FuaXphY2lvbmFsXEFsdGVyYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/UnidadeOrganizacional/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU9yZ2FuaXphY2lvbmFsXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/_Partials/_Macros.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1BhcnRpYWxzXF9NYWNyb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-mqdjo0tbp3

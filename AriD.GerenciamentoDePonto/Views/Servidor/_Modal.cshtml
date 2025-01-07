@@ -1,0 +1,110 @@
+﻿@model VinculoDeTrabalho
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Vínculo de Trabalho</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="div-dados-modal">
+                    <form id="formulario-vinculo">
+                        @Html.HiddenFor(model => model.Id)
+                        <div class="row">
+                            <div class="col col-lg-4 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Matrícula</label>
+                                @Html.TextBoxFor(model => model.Matricula, new { @class = "form-control", @maxlength = "10" })
+                            </div>
+
+                            <div class="col col-lg-4 col-md-12 col-sm-6">
+                                <label class="form-label obrigatorio">Início</label>
+                                @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToShortDateString(), new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-4 col-md-12 col-sm-6">
+                                <label class="form-label">Fim</label>
+                                @Html.TextBox("Fim", !Model.Fim.HasValue ? string.Empty : Model.Fim.Value.ToShortDateString(), new { @class = "form-control data" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-lg-8 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Descrição</label>
+                                @Html.DropDownListFor(model => model.TipoDoVinculoDeTrabalhoId, (SelectList)ViewBag.Tipos, string.Empty, new { @class = "select2" })
+                            </div>
+
+                            <div class="col col-lg-4 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Situação</label>
+                                @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
+                            </div>
+                        </div>
+                    </form>
+                    @if (!adicionar)
+                    {
+                        <br />
+                        <div id="div-partial-lotacoes">
+                            @await Html.PartialAsync("_Lotacoes", Model.Lotacoes)
+                        </div>
+                    }
+                </div>
+                <div id="div-modal-lotacao" style="display:none;">
+                    <h6>Dados da Lotação</h6>
+                    <form id="formulario-lotacao">
+                        @Html.Hidden("Id")
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <label class="form-label obrigatorio">Unidade</label>
+                                @Html.DropDownList("UnidadeOrganizacionalId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-lg-4 col-md-4 col-sm-12">
+                                <label class="form-label obrigatorio">Entrada</label>
+                                @Html.TextBox("Entrada", string.Empty, new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-4 col-md-4 col-sm-12">
+                                <label class="form-label">Saída</label>
+                                @Html.TextBox("Saida", string.Empty, new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-4 col-md-4 col-sm-12">
+                                <label class="form-label obrigatorio">ID Equipamento</label>
+                                @Html.TextBox("MatriculaEquipamento", string.Empty, new { @class = "form-control", @maxlength = "10" })
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-footer-principal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class='bx bx-window-close'></i> Fechar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                </div>
+                <div id="modal-footer-lotacao" style="display:none;">
+                    <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoLotacao()">
+                        <i class='bx bx-left-arrow-alt'></i> Voltar
+                    </button>
+
+                    <button type="button" class="btn btn-danger" id="btn-remover-lotacao">
+                        <i class='bx bxs-trash'></i> Remover
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="btn-salvar-lotacao">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

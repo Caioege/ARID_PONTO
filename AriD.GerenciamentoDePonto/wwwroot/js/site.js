@@ -136,11 +136,170 @@ function assineMascarasDoComponente(componente) {
     //});
 
     componente.find('.data').mask('00/00/0000');
-    componente.find('.cpf').mask('000.000.000-00');
-    componente.find('.cpf').on('change', function () {
-        if ($(this).val().length > 0 && $(this).val().length != 14) {
+    componente.find('.data').on('change', function () {
+        const valor = $(this).val();
+
+        if (!dataValida(valor)) {
+            MensagemRodape('warning', 'Insira uma data válida!')
             $(this).val('');
+            $(this).focus();
         }
     });
+
+    componente.find('.cpf').mask('000.000.000-00');
+    componente.find('.cpf').on('change', function () {
+        const valor = $(this).val();
+
+        if (!cpfValido(valor)) {
+            MensagemRodape('warning', 'Insira um cpf válido!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
+
     componente.find('.cnpj').mask('00.000.000/0000-00');
+    componente.find('.cnpj').on('change', function () {
+        const valor = $(this).val();
+
+        if (!cnpjValido(valor)) {
+            MensagemRodape('warning', 'Insira um CNPJ válido!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
+
+    componente.find('.select2').select2({
+        dropdownParent: componente,
+        templateResult: function (data) {
+            if (!data.id) {
+                return null;
+            }
+            return data.text;
+        },
+        language: {
+            noResults: function () {
+                return "Nenhum resultado encontrado";
+            },
+            inputTooShort: function (args) {
+                return `Digite ${args.minimum - args.input.length} caractere(s) para pesquisar.`;
+            },
+            errorLoading: function () {
+                return "Não foi possível carregar os resultados.";
+            },
+            loadingMore: function () {
+                return "Carregando mais resultados...";
+            },
+            searching: function () {
+                return "Pesquisando...";
+            },
+            removeAllItems: function () {
+                return "Remover todos os itens";
+            }
+        }
+    });
+}
+
+function dataValida(dateString) {
+    if (!dateString) {
+        return true;
+    }
+
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = dateString.match(regex);
+
+    if (!match) {
+        return false;
+    }
+
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const year = parseInt(match[3], 10);
+
+    const date = new Date(year, month, day);
+
+    return (
+        date.getFullYear() === year &&
+        date.getMonth() === month &&
+        date.getDate() === day
+    );
+}
+
+function cpfValido(cpf) {
+    if (!cpf) {
+        return true;
+    }
+
+    cpf = cpf.replace(/\D/g, '');
+
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+        return false;
+    }
+
+    let soma = 0;
+    let resto;
+
+    for (let i = 1; i <= 9; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (11 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 1; i <= 10; i++) {
+        soma += parseInt(cpf.charAt(i - 1)) * (12 - i);
+    }
+    resto = (soma * 10) % 11;
+    if (resto === 10 || resto === 11) resto = 0;
+
+    return resto === parseInt(cpf.charAt(10));
+}
+
+function cnpjValido(cnpj) {
+    if (!cnpj) {
+        return true;
+    }
+
+    cnpj = cnpj.replace(/\D/g, '');
+
+    if (cnpj.length !== 14) {
+        return false;
+    }
+
+    if (/^(\d)\1+$/.test(cnpj)) {
+        return false;
+    }
+
+    let tamanho = cnpj.length - 2;
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    if (resultado !== parseInt(digitos.charAt(0))) {
+        return false;
+    }
+
+    tamanho++;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    return resultado === parseInt(digitos.charAt(1));
+}
+
+function adicioneItemNoCampoSelecionavel(campoSelecionavel, valor, texto) {
+    campoSelecionavel.append(`<option value="${valor}">${texto}</option>`)
 }

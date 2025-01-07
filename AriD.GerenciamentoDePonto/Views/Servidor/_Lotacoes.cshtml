@@ -1,0 +1,60 @@
+﻿@model List<LotacaoUnidadeOrganizacional>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th colspan="4" class="text-center" style="padding-block: 5px; background: #3845513d;">
+                LOTAÇÕES
+            </th>
+            <th class="text-center" width="5%" rowspan="2">
+                <button type="button" class="btn btn-primary btn-sm" onclick="carregarEdicaoDeLotacao(0)">
+                    <i class='bx bx-list-plus'></i>
+                </button>
+            </th>
+        </tr>
+        <tr>
+            <th class="text-center" width="55%" style="padding-block: 5px;">Unidade</th>
+            <th class="text-center" width="15%" style="padding-block: 5px;">Entrada</th>
+            <th class="text-center" width="15%" style="padding-block: 5px;">Saída</th>
+            <th class="text-center" width="10%" style="padding-block: 5px;">Id Equipamento</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0) 
+        {
+            foreach (var lotacao in Model.OrderBy(c => c.Entrada).ThenBy(c => c.Id)) 
+            {
+                <tr>
+                    <td>
+                        @lotacao.UnidadeOrganizacional.Nome
+                    </td>
+                    <td class="text-center">
+                        @lotacao.Entrada.ToShortDateString()
+                    </td>
+                    <td class="text-center">
+                        @if (lotacao.Saida.HasValue)
+                        {
+                            <span>@lotacao.Saida.Value.ToShortDateString()</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @lotacao.MatriculaEquipamento
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="carregarEdicaoDeLotacao(@lotacao.Id)">
+                            <i class='bx bxs-edit-alt'></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else 
+        {
+            <tr>
+                <td class="text-center" colspan="99">
+                    Nenhuma lotação foi informada.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

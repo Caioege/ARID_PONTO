@@ -54,3 +54,32 @@
 .swal2-container {
     z-index: 1100 !important;
 }
+
+.select2-container {
+    z-index: 1099 !important;
+}
+
+.select2 {
+    width: 100% !important;
+}
+
+.select2-selection__arrow {
+    top: 5px !important;
+}
+
+.select2-selection {
+    font-size: 0.9375rem !important;
+    font-weight: 400 !important;
+    line-height: 1.375 !important;
+    color: #384551 !important;
+    min-height: 38px !important;
+    padding-top: 3px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced1d5 !important;
+}
+
+.form-select:hover {
+    cursor: pointer;
+}

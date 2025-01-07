@@ -5,7 +5,7 @@
 @functions {
     public string GetURLPage(dynamic model, dynamic page)
     {
-        string url = $"/{model.Controller}/{(model.Action ?? "IndexGrid")}?pagina={page}";
+        string url = $"/{model.Controller}/{(model.Action ?? "TabelaPaginada")}?pagina={page}";
 
         if (model.DirecaoDaOrdenacao != null)
         {

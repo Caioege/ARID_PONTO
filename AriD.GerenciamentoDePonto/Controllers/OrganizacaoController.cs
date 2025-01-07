@@ -95,7 +95,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 listaPaginada.Pagina,
                 listaPaginada.QuantidadeDeItensPorPagina);
 
-            listaPaginada.Parametros(this, dados.Itens, dados.Total);
+            listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }
     }
 }

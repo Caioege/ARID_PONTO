@@ -7,6 +7,10 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class VinculoDeTrabalho : EntidadeOrganizacaoBase
     {
+        public int ServidorId { get; set; }
+        [ForeignKey(nameof(ServidorId))]
+        public virtual Servidor Servidor { get; set; }
+
         public int TipoDoVinculoDeTrabalhoId { get; set; }
 
         [ForeignKey(nameof(TipoDoVinculoDeTrabalhoId))]

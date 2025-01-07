@@ -30,7 +30,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 var dados = _servicoUnidadeOrganizacional.ObtenhaListaPaginada(c => c.OrganizacaoId == parametros.OrganizacaoId, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
-                listaPaginada.Parametros(this, dados.Itens, dados.Total);
+                listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
 
                 return View("_TabelaPaginada", listaPaginada);
             }

@@ -53,7 +53,7 @@ namespace AriD.GerenciamentoDePonto.WebGrid
 
         public string Controller { get; set; }
 
-        public string Action { get; set; }
+        public string Action { get; set; } = "TabelaPaginada";
 
         public bool Ordenamento { get { return (!string.IsNullOrWhiteSpace(DirecaoDaOrdenacao) && DirecaoDaOrdenacao == "DESC") ? false : true; } }
 
@@ -73,6 +73,14 @@ namespace AriD.GerenciamentoDePonto.WebGrid
             TotalDeItens = totalRecords;
             Action = action;
             Controller = controller;
+            controllerContext.ViewBag.SearchTerm = TermoDeBusca;
+        }
+
+        public void Parametros(Controller controllerContext, IList<T> entities, int totalRecords, string action)
+        {
+            Itens = entities;
+            TotalDeItens = totalRecords;
+            Action = action;
             controllerContext.ViewBag.SearchTerm = TermoDeBusca;
         }
 

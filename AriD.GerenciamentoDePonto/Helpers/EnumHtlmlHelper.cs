@@ -51,6 +51,14 @@ namespace AriD.GerenciamentoDePonto.Helpers
 
         public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(
             this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TEnum>> expression,
+            object htmlAttributes = null) where TEnum : struct, Enum
+        {
+            return htmlHelper.EnumDropDownListFor(expression, null, htmlAttributes);
+        }
+
+        public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(
+            this IHtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TEnum?>> expression,
             object htmlAttributes = null) where TEnum : struct, Enum
         {
@@ -71,6 +79,26 @@ namespace AriD.GerenciamentoDePonto.Helpers
             var name = modelExpression.Name;
 
             var value = (TEnum?)modelExpression.Model;
+
+            var selectList = GetEnumSelectList<TEnum>(value);
+
+            return htmlHelper.DropDownList(name, new SelectList(selectList, "Value", "Text"), label, htmlAttributes);
+        }
+
+        public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(
+            this IHtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TEnum>> expression,
+            string label,
+            object htmlAttributes = null) where TEnum : struct, Enum
+        {
+            var expressionProvider = htmlHelper.ViewContext.HttpContext.RequestServices
+                .GetService(typeof(ModelExpressionProvider)) as ModelExpressionProvider;
+
+            var modelExpression = expressionProvider.CreateModelExpression(htmlHelper.ViewData, expression);
+            var metadata = modelExpression.Metadata;
+            var name = modelExpression.Name;
+
+            var value = (TEnum)modelExpression.Model;
 
             var selectList = GetEnumSelectList<TEnum>(value);
 
