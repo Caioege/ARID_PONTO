@@ -51,3 +51,4 @@ C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\obj\Debug\net8.0\AriD.GerenciamentoDePonto.pdb
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\obj\Debug\net8.0\AriD.GerenciamentoDePonto.genruntimeconfig.cache
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\obj\Debug\net8.0\ref\AriD.GerenciamentoDePonto.dll
+C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.GerenciamentoDePonto\bin\Debug\net8.0\Dapper.dll

@@ -1,0 +1,34 @@
+function AbrirModal(id) {
+    RequisicaoAjaxComCarregamento(
+        '/JustificativaDeAusencia/Modal/',
+        'GET',
+        { justificativaId: id },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_Modal'));
+                assineSalvarCadastroModal();
+                $('#_Modal').modal('show');
+            }
+        }
+    );
+}
+
+function assineSalvarCadastroModal() {
+    $('#btn-salvar-modal').on('click', function () {
+        RequisicaoAjaxComCarregamento(
+            '/JustificativaDeAusencia/Salvar/',
+            'POST',
+            ObtenhaFormularioSerializado('formulario-justificativa'),
+            function (data) {
+                if (data.sucesso) {
+                    $('#_Modal').modal('hide');
+                    MensagemRodape('success', data.mensagem);
+                    CarregarPagina('/JustificativaDeAusencia/Index');
+                } else {
+                    MensagemRodape('Warning', data.mensagem);
+                }
+            }
+        );
+    });
+}

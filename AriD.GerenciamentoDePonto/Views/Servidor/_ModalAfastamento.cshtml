@@ -1,0 +1,79 @@
+﻿@model Afastamento
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Afastamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="div-dados-modal">
+                    <form id="formulario-afastamento">
+                        @Html.HiddenFor(model => model.Id)
+                        <div class="row">
+                            <div class="col col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Vínculo de Trabalho</label>
+                                @if (adicionar) 
+                                {
+                                    @Html.DropDownListFor(model => model.VinculoDeTrabalhoId, (SelectList)ViewBag.Vinculos, string.Empty, new { @class = "select2" })
+                                }
+                                else
+                                {
+                                    @Html.TextBox("VinculoDeTrabalho", Model.VinculoDeTrabalho.ToString(), new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
+                                    @Html.HiddenFor(model => model.VinculoDeTrabalhoId)
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-lg-3 col-md-12 col-sm-6">
+                                <label class="form-label obrigatorio">Início</label>
+                                @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-3 col-md-12 col-sm-6">
+                                <label class="form-label">Fim</label>
+                                @Html.TextBox("Fim", !Model.Fim.HasValue ? string.Empty : Model.Fim.Value.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-6 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Justificativa</label>
+                                @Html.DropDownListFor(model => model.JustificativaDeAusenciaId, (SelectList)ViewBag.Justificativas, string.Empty, new { @class = "select2" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <label class="form-label">Observações</label>
+                                @Html.TextAreaFor(model => model.Observacao, new { @class = "form-control", @maxlength = "500", @rows = "4" })
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-footer-principal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class='bx bx-window-close'></i> Fechar
+                    </button>
+
+                    @if (!adicionar)
+                    {
+                        <button type="button" class="btn btn-danger" id="btn-remover-modal">
+                            <i class='bx bxs-trash'></i> Remover
+                        </button>
+                    }
+
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

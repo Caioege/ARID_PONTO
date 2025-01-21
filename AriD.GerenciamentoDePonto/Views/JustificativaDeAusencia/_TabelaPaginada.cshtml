@@ -1,0 +1,41 @@
+﻿@model ListaPaginada<JustificativaDeAusencia>
+
+@{
+    var tabela = new WebGrid<JustificativaDeAusencia>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Sigla", "Sigla", width: 15f),
+        tabela.Column("Descricao", "Descrição", width: 65f),
+        tabela.Column("Abono", "Abono", format:
+            @<text>
+        @if (item.Abono)
+            {
+                <i class="bx bx-check-square text-success"></i>
+            }
+            else
+            {
+                <i class="bx bx-checkbox-minus text-danger"></i>
+            }
+            </text>, width: 5f),
+        tabela.Column("Ativa", "Ativa", format:
+            @<text>
+                @if (item.Ativa)
+            {
+                <i class="bx bx-check-square text-success"></i>
+            }
+            else
+            {
+                <i class="bx bx-checkbox-minus text-danger"></i>
+            }
+            </text>, width: 5f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

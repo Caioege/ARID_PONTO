@@ -20,6 +20,9 @@ namespace AriD.GerenciamentoDePonto.Helpers
             var controller = context.ActionDescriptor.RouteValues["controller"]?.ToLower();
             var action = context.ActionDescriptor.RouteValues["action"]?.ToLower();
 
+            context.HttpContext.Request.Headers.TryGetValue("X-Requested-With", out var headerValue);
+            bool ajaxRequest = headerValue == "XMLHttpRequest";
+
             var autenticado = context.HttpContext.EstaAutenticado();
             if (autenticado && controller == "autenticacao" && action == "index")
                 context.Result = new RedirectToRouteResult
@@ -27,10 +30,20 @@ namespace AriD.GerenciamentoDePonto.Helpers
                         new RouteValueDictionary(new { action = "Index", controller = "Home" })
                     );
             else if (!autenticado && controller != "autenticacao")
-                context.Result = new RedirectToRouteResult
+            {
+                if (ajaxRequest)
+                {
+                    context.HttpContext.Response.StatusCode = 401;
+                    context.Result = new JsonResult(new { message = "Não autenticado." });
+                }
+                else
+                {
+                    context.Result = new RedirectToRouteResult
                     (
                         new RouteValueDictionary(new { action = "Index", controller = "Autenticacao" })
                     );
+                }
+            }
         }
 
         /// <summary>

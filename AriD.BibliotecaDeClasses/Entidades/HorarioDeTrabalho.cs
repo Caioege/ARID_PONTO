@@ -24,6 +24,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public bool UtilizaBancoDeHoras { get; set; }
         public DateTime? InicioBancoDeHoras { get; set; }
 
+        public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
+
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }
+
+        public TimeSpan? ObtenhaCargaHorariaDoDia(eDiaDaSemana dia)
+            => Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal();
     }
 }

@@ -1,0 +1,157 @@
+﻿@model PontoDoDia
+
+@{
+    string acao = ViewBag.Acao;
+    string titulo = string.Empty;
+
+    int? justificativaId = null;
+    TimeSpan? hora = null;
+
+    switch (acao.ToLower())
+    {
+        case "entrada1":
+            titulo = "Entrada 1";
+            justificativaId = Model.JustificativaPeriodo1Id;
+            hora = Model.Entrada1;
+            break;
+        case "saida1":
+            titulo = "Saída 1";
+            justificativaId = Model.JustificativaPeriodo1Id;
+            hora = Model.Saida1;
+            break;
+
+        case "entrada2":
+            titulo = "Entrada 2";
+            justificativaId = Model.JustificativaPeriodo2Id;
+            hora = Model.Entrada2;
+            break;
+        case "saida2":
+            titulo = "Saída 2";
+            justificativaId = Model.JustificativaPeriodo2Id;
+            hora = Model.Saida2;
+            break;
+
+        case "entrada3":
+            titulo = "Entrada 3";
+            justificativaId = Model.JustificativaPeriodo3Id;
+            hora = Model.Entrada3;
+            break;
+        case "saida3":
+            titulo = "Saída 3";
+            justificativaId = Model.JustificativaPeriodo3Id;
+            hora = Model.Saida3;
+            break;
+
+        case "entrada4":
+            titulo = "Entrada 4";
+            justificativaId = Model.JustificativaPeriodo4Id;
+            hora = Model.Entrada4;
+            break;
+        case "saida4":
+            titulo = "Saída 4";
+            justificativaId = Model.JustificativaPeriodo4Id;
+            hora = Model.Saida4;
+            break;
+
+        case "entrada5":
+            titulo = "Entrada 5";
+            justificativaId = Model.JustificativaPeriodo4Id;
+            hora = Model.Entrada4;
+            break;
+        case "saida5":
+            titulo = "Saída 5";
+            justificativaId = Model.JustificativaPeriodo5Id;
+            hora = Model.Saida5;
+            break;
+
+        case "abono":
+            titulo = "Abono";
+            break;
+    }
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    @titulo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-pontodia">
+                    @Html.Hidden("DataModal", Model.Data.ToString("yyyy-MM-dd"))
+                    @Html.Hidden("DataTicks", Model.Data.Ticks)
+                    @Html.HiddenFor(model => model.VinculoDeTrabalhoId)
+                    @Html.Hidden("Acao", acao)
+                    @if (!acao.Equals("abono")) 
+                    {
+
+                        <div class="nav-align-top">
+                            <ul class="nav nav-tabs mb-4" role="tablist">
+                                <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                                    <button type="button" class="nav-link @(justificativaId.HasValue ? string.Empty : "active")" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-hora" aria-controls="navs-pills-hora" aria-selected="true">
+                                        <span class="d-none d-sm-block">
+                                            HORA
+                                        </span>
+                                        <i class="bx bx-home bx-sm d-sm-none"></i>
+                                    </button>
+                                </li>
+                                <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                                    <button type="button" class="nav-link @(justificativaId.HasValue ? "active" : string.Empty)" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justificativa" aria-controls="navs-pills-justificativa" aria-selected="false" tabindex="-1">
+                                        <span class="d-none d-sm-block">
+                                            JUSTIFICATIVA
+                                        </span>
+                                        <i class="bx bx-user bx-sm d-sm-none"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" style="padding: 0px !important">
+                                <div class="tab-pane fade @(justificativaId.HasValue ? string.Empty : "active show")" id="navs-pills-hora" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col col-md-4">
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-time"></i></span>
+                                                @Html.TextBox("ValorHora", hora?.ToString(@"hh\:mm"), new { @class = "form-control hora" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade @(justificativaId.HasValue ? "active show" : string.Empty)" id="navs-pills-justificativa" role="tabpanel">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            @Html.DropDownList("JustificativaId", new SelectList(ViewBag.Justificativas, "Codigo", "Descricao", justificativaId), string.Empty, new { @class = "select2" })
+                                            <br />
+                                            <div class="note">
+                                                Quando informada, serão desconsiderados os registros de entrada e saída para o período. Eles serão substituídos pela justificativa informada aqui.
+                                                <br />
+                                                Se, no cadastro da justificativa, estiver informada como 'Abono', não será gerada nenhuma hora negativa para esse período.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else 
+                    {
+                        <div class="row">
+                            <div class="col col-md-4">
+
+                            </div>
+                        </div>
+                    }
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal" onclick="salvarPontoDia()">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

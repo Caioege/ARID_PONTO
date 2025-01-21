@@ -1,0 +1,67 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Ponto do Dia
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label obrigatorio">Unidade</label>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                {
+                    @Html.TextBox("UnidadeOrganizacionalNome", "UNIDADE NOME", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    @Html.Hidden("UnidadeOrganizacionalId", dadosDaSessao.UnidadeOrganizacionais.First())
+                }
+                else
+                {
+                    @Html.DropDownList("UnidadeOrganizacionalId", (SelectList)ViewBag.Unidades, string.Empty, new { @class = "select2" })
+                }
+            </div>
+
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label obrigatorio">Horário de Trabalho</label>
+                @Html.DropDownList("HorarioDeTrabalhoId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">Função</label>
+                @Html.DropDownList("FuncaoId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
+            </div>
+
+            <div class="col col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">Departamento</label>
+                @Html.DropDownList("DepartamentoId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-4 col-sm-12">
+                <label class="form-label obrigatorio">Data</label>
+                <div class="input-group">
+                    @Html.TextBox("Data", DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                    <button class="btn btn-primary" type="button" onclick="carregarPontoDoDia()">
+                        <i class='bx bx-search-alt'></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div id="div-ponto-dia"></div>
+    </div>
+</div>
+<div id="div-modal"></div>
+
+<script src="/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js?t=@DateTime.Now.Ticks"></script>
+<script src="/Scripts/Paginas/FolhaDePonto/pontoDoDia.js?t=@DateTime.Now.Ticks"></script>

@@ -12,5 +12,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string Descricao { get; set; }
 
         public bool Ativa { get; set; }
+
+        public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
     }
 }

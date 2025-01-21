@@ -1,3 +1,8 @@
+.campo-invalido {
+    border: solid 1px red !important;
+    background: #ff00000d !important;
+}
+
 .pagination > li {
     border: solid 2px #e4e6e8 !important;
     padding: 5px !important;
@@ -56,11 +61,11 @@
 }
 
 .select2-container {
-    z-index: 1099 !important;
+    z-index: 700 !important;
 }
 
 .select2 {
-    width: 100% !important;
+    width: -webkit-fill-available !important;
 }
 
 .select2-selection__arrow {
@@ -82,4 +87,8 @@
 
 .form-select:hover {
     cursor: pointer;
+}
+
+.input-group .btn {
+    z-index: unset !important;
 }

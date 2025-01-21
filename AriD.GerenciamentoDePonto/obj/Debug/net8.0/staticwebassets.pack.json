@@ -13,12 +13,28 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\pontoDoDia.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\FolhaDePonto\\pontoDoDia.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Funcao\\index.js"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\HorarioDeTrabalho\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\HorarioDeTrabalho\\alterar.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Organizacao\\alterar.js",
@@ -47,6 +63,10 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\css\\jquery-clockpicker.min.css",
       "PackagePath": "staticwebassets\\css\\jquery-clockpicker.min.css"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\css\\jquery-ui.css",
+      "PackagePath": "staticwebassets\\css\\jquery-ui.css"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\css\\select2.min.css",
@@ -271,6 +291,10 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\form-basic-inputs.js",
       "PackagePath": "staticwebassets\\js\\form-basic-inputs.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\jquery-ui.js",
+      "PackagePath": "staticwebassets\\js\\jquery-ui.js"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\jquery.loading.min.js",

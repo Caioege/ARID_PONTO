@@ -1,0 +1,94 @@
+.campo-invalido {
+    border: solid 1px red !important;
+    background: #ff00000d !important;
+}
+
+.pagination > li {
+    border: solid 2px #e4e6e8 !important;
+    padding: 5px !important;
+    background: white !important;
+    border-radius: 5px !important;
+    min-width: 30px !important;
+    text-align: center !important;
+}
+
+.pagination > li.disabled > a {
+    color: gray !important;
+}
+
+.pagination > li:hover {
+    background-color: gray !important;
+    cursor: pointer;
+}
+
+.pagination > li > a:hover {
+    color: white !important;
+    background-color: none !important;
+    background: none !important;
+}
+
+.pagination > li.disabled > a:hover,
+.pagination > li.disabled:hover {
+    cursor: not-allowed !important;
+}
+
+.pagination > li.active {
+    background-color: #66b2e3 !important;
+    color: white !important;
+}
+
+.pagination > li.active > a {
+    background-color: none !important;
+    background: none !important;
+}
+
+.row {
+    margin-bottom: 5px;
+}
+
+.obrigatorio::after {
+    content: ' *';
+    color: red;
+}
+
+.swal2-toast {
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+.swal2-container {
+    z-index: 1100 !important;
+}
+
+.select2-container {
+    z-index: 700 !important;
+}
+
+.select2 {
+    width: 100% !important;
+}
+
+.select2-selection__arrow {
+    top: 5px !important;
+}
+
+.select2-selection {
+    font-size: 0.9375rem !important;
+    font-weight: 400 !important;
+    line-height: 1.375 !important;
+    color: #384551 !important;
+    min-height: 38px !important;
+    padding-top: 3px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced1d5 !important;
+}
+
+.form-select:hover {
+    cursor: pointer;
+}
+
+.input-group .btn {
+    z-index: unset !important;
+}

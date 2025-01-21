@@ -36,6 +36,30 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVwYXJ0YW1lbnRvXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/PontoDoDia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXFBvbnRvRG9EaWEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/_LinhaPontoDia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXF9MaW5oYVBvbnRvRGlhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/_ModalPontoDoDia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXF9Nb2RhbFBvbnRvRG9EaWEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/_PartialFolhaDePonto.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXF9QYXJ0aWFsRm9saGFEZVBvbnRvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/FolhaDePonto/_PartialPontoDoDia.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9saGFEZVBvbnRvXF9QYXJ0aWFsUG9udG9Eb0RpYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Funcao/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2FvXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -72,6 +96,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9yYXJpb0RlVHJhYmFsaG9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/JustificativaDeAusencia/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSnVzdGlmaWNhdGl2YURlQXVzZW5jaWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/JustificativaDeAusencia/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSnVzdGlmaWNhdGl2YURlQXVzZW5jaWFcX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/JustificativaDeAusencia/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSnVzdGlmaWNhdGl2YURlQXVzZW5jaWFcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/Adicionar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cQWRpY2lvbmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -100,12 +136,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_Afastamentos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX0FmYXN0YW1lbnRvcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_Lotacoes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX0xvdGFjb2VzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_Modal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_ModalAfastamento.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX01vZGFsQWZhc3RhbWVudG8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/_TabelaPaginada.cshtml]

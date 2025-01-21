@@ -2,7 +2,7 @@
     $.ajaxSetup({
         statusCode: {
             401: function () {
-                window.location.href = '/Acesso/Sair';
+                window.location.href = '/autenticacao/sair';
             }
         }
     });
@@ -63,13 +63,17 @@ var CarregarPagina = function (url) {
             data: {},
             error: function (jqXHR, textStatus, errorThrown) {
                 $(".content-wrapper").loading('stop');
-                setTimeout(() => { $('#content-body').html('<h5>Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.</h5>'); }, 200);
+                if (jqXHR.status === 401) {
+                    window.location.href = '/autenticacao/sair'
+                } else {
+                    setTimeout(() => { $('#div-inside-content-body').html('<h5>Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.</h5>'); }, 200);
+                }
             }
         }).done(function (data) {
             $(".content-wrapper").loading('stop');
             setTimeout(() => {
-                $('#content-body').html(data);
-                assineMascarasDoComponente($('#content-body'));
+                $('#div-inside-content-body').html(data);
+                assineMascarasDoComponente($('#div-inside-content-body'));
             }, 200);
         });
     }, 750);
@@ -83,25 +87,22 @@ function ObtenhaFormularioSerializado(formId) {
     }
 
     const formData = {};
+    formData['formulario-esta-valido'] = true;
 
     $form.find('input, select, textarea').each(function () {
         const $element = $(this);
-        const name = $element.attr('name') || $element.attr('id'); // Usa "name" ou "id" como chave
-        if (!name) return; // Ignora elementos sem "name" ou "id"
+        const name = $element.attr('name') || $element.attr('id');
+        if (!name) return;
 
         if ($element.is(':checkbox')) {
-            // Para checkbox, adiciona true/false
             formData[name] = $element.is(':checked');
         } else if ($element.is(':radio')) {
-            // Para radio, apenas pega o valor do selecionado
             if ($element.is(':checked')) {
                 formData[name] = $element.val();
             }
         } else if ($element.is('select[multiple]')) {
-            // Para selects múltiplos, retorna array de valores
             formData[name] = $element.val() || [];
         } else {
-            // Para outros tipos (texto, textarea, etc.)
             formData[name] = $element.val();
         }
     });
@@ -129,14 +130,23 @@ function MensagemRodape(icone, mensagem) {
 
 function assineMascarasDoComponente(componente) {
     componente.find('.hora').mask('00:00');
+    componente.find('.hora').on('change', function () {
+        const valor = $(this).val();
+
+        if (!validarHora(valor)) {
+            MensagemRodape('warning', 'Insira uma hora válida!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
     //componente.find('.hora').clockpicker({
     //    placement: 'top',
     //    align: 'left',
     //    donetext: 'Pronto'
     //});
 
-    componente.find('.data').mask('00/00/0000');
-    componente.find('.data').on('change', function () {
+    componente.find('.data').attr('type', 'date');
+    componente.find('.data').on('focusout', function () {
         const valor = $(this).val();
 
         if (!dataValida(valor)) {
@@ -171,7 +181,7 @@ function assineMascarasDoComponente(componente) {
     componente.find('.select2').select2({
         dropdownParent: componente,
         templateResult: function (data) {
-            if (!data.id) {
+            if (!data.text) {
                 return null;
             }
             return data.text;
@@ -204,16 +214,16 @@ function dataValida(dateString) {
         return true;
     }
 
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
     const match = dateString.match(regex);
 
     if (!match) {
         return false;
     }
 
-    const day = parseInt(match[1], 10);
+    const year = parseInt(match[1], 10);
     const month = parseInt(match[2], 10) - 1;
-    const year = parseInt(match[3], 10);
+    const day = parseInt(match[3], 10);
 
     const date = new Date(year, month, day);
 
@@ -223,6 +233,7 @@ function dataValida(dateString) {
         date.getDate() === day
     );
 }
+
 
 function cpfValido(cpf) {
     if (!cpf) {
@@ -302,4 +313,40 @@ function cnpjValido(cnpj) {
 
 function adicioneItemNoCampoSelecionavel(campoSelecionavel, valor, texto) {
     campoSelecionavel.append(`<option value="${valor}">${texto}</option>`)
+}
+
+function carregarTabelaPaginadaComPesquisa(url = '/TabelaPaginada', grid = 'grid') {
+    $(`#${grid}`).load(`${url}?TermoDeBusca=${$('#TermoDeBusca').val()}&adicional=${$('#Adicional').val() || '{}'}`);
+}
+
+function ajusteValidacaoDeCampo(campo, valido) {
+    if (valido) {
+        if (campo.hasClass('select2')) {
+            $(`[aria-labelledby="select2-${campo.attr('id')}-container"]`).removeClass('campo-invalido');
+        }
+
+        campo.removeClass('campo-invalido')
+    } else {
+        if (!campo.hasClass('campo-invalido')) {
+            if (campo.hasClass('select2')) {
+                $(`[aria-labelledby="select2-${campo.attr('id')}-container"]`).addClass('campo-invalido');
+            }
+
+            campo.addClass('campo-invalido')
+        }
+    }
+}
+
+function validarHora(hora) {
+    if (!hora) {
+        return true;
+    }
+
+    var regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+    if (regex.test(hora)) {
+        return true;
+    } else {
+        return false;
+    }
 }

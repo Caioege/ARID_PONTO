@@ -1,24 +1,36 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.Servicos.DBContext;
 using AriD.Servicos.Repositorios.Interfaces;
+using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using System.Linq.Expressions;
 
 namespace AriD.Servicos.Repositorios
 {
     public class Repositorio<T> : IRepositorio<T> where T : EntidadeBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MySQLDBContext _contexto;
         private readonly DbSet<T> _dbSet;
 
-        public Repositorio(MySQLDBContext contexto)
+        // TODO: Adicionar filtro de organizacao
+        private readonly int? OrganizacaoId;
+
+        public Repositorio(MySQLDBContext contexto, 
+            IHttpContextAccessor httpContextAccessor)
         {
             _contexto = contexto;
             _dbSet = contexto.Set<T>();
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public void Add(T entidade)
         {
+            if (OrganizacaoId.HasValue && typeof(T).IsAssignableFrom(typeof(EntidadeOrganizacaoBase)))
+                (entidade as EntidadeOrganizacaoBase).OrganizacaoId = OrganizacaoId.Value;
+
             if (entidade != null)
                 _dbSet.Add(entidade);
         }
@@ -75,6 +87,17 @@ namespace AriD.Servicos.Repositorios
         public void Commit()
         {
             _contexto.SaveChanges();
+        }
+
+        public MySqlConnection MySQLConn()
+            => new MySqlConnection(_contexto.Database.GetConnectionString());
+
+        public List<T> ConsultaDapper<T>(string query, object parametros)
+        {
+            using (var conn = MySQLConn())
+            {
+                return conn.Query<T>(query, parametros).ToList();
+            }
         }
     }
 }

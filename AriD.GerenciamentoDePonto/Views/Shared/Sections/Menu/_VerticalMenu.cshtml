@@ -30,71 +30,159 @@
   <div class="menu-inner-shadow"></div>
 
 <ul class="menu-inner py-1">
-     <li class='menu-item open @(menuControlador.Equals(VariaveisDeMenu.MenuAdministracao) ? " active" : "")'>
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-slider-alt"></i>
-        <div class="text-truncate" data-i18n="Administração">Administração</div>
-      </a>
+     <li class='menu-item open'>
+        <div class="divider" style="margin: 0px 15px 0px 15px;">
+            <div class="divider-text">
+                <i class="bx bx-slider-alt"></i>
+                Administração
+            </div>
+        </div>
       <ul class="menu-sub">
           @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) 
           {
-              <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+              <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
-                    <div>Minha Organização</div>
+                    <div>
+                        <i class='bx bx-buildings'></i>
+                        Organizações
+                    </div>
                   </a>
               </li>
           }
           else 
           {
-              <li class='menu-item@(paginaAtual.Equals("Departamento") ? " active" : "")'>
+              <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
-                    <div>Departamento</div>
+                    <div>
+                        <i class='bx bxs-bookmark'></i>
+                        Departamento
+                    </div>
                   </a>
                 </li>
-                <li class='menu-item@(paginaAtual.Equals("Funcao") ? " active" : "")'>
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "EventoAnual")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-calendar-event'></i>
+                            Evento Anual
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
-                    <div>Função</div>
+                    <div>
+                        <i class='bx bxs-bookmark-alt'></i>
+                        Função
+                    </div>
                   </a>
                 </li>
-                <li class='menu-item@(paginaAtual.Equals("HorarioDeTrabalho") ? " active" : "")'>
+                <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                    <div>Horário de Trabalho</div>
+                    <div>
+                        <i class='bx bxs-timer'></i>
+                        Horário de Trabalho
+                    </div>
                   </a>
                 </li>
+                    <li class='menu-item'>
+                        <a onclick="CarregarPagina('@Url.Action("Index", "JustificativaDeAusencia")')" href="javascript:void(0)" class="menu-link">
+                            <div style="white-space: normal !important;">
+                                <i class='bx bxs-bookmark-minus'></i>
+                                Justificativa de Ausência
+                            </div>
+                        </a>
+                    </li>
                 @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao) 
                 {
-                    <li class='menu-item@(paginaAtual.Equals("Organizacao") ? " active" : "")'>
+                    <li class='menu-item'>
                         <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
-                        <div>Minha Organização</div>
+                        <div>
+                            <i class='bx bx-buildings'></i>
+                            Minha Organização
+                        </div>
                         </a>
                     </li>
                 }
-                <li class='menu-item@(paginaAtual.Equals("TipoDoVinculoDeTrabalho") ? " active" : "")'>
+                <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                    <div style="white-space: normal !important;" >Tipo do Vínculo de Trabalho</div>
+                    <div style="white-space: normal !important;" >
+                        <i class='bx bxs-bookmarks'></i>
+                        Tipo do Vínculo de Trabalho
+                    </div>
                   </a>
                 </li>
           }
       </ul>
     </li>
-    <li class='menu-item @(menuControlador.Equals(VariaveisDeMenu.MenuServidor) ? " active" : "")'>
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bxs-user-account"></i>
-            <div class="text-truncate" data-i18n="Servidor">Servidor</div>
-        </a>
-        <ul class="menu-sub">
-                <li class='menu-item@(paginaAtual.Equals("FolhaDePonto") ? " active" : "")'>
-                <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
-                    <div>Folha de Ponto</div>
-                </a>
-            </li>
-                <li class='menu-item@(paginaAtual.Equals("Servidor") ? " active" : "")'>
-                <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                    <div>Cadastro de Servidores</div>
-                </a>
-            </li>
-        </ul>
-    </li>
+    @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema) 
+    {
+        <li class='menu-item open'>
+            <div class="divider" style="margin: 0px 15px 0px 15px;">
+                <div class="divider-text">
+                    <i class='bx bxs-user-circle'></i>
+                    Servidor
+                </div>
+            </div>
+            <ul class="menu-sub">
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-user-detail'></i>
+                            Cadastro de Servidores
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-calendar'></i>
+                            Folha de Ponto
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("PontoDoDia", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-calendar-star'></i>
+                            Ponto do Dia
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class='menu-item open'>
+            <div class="divider" style="margin: 0px 15px 0px 15px;">
+                <div class="divider-text">
+                    <i class='bx bxs-report'></i>
+                    Relatórios
+                </div>
+            </div>
+            <ul class="menu-sub">
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-user-voice' ></i>
+                            Servidores com Afastamentos
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bx-book-content' ></i>
+                            Servidores por Escala
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-timer'></i>
+                            Servidores por Horário de Trabalho
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
   </ul>
-
 </aside>

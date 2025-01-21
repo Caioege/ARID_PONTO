@@ -1,0 +1,15 @@
+﻿@model ListaPaginada<JustificativaDeAusencia>
+
+<button type="button" onclick="AbrirModal(0)" class="btn btn-primary">
+    <i class="bx bx-plus"></i> Adicionar
+</button>
+<br />
+<br />
+
+<div id="grid">
+    @await Html.PartialAsync("_TabelaPaginada")
+</div>
+
+<div id="div-modal"></div>
+
+<script src="/Scripts/Paginas/JustificativaDeAusencia/index.js?t=@DateTime.Now.Ticks"></script>

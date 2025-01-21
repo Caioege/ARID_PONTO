@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
@@ -7,6 +8,7 @@ using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -17,19 +19,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<TipoDoVinculoDeTrabalho> _servicoTipoDoVinculo;
         private readonly IServico<LotacaoUnidadeOrganizacional> _servicoLotacao;
         private readonly IServico<UnidadeOrganizacional> _servicoUnidadeOrganizacional;
+        private readonly IServico<Funcao> _servicoFuncao;
+        private readonly IServico<Departamento> _servicoDepartamento;
+        private readonly IServico<HorarioDeTrabalho> _servicoHorarioDeTrabalho;
+        private readonly IServico<Afastamento> _servicoAfastamento;
+        private readonly IServico<JustificativaDeAusencia> _servicoJustificativa;
 
         public ServidorController(
             IServico<Servidor> servico,
             IServico<VinculoDeTrabalho> servicoVinculoDeTrabalho,
             IServico<TipoDoVinculoDeTrabalho> servicoTipoDoVinculo,
             IServico<LotacaoUnidadeOrganizacional> servicoLotacao,
-            IServico<UnidadeOrganizacional> servicoUnidadeOrganizacional)
+            IServico<UnidadeOrganizacional> servicoUnidadeOrganizacional,
+            IServico<Funcao> servicoFuncao,
+            IServico<Departamento> servicoDepartamento,
+            IServico<HorarioDeTrabalho> servicoHorarioDeTrabalho,
+            IServico<Afastamento> servicoAfastamento,
+            IServico<JustificativaDeAusencia> servicoJustificativa)
         {
             _servico = servico;
             _servicoVinculoDeTrabalho = servicoVinculoDeTrabalho;
             _servicoTipoDoVinculo = servicoTipoDoVinculo;
             _servicoLotacao = servicoLotacao;
             _servicoUnidadeOrganizacional = servicoUnidadeOrganizacional;
+            _servicoFuncao = servicoFuncao;
+            _servicoDepartamento = servicoDepartamento;
+            _servicoHorarioDeTrabalho = servicoHorarioDeTrabalho;
+            _servicoAfastamento = servicoAfastamento;
+            _servicoJustificativa = servicoJustificativa;
         }
 
         [HttpGet]
@@ -121,8 +138,25 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     _servicoVinculoDeTrabalho.Obtenha(id);
 
                 var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-                var tipos = _servicoTipoDoVinculo.ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo);
+                var tipos = _servicoTipoDoVinculo
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                    .OrderBy(c => c.SiglaComDescricao);
                 ViewBag.Tipos = new SelectList(tipos, "Id", "SiglaComDescricao");
+
+                var funcoes = _servicoFuncao
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativa)
+                    .OrderBy(c => c.SiglaComDescricao);
+                ViewBag.Funcoes = new SelectList(funcoes, "Id", "SiglaComDescricao");
+
+                var departamentos = _servicoDepartamento
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                    .OrderBy(c => c.SiglaComDescricao);
+                ViewBag.Departamentos = new SelectList(departamentos, "Id", "SiglaComDescricao");
+
+                var horarios = _servicoHorarioDeTrabalho
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                    .OrderBy(c => c.SiglaComDescricao);
+                ViewBag.Horarios = new SelectList(horarios, "Id", "SiglaComDescricao");
 
                 var html = await RenderizarComoString("_Modal", modelo);
 
@@ -237,13 +271,104 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ModalAfastamento(int id, int servidorId)
+        {
+            try
+            {
+                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+
+                var modelo = id == 0 ?
+                    new Afastamento() :
+                    _servicoAfastamento.Obtenha(id);
+
+                if (id == 0)
+                    ViewBag.Vinculos = new SelectList(
+                        _servicoVinculoDeTrabalho
+                            .ObtenhaLista(c => c.ServidorId == servidorId)
+                            .OrderBy(c => c.Inicio)
+                            .ThenBy(c => c.Matricula)
+                            .Select(c => new CodigoDescricaoDTO(c.Id, c.ToString())),
+                        "Codigo",
+                        "Descricao");
+
+                ViewBag.Justificativas = new SelectList(
+                    _servicoJustificativa
+                    .ObtenhaLista(c =>
+                        c.OrganizacaoId == organizacaoId && c.Ativa && c.LocalDeUso != eLocalDeUsoDeJustificativaDeAusencia.FolhaDePonto)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id", "SiglaComDescricao");
+
+                var html = await RenderizarComoString("_ModalAfastamento", modelo);
+
+                return Json(new { sucesso = true, html });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult SalvarAfastamento(Afastamento afastamento)
+        {
+            try
+            {
+                int id = afastamento.Id;
+                afastamento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+
+                if (afastamento.Id == 0)
+                    id = _servicoAfastamento.Adicionar(afastamento);
+                else
+                    _servicoAfastamento.Atualizar(afastamento);
+
+                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PartialAfastamentos(int servidorId)
+        {
+            try
+            {
+                var servidor = _servico.Obtenha(servidorId);
+                var html = await RenderizarComoString("_Afastamentos", servidor);
+                return Json(new { sucesso = true, html });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult RemoverAfastamento(int afastamentoId)
+        {
+            try
+            {
+                _servicoAfastamento.Remover(_servicoAfastamento.Obtenha(afastamentoId));
+                return Json(new { sucesso = true, mensagem = "O afastamento foi removido." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-            var dados = _servico.ObtenhaListaPaginada(c => c.OrganizacaoId == parametros.OrganizacaoId, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+            Expression<Func<Servidor, bool>> pesquisa = c => 
+                (c.OrganizacaoId == parametros.OrganizacaoId);
+
+            var dados = _servico.ObtenhaListaPaginada(pesquisa, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }

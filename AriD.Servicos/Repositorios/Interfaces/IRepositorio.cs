@@ -1,4 +1,5 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using MySqlConnector;
 using System.Linq.Expressions;
 
 namespace AriD.Servicos.Repositorios.Interfaces
@@ -18,5 +19,8 @@ namespace AriD.Servicos.Repositorios.Interfaces
         void Remover(T entidade);
 
         void Commit();
+
+        MySqlConnection MySQLConn();
+        List<T> ConsultaDapper<T>(string query, object parametros);
     }
 }

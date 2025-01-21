@@ -14,7 +14,7 @@
         cursor: pointer;
     }
 
-    .nav-item {
+    #formulario-servidor .nav-item {
         border: 1px solid #a9afb4;
         border-radius: 10px;
     }
@@ -22,12 +22,18 @@
 
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">
-            Alterar Servidor
-        </h5>
-        <small class="text-muted float-end">
-            Campos com <span style="color: red">*</span> são obrigatórios.
-        </small>
+        <div class="row" style="width: 100%">
+            <div class="col col-md-8 col-sm-12">
+                <h5 class="mb-0">
+                    Alterar Servidor
+                </h5>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <small class="text-muted float-end">
+                    Campos com <span style="color: red">*</span> são obrigatórios.
+                </small>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <form id="formulario-servidor">
@@ -78,7 +84,7 @@
 
                         <div class="col col-lg-4 col-md-4 col-sm-12">
                             <label class="form-label obrigatorio">Data de Nascimento</label>
-                            @Html.TextBoxFor(model => model.Pessoa.DataDeNascimento, new { @class = "form-control data" })
+                            @Html.TextBox("DataDeNascimento", Model.Pessoa.DataDeNascimento?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                         </div>
 
                         <div class="col col-lg-4 col-md-4 col-sm-12">
@@ -92,32 +98,43 @@
             <div class="nav-align-top mb-6">
                 <ul class="nav nav-pills mb-4 nav-fill" role="tablist">
                     <li class="nav-item mb-1 mb-sm-0" role="presentation">
-                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home" aria-selected="true">
-                            <span class="d-none d-sm-block">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#s1" aria-controls="s1" aria-selected="true">
+                            <span class="d-sm-block">
                                 <i class="tf-icons bx bx-home bx-sm me-1_5 align-text-bottom"></i>
-                                Endereço 
-                            </span><i class="bx bx-home bx-sm d-sm-none"></i></button>
+                                ENDEREÇO 
+                            </span>
+                        </button>
                     </li>
                     <li class="nav-item mb-1 mb-sm-0" role="presentation">
-                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile" aria-selected="false" tabindex="-1">
-                            <span class="d-none d-sm-block">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s2" aria-controls="s2" aria-selected="false" tabindex="-1">
+                            <span class="d-sm-block">
                                 <i class="tf-icons bx bx-user bx-sm me-1_5 align-text-bottom"></i> 
-                                Vínculos de Trabalho
+                                VÍNCULOS DE TRABALHO
                             </span>
-                            <i class="bx bx-user bx-sm d-sm-none"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s3" aria-controls="s3" aria-selected="false" tabindex="-1">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bx-bookmarks bx-sm me-1_5 align-text-bottom"></i>
+                                AFASTAMENTOS
+                            </span>
                         </button>
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade active show" id="navs-pills-justified-home" role="tabpanel">
+                    <div class="tab-pane fade active show" id="s1" role="tabpanel">
                         @{
                             ViewBag.PrefixoEndereco = "Pessoa.Endereco.";
                             ViewBag.EnderecoObrigatorio = true;
                         }
                         @await Html.PartialAsync("_EnderecoPartial", Model.Pessoa.Endereco)
                     </div>
-                    <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
+                    <div class="tab-pane fade" id="s2" role="tabpanel">
                         @await Html.PartialAsync("_VinculosDeTrabalho", Model.VinculosDeTrabalho)
+                    </div>
+                    <div class="tab-pane fade" id="s3" role="tabpanel">
+                        @await Html.PartialAsync("_Afastamentos", Model)
                     </div>
                 </div>
             </div>

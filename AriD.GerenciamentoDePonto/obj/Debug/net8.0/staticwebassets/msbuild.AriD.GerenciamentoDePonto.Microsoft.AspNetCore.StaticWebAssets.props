@@ -54,6 +54,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\jquery-clockpicker.min.css'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\jquery-ui.css'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>css/jquery-ui.css</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>2ap3s1b0wl</Fingerprint>
+      <Integrity>upLUpAU8h+pO1VS/mXF6vWuo3QKtT9m/SUElNjr1CX8=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\jquery-ui.css'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\select2.min.css'))">
       <SourceType>Package</SourceType>
       <SourceId>AriD.GerenciamentoDePonto</SourceId>
@@ -84,8 +102,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ll93cmzgq3</Fingerprint>
-      <Integrity>p9hWTjEBNsfM9pSVGsbD+ancI7FRGHhGzbYCbKdOK0E=</Integrity>
+      <Fingerprint>xtz83zgroa</Fingerprint>
+      <Integrity>m4lWL5t+m4Dp4Qdyu8X0nGlChjm3jB2EBbzTX/zxmCg=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</OriginalItemSpec>
@@ -1062,6 +1080,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\form-basic-inputs.js'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\jquery-ui.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>js/jquery-ui.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>3de1nhugwi</Fingerprint>
+      <Integrity>9zljDKpE/mQxmaR4V2cGVaQ7arF3CcXxarvgr7Sj8Uc=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\jquery-ui.js'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\jquery.loading.min.js'))">
       <SourceType>Package</SourceType>
       <SourceId>AriD.GerenciamentoDePonto</SourceId>
@@ -1164,8 +1200,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>zf5qna7fek</Fingerprint>
-      <Integrity>D62nFIxHcq1iUbMDnR8yCx5jHMU0VtOfbHgSqQ3IL4w=</Integrity>
+      <Fingerprint>scyrgkthvt</Fingerprint>
+      <Integrity>VCkjLpwjoCLeECkp3egG9YDzs8FUiLtpWiq6+VFfIls=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>
@@ -2304,6 +2340,60 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Endereco\alterar.js'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>Scripts/Paginas/FolhaDePonto/folhaDePonto.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>c7kwctzygy</Fingerprint>
+      <Integrity>uAE1Rn1oltHvivdzzddPWiY3Aa1hJay1tOpfZTAqRRg=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>Scripts/Paginas/FolhaDePonto/funcoesDePonto.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>83mzqhlipa</Fingerprint>
+      <Integrity>lGjmPe5SOGss+hFRmt8AS8y+0q02ocCMO4hT1NApLQc=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\pontoDoDia.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>Scripts/Paginas/FolhaDePonto/pontoDoDia.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>sd2wmgvtwl</Fingerprint>
+      <Integrity>8OV2vq/XqwXE0RteQfCf3e8XKojb11ttKTp+7cxkbqc=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\pontoDoDia.js'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Funcao\index.js'))">
       <SourceType>Package</SourceType>
       <SourceId>AriD.GerenciamentoDePonto</SourceId>
@@ -2339,6 +2429,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\HorarioDeTrabalho\alterar.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\JustificativaDeAusencia\index.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>Scripts/Paginas/JustificativaDeAusencia/index.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>rkn8pf454v</Fingerprint>
+      <Integrity>W/6JSh6tU+lB7ChmxRA/mXBdp+O3ov1gDhFw74C7UqU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\JustificativaDeAusencia\index.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Organizacao\alterar.js'))">
       <SourceType>Package</SourceType>
@@ -2388,8 +2496,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>1d03upcie9</Fingerprint>
-      <Integrity>lUZUzV8+AoVc9No29AF/hKv72AQ9GbDrDVNIkMWvRGU=</Integrity>
+      <Fingerprint>466zsaev9w</Fingerprint>
+      <Integrity>/K2m3GO2ZlV4YAfzY9nglA1IR1DwL78lgNH5TTmv0oA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Servidor\alterar.js'))</OriginalItemSpec>
@@ -2442,8 +2550,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>l6e2l5v7xd</Fingerprint>
-      <Integrity>szKToe3gsi3KtGeaereQhwOeYydqD/xlVNJYqo4wYGw=</Integrity>
+      <Fingerprint>ht570l6b59</Fingerprint>
+      <Integrity>y1JrV9efKuSUcJnzOfI+hilReHtYPvsCkDx83geQ80w=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vendor\css\core.css'))</OriginalItemSpec>
@@ -2532,8 +2640,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>umzkp5ffjp</Fingerprint>
-      <Integrity>mnFc+RpI9sWRJ2rlf3DVVCOrKhBqGKzk/dbel/ivn78=</Integrity>
+      <Fingerprint>kxs1p0t7i9</Fingerprint>
+      <Integrity>SG5/i48Qg9Cs6q0D7gLFphoX20ZP4RahW5uABMgUDrI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vendor\css\theme-default.css'))</OriginalItemSpec>

@@ -30,6 +30,7 @@ builder.Services.AddDbContext<MySQLDBContext>();
 
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
+builder.Services.AddScoped(typeof(IServicoDeFolhaDePonto), typeof(ServicoDeFolhaDePonto));
 
 var app = builder.Build();
 

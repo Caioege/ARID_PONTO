@@ -5,7 +5,7 @@
 }
 
 <div class="modal" tabindex="-1" id="_Modal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Vínculo de Trabalho</h5>
@@ -16,31 +16,48 @@
                     <form id="formulario-vinculo">
                         @Html.HiddenFor(model => model.Id)
                         <div class="row">
-                            <div class="col col-lg-4 col-md-12 col-sm-12">
+                            <div class="col col-lg-3 col-md-12 col-sm-12">
                                 <label class="form-label obrigatorio">Matrícula</label>
                                 @Html.TextBoxFor(model => model.Matricula, new { @class = "form-control", @maxlength = "10" })
                             </div>
 
-                            <div class="col col-lg-4 col-md-12 col-sm-6">
+                            <div class="col col-lg-3 col-md-12 col-sm-6">
                                 <label class="form-label obrigatorio">Início</label>
-                                @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToShortDateString(), new { @class = "form-control data" })
+                                @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                             </div>
 
-                            <div class="col col-lg-4 col-md-12 col-sm-6">
+                            <div class="col col-lg-3 col-md-12 col-sm-6">
                                 <label class="form-label">Fim</label>
-                                @Html.TextBox("Fim", !Model.Fim.HasValue ? string.Empty : Model.Fim.Value.ToShortDateString(), new { @class = "form-control data" })
+                                @Html.TextBox("Fim", !Model.Fim.HasValue ? string.Empty : Model.Fim.Value.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                            </div>
+
+                            <div class="col col-lg-3 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Situação</label>
+                                @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col col-lg-8 col-md-12 col-sm-12">
+                            <div class="col col-lg-6 col-md-12 col-sm-12">
                                 <label class="form-label obrigatorio">Descrição</label>
                                 @Html.DropDownListFor(model => model.TipoDoVinculoDeTrabalhoId, (SelectList)ViewBag.Tipos, string.Empty, new { @class = "select2" })
                             </div>
 
-                            <div class="col col-lg-4 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Situação</label>
-                                @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
+                            <div class="col col-lg-6 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Horário de Trabalho</label>
+                                @Html.DropDownListFor(model => model.HorarioDeTrabalhoId, (SelectList)ViewBag.Horarios, string.Empty, new { @class = "select2" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-lg-6 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Função</label>
+                                @Html.DropDownListFor(model => model.FuncaoId, (SelectList)ViewBag.Funcoes, string.Empty, new { @class = "select2" })
+                            </div>
+
+                            <div class="col col-lg-6 col-md-12 col-sm-12">
+                                <label class="form-label obrigatorio">Departamento</label>
+                                @Html.DropDownListFor(model => model.DepartamentoId, (SelectList)ViewBag.Departamentos, string.Empty, new { @class = "select2" })
                             </div>
                         </div>
                     </form>

@@ -1,0 +1,132 @@
+﻿@model List<PontoDoDia>
+
+@{
+    const int larguraPeriodo = 60;
+    ViewBag.ExibirNomeServidor = false;
+}
+
+<style>
+    .table thead tr th,
+    .table tbody tr td {
+        padding: 5px !important;
+    }
+
+    .linha-servidor:hover {
+        background-color: #e9e9e938;
+    }
+
+    .item-selecionavel:hover {
+        cursor: pointer;
+        background: lightyellow !important;
+    }
+
+    .linha-afastamento-abono > td:not(:first-child) {
+        background: ivory;
+    }
+
+    .linha-afastamento-sem-abono > td:not(:first-child) {
+        background: #fff0f3;
+    }
+
+    .legenda > ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+</style>
+
+<div class="legenda">
+    <ul style="display: flex; justify-content: space-evenly;">
+        <li>
+            <i class='bx bxs-square-rounded' style="color: ivory;"></i>&nbsp;Afastamento com Abono
+        </li>
+        <li>
+            <i class='bx bxs-square-rounded' style="color: #fff0f3"></i>&nbsp;Afastamento sem Abono
+        </li>
+        <li>
+            <b>*</b>&nbsp;Registro inserido manualmente
+        </li>
+    </ul>
+</div>
+<br />
+
+<table class="table table-bordered">
+    <thead>
+        <tr style="background-color: aliceblue;">
+            <th class="text-center">
+                Data
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                ENT<br />1
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                SAI<br />1
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                ENT<br />2
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                SAI<br />2
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                ENT<br />3
+            </th>
+            <th class="text-center" width="@(larguraPeriodo)px">
+                SAI<br />3
+            </th>
+            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)) 
+            {
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    ENT<br />4
+                </th>
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    SAI<br />4
+                </th>
+
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    ENT<br />5
+                </th>
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    SAI<br />5
+                </th>
+            }
+
+            <th class="text-center" width="@(larguraPeriodo)px">
+                HOR<br />TRA
+            </th>
+
+            <th class="text-center" width="@(larguraPeriodo)px">
+                CAR<br />HOR
+            </th>
+
+            <th class="text-center" width="@(larguraPeriodo)px">
+                HOR<br />POS
+            </th>
+
+            <th class="text-center" width="@(larguraPeriodo)px">
+                HOR<br />NEG
+            </th>
+
+            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+            {
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    BH<br />CRED
+                </th>
+
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    BH<br />DEB
+                </th>
+            }
+
+            @* <th class="text-center" width="@(larguraPeriodo)px">
+                ABO<br />NO
+            </th> *@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var vinculoDeTrabalho in Model)
+        {
+            @(await Html.PartialAsync("_LinhaPontoDia", vinculoDeTrabalho))
+        }
+    </tbody>
+</table>

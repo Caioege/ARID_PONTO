@@ -1,0 +1,62 @@
+﻿@model Servidor
+
+@{
+    var afastamentos = Model.VinculosDeTrabalho.SelectMany(c => c.Afastamentos);
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" width="20%">Vínculo de Trabalho</th>
+            <th class="text-center" width="25%">Justificativa</th>
+            <th class="text-center" width="15%">Início</th>
+            <th class="text-center" width="15%">Fim</th>
+            <th class="text-center" width="5%">
+                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAfastamento(0)">
+                    <i class='bx bx-list-plus'></i>
+                </button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (afastamentos != null && afastamentos.Count() > 0)
+        {
+            foreach (var afastamento in afastamentos
+                .OrderBy(c => c.Inicio)
+                .ThenBy(c => c.VinculoDeTrabalho.Matricula)
+                .ThenBy(c => c.Id))
+            {
+                <tr>
+                    <td class="text-center">
+                        @afastamento.VinculoDeTrabalho.Matricula
+                    </td>
+                    <td class="text-center">
+                        @afastamento.JustificativaDeAusencia.SiglaComDescricao
+                    </td>
+                    <td class="text-center">
+                        @afastamento.Inicio.ToShortDateString()
+                    </td>
+                    <td class="text-center">
+                        @if (afastamento.Fim.HasValue)
+                        {
+                            <span>@afastamento.Fim.Value.ToShortDateString()</span>
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAfastamento(@afastamento.Id)">
+                            <i class='bx bxs-edit-alt'></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else 
+        {
+            <tr>
+                <td class="text-center" colspan="99">
+                    Nenhum afastamento foi cadastrado para esse servidor.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

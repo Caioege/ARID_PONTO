@@ -31,6 +31,40 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public TimeSpan? Entrada5 { get; set; }
         public TimeSpan? Saida5 { get; set; }
 
+        public TimeSpan? CargaHorariaPeriodo(int periodo)
+        {
+            switch (periodo)
+            {
+                case 1:
+                    return Entrada1.HasValue && Saida1.HasValue ?
+                        Saida1.Value.Subtract(Entrada1.Value) :
+                        null;
+
+                case 2:
+                    return Entrada2.HasValue && Saida2.HasValue ?
+                        Saida2.Value.Subtract(Entrada2.Value) :
+                        null;
+
+                case 3:
+                    return Entrada3.HasValue && Saida3.HasValue ?
+                        Saida3.Value.Subtract(Entrada3.Value) :
+                        null;
+
+                case 4:
+                    return Entrada4.HasValue && Saida4.HasValue ?
+                        Saida4.Value.Subtract(Entrada4.Value) :
+                        null;
+
+                case 5:
+                    return Entrada5.HasValue && Saida5.HasValue ?
+                        Saida5.Value.Subtract(Entrada5.Value) :
+                        null;
+
+                default:
+                    return null;
+            }
+        }
+
         public TimeSpan? CalculeCargaHorariaTotal()
         {
             TimeSpan? chPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?

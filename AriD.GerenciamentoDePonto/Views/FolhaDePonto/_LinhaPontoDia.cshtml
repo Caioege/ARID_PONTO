@@ -1,0 +1,269 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model PontoDoDia
+
+@{
+    var exibirNomeServidor = (bool?)ViewBag.ExibirNomeServidor ?? true;
+    var horarioDeTrabalho = Model.VinculoDeTrabalho.HorarioDeTrabalho;
+    var dataString = @Model.Data.ToString("yyyy-MM-dd");
+    var dataTicks = Model.Data.Ticks;
+
+    var afastamento = Model.ObtenhaAfastamentoNoPeriodo();
+    var siglaAfastamento = afastamento?.JustificativaDeAusencia?.Sigla;
+
+    var tituloLinha = string.Empty;
+    var classeInteracao = string.Empty;
+    if (string.IsNullOrEmpty(siglaAfastamento)) 
+    {
+        classeInteracao = "item-selecionavel";
+    }
+
+    var classeAfastamento = string.Empty;
+    if (afastamento != null) 
+    {
+        tituloLinha = $"{afastamento.JustificativaDeAusencia.SiglaComDescricao} - De: {afastamento.Inicio.ToShortDateString()} Até: {(afastamento.Fim?.ToShortDateString() ?? "-")}";
+
+        if (afastamento.JustificativaDeAusencia.Abono) 
+        {
+            classeAfastamento = "linha-afastamento linha-afastamento-abono";
+        }
+        else 
+        {
+            classeAfastamento = "linha-afastamento linha-afastamento-sem-abono";
+        }
+    }
+
+    var eventos = (List<EventoAnual>)ViewBag.Eventos;
+    var eventoDoDia = eventos.FirstOrDefault(c => c.Data.Date == Model.Data.Date);
+}
+
+<tr id="linha-@(Model.VinculoDeTrabalhoId)-@(Model.Data.Ticks)" class="linha-servidor @(exibirNomeServidor ? string.Empty : "linha-dia") @(classeAfastamento)" data-vinculodetrabalhoid="@Model.VinculoDeTrabalhoId" title="@tituloLinha">
+    @if (exibirNomeServidor) 
+    {
+        <td>
+            @Model.VinculoDeTrabalho.Servidor.Nome
+        </td>
+    }
+    else 
+    {
+        <td>
+            @Model.Data.ToShortDateString() - @(Model.DiaDaSemana.SiglaDaSemanaDoEnumerador())
+            @if (eventoDoDia != null) 
+            {
+                @Html.Raw($" [{eventoDoDia.Descricao} ({eventoDoDia.Tipo.DescricaoDoEnumerador()})]")
+            }
+        </td>
+    }
+
+    @if (Model.Data.Date > DateTime.Today) 
+    {
+        <td colspan="99" class="text-center" style="background: #3a3b3dab; color: white;">
+            @Html.Raw("< Data Futura >")
+        </td>
+    }
+    else 
+    {
+        @* PERÍODO 1 *@
+        <td class="text-center @classeInteracao entrada1" data-justificativaid="@Model.JustificativaPeriodo1Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada1')">
+            @DescricaoEntrada(1, siglaAfastamento)
+        </td>
+        <td class="text-center @classeInteracao saida1" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida1')">
+            @DescricaoSaida(1, siglaAfastamento)
+        </td>
+
+        @* PERÍODO 2 *@
+        <td class="text-center @classeInteracao entrada2" data-justificativaid="@Model.JustificativaPeriodo2Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada2')">
+            @DescricaoEntrada(2, siglaAfastamento)
+        </td>
+        <td class="text-center @classeInteracao saida2" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida2')">
+            @DescricaoSaida(2, siglaAfastamento)
+        </td>
+
+        @* PERÍODO 3 *@
+        <td class="text-center @classeInteracao entrada3" data-justificativaid="@Model.JustificativaPeriodo3Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada3')">
+            @DescricaoEntrada(3, siglaAfastamento)
+        </td>
+        <td class="text-center @classeInteracao saida3" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida3')">
+            @DescricaoSaida(3, siglaAfastamento)
+        </td>
+
+        @if (horarioDeTrabalho.UtilizaCincoPeriodos)
+        {
+            @* PERÍODO 4 *@
+            <td class="text-center @classeInteracao entrada4" data-justificativaid="@Model.JustificativaPeriodo4Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada4')">
+                @DescricaoEntrada(4, siglaAfastamento)
+            </td>
+            <td class="text-center @classeInteracao saida4" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida4')">
+                @DescricaoSaida(4, siglaAfastamento)
+            </td>
+
+            @* PERÍODO 5 *@
+            <td class="text-center @classeInteracao entrada5" data-justificativaid="@Model.JustificativaPeriodo5Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada5')">
+                @DescricaoEntrada(5, siglaAfastamento)
+            </td>
+            <td class="text-center @classeInteracao saida5" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida5')">
+                @DescricaoSaida(5, siglaAfastamento)
+            </td>
+        }
+
+        <td class="text-center">
+            @(Model.HorasTrabalhadas?.ToString(@"hh\:mm"))
+        </td>
+
+        <td class="text-center">
+            @(horarioDeTrabalho.ObtenhaCargaHorariaDoDia((eDiaDaSemana)Model.Data.DayOfWeek)?.ToString(@"hh\:mm"))
+        </td>
+
+        <td class="text-center">
+            @(Model.HorasPositivas?.ToString(@"hh\:mm"))
+        </td>
+
+        <td class="text-center">
+            @(Model.HorasNegativas?.ToString(@"hh\:mm"))
+        </td>
+
+        @if (horarioDeTrabalho.UtilizaBancoDeHoras)
+        {
+            <td class="text-center">
+            </td>
+
+            <td class="text-center">
+            </td>
+        }
+
+        @* <td class="text-center @classeInteracao abono" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'abono')">
+        </td> *@
+    }
+</tr>
+
+@functions {
+    private string DescricaoEntrada(int periodo, string siglaAfastamento) 
+    {
+        if (!string.IsNullOrEmpty(siglaAfastamento))
+        {
+            return siglaAfastamento;
+        }
+
+        string retorno = string.Empty;
+        switch (periodo)
+        {
+            case 1:
+                retorno = Model.Entrada1.HasValue ?
+                    Model.Entrada1.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo1Id.HasValue ?
+                        Model.JustificativaPeriodo1.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoEntrada1.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 2:
+                retorno = Model.Entrada2.HasValue ?
+                    Model.Entrada2.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo2Id.HasValue ?
+                        Model.JustificativaPeriodo2.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoEntrada2.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 3:
+                retorno = Model.Entrada3.HasValue ?
+                    Model.Entrada3.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo3Id.HasValue ?
+                        Model.JustificativaPeriodo3.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoEntrada3.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+
+            case 4:
+                retorno = Model.Entrada4.HasValue ?
+                    Model.Entrada4.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo4Id.HasValue ?
+                        Model.JustificativaPeriodo4.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoEntrada4.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 5:
+                retorno = Model.Entrada5.HasValue ?
+                    Model.Entrada5.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo5Id.HasValue ?
+                        Model.JustificativaPeriodo5.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoEntrada5.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+        }
+
+        return retorno;
+    }
+
+    private string DescricaoSaida(int periodo, string siglaAfastamento)
+    {
+        if (!string.IsNullOrEmpty(siglaAfastamento))
+        {
+            return siglaAfastamento;
+        }
+
+        string retorno = string.Empty;
+        switch (periodo)
+        {
+            case 1:
+                retorno = Model.Saida1.HasValue ?
+                    Model.Saida1.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo1Id.HasValue ?
+                        Model.JustificativaPeriodo1.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoSaida1.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 2:
+                retorno = Model.Saida2.HasValue ?
+                    Model.Saida2.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo2Id.HasValue ?
+                        Model.JustificativaPeriodo2.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoSaida2.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 3:
+                retorno = Model.Saida3.HasValue ?
+                    Model.Saida3.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo3Id.HasValue ?
+                        Model.JustificativaPeriodo3.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoSaida3.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+            case 4:
+                retorno = Model.Saida4.HasValue ?
+                    Model.Saida4.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo4Id.HasValue ?
+                        Model.JustificativaPeriodo4.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoSaida4.DescricaoTipoDeRegistroDoEnumerador();
+                break;
+
+            case 5:
+                retorno = Model.Saida5.HasValue ?
+                    Model.Saida5.Value.ToString(@"hh\:mm") :
+                    Model.JustificativaPeriodo5Id.HasValue ?
+                        Model.JustificativaPeriodo5.Sigla :
+                        string.Empty;
+
+                retorno += Model.TipoSaida5.DescricaoTipoDeRegistroDoEnumerador();
+
+                break;
+
+        }
+
+        return retorno;
+    }
+}

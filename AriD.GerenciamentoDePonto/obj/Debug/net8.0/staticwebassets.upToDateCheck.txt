@@ -1,5 +1,6 @@
 wwwroot\css\demo.css
 wwwroot\css\jquery-clockpicker.min.css
+wwwroot\css\jquery-ui.css
 wwwroot\css\select2.min.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
@@ -58,6 +59,7 @@ wwwroot\js\extended-ui-perfect-scrollbar.js
 wwwroot\js\form-basic-inputs.js
 wwwroot\js\jquery.loading.min.js
 wwwroot\js\jquery.mask.min.js
+wwwroot\js\jquery-ui.js
 wwwroot\js\main.js
 wwwroot\js\pages-account-settings-account.js
 wwwroot\js\select2.min.js
@@ -125,8 +127,12 @@ wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Departamento\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
+wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js
+wwwroot\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js
+wwwroot\Scripts\Paginas\FolhaDePonto\pontoDoDia.js
 wwwroot\Scripts\Paginas\Funcao\index.js
 wwwroot\Scripts\Paginas\HorarioDeTrabalho\alterar.js
+wwwroot\Scripts\Paginas\JustificativaDeAusencia\index.js
 wwwroot\Scripts\Paginas\Organizacao\alterar.js
 wwwroot\Scripts\Paginas\Servidor\adicionar.js
 wwwroot\Scripts\Paginas\Servidor\alterar.js

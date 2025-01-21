@@ -1,4 +1,5 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AriD.BibliotecaDeClasses.Entidades
@@ -12,8 +13,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public DateTime Inicio { get; set; }
         public DateTime? Fim { get; set; }
-        public DateTime? Retorno { get; set; }
 
-        public bool PorTempoInderteminado => !Fim.HasValue || !Retorno.HasValue;
+        public int JustificativaDeAusenciaId { get; set; }
+        [ForeignKey(nameof(JustificativaDeAusenciaId))]
+        public virtual JustificativaDeAusencia JustificativaDeAusencia { get; set; }
+
+        [MaxLength(500)]
+        public string? Observacao { get; set; }
     }
 }

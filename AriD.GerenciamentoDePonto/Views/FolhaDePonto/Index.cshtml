@@ -1,0 +1,64 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Folha de Ponto
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col col-md-12">
+                <label class="form-label obrigatorio">Unidade</label>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional) 
+                {
+                    @Html.TextBox("UnidadeOrganizacionalNome", "UNIDADE NOME", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    @Html.Hidden("UnidadeOrganizacionalId", dadosDaSessao.UnidadeOrganizacionais.First())
+                }
+                else 
+                {
+                    @Html.DropDownList("UnidadeOrganizacionalId", (SelectList)ViewBag.Unidades, string.Empty, new { @class = "select2" })
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-6 col-sm-12">
+                <label class="form-label obrigatorio">Servidor</label>
+                @Html.DropDownList("ServidorId", new SelectList(string.Empty), new { @class = "select2" })
+            </div>
+
+            <div class="col col-md-6 col-sm-12">
+                <label class="form-label obrigatorio">Vínculo de Trabalho</label>
+                @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(string.Empty), new { @class = "select2" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-4 col-sm-12">
+                <label class="form-label obrigatorio">Período</label>
+                <div class="input-group">
+                    <input id="MesDeReferencia" type="month" class="form-control" />
+                    <button class="btn btn-primary" type="button" onclick="carregarFolhaDePonto()">
+                        <i class='bx bx-search-alt'></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div id="div-ponto"></div>
+    </div>
+</div>
+
+<div id="div-modal"></div>
+<script src="/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js?t=@DateTime.Now.Ticks"></script>
+<script src="/Scripts/Paginas/FolhaDePonto/folhaDePonto.js?t=@DateTime.Now.Ticks"></script>

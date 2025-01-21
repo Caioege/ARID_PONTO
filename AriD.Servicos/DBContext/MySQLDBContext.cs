@@ -10,7 +10,7 @@ namespace AriD.Servicos.DBContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connStringProd = "Server=localhost;User Id=arid_wigreja;Password=5bW02_c5x;Database=arid_wigreja";
+                var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
                 optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))
                     .LogTo(Console.WriteLine, LogLevel.Information)
@@ -32,5 +32,9 @@ namespace AriD.Servicos.DBContext
         public DbSet<HorarioDeTrabalhoDia> HorarioDeTrabalhoDia { get; set; }
         public DbSet<Pessoa> Pessoa { get; set; }
         public DbSet<Servidor> Servidor { get; set; }
+        public DbSet<PontoDoDia> PontoDoDia { get; set; }
+        public DbSet<JustificativaDeAusencia> JustificativaDeAusencia { get; set; }
+        public DbSet<Afastamento> Afastamento { get; set; }
+        public DbSet<EventoAnual> EventoAnual { get; set; }
     }
 }
