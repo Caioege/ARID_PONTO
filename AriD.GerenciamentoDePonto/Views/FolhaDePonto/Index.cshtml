@@ -4,6 +4,14 @@
     var dadosDaSessao = Context.DadosDaSessao();
 }
 
+<style>
+    .btn-acao-ponto {
+        margin-top: 23px;
+        display: none !important;
+    }
+</style>
+
+@Html.Hidden("TelaFolhaDePonto", true)
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -16,7 +24,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col col-md-12">
-                <label class="form-label obrigatorio">Unidade</label>
+                <label class="form-label obrigatorio" for="Unidade">Unidade</label>
                 @if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional) 
                 {
                     @Html.TextBox("UnidadeOrganizacionalNome", "UNIDADE NOME", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
@@ -31,25 +39,35 @@
 
         <div class="row">
             <div class="col col-md-6 col-sm-12">
-                <label class="form-label obrigatorio">Servidor</label>
+                <label class="form-label obrigatorio" for="ServidorId">Servidor</label>
                 @Html.DropDownList("ServidorId", new SelectList(string.Empty), new { @class = "select2" })
             </div>
 
             <div class="col col-md-6 col-sm-12">
-                <label class="form-label obrigatorio">Vínculo de Trabalho</label>
+                <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo de Trabalho</label>
                 @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(string.Empty), new { @class = "select2" })
             </div>
         </div>
 
         <div class="row">
             <div class="col col-md-4 col-sm-12">
-                <label class="form-label obrigatorio">Período</label>
+                <label class="form-label obrigatorio" for="MesDeReferencia">Período</label>
                 <div class="input-group">
                     <input id="MesDeReferencia" type="month" class="form-control" />
                     <button class="btn btn-primary" type="button" onclick="carregarFolhaDePonto()">
                         <i class='bx bx-search-alt'></i> Pesquisar
                     </button>
                 </div>
+            </div>
+
+            <div class="col col-md-8 col-sm-12 float-end">
+                <button id="btn-fechar-ponto" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="fecharPeriodoPonto()">
+                    <i class='bx bxs-lock-alt'></i> Fechar Ponto
+                </button>
+
+                <button id="btn-abrir-ponto" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="abrirPeriodoPonto()">
+                    <i class='bx bxs-lock-open-alt' ></i> Abrir Ponto
+                </button>
             </div>
         </div>
 

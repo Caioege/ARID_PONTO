@@ -83,9 +83,28 @@ function carregarFolhaDePonto() {
 			function (data) {
 				if (data.sucesso) {
 					$('#div-ponto').html(data.html);
+
+					ajustarExibicaoBotaoFecharPonto(data.exibirAcoes && !data.exibirAbrir);
+					ajustarExibicaoBotaoAbrirPonto(data.exibirAcoes && data.exibirAbrir);
 				} else {
 					MensagemRodape('warning', data.mensagem);
 				}
 			});
+	}
+}
+
+function ajustarExibicaoBotaoFecharPonto(exibir) {
+	if (exibir) {
+		$('#btn-fechar-ponto').attr("style", "display: inline !important");
+	} else {
+		$('#btn-fechar-ponto').attr("style", "display: none !important");
+	}
+}
+
+function ajustarExibicaoBotaoAbrirPonto(exibir) {
+	if (exibir) {
+		$('#btn-abrir-ponto').attr("style", "display: inline !important");
+	} else {
+		$('#btn-abrir-ponto').attr("style", "display: none !important");
 	}
 }

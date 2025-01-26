@@ -15,7 +15,7 @@
             @Html.HiddenFor(model => model.Pessoa.EnderecoId)
             <div class="row">
                 <div class="col col-lg-12col-xs-12">
-                    <label class="form-label obrigatorio">Nome</label>
+                    <label class="form-label obrigatorio" for="Pessoa_Nome">Nome</label>
                     @Html.TextBoxFor(model => model.Pessoa.Nome, new { @class = "form-control", @maxlength = "100" })
                 </div>
             </div>
@@ -27,12 +27,12 @@
             </div>
             <div class="row">
                 <div class="col col-lg-4 col-md-4 col-sm-12">
-                    <label class="form-label obrigatorio">CPF</label>
+                    <label class="form-label obrigatorio" for="Pessoa_Cpf">CPF</label>
                     @Html.TextBoxFor(model => model.Pessoa.Cpf, new { @class = "form-control cpf" })
                 </div>
 
                 <div class="col col-lg-4 col-md-4 col-sm-12">
-                    <label class="form-label obrigatorio">Data de Nascimento</label>
+                    <label class="form-label obrigatorio" for="Pessoa_DataDeNascimento">Data de Nascimento</label>
                     @Html.TextBoxFor(model => model.Pessoa.DataDeNascimento, new { @class = "form-control data" })
                 </div>
 

@@ -91,7 +91,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
-                var cargaHoraria = dia.CalculeCargaHorariaTotal();
+                var cargaHoraria = dia.CalculeCargaHorariaTotal(false);
                 return Json(new { sucesso = true, cargaHoraria = cargaHoraria?.ToString(@"hh\:mm") });
             }
             catch (Exception ex)

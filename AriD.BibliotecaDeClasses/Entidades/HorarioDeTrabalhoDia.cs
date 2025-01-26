@@ -65,8 +65,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
             }
         }
 
-        public TimeSpan? CalculeCargaHorariaTotal()
+        public TimeSpan? CalculeCargaHorariaTotal(bool diaFeriadoOuFacultativo)
         {
+            if (diaFeriadoOuFacultativo)
+                return null;
+
             TimeSpan? chPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?
                 Saida1.Value.Subtract(Entrada1.Value) :
                 null;

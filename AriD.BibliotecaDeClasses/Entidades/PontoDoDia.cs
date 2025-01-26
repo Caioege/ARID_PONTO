@@ -7,6 +7,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class PontoDoDia : EntidadeOrganizacaoBase
     {
+        public bool DataFutura => Data.Date > DateTime.Today;
+
         [Required]
         public int VinculoDeTrabalhoId { get; set; }
         [ForeignKey(nameof(VinculoDeTrabalhoId))]
@@ -44,6 +46,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public TimeSpan? Abono { get; set; }
 
+        public bool PontoFechado { get; set; }
+
+        public TimeSpan? BancoDeHorasCredito { get; set; }
+        public TimeSpan? BancoDeHorasDebito { get; set; }
+
         public int? JustificativaPeriodo1Id { get; set; }
         [ForeignKey(nameof(JustificativaPeriodo1Id))]
         public virtual JustificativaDeAusencia JustificativaPeriodo1 { get; set; }
@@ -63,6 +70,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public int? JustificativaPeriodo5Id { get; set; }
         [ForeignKey(nameof(JustificativaPeriodo5Id))]
         public virtual JustificativaDeAusencia JustificativaPeriodo5 { get; set; }
+
+        public TimeSpan? CargaHoraria { get; set; }
 
         public TimeSpan? HorasTrabalhadas
         {
@@ -203,55 +212,49 @@ namespace AriD.BibliotecaDeClasses.Entidades
             }
         }
 
-        public TimeSpan? HorasPositivas
+        public TimeSpan? HorasPositivas(bool diaFeriadoOuFacultativo)
         {
-            get
-            {
-                if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
-                    return null;
-
-                var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
-
-                if (horarioDia == null)
-                    return null;
-
-                var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal();
-
-                if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
-                    return null;
-
-                if (!cargaHorariaDoDia.HasValue && HorasTrabalhadasConsiderandoAbono.HasValue)
-                    return HorasTrabalhadasConsiderandoAbono;
-
-                if (HorasTrabalhadasConsiderandoAbono > cargaHorariaDoDia)
-                    return HorasTrabalhadasConsiderandoAbono.Value.Subtract(cargaHorariaDoDia.Value);
-
+            if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
                 return null;
-            }
+
+            var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
+
+            if (horarioDia == null)
+                return null;
+
+            var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
+
+            if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
+                return null;
+
+            if (!cargaHorariaDoDia.HasValue && HorasTrabalhadasConsiderandoAbono.HasValue)
+                return HorasTrabalhadasConsiderandoAbono;
+
+            if (HorasTrabalhadasConsiderandoAbono > cargaHorariaDoDia)
+                return HorasTrabalhadasConsiderandoAbono.Value.Subtract(cargaHorariaDoDia.Value);
+
+            return null;
         }
 
-        public TimeSpan? HorasNegativas
+        public TimeSpan? HorasNegativas(bool diaFeriadoOuFacultativo)
         {
-            get
-            {
-                if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
-                    return null;
-
-                var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
-
-                if (horarioDia == null)
-                    return null;
-
-                var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal();
-
-                if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
-                    return null;
-
-                if (cargaHorariaDoDia > ((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero)))
-                    return cargaHorariaDoDia.Value.Subtract((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero));
-
+            if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
                 return null;
-            }
+
+            var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
+
+            if (horarioDia == null)
+                return null;
+
+            var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
+
+            if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
+                return null;
+
+            if (cargaHorariaDoDia > ((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero)))
+                return cargaHorariaDoDia.Value.Subtract((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero));
+
+            return null;
         }
 
         public Afastamento ObtenhaAfastamentoNoPeriodo() => VinculoDeTrabalho?.Afastamentos?.FirstOrDefault(d => d.Inicio.Date <= Data.Date && (!d.Fim.HasValue || d.Fim.Value.Date >= Data.Date));

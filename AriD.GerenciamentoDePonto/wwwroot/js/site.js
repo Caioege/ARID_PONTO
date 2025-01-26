@@ -80,35 +80,66 @@ var CarregarPagina = function (url) {
 }
 
 function ObtenhaFormularioSerializado(formId) {
+    
     const $form = $(`#${formId}`);
     if ($form.length === 0) {
         console.error(`Formulário com o ID "${formId}" não foi encontrado.`);
-        return {};
+        return {
+            formularioEstaValido: false,
+            dados: {},
+            mensagem: `Formulário com o ID "${formId}" não foi encontrado.`
+        };
     }
 
-    const formData = {};
-    formData['formulario-esta-valido'] = true;
+    const formulario = {};
+    let formularioEstaValido = true;
 
     $form.find('input, select, textarea').each(function () {
         const $element = $(this);
         const name = $element.attr('name') || $element.attr('id');
         if (!name) return;
 
+
+        if ($form.find(`.form-label[for="${$element.attr('id')}"]`).hasClass('obrigatorio') &&
+            !$element.val().trim()) {
+
+            formularioEstaValido = false;
+
+            if ($element.hasClass('select2')) {
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).addClass('campo-invalido');
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).parent().parent().addClass('campo-invalido');
+            } else {
+                $element.addClass('campo-invalido');
+            }
+
+        } else {
+            if ($element.hasClass('select2')) {
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).removeClass('campo-invalido');
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).parent().parent().removeClass('campo-invalido');
+            } else {
+                $element.removeClass('campo-invalido');
+            }
+        }
+
         if ($element.is(':checkbox')) {
-            formData[name] = $element.is(':checked');
+            formulario[name] = $element.is(':checked');
         } else if ($element.is(':radio')) {
             if ($element.is(':checked')) {
-                formData[name] = $element.val();
+                formulario[name] = $element.val();
             }
         } else if ($element.is('select[multiple]')) {
-            formData[name] = $element.val() || [];
+            formulario[name] = $element.val() || [];
         } else {
-            formData[name] = $element.val();
+            formulario[name] = $element.val();
         }
     });
 
-    return formData;
+    return {
+        formularioEstaValido,
+        dados: formulario
+    };
 }
+
 
 function MensagemRodape(icone, mensagem) {
     const Toast = Swal.mixin({
@@ -349,4 +380,20 @@ function validarHora(hora) {
     } else {
         return false;
     }
+}
+
+function confirmaSairSistema() {
+    Swal.fire({
+        text: "Tem certeza que deseja sair do sistema?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = '/Autenticacao/Sair';
+        }
+    });
 }

@@ -16,31 +16,31 @@
                     @Html.HiddenFor(model => model.Id)
                     <div class="row">
                         <div class="col col-lg-4 col-md-12 col-sm-6">
-                            <label class="form-label obrigatorio">Sigla</label>
+                            <label class="form-label obrigatorio" for="Sigla">Sigla</label>
                             @Html.TextBoxFor(model => model.Sigla, new { @class = "form-control", @maxlength = "5" })
                         </div>
 
                         <div class="col col-lg-4 col-md-12 col-sm-6 float-end">
-                            <label class="form-label obrigatorio">Ativa</label>
+                            <label class="form-label obrigatorio" for="Ativa">Ativa</label>
                             @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
                         </div>
 
                         <div class="col col-lg-4 col-md-12 col-sm-6 float-end">
-                            <label class="form-label obrigatorio">Abono</label>
+                            <label class="form-label obrigatorio" for="Abono">Abono</label>
                             @Html.CheckboxDropDownListFor(model => model.Abono, new { @class = "form-select" })
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col col-md-12">
-                            <label class="form-label obrigatorio">Descrição</label>
+                            <label class="form-label obrigatorio" for="Descricao">Descrição</label>
                             @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col col-md-12 col-sm-12">
-                            <label class="form-label obrigatorio">Local de Uso</label>
+                            <label class="form-label obrigatorio" for="LocalDeUso">Local de Uso</label>
                             @Html.EnumDropDownListFor(model => model.LocalDeUso, new { @class = "select2" })
                         </div>
                     </div>

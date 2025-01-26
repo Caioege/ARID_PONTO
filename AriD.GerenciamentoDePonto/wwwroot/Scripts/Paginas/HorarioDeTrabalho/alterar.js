@@ -41,7 +41,13 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
-        let formulario = ObtenhaFormularioSerializado('formulario-horario-trabalho');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-horario-trabalho');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let formulario = dadosFormulario.dados;
         formulario.Dias = [];
 
         $.each($('.linha'), function (i, linha) {

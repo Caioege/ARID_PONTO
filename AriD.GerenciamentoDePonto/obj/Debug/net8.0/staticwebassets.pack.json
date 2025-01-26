@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\EventoAnual\\index.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js"
     },
@@ -55,6 +59,10 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\UnidadeOrganizacional\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\UnidadeOrganizacional\\alterar.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Usuario\\index.js"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\css\\demo.css",
@@ -259,6 +267,10 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\layouts\\layout-without-navbar-light.png",
       "PackagePath": "staticwebassets\\img\\layouts\\layout-without-navbar-light.png"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\logo-relogio.png",
+      "PackagePath": "staticwebassets\\img\\logo-relogio.png"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\logo.png",

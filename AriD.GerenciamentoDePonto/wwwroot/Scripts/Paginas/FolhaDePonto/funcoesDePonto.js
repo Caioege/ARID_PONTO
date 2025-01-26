@@ -30,7 +30,8 @@ function salvarPontoDia() {
 		data: $('#DataModal').val(),
 		valorHora: $('[data-bs-target="#navs-pills-hora"]').hasClass('active') ? form.find('#ValorHora').val() : null,
 		justificativaId: $('[data-bs-target="#navs-pills-justificativa"]').hasClass('active') ? form.find('#JustificativaId').val() : null,
-		acao: form.find('#Acao').val()
+		acao: form.find('#Acao').val(),
+		folhaDePonto: $('#TelaFolhaDePonto').length > 0
 	};
 
 	RequisicaoAjaxComCarregamento(
@@ -52,7 +53,7 @@ function salvarPontoDia() {
 
 function converterData(data) {
 	if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data)) {
-		throw new Error("Formato de data inv�lido. Use DD/MM/YYYY.");
+		throw new Error("Formato de data inválido. Use DD/MM/YYYY.");
 	}
 	const [dia, mes, ano] = data.split("/");
 	return `${ano}-${mes}-${dia}`;

@@ -92,3 +92,8 @@
 .input-group .btn {
     z-index: unset !important;
 }
+
+.campo-invalido {
+    border: 1px solid red;
+    background-color: #ffe6e6;
+}

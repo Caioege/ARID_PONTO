@@ -16,10 +16,16 @@ function AbrirModal(id) {
 
 function assineSalvarCadastroModal() {
     $('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-horario-trabalho');;
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/JustificativaDeAusencia/Salvar/',
             'POST',
-            ObtenhaFormularioSerializado('formulario-justificativa'),
+            dadosFormulario.dados,
             function (data) {
                 if (data.sucesso) {
                     $('#_Modal').modal('hide');

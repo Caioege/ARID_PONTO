@@ -50,6 +50,7 @@ wwwroot\img\layouts\layout-fluid-light.png
 wwwroot\img\layouts\layout-without-menu-light.png
 wwwroot\img\layouts\layout-without-navbar-light.png
 wwwroot\img\logo.png
+wwwroot\img\logo-relogio.png
 wwwroot\img\pessoas\organizacao\1\1.png
 wwwroot\img\pessoas\sem-foto.png
 wwwroot\js\bootstrap-clockpicker.min.js
@@ -127,6 +128,7 @@ wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Departamento\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
+wwwroot\Scripts\Paginas\EventoAnual\index.js
 wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\pontoDoDia.js
@@ -138,6 +140,7 @@ wwwroot\Scripts\Paginas\Servidor\adicionar.js
 wwwroot\Scripts\Paginas\Servidor\alterar.js
 wwwroot\Scripts\Paginas\TipoDoVinculoDeTrabalho\index.js
 wwwroot\Scripts\Paginas\UnidadeOrganizacional\alterar.js
+wwwroot\Scripts\Paginas\Usuario\index.js
 wwwroot\vendor\css\core.css
 wwwroot\vendor\css\pages\page-account-settings.css
 wwwroot\vendor\css\pages\page-auth.css

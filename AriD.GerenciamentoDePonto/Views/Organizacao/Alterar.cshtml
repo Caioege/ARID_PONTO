@@ -20,12 +20,12 @@
             @Html.HiddenFor(model => model.EnderecoId)
             <div class="row">
                 <div class="col col-lg-10 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio">Nome</label>
+                    <label class="form-label obrigatorio" for="Nome">Nome</label>
                     @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
                 </div>
 
                 <div class="col col-lg-2 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio">Ativa</label>
+                    <label class="form-label obrigatorio" for="Ativa">Ativa</label>
                     @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) 
                     {
                         @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })

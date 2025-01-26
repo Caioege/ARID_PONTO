@@ -28,7 +28,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }
 
-        public TimeSpan? ObtenhaCargaHorariaDoDia(eDiaDaSemana dia)
-            => Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal();
+        public TimeSpan? ObtenhaCargaHorariaDoDia(eDiaDaSemana dia, bool diaFeriadoOuFacultativo)
+            => diaFeriadoOuFacultativo ? null : Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
     }
 }

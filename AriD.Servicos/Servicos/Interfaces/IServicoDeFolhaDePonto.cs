@@ -45,6 +45,7 @@ namespace AriD.Servicos.Servicos.Interfaces
 
         List<EventoAnual> EventosDaFolhaDePonto(
             int organizacaoId,
-            MesAno mesAno);
+            DateTime inicio,
+            DateTime fim);
     }
 }

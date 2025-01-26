@@ -25,29 +25,29 @@
             @Html.HiddenFor(model => model.Id)
             <div class="row">
                 <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio">Sigla</label>
+                    <label class="form-label obrigatorio" for="Sigla">Sigla</label>
                     @Html.TextBoxFor(model => model.Sigla, new { @class = "form-control", @maxlength = "5" })
                 </div>
 
                 <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio">Ativo</label>
+                    <label class="form-label obrigatorio" for="Ativo">Ativo</label>
                     @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
                 </div>
 
                 <div class="col col-lg-6 col-md-12 col-sm-12">
-                    <label class="form-label obrigatorio">Descrição</label>
+                    <label class="form-label obrigatorio" for="Descricao">Descrição</label>
                     @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
                 </div>
             </div>
 
             <div class="row">
                 <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio">Utilizar Cinco Períodos</label>
+                    <label class="form-label obrigatorio" for="UtilizaCincoPeriodos">Utilizar Cinco Períodos</label>
                     @Html.CheckboxDropDownListFor(model => model.UtilizaCincoPeriodos, new { @class = "form-select" })
                 </div>
 
                 <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio">Utiliza Banco De Horas</label>
+                    <label class="form-label obrigatorio" for="UtilizaBancoDeHoras">Utiliza Banco De Horas</label>
                     @Html.CheckboxDropDownListFor(model => model.UtilizaBancoDeHoras, new { @class = "form-select" })
                 </div>
 
@@ -119,7 +119,7 @@
                                 </td>
 
                                 <td class="text-center carga-horaria">
-                                    @(diaDaSemana.CalculeCargaHorariaTotal()?.ToString(@"hh\:mm"))
+                                    @(diaDaSemana.CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
                                 </td>
                             </tr>
                         }

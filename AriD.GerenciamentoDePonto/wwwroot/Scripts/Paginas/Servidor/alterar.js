@@ -5,10 +5,16 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-servidor');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/Servidor/Salvar',
             'POST',
-            ObtenhaFormularioSerializado('formulario-servidor'),
+            dadosFormulario.dados,
             function (data) {
                 MensagemRodape('success', data.mensagem);
             });
@@ -87,7 +93,13 @@ function abrirModalVinculoDeTrabalho(id) {
 
 function salvarCadastroDeVinculo() {
     $('#_Modal').find('#btn-salvar-modal').on('click', function () {
-        let vinculoDeTrabalho = ObtenhaFormularioSerializado('formulario-vinculo');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-vinculo');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let vinculoDeTrabalho = dadosFormulario.dados;
         vinculoDeTrabalho.ServidorId = $('#formulario-servidor').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
@@ -108,7 +120,13 @@ function salvarCadastroDeVinculo() {
 
 function salvarCadastroDeLotacao() {
     $('#_Modal').find('#btn-salvar-lotacao').on('click', function () {
-        let lotacao = ObtenhaFormularioSerializado('formulario-lotacao');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-lotacao');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let lotacao = dadosFormulario.dados;
         lotacao.VinculoDeTrabalhoId = $('#formulario-vinculo').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
@@ -249,7 +267,13 @@ function abrirModalAfastamento(id) {
 
 function assineSalvarAfastamento() {
     $('#_Modal').find('#btn-salvar-modal').on('click', function () {
-        let afastamento = ObtenhaFormularioSerializado('formulario-afastamento');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-afastamento');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let afastamento = dadosFormulario.dados;
 
         RequisicaoAjaxComCarregamento(
             '/Servidor/SalvarAfastamento',
@@ -290,7 +314,7 @@ function assineRemoverAfastamento() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#7b7b7b",
             confirmButtonText: "Sim",
-            cancelButtonText: 'N�o'
+            cancelButtonText: 'N�o'
         }).then((result) => {
             if (result.isConfirmed) {
                 RequisicaoAjaxComCarregamento(

@@ -36,5 +36,9 @@ namespace AriD.Servicos.DBContext
         public DbSet<JustificativaDeAusencia> JustificativaDeAusencia { get; set; }
         public DbSet<Afastamento> Afastamento { get; set; }
         public DbSet<EventoAnual> EventoAnual { get; set; }
+        public DbSet<Usuario> Usuario { get; set; }
+        public DbSet<Escala> Escala { get; set; }
+        public DbSet<CicloDaEscala> CicloDaEscala { get; set; }
+        public DbSet<EscalaDoServidor> EscalaDoServidor { get; set; }
     }
 }

@@ -17,12 +17,12 @@
                         @Html.HiddenFor(model => model.Id)
                         <div class="row">
                             <div class="col col-lg-3 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Matrícula</label>
+                                <label class="form-label obrigatorio" for="Matricula">Matrícula</label>
                                 @Html.TextBoxFor(model => model.Matricula, new { @class = "form-control", @maxlength = "10" })
                             </div>
 
                             <div class="col col-lg-3 col-md-12 col-sm-6">
-                                <label class="form-label obrigatorio">Início</label>
+                                <label class="form-label obrigatorio" for="Inicio">Início</label>
                                 @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                             </div>
 
@@ -32,31 +32,31 @@
                             </div>
 
                             <div class="col col-lg-3 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Situação</label>
+                                <label class="form-label obrigatorio" for="Situacao">Situação</label>
                                 @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Descrição</label>
+                                <label class="form-label obrigatorio" for="TipoDoVinculoDeTrabalhoId">Tipo</label>
                                 @Html.DropDownListFor(model => model.TipoDoVinculoDeTrabalhoId, (SelectList)ViewBag.Tipos, string.Empty, new { @class = "select2" })
                             </div>
 
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Horário de Trabalho</label>
+                                <label class="form-label obrigatorio" for="HorarioDeTrabalhoId">Horário de Trabalho</label>
                                 @Html.DropDownListFor(model => model.HorarioDeTrabalhoId, (SelectList)ViewBag.Horarios, string.Empty, new { @class = "select2" })
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Função</label>
+                                <label class="form-label obrigatorio" for="FuncaoId">Função</label>
                                 @Html.DropDownListFor(model => model.FuncaoId, (SelectList)ViewBag.Funcoes, string.Empty, new { @class = "select2" })
                             </div>
 
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Departamento</label>
+                                <label class="form-label obrigatorio" for="DepartamentoId">Departamento</label>
                                 @Html.DropDownListFor(model => model.DepartamentoId, (SelectList)ViewBag.Departamentos, string.Empty, new { @class = "select2" })
                             </div>
                         </div>
@@ -75,14 +75,14 @@
                         @Html.Hidden("Id")
                         <div class="row">
                             <div class="col col-md-12">
-                                <label class="form-label obrigatorio">Unidade</label>
+                                <label class="form-label obrigatorio" for="UnidadeOrganizacionalId">Unidade</label>
                                 @Html.DropDownList("UnidadeOrganizacionalId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col col-lg-4 col-md-4 col-sm-12">
-                                <label class="form-label obrigatorio">Entrada</label>
+                                <label class="form-label obrigatorio" for="Entrada">Entrada</label>
                                 @Html.TextBox("Entrada", string.Empty, new { @class = "form-control data" })
                             </div>
 
@@ -92,7 +92,7 @@
                             </div>
 
                             <div class="col col-lg-4 col-md-4 col-sm-12">
-                                <label class="form-label obrigatorio">ID Equipamento</label>
+                                <label class="form-label obrigatorio" for="MatriculaEquipamento">ID Equipamento</label>
                                 @Html.TextBox("MatriculaEquipamento", string.Empty, new { @class = "form-control", @maxlength = "10" })
                             </div>
                         </div>

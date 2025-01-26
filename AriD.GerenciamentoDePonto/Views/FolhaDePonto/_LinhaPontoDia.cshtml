@@ -13,7 +13,7 @@
 
     var tituloLinha = string.Empty;
     var classeInteracao = string.Empty;
-    if (string.IsNullOrEmpty(siglaAfastamento)) 
+    if (string.IsNullOrEmpty(siglaAfastamento) && !Model.PontoFechado) 
     {
         classeInteracao = "item-selecionavel";
     }
@@ -55,7 +55,7 @@
         </td>
     }
 
-    @if (Model.Data.Date > DateTime.Today) 
+    @if (Model.DataFutura)
     {
         <td colspan="99" class="text-center" style="background: #3a3b3dab; color: white;">
             @Html.Raw("< Data Futura >")
@@ -111,15 +111,15 @@
         </td>
 
         <td class="text-center">
-            @(horarioDeTrabalho.ObtenhaCargaHorariaDoDia((eDiaDaSemana)Model.Data.DayOfWeek)?.ToString(@"hh\:mm"))
+            @(horarioDeTrabalho.ObtenhaCargaHorariaDoDia((eDiaDaSemana)Model.Data.DayOfWeek, eventoDoDia != null)?.ToString(@"hh\:mm"))
         </td>
 
         <td class="text-center">
-            @(Model.HorasPositivas?.ToString(@"hh\:mm"))
+            @(Model.HorasPositivas(eventoDoDia != null)?.ToString(@"hh\:mm"))
         </td>
 
         <td class="text-center">
-            @(Model.HorasNegativas?.ToString(@"hh\:mm"))
+            @(Model.HorasNegativas(eventoDoDia != null)?.ToString(@"hh\:mm"))
         </td>
 
         @if (horarioDeTrabalho.UtilizaBancoDeHoras)

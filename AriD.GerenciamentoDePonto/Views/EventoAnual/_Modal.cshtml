@@ -1,0 +1,47 @@
+﻿@model EventoAnual
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Evento Anual</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-evento">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <div class="col col-md-12 col-sm-6">
+                            <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                            @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-4 co-sm-12">
+                            <label class="form-label obrigatorio" for="Data">Data</label>
+                            @Html.TextBox("Data", Model.Data.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                        </div>
+
+                        <div class="col col-md-8 co-sm-12">
+                            <label class="form-label obrigatorio" for="Tipo">Tipo</label>
+                            @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

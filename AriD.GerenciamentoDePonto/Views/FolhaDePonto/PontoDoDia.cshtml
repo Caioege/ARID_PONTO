@@ -16,7 +16,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label obrigatorio">Unidade</label>
+                <label class="form-label obrigatorio" for="UnidadeOrganizacionalId">Unidade</label>
                 @if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
                 {
                     @Html.TextBox("UnidadeOrganizacionalNome", "UNIDADE NOME", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
@@ -29,7 +29,7 @@
             </div>
 
             <div class="col col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label obrigatorio">Horário de Trabalho</label>
+                <label class="form-label obrigatorio" for="HorarioDeTrabalhoId">Horário de Trabalho</label>
                 @Html.DropDownList("HorarioDeTrabalhoId", new SelectList(string.Empty), string.Empty, new { @class = "select2" })
             </div>
         </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="row">
             <div class="col col-md-4 col-sm-12">
-                <label class="form-label obrigatorio">Data</label>
+                <label class="form-label obrigatorio" for="Data">Data</label>
                 <div class="input-group">
                     @Html.TextBox("Data", DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                     <button class="btn btn-primary" type="button" onclick="carregarPontoDoDia()">

@@ -15,10 +15,16 @@ function AbrirModal(id) {
 
 function assineSalvarCadastroModal() {
     $('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-tipo');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/TipoDoVinculoDeTrabalho/Salvar/',
             'POST',
-            ObtenhaFormularioSerializado('formulario-tipo'),
+            dadosFormulario.dados,
             function (data) {
                 if (data.sucesso) {
                     $('#_Modal').modal('hide');

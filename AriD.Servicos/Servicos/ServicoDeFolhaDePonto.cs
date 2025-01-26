@@ -527,7 +527,8 @@ namespace AriD.Servicos.Servicos
 
         public List<EventoAnual> EventosDaFolhaDePonto(
             int organizacaoId,
-            MesAno mesAno)
+            DateTime inicio,
+            DateTime fim)
         {
             try
             {
@@ -541,8 +542,8 @@ namespace AriD.Servicos.Servicos
                 return _repositorio.ConsultaDapper<EventoAnual>(query, new
                 {
                     @ORGANIZACAOID = organizacaoId,
-                    @INICIO = mesAno.Inicio,
-                    @FIM = mesAno.Fim
+                    @INICIO = inicio,
+                    @FIM = fim
                 });
             }
             catch (Exception)

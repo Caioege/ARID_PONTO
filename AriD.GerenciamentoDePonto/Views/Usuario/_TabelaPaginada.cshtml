@@ -1,0 +1,33 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model ListaPaginada<Usuario>
+
+@{
+    var tabela = new WebGrid<Usuario>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("UsuarioDeAcesso", "Usuário", width: 52f),
+        tabela.Column("PerfilDeAcesso", "Perfil", format:
+            @<text> <span>@(((ePerfilDeAcesso)item.PerfilDeAcesso).DescricaoDoEnumerador())</span> </text>, width: 35f),
+        tabela.Column("Ativo", "Ativo", format:
+            @<text>
+                @if (item.Ativo)
+            {
+                <i class="bx bx-check-square text-success"></i>
+            }
+            else
+            {
+                <i class="bx bx-checkbox-minus text-danger"></i>
+            }
+            </text>, width: 10f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

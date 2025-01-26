@@ -132,6 +132,14 @@
                     </a>
                 </li>
                 <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Escala")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class="bx bx-book-content"></i>
+                            Escalas
+                        </div>
+                    </a>
+                </li>
+                <li class='menu-item'>
                     <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
                         <div>
                             <i class='bx bxs-calendar'></i>
@@ -158,24 +166,24 @@
             </div>
             <ul class="menu-sub">
                 <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                        <div>
+                    <a onclick="CarregarPagina('@Url.Action("ServidoresComAfastamento", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                        <div style="white-space: normal !important;">
                             <i class='bx bxs-user-voice' ></i>
                             Servidores com Afastamentos
                         </div>
                     </a>
                 </li>
                 <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                        <div>
+                    <a onclick="CarregarPagina('@Url.Action("ServidoresPorEscala", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                        <div style="white-space: normal !important;">
                             <i class='bx bx-book-content' ></i>
                             Servidores por Escala
                         </div>
                     </a>
                 </li>
                 <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                        <div>
+                    <a onclick="CarregarPagina('@Url.Action("Relatorio", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <div style="white-space: normal !important;">
                             <i class='bx bxs-timer'></i>
                             Servidores por Horário de Trabalho
                         </div>
@@ -184,5 +192,23 @@
             </ul>
         </li>
     }
+    <li class='menu-item open'>
+        <div class="divider" style="margin: 0px 15px 0px 15px;">
+            <div class="divider-text">
+                <i class='bx bxs-user-badge'></i>
+                Usuários
+            </div>
+        </div>
+        <ul class="menu-sub">
+            <li class='menu-item'>
+                <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
+                    <div style="white-space: normal !important;">
+                        <i class='bx bxs-user-account'></i>
+                        Cadastro de Usuários
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </li>
   </ul>
 </aside>

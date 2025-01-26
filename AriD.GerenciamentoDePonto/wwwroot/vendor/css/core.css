@@ -22137,7 +22137,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 .menu-vertical .menu-item .menu-link {
   font-size: 0.9375rem;
-  min-height: 2.625rem;
+  min-height: 2.2rem;
 }
 .menu-vertical .menu-item .menu-link > div:not(.badge) {
   overflow: hidden;

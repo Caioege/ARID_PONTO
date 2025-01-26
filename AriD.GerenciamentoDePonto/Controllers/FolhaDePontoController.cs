@@ -89,9 +89,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (data.Date > DateTime.Today)
                     throw new ApplicationException("Não é possível visualizar ponto do dia para datas futuras.");
 
+                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
                 var pontos = _servicoDeFolhaDePonto.ObtenhaPontosDoDia(
-                    data, 
-                    HttpContext.DadosDaSessao().OrganizacaoId,
+                    data,
+                    organizacaoId,
                     unidadeId,
                     horarioId,
                     funcaoId,
@@ -99,6 +100,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 if (!pontos.Any())
                     throw new ApplicationException("Nenhum ponto disponível no dia.");
+
+                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
 
                 var html = await RenderizarComoString("_PartialPontoDoDia", pontos);
 
@@ -116,7 +119,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             DateTime data,
             TimeSpan? valorHora,
             int? justificativaId,
-            string acao)
+            string acao,
+            bool folhaDePonto)
         {
             try
             {
@@ -128,6 +132,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     valorHora,
                     justificativaId,
                     acao);
+
+                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
+
+                ViewBag.ExibirNomeServidor = !folhaDePonto;
 
                 var html = await RenderizarComoString("_LinhaPontoDia", pontoDoDia);
 
@@ -220,10 +228,15 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     unidadeId,
                     mesAno);
 
-                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno);
+                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 
                 var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
-                return Json(new { sucesso = true, html });
+                return Json(new 
+                { 
+                    sucesso = true, html, 
+                    exibirAbrir = listaDePonto.All(c => c.PontoFechado),
+                    exibirAcoes = !listaDePonto.Any(d => d.DataFutura)
+                });
             }
             catch (Exception ex)
             {

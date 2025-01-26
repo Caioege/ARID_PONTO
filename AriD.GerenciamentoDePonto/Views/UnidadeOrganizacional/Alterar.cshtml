@@ -22,23 +22,23 @@
             </div>
             <div class="row">
                 <div class="col col-lg-10 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio">Nome</label>
+                    <label class="form-label obrigatorio" for="Nome">Nome</label>
                     @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
                 </div>
 
                 <div class="col col-lg-2 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio">Ativa</label>
+                    <label class="form-label obrigatorio" for="Ativa">Ativa</label>
                     @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
                 </div>
             </div>
             <div class="row">
                 <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio">CNPJ</label>
+                    <label class="form-label obrigatorio" for="CNPJ">CNPJ</label>
                     @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control", @maxlength = "18" })
                 </div>
 
                 <div class="col col-lg-9 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio">Tipo</label>
+                    <label class="form-label obrigatorio" for="Tipo">Tipo</label>
                     @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
                 </div>
             </div>

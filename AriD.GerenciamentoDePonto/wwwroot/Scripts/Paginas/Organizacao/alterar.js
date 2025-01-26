@@ -8,10 +8,16 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-organizacao');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/Organizacao/Salvar',
             'POST',
-            ObtenhaFormularioSerializado('formulario-organizacao'),
+            dadosFormulario.dados,
             function (data) {
                 MensagemRodape('success', data.mensagem);
                 $('#Id').val(data.id);

@@ -17,7 +17,7 @@
                         @Html.HiddenFor(model => model.Id)
                         <div class="row">
                             <div class="col col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Vínculo de Trabalho</label>
+                                <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo de Trabalho</label>
                                 @if (adicionar) 
                                 {
                                     @Html.DropDownListFor(model => model.VinculoDeTrabalhoId, (SelectList)ViewBag.Vinculos, string.Empty, new { @class = "select2" })
@@ -32,7 +32,7 @@
 
                         <div class="row">
                             <div class="col col-lg-3 col-md-12 col-sm-6">
-                                <label class="form-label obrigatorio">Início</label>
+                                <label class="form-label obrigatorio" for="Inicio">Início</label>
                                 @Html.TextBox("Inicio", adicionar ? string.Empty : Model.Inicio.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                             </div>
 
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio">Justificativa</label>
+                                <label class="form-label obrigatorio" for="JustificativaDeAusenciaId">Justificativa</label>
                                 @Html.DropDownListFor(model => model.JustificativaDeAusenciaId, (SelectList)ViewBag.Justificativas, string.Empty, new { @class = "select2" })
                             </div>
                         </div>
