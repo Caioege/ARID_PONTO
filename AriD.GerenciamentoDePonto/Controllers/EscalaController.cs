@@ -10,18 +10,18 @@ using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
-    public class EventoAnualController : BaseController
+    public class EscalaController : BaseController
     {
-        private readonly IServico<EventoAnual> _servico;
+        private readonly IServicoDeEscala _servico;
 
-        public EventoAnualController(
-            IServico<EventoAnual> servico)
+        public EscalaController(
+            IServicoDeEscala servico)
         {
             _servico = servico;
         }
 
         [HttpGet]
-        public IActionResult Index(ListaPaginada<EventoAnual> listaPaginada)
+        public IActionResult Index(ListaPaginada<Escala> listaPaginada)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public IActionResult TabelaPaginada(ListaPaginada<EventoAnual> listaPaginada)
+        public IActionResult TabelaPaginada(ListaPaginada<Escala> listaPaginada)
         {
             try
             {
@@ -49,48 +49,38 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Modal(int eventoId)
+        public IActionResult Adicionar()
         {
             try
             {
-                var model = eventoId == 0 ? new() : _servico.Obtenha(eventoId);
-                var html = await RenderizarComoString("_Modal", model);
-                return Json(new { sucesso = true, html = html });
+                return View(new Escala());
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                return View("Error", ex);
             }
         }
 
-        [HttpPost]
-        public IActionResult Salvar(EventoAnual evento)
+        [HttpGet]
+        public IActionResult Alterar(int id)
         {
             try
             {
-                int id = evento.Id;
-                evento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-
-                if (evento.Id == 0)
-                    id = _servico.Adicionar(evento);
-                else
-                    _servico.Atualizar(evento);
-
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
+                return View(_servico.Obtenha(id));
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
+                return View("Error", ex);
             }
         }
 
-        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<EventoAnual> listaPaginada)
+        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Escala> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-            Expression<Func<EventoAnual, bool>> filtro =
+            Expression<Func<Escala, bool>> filtro =
                 c => c.OrganizacaoId == parametros.OrganizacaoId;
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))

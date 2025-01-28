@@ -1,0 +1,36 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@model Escala
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Adicionar Escala
+        </h5>
+    </div>
+    <div class="card-body">
+        <form id="formulario-escala">
+            <div class="row">
+                <div class="col col-md-8 col-sm-12">
+                    <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                    @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                </div>
+
+                <div class="col col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="Tipo">Tipo</label>
+                    @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
+                </div>
+            </div>
+
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Escala")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/Escala/alterar.js?t=@DateTime.Now.Ticks"></script>

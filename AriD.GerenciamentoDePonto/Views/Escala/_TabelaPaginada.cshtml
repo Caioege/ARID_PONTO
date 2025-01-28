@@ -1,0 +1,21 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model ListaPaginada<Escala>
+
+@{
+    var tabela = new WebGrid<Escala>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Descricao", "Descrição", width: 65f),
+        tabela.Column("Tipo", "Tipo", format: @<text> <span>@(((eTipoDeEscala)item.Tipo).DescricaoDoEnumerador())</span> </text>, width: 32f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Escala", new { id = item.Id })')">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

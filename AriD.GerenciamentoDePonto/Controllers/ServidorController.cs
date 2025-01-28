@@ -1,4 +1,5 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
@@ -361,16 +362,50 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
         {
-            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
-
-            parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-
-            Expression<Func<Servidor, bool>> pesquisa = c => 
-                (c.OrganizacaoId == parametros.OrganizacaoId);
-
-            var dados = _servico.ObtenhaListaPaginada(pesquisa, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+            var dados = _servico.ObtenhaListaPaginada(
+                CarregueFiltrosDePesquisa(listaPaginada), 
+                listaPaginada.Pagina, 
+                listaPaginada.QuantidadeDeItensPorPagina);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
+        }
+
+        private Expression<Func<Servidor, bool>> CarregueFiltrosDePesquisa(
+            ListaPaginada<Servidor> listaPaginada)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
+            Expression<Func<Servidor, bool>> pesquisa = c =>
+                (c.OrganizacaoId == dadosDaSessao.OrganizacaoId);
+
+            if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
+            {
+                var pesquisaToLower = listaPaginada.TermoDeBusca.ToLower().Trim();
+                var somenteNumeros = ObterSomenteNumeros(listaPaginada.TermoDeBusca, "----");
+
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => (
+                        c.Pessoa.Nome.ToLower().Contains(pesquisaToLower) ||
+                        c.Pessoa.Cpf.Replace(".", "").Replace("-", "").Contains(somenteNumeros)) ||
+                        c.Pessoa.Rg.Contains(somenteNumeros) ||
+                        c.Pessoa.NomeSocial.ToLower().Contains(pesquisaToLower));
+            }
+
+            return pesquisa;
+        }
+
+        static string ObterSomenteNumeros(string texto, string returnIfNull)
+        {
+            if (string.IsNullOrEmpty(texto))
+                return returnIfNull;
+
+            var retorno = new string(texto.Where(char.IsDigit).ToArray());
+
+            if (string.IsNullOrEmpty(retorno))
+                return returnIfNull;
+
+            return retorno;
         }
     }
 }

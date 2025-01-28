@@ -15,13 +15,19 @@
                 <form id="formulario-usuario">
                     @Html.HiddenFor(model => model.Id)
                     <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="NomeDaPessoa">Nome da Pessoa</label>
+                            @Html.TextBoxFor(model => model.NomeDaPessoa, new { @class = "form-control", @maxlength = "100"})
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col col-lg-6 col-md-6 col-md-12">
-                            <label class="form-label obrigatorio" for="Descricao">Usuário</label>
+                            <label class="form-label obrigatorio" for="UsuarioDeAcesso">Usuário</label>
                             @Html.TextBoxFor(model => model.UsuarioDeAcesso, new { @class = "form-control", @maxlength = "100" })
                         </div>
 
                         <div class="col col-lg-6 col-md-6 col-md-12">
-                            <label class="form-label obrigatorio" for="Senha">Senha</label>
+                            <label class="form-label @(Model.Id == 0 ? "obrigatorio" : string.Empty)" for="Senha">Senha</label>
                             @Html.PasswordFor(model => model.Senha, new { @class = "form-control", @maxlength = "100" })
                         </div>
                     </div>

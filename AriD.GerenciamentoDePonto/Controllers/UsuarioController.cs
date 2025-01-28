@@ -1,10 +1,13 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -79,7 +82,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (usuario.Id == 0)
                     id = _servico.Adicionar(usuario);
                 else
-                    _servico.Atualizar(usuario);
+                {
+                    var persistido = _servico.Obtenha(usuario.Id);
+
+                    persistido.NomeDaPessoa = usuario.NomeDaPessoa;
+                    persistido.UsuarioDeAcesso = usuario.UsuarioDeAcesso;
+                    persistido.PerfilDeAcesso = usuario.PerfilDeAcesso;
+                    persistido.Ativo = usuario.Ativo;
+
+                    if (!string.IsNullOrEmpty(usuario.Senha))
+                        persistido.Senha = usuario.Senha;
+
+                    _servico.Atualizar(persistido);
+                }
 
                 return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
             }
@@ -93,10 +108,37 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
-            parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            parametros.OrganizacaoId = dadosDaSessao.OrganizacaoId;
+
+            Expression<Func<Usuario, bool>> filtro = c => c.OrganizacaoId == parametros.OrganizacaoId;
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+            {
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro, 
+                    c => c.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema);
+            }
+            else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro,
+                    c => c.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema);
+            }
+            else
+            {
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro,
+                    c => c.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional);
+            }
+
+            if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro,
+                    c => (c.NomeDaPessoa.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()) || c.UsuarioDeAcesso.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower())));
 
             var dados = _servico.ObtenhaListaPaginada(
-                c => c.OrganizacaoId == parametros.OrganizacaoId, 
+                filtro, 
                 listaPaginada.Pagina, 
                 listaPaginada.QuantidadeDeItensPorPagina);
 

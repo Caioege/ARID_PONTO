@@ -1,10 +1,12 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -95,7 +97,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-            var dados = _funcaoServico.ObtenhaListaPaginada(c => c.OrganizacaoId == parametros.OrganizacaoId, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+            Expression<Func<Funcao, bool>> filtro =
+                c => c.OrganizacaoId == parametros.OrganizacaoId;
+
+            if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
+            {
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro,
+                    c => c.Sigla.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()) ||
+                    c.Descricao.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()));
+            }
+
+            var dados = _funcaoServico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }

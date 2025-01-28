@@ -32,6 +32,7 @@ builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
 builder.Services.AddScoped(typeof(IServicoDeFolhaDePonto), typeof(ServicoDeFolhaDePonto));
 builder.Services.AddScoped(typeof(IServicoDeRelatorios), typeof(ServicoDeRelatorios));
+builder.Services.AddScoped(typeof(IServicoDeEscala), typeof(ServicoDeEscala));
 
 var app = builder.Build();
 
