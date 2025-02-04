@@ -34,7 +34,7 @@
     }
 </style>
 
-<div class="legenda">
+@* <div class="legenda">
     <ul style="display: flex; justify-content: space-evenly;">
         <li>
             <i class='bx bxs-square-rounded' style="color: ivory;"></i>&nbsp;Afastamento com Abono
@@ -47,7 +47,7 @@
         </li>
     </ul>
 </div>
-<br />
+<br /> *@
 
 <table class="table table-bordered">
     <thead>
@@ -109,17 +109,9 @@
             @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
-                    BH<br />CRED
-                </th>
-
-                <th class="text-center" width="@(larguraPeriodo)px">
-                    BH<br />DEB
+                    BH<br />SALDO
                 </th>
             }
-
-            @* <th class="text-center" width="@(larguraPeriodo)px">
-                ABO<br />NO
-            </th> *@
         </tr>
     </thead>
     <tbody>

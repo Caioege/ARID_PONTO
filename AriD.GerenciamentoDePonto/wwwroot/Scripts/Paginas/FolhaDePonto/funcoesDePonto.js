@@ -4,6 +4,11 @@ function modalPontoDia(vinculoDeTrabalhoId, data, dataTicks, acao) {
 		return;
 	}
 
+	if ($(`#linha-${vinculoDeTrabalhoId}-${dataTicks}`).hasClass('ponto-fechado')) {
+		MensagemRodape('info', 'Esse dia não pode ser editado pois a folha de ponto já está fechada.');
+		return;
+	}
+
 	RequisicaoAjaxComCarregamento(
 		'/FolhaDePonto/ModalEdicaoPontoDia',
 		'GET',
@@ -40,11 +45,15 @@ function salvarPontoDia() {
 		data,
 		function (data) {
 			if (data.sucesso) {
-				let linha = $(`#linha-${form.find('#VinculoDeTrabalhoId').val()}-${$('#DataTicks').val()}`);;
-
-				linha.replaceWith(data.html);
 				$('#_Modal').modal('hide');
-				MensagemRodape('success', data.mensagem);
+
+				if ($('#TelaFolhaDePonto').length > 0) {
+					carregarFolhaDePonto('Os dados foram salvos... Recarregando folha.');
+				} else {
+					let linha = $(`#linha-${form.find('#VinculoDeTrabalhoId').val()}-${$('#DataTicks').val()}`);;
+					linha.replaceWith(data.html);
+					MensagemRodape('success', data.mensagem);
+				}
 			} else {
 				MensagemRodape('warning', data.mensagem);
 			}

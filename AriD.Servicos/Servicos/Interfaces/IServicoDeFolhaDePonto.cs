@@ -47,5 +47,12 @@ namespace AriD.Servicos.Servicos.Interfaces
             int organizacaoId,
             DateTime inicio,
             DateTime fim);
+
+        void FecharOuAbrirFolhaDePonto(
+            int organizacaoId,
+            int vinculoDeTrabalhoId,
+            MesAno mesAno,
+            int unidadeLotacaoId,
+            bool fechar);
     }
 }

@@ -1218,8 +1218,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>aq4nhb24li</Fingerprint>
-      <Integrity>slRt+2MEVkpbq2tO6clYXWevporX9IUAbhg1mwXbTIw=</Integrity>
+      <Fingerprint>w8i0iq91fn</Fingerprint>
+      <Integrity>YCbDJiJjCS02eh/ikVnjV9xptgwor4CK08ebKGPI920=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>
@@ -2388,8 +2388,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>loabl1ppdb</Fingerprint>
-      <Integrity>K0y9tl1/80CgCu8FyVWBqZco1JUNPMHIfA3SV8nv89Q=</Integrity>
+      <Fingerprint>yr7m33rmqx</Fingerprint>
+      <Integrity>IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))</OriginalItemSpec>
@@ -2406,8 +2406,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>59uiomp5lc</Fingerprint>
-      <Integrity>V5ZcFE0eVEnBkilLwKTejLXSwvw73lssni+HcVHrYP4=</Integrity>
+      <Fingerprint>bbgxc7lxsq</Fingerprint>
+      <Integrity>KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</OriginalItemSpec>

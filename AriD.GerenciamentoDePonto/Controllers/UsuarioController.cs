@@ -54,8 +54,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var dadosDaSessao = HttpContext.DadosDaSessao();
                 var model = usuarioId == 0 ?
-                    new Usuario { Ativo = true } :
+                    new Usuario { Ativo = true, PerfilDeAcesso = dadosDaSessao.Perfil } :
                     _servico.Obtenha(usuarioId);
 
                 var html = await RenderizarComoString("_Modal", model);
@@ -74,7 +75,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
             try
             {
                 int id = usuario.Id;
-                usuario.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+
+                if (usuario.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema)
+                    usuario.OrganizacaoId = dadosDaSessao.OrganizacaoId;
+
+                usuario.PerfilDeAcesso = dadosDaSessao.Perfil;
 
                 if (!string.IsNullOrEmpty(usuario.Senha))
                     usuario.Senha = Criptografia.CriptografarSenha(usuario.Senha);
@@ -111,13 +117,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var dadosDaSessao = HttpContext.DadosDaSessao();
             parametros.OrganizacaoId = dadosDaSessao.OrganizacaoId;
 
-            Expression<Func<Usuario, bool>> filtro = c => c.OrganizacaoId == parametros.OrganizacaoId;
+            Expression<Func<Usuario, bool>> filtro = c => true;
 
             if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro, 
-                    c => c.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema);
+                    c => c.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema && !c.OrganizacaoId.HasValue);
             }
             else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
             {
@@ -131,6 +137,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     filtro,
                     c => c.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional);
             }
+
+            if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                filtro = ConcatenadorDeExpressao.Concatenar(
+                    filtro,
+                    c => c.OrganizacaoId == parametros.OrganizacaoId);
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
                 filtro = ConcatenadorDeExpressao.Concatenar(

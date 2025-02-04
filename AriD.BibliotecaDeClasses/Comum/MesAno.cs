@@ -17,5 +17,7 @@
 
         public DateTime Inicio => new DateTime(Ano, Mes, 01);
         public DateTime Fim => new DateTime(Ano, Mes, DateTime.DaysInMonth(Ano, Mes));
+
+        public override string ToString() => $"{Mes.ToString().PadLeft(2, '0')}/{Ano}";
     }
 }

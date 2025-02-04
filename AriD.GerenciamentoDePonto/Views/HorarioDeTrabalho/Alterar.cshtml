@@ -53,7 +53,7 @@
 
                 <div id="div-data-bh" class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? string.Empty : "display:none")">
                     <label class="form-label">Início do Banco de Horas</label>
-                    @Html.TextBoxFor(model => model.InicioBancoDeHoras, new { @class = "form-control data" })
+                    @Html.TextBox("InicioBancoDeHoras", Model.InicioBancoDeHoras?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                 </div>
             </div>
 

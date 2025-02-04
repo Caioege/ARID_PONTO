@@ -73,191 +73,144 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public TimeSpan? CargaHoraria { get; set; }
 
-        public TimeSpan? HorasTrabalhadas
+        public TimeSpan? HorasTrabalhadas { get; set; }
+        public TimeSpan? HorasTrabalhadasConsiderandoAbono { get; set; }
+        public TimeSpan? HorasPositivas { get; set; }
+
+        public TimeSpan? HorasNegativas { get; set; }
+
+        public int? AfastamentoId { get; set; }
+        [ForeignKey(nameof(AfastamentoId))]
+        public virtual Afastamento Afastamento { get; set; }
+
+        public string DescricaoEntrada(int periodo)
         {
-            get
+            if (!string.IsNullOrEmpty(Afastamento?.JustificativaDeAusencia?.Sigla))
             {
-                TimeSpan? htPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?
-                Saida1.Value.Subtract(Entrada1.Value) :
-                null;
-
-                TimeSpan? htPeriodo_2 = Entrada2.HasValue && Saida2.HasValue ?
-                    Saida2.Value.Subtract(Entrada2.Value) :
-                    null;
-
-                TimeSpan? htPeriodo_3 = Entrada3.HasValue && Saida3.HasValue ?
-                    Saida3.Value.Subtract(Entrada3.Value) :
-                    null;
-
-                TimeSpan? htPeriodo_4 = Entrada4.HasValue && Saida4.HasValue ?
-                    Saida4.Value.Subtract(Entrada4.Value) :
-                    null;
-
-                TimeSpan? htPeriodo_5 = Entrada5.HasValue && Saida5.HasValue ?
-                    Saida5.Value.Subtract(Entrada5.Value) :
-                    null;
-
-                TimeSpan? horasTrabalhas = null;
-
-                if (htPeriodo_1.HasValue || htPeriodo_2.HasValue || htPeriodo_3.HasValue || htPeriodo_4.HasValue || htPeriodo_5.HasValue)
-                {
-                    horasTrabalhas = TimeSpan.Zero;
-
-                    if (htPeriodo_1.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_1.Value);
-
-                    if (htPeriodo_2.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_2.Value);
-
-                    if (htPeriodo_3.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_3.Value);
-
-                    if (htPeriodo_4.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_4.Value);
-
-                    if (htPeriodo_5.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_5.Value);
-                }
-
-                return horasTrabalhas;
+                return Afastamento?.JustificativaDeAusencia?.Sigla;
             }
-        }
 
-        public TimeSpan? HorasTrabalhadasConsiderandoAbono
-        {
-            get
+            string retorno = string.Empty;
+            switch (periodo)
             {
-                if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
-                    return HorasTrabalhadas;
+                case 1:
+                    retorno = Entrada1.HasValue ?
+                        Entrada1.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo1Id.HasValue ?
+                            JustificativaPeriodo1.Sigla :
+                    string.Empty;
 
-                var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
+                    //retorno += TipoEntrada1.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-                if (horarioDia == null)
-                    return HorasTrabalhadas;
+                case 2:
+                    retorno = Entrada2.HasValue ?
+                        Entrada2.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo2Id.HasValue ?
+                            JustificativaPeriodo2.Sigla :
+                    string.Empty;
 
-                TimeSpan? htPeriodo_1 = null;
-                TimeSpan? htPeriodo_2 = null;
-                TimeSpan? htPeriodo_3 = null;
-                TimeSpan? htPeriodo_4 = null;
-                TimeSpan? htPeriodo_5 = null;
+                    //retorno += TipoEntrada2.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-                var afastamento = ObtenhaAfastamentoNoPeriodo();
-                if (afastamento != null)
-                {
-                    if (afastamento.JustificativaDeAusencia.Abono)
-                    {
-                        htPeriodo_1 = horarioDia.CargaHorariaPeriodo(1);
-                        htPeriodo_2 = horarioDia.CargaHorariaPeriodo(2);
-                        htPeriodo_3 = horarioDia.CargaHorariaPeriodo(3);
-                        htPeriodo_4 = horarioDia.CargaHorariaPeriodo(4);
-                        htPeriodo_5 = horarioDia.CargaHorariaPeriodo(5);
-                    }
-                }
-                else
-                {
-                    htPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?
-                    Saida1.Value.Subtract(Entrada1.Value) :
-                    JustificativaPeriodo1Id.HasValue && JustificativaPeriodo1.Abono ?
-                        horarioDia.CargaHorariaPeriodo(1) :
-                        null;
+                case 3:
+                    retorno = Entrada3.HasValue ?
+                        Entrada3.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo3Id.HasValue ?
+                            JustificativaPeriodo3.Sigla :
+                            string.Empty;
 
-                    htPeriodo_2 = Entrada2.HasValue && Saida2.HasValue ?
-                        Saida2.Value.Subtract(Entrada2.Value) :
-                        JustificativaPeriodo2Id.HasValue && JustificativaPeriodo2.Abono ?
-                            horarioDia.CargaHorariaPeriodo(2) :
-                            null;
+                    //retorno += TipoEntrada3.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-                    htPeriodo_3 = Entrada3.HasValue && Saida3.HasValue ?
-                        Saida3.Value.Subtract(Entrada3.Value) :
-                        JustificativaPeriodo3Id.HasValue && JustificativaPeriodo3.Abono ?
-                            horarioDia.CargaHorariaPeriodo(3) :
-                            null;
 
-                    htPeriodo_4 = Entrada4.HasValue && Saida4.HasValue ?
-                        Saida4.Value.Subtract(Entrada4.Value) :
-                        JustificativaPeriodo4Id.HasValue && JustificativaPeriodo4.Abono ?
-                            horarioDia.CargaHorariaPeriodo(4) :
-                            null;
+                case 4:
+                    retorno = Entrada4.HasValue ?
+                        Entrada4.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo4Id.HasValue ?
+                            JustificativaPeriodo4.Sigla :
+                            string.Empty;
 
-                    htPeriodo_5 = Entrada5.HasValue && Saida5.HasValue ?
-                        Saida5.Value.Subtract(Entrada5.Value) :
-                        JustificativaPeriodo5Id.HasValue && JustificativaPeriodo5.Abono ?
-                            horarioDia.CargaHorariaPeriodo(5) :
-                            null;
-                }
+                    //retorno += TipoEntrada4.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-                TimeSpan? horasTrabalhas = null;
+                case 5:
+                    retorno = Entrada5.HasValue ?
+                        Entrada5.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo5Id.HasValue ?
+                            JustificativaPeriodo5.Sigla :
+                            string.Empty;
 
-                if (htPeriodo_1.HasValue || htPeriodo_2.HasValue || htPeriodo_3.HasValue || htPeriodo_4.HasValue || htPeriodo_5.HasValue)
-                {
-                    horasTrabalhas = TimeSpan.Zero;
-
-                    if (htPeriodo_1.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_1.Value);
-
-                    if (htPeriodo_2.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_2.Value);
-
-                    if (htPeriodo_3.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_3.Value);
-
-                    if (htPeriodo_4.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_4.Value);
-
-                    if (htPeriodo_5.HasValue)
-                        horasTrabalhas = horasTrabalhas.Value.Add(htPeriodo_5.Value);
-                }
-
-                return horasTrabalhas;
+                    //retorno += TipoEntrada5.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
             }
+
+            return retorno;
         }
 
-        public TimeSpan? HorasPositivas(bool diaFeriadoOuFacultativo)
+        public string DescricaoSaida(int periodo)
         {
-            if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
-                return null;
+            if (!string.IsNullOrEmpty(Afastamento?.JustificativaDeAusencia?.Sigla))
+            {
+                return Afastamento?.JustificativaDeAusencia?.Sigla;
+            }
 
-            var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
+            string retorno = string.Empty;
+            switch (periodo)
+            {
+                case 1:
+                    retorno = Saida1.HasValue ?
+                        Saida1.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo1Id.HasValue ?
+                            JustificativaPeriodo1.Sigla :
+                            string.Empty;
 
-            if (horarioDia == null)
-                return null;
+                    //retorno += TipoSaida1.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-            var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
+                case 2:
+                    retorno = Saida2.HasValue ?
+                        Saida2.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo2Id.HasValue ?
+                            JustificativaPeriodo2.Sigla :
+                            string.Empty;
 
-            if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
-                return null;
+                    //retorno += TipoSaida2.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
 
-            if (!cargaHorariaDoDia.HasValue && HorasTrabalhadasConsiderandoAbono.HasValue)
-                return HorasTrabalhadasConsiderandoAbono;
+                case 3:
+                    retorno = Saida3.HasValue ?
+                        Saida3.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo3Id.HasValue ?
+                            JustificativaPeriodo3.Sigla :
+                            string.Empty;
 
-            if (HorasTrabalhadasConsiderandoAbono > cargaHorariaDoDia)
-                return HorasTrabalhadasConsiderandoAbono.Value.Subtract(cargaHorariaDoDia.Value);
+                    //retorno += TipoSaida3.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
+                case 4:
+                    retorno = Saida4.HasValue ?
+                        Saida4.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo4Id.HasValue ?
+                            JustificativaPeriodo4.Sigla :
+                            string.Empty;
 
-            return null;
+                    //retorno += TipoSaida4.DescricaoTipoDeRegistroDoEnumerador();
+                    break;
+
+                case 5:
+                    retorno = Saida5.HasValue ?
+                        Saida5.Value.ToString(@"hh\:mm") :
+                        JustificativaPeriodo5Id.HasValue ?
+                            JustificativaPeriodo5.Sigla :
+                            string.Empty;
+
+                    //retorno += TipoSaida5.DescricaoTipoDeRegistroDoEnumerador();
+
+                    break;
+
+            }
+
+            return retorno;
         }
-
-        public TimeSpan? HorasNegativas(bool diaFeriadoOuFacultativo)
-        {
-            if (VinculoDeTrabalho == null || VinculoDeTrabalho.HorarioDeTrabalho == null)
-                return null;
-
-            var horarioDia = VinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == DiaDaSemana);
-
-            if (horarioDia == null)
-                return null;
-
-            var cargaHorariaDoDia = horarioDia.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
-
-            if (!cargaHorariaDoDia.HasValue && !HorasTrabalhadasConsiderandoAbono.HasValue)
-                return null;
-
-            if (cargaHorariaDoDia > ((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero)))
-                return cargaHorariaDoDia.Value.Subtract((HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (Abono ?? TimeSpan.Zero));
-
-            return null;
-        }
-
-        public Afastamento ObtenhaAfastamentoNoPeriodo() => VinculoDeTrabalho?.Afastamentos?.FirstOrDefault(d => d.Inicio.Date <= Data.Date && (!d.Fim.HasValue || d.Fim.Value.Date >= Data.Date));
-        public string SiglaAfastamentoNoDia()=> ObtenhaAfastamentoNoPeriodo()?.JustificativaDeAusencia?.Sigla;
     }
 }

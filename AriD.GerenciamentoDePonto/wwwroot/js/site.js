@@ -24,7 +24,7 @@ var FecharCaixaDeCarregamento = function () {
 }
 
 var RequisicaoAjaxComCarregamento = function (url, tipo, data, callbackSucesso, mensagem) {
-    AbrirCaixaDeCarregamento('Carregando...');
+    AbrirCaixaDeCarregamento(mensagem || 'Carregando...');
 
     setTimeout(function () {
         $.ajax({
@@ -170,11 +170,6 @@ function assineMascarasDoComponente(componente) {
             $(this).focus();
         }
     });
-    //componente.find('.hora').clockpicker({
-    //    placement: 'top',
-    //    align: 'left',
-    //    donetext: 'Pronto'
-    //});
 
     componente.find('.data').attr('type', 'date');
     componente.find('.data').on('focusout', function () {
@@ -396,4 +391,15 @@ function confirmaSairSistema() {
             window.location = '/Autenticacao/Sair';
         }
     });
+}
+
+function downloadBase64File(base64, fileName, mimeType) {
+    const linkSource = `data:${mimeType};base64,${base64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    if (fileName.includes('.pdf')) {
+        downloadLink.target = '_blank';
+    }
+    downloadLink.download = fileName;
+    downloadLink.click();
 }

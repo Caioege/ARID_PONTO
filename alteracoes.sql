@@ -153,3 +153,20 @@ CREATE TABLE `arid_ponto`.`usuario` (
     REFERENCES `arid_ponto`.`organizacao` (`Id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+
+ALTER TABLE `arid_ponto`.`pontododia` 
+ADD COLUMN `HorasTrabalhadas` TIME NULL AFTER `CargaHoraria`,
+ADD COLUMN `HorasTrabalhadasConsiderandoAbono` TIME NULL AFTER `HorasTrabalhadas`,
+ADD COLUMN `HorasPositivas` TIME NULL AFTER `HorasTrabalhadasConsiderandoAbono`,
+ADD COLUMN `HorasNegativas` TIME NULL AFTER `HorasPositivas`;
+
+ALTER TABLE `arid_ponto`.`pontododia` 
+ADD COLUMN `AfastamentoId` INT NULL AFTER `HorasNegativas`,
+ADD INDEX `FK_PontoDoDia_Afastamento_idx` (`AfastamentoId` ASC);
+
+ALTER TABLE `arid_ponto`.`pontododia` 
+ADD CONSTRAINT `FK_PontoDoDia_Afastamento`
+  FOREIGN KEY (`AfastamentoId`)
+  REFERENCES `arid_ponto`.`afastamento` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;

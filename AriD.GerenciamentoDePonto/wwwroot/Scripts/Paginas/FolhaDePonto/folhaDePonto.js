@@ -62,7 +62,7 @@ function assineChangeServidor() {
 	});
 }
 
-function carregarFolhaDePonto() {
+function carregarFolhaDePonto(mensagem) {
 	$('#div-ponto').html('');
 
 	let unidadeId = $('#UnidadeOrganizacionalId').val() || '';
@@ -76,20 +76,22 @@ function carregarFolhaDePonto() {
 	ajusteValidacaoDeCampo($('#MesDeReferencia'), mesAno != '');
 
 	if (unidadeId && servidorId && vinculoId && mesAno) {
-		RequisicaoAjaxComCarregamento(
-			'/FolhaDePonto/CarregarFolhaDePonto',
-			'GET',
-			{ vinculoDeTrabalhoId: vinculoId, mesDeReferencia: mesAno, unidadeId },
-			function (data) {
-				if (data.sucesso) {
-					$('#div-ponto').html(data.html);
+		$.ajax({
+			url: '/FolhaDePonto/CarregarFolhaDePonto',
+			type: 'GET',
+			data: { vinculoDeTrabalhoId: vinculoId, mesDeReferencia: mesAno, unidadeId },
+		}).done(function (data) {
+			if (data.sucesso) {
+				$('#div-ponto').html(data.html);
 
-					ajustarExibicaoBotaoFecharPonto(data.exibirAcoes && !data.exibirAbrir);
-					ajustarExibicaoBotaoAbrirPonto(data.exibirAcoes && data.exibirAbrir);
-				} else {
-					MensagemRodape('warning', data.mensagem);
-				}
-			});
+				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
+
+				ajustarExibicaoBotaoFecharPonto(data.exibirAcoes && !data.exibirAbrir);
+				ajustarExibicaoBotaoAbrirPonto(data.exibirAcoes && data.exibirAbrir);
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
 	}
 }
 
@@ -107,4 +109,54 @@ function ajustarExibicaoBotaoAbrirPonto(exibir) {
 	} else {
 		$('#btn-abrir-ponto').attr("style", "display: none !important");
 	}
+}
+
+function fecharOuAbrirFolhaDePonto(fechar) {
+	let unidadeId = $('#UnidadeOrganizacionalId').val() || '';
+	let vinculoId = $('#VinculoDeTrabalhoId').val() || '';
+	let mesAno = $('#MesDeReferencia').val() || '';
+
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/FecharAbrirFolhaDePonto',
+		'POST',
+		{ vinculoDeTrabalhoId: vinculoId, mesDeReferencia: mesAno, unidadeId, fechar },
+		function (data) {
+			if (data.sucesso) {
+				carregarFolhaDePonto();
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
+}
+
+function fecharPeriodoPonto() {
+	fecharOuAbrirFolhaDePonto(true);
+}
+function abrirPeriodoPonto() {
+	fecharOuAbrirFolhaDePonto(false);
+}
+
+function imprimirFolhaDePonto() {
+	let unidadeId = $('#UnidadeOrganizacionalId').val() || '';
+	let servidorId = $('#ServidorId').val() || '';
+	let vinculoId = $('#VinculoDeTrabalhoId').val() || '';
+	let mesAno = $('#MesDeReferencia').val() || '';
+
+	ajusteValidacaoDeCampo($('#UnidadeOrganizacionalId'), unidadeId != '');
+	ajusteValidacaoDeCampo($('#ServidorId'), servidorId != '');
+	ajusteValidacaoDeCampo($('#VinculoDeTrabalhoId'), vinculoId != '');
+	ajusteValidacaoDeCampo($('#MesDeReferencia'), mesAno != '');
+
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/ImprimirFolha',
+		'POST',
+		{ vinculoDeTrabalhoId: vinculoId, mesDeReferencia: mesAno, unidadeId },
+		function (data) {
+			if (data.sucesso) {
+				MensagemRodape('success', 'O arquivo será baixado...');
+				downloadBase64File(data.base64, data.fileName, data.mimeType);
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
 }

@@ -1,4 +1,5 @@
-﻿@model Usuario
+﻿@using AriD.Servicos.Extensao
+@model Usuario
 
 @{
     var adicionar = Model.Id == 0;
@@ -40,7 +41,7 @@
 
                         <div class="col col-lg-8 col-md-6 col-sm-12">
                             <label class="form-label obrigatorio" for="PerfilDeAcesso">Perfil de Acesso</label>
-                            @Html.EnumDropDownListFor(model => model.PerfilDeAcesso, new { @class = "form-select" })
+                            @Html.TextBox("PerfilDeAcessoDescricao", Model.PerfilDeAcesso.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
                         </div>
                     </div>
                 </form>

@@ -74,6 +74,27 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult Salvar(Escala escala)
+        {
+            try
+            {
+                int id = escala.Id;
+                escala.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+
+                if (escala.Id == 0)
+                    id = _servico.Adicionar(escala);
+                else
+                    _servico.Atualizar(escala);
+
+                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Escala> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);

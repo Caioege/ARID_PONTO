@@ -40,8 +40,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjYWxhXEFkaWNpb25hci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Escala/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjYWxhXEFsdGVyYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Escala/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjYWxhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Escala/_ModalCiclo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjYWxhXF9Nb2RhbENpY2xvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Escala/_TabelaPaginada.cshtml]
@@ -146,6 +154,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Organizacao/_TabelaPaginada.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JnYW5pemFjYW9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Relatorio/ServidoresComAfastamento.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNDb21BZmFzdGFtZW50by5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/55629/source/repos/AriD.GerenciamentoDePonto/AriD.GerenciamentoDePonto/Views/Servidor/Adicionar.cshtml]
