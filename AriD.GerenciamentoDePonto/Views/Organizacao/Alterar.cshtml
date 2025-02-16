@@ -5,6 +5,39 @@
     var dadosDaSessao = this.Context.DadosDaSessao();
 }
 
+<style>
+    #div-dados-esquerda {
+        position: absolute;
+        float: left;
+        margin-bottom: 10px;
+    }
+
+    #div-dados-direita {
+        margin-left: 170px;
+    }
+
+    .img-foto {
+        margin-bottom: 10px;
+        border: 1px solid gray
+    }
+
+        .img-foto:hover {
+            cursor: pointer;
+        }
+
+    @@media (width <= 770px) {
+        #div-dados-direita {
+            margin-left: 0px;
+        }
+
+        #div-dados-esquerda {
+            position: initial;
+            float: none;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -16,26 +49,33 @@
     </div>
     <div class="card-body">
         <form id="formulario-organizacao">
+            <div id="div-dados-esquerda">
+                <img class="img-foto" src="/Organizacao/Brasao/@(Model.Id)?c=@DateTime.Now.Ticks" width="140px" height="140px" />
+            </div>
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.EnderecoId)
-            <div class="row">
-                <div class="col col-lg-10 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio" for="Nome">Nome</label>
-                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+            <div id="div-dados-direita">
+                <div class="row">
+                    <div class="col col-lg-12 col-md-12 col-xs-12">
+                        <label class="form-label obrigatorio" for="Nome">Nome</label>
+                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                    </div>
                 </div>
-
-                <div class="col col-lg-2 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio" for="Ativa">Ativa</label>
-                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) 
-                    {
-                        @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
-                    }
-                    else 
-                    {
-                        @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
-                    }
+                <div class="row">
+                    <div class="col col-lg-2 col-md-4 col-xs-12">
+                        <label class="form-label obrigatorio" for="Ativa">Ativa</label>
+                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                        }
+                        else
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
+                        }
+                    </div>
                 </div>
             </div>
+
             <br />
             @{
                 ViewBag.PrefixoEndereco = "Endereco.";
@@ -68,5 +108,6 @@
         <div id="grid"></div>
     </div>
 </div>
+<input type="file" accept=".png, .jpg, .jpeg" id="fotoInput" style="display: none;" />
 
 <script src="/Scripts/Paginas/Organizacao/alterar.js?t=@DateTime.Now.Ticks"></script>

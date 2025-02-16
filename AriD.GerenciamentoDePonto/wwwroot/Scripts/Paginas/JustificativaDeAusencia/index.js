@@ -16,7 +16,7 @@ function AbrirModal(id) {
 
 function assineSalvarCadastroModal() {
     $('#btn-salvar-modal').on('click', function () {
-        let dadosFormulario = ObtenhaFormularioSerializado('formulario-horario-trabalho');;
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-justificativa');;
         if (!dadosFormulario.formularioEstaValido) {
             MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
             return;
@@ -32,9 +32,26 @@ function assineSalvarCadastroModal() {
                     MensagemRodape('success', data.mensagem);
                     CarregarPagina('/JustificativaDeAusencia/Index');
                 } else {
-                    MensagemRodape('Warning', data.mensagem);
+                    MensagemRodape('warning', data.mensagem);
                 }
             }
         );
     });
+}
+
+function removerRegistro() {
+    RequisicaoAjaxComCarregamento(
+        '/JustificativaDeAusencia/Remova/',
+        'DELETE',
+        { justificativaId: $('#_Modal').find('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#_Modal').modal('hide');
+                MensagemRodape('success', data.mensagem);
+                CarregarPagina('/JustificativaDeAusencia/Index');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        }
+    );
 }

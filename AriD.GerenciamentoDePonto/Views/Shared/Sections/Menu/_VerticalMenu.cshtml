@@ -76,6 +76,14 @@
                   </a>
                 </li>
                 <li class='menu-item'>
+                  <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
+                    <div>
+                        <i class='bx bx-mobile-alt'></i>
+                        Equipamento de Ponto
+                    </div>
+                  </a>
+                </li>
+                <li class='menu-item'>
                   <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
                     <div>
                         <i class='bx bxs-timer'></i>
@@ -155,6 +163,14 @@
                         </div>
                     </a>
                 </li> *@
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bx-collection'></i>
+                            Registros de Ponto
+                        </div>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class='menu-item open'>
@@ -182,7 +198,7 @@
                     </a>
                 </li>
                 <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Relatorio", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                        <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                         <div style="white-space: normal !important;">
                             <i class='bx bxs-timer'></i>
                             Servidores por Horário de Trabalho

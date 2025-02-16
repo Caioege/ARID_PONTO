@@ -3,6 +3,7 @@ using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
+using AriD.Servicos.Servicos;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -88,6 +89,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
             catch (Exception ex)
             {
                 return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult Remova(int departamentoId)
+        {
+            try
+            {
+                var departamento = _servicoDepartamento.Obtenha(departamentoId);
+                _servicoDepartamento.Remover(departamento);
+
+                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
             }
         }
 

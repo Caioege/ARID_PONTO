@@ -22137,7 +22137,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 .menu-vertical .menu-item .menu-link {
   font-size: 0.9375rem;
-  min-height: 2.625rem;
+  min-height: 2.2rem;
 }
 .menu-vertical .menu-item .menu-link > div:not(.badge) {
   overflow: hidden;
@@ -22155,7 +22155,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
   transform: translateY(-50%) rotate(90deg);
 }
 .menu-vertical .menu-sub .menu-link {
-  padding-left: 3rem;
+  padding-left: 15px;
 }
 .layout-wrapper:not(.layout-horizontal) .menu-vertical .menu-inner > .menu-item .menu-sub .menu-sub .menu-link {
   padding-inline-start: 3.5rem;

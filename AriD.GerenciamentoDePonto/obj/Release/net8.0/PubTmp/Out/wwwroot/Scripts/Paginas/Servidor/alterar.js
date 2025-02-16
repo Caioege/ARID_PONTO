@@ -5,10 +5,16 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-servidor');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/Servidor/Salvar',
             'POST',
-            ObtenhaFormularioSerializado('formulario-servidor'),
+            dadosFormulario.dados,
             function (data) {
                 MensagemRodape('success', data.mensagem);
             });
@@ -87,7 +93,13 @@ function abrirModalVinculoDeTrabalho(id) {
 
 function salvarCadastroDeVinculo() {
     $('#_Modal').find('#btn-salvar-modal').on('click', function () {
-        let vinculoDeTrabalho = ObtenhaFormularioSerializado('formulario-vinculo');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-vinculo');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let vinculoDeTrabalho = dadosFormulario.dados;
         vinculoDeTrabalho.ServidorId = $('#formulario-servidor').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
@@ -108,7 +120,13 @@ function salvarCadastroDeVinculo() {
 
 function salvarCadastroDeLotacao() {
     $('#_Modal').find('#btn-salvar-lotacao').on('click', function () {
-        let lotacao = ObtenhaFormularioSerializado('formulario-lotacao');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-lotacao');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let lotacao = dadosFormulario.dados;
         lotacao.VinculoDeTrabalhoId = $('#formulario-vinculo').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
@@ -226,5 +244,93 @@ function recarregarListaDeLotacoes() {
         if (data.sucesso) {
             $('#div-partial-lotacoes').html(data.html);
         }
+    });
+}
+
+function abrirModalAfastamento(id) {
+    RequisicaoAjaxComCarregamento(
+        '/Servidor/ModalAfastamento',
+        'GET',
+        { id, servidorId: $('#formulario-servidor').find('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_Modal'));
+                assineSalvarAfastamento();
+                assineRemoverAfastamento();
+                $('#_Modal').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function assineSalvarAfastamento() {
+    $('#_Modal').find('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-afastamento');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let afastamento = dadosFormulario.dados;
+
+        RequisicaoAjaxComCarregamento(
+            '/Servidor/SalvarAfastamento',
+            'POST',
+            { afastamento },
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    $('#_Modal').modal('hide');
+                    recarregarPartialDeAfastamento();
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    });
+}
+
+function recarregarPartialDeAfastamento() {
+    $.ajax({
+        url: '/Servidor/PartialAfastamentos',
+        type: 'GET',
+        data: { servidorId: $('#formulario-servidor').find('#Id').val() }
+    }).done(function (data) {
+        if (data.sucesso) {
+            $('#s3').html(data.html);
+        } else {
+            MensagemRodape('warning', data.mensagem);
+        }
+    });
+}
+
+function assineRemoverAfastamento() {
+    $('#_Modal').find('#btn-remover-modal').on('click', function () {
+        Swal.fire({
+            title: 'Remover Afastamento?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#7b7b7b",
+            confirmButtonText: "Sim",
+            cancelButtonText: 'N�o'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                RequisicaoAjaxComCarregamento(
+                    '/Servidor/RemoverAfastamento',
+                    'DELETE',
+                    { afastamentoId: $('#form-afastamento').find('#Id').val() },
+                    function (data) {
+                        if (data.sucesso) {
+                            MensagemRodape('success', data.mensagem);
+                            $('#_Modal').modal('hide');
+                            recarregarPartialDeAfastamento();
+                        } else {
+                            MensagemRodape('warning', data.mensagem);
+                        }
+                    });
+            }
+        });
     });
 }

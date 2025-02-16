@@ -2,7 +2,7 @@
     $.ajaxSetup({
         statusCode: {
             401: function () {
-                window.location.href = '/Acesso/Sair';
+                window.location.href = '/autenticacao/sair';
             }
         }
     });
@@ -24,7 +24,7 @@ var FecharCaixaDeCarregamento = function () {
 }
 
 var RequisicaoAjaxComCarregamento = function (url, tipo, data, callbackSucesso, mensagem) {
-    AbrirCaixaDeCarregamento('Carregando...');
+    AbrirCaixaDeCarregamento(mensagem || 'Carregando...');
 
     setTimeout(function () {
         $.ajax({
@@ -63,51 +63,83 @@ var CarregarPagina = function (url) {
             data: {},
             error: function (jqXHR, textStatus, errorThrown) {
                 $(".content-wrapper").loading('stop');
-                setTimeout(() => { $('#content-body').html('<h5>Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.</h5>'); }, 200);
+                if (jqXHR.status === 401) {
+                    window.location.href = '/autenticacao/sair'
+                } else {
+                    setTimeout(() => { $('#div-inside-content-body').html('<h5>Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.</h5>'); }, 200);
+                }
             }
         }).done(function (data) {
             $(".content-wrapper").loading('stop');
             setTimeout(() => {
-                $('#content-body').html(data);
-                assineMascarasDoComponente($('#content-body'));
+                $('#div-inside-content-body').html(data);
+                assineMascarasDoComponente($('#div-inside-content-body'));
             }, 200);
         });
     }, 750);
 }
 
 function ObtenhaFormularioSerializado(formId) {
+    
     const $form = $(`#${formId}`);
     if ($form.length === 0) {
         console.error(`Formulário com o ID "${formId}" não foi encontrado.`);
-        return {};
+        return {
+            formularioEstaValido: false,
+            dados: {},
+            mensagem: `Formulário com o ID "${formId}" não foi encontrado.`
+        };
     }
 
-    const formData = {};
+    const formulario = {};
+    let formularioEstaValido = true;
 
     $form.find('input, select, textarea').each(function () {
         const $element = $(this);
-        const name = $element.attr('name') || $element.attr('id'); // Usa "name" ou "id" como chave
-        if (!name) return; // Ignora elementos sem "name" ou "id"
+        const name = $element.attr('name') || $element.attr('id');
+        if (!name) return;
+
+
+        if ($form.find(`.form-label[for="${$element.attr('id')}"]`).hasClass('obrigatorio') &&
+            !$element.val().trim()) {
+
+            formularioEstaValido = false;
+
+            if ($element.hasClass('select2')) {
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).addClass('campo-invalido');
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).parent().parent().addClass('campo-invalido');
+            } else {
+                $element.addClass('campo-invalido');
+            }
+
+        } else {
+            if ($element.hasClass('select2')) {
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).removeClass('campo-invalido');
+                $(`[aria-labelledby="select2-${$element.attr('id')}-container"]`).parent().parent().removeClass('campo-invalido');
+            } else {
+                $element.removeClass('campo-invalido');
+            }
+        }
 
         if ($element.is(':checkbox')) {
-            // Para checkbox, adiciona true/false
-            formData[name] = $element.is(':checked');
+            formulario[name] = $element.is(':checked');
         } else if ($element.is(':radio')) {
-            // Para radio, apenas pega o valor do selecionado
             if ($element.is(':checked')) {
-                formData[name] = $element.val();
+                formulario[name] = $element.val();
             }
         } else if ($element.is('select[multiple]')) {
-            // Para selects múltiplos, retorna array de valores
-            formData[name] = $element.val() || [];
+            formulario[name] = $element.val() || [];
         } else {
-            // Para outros tipos (texto, textarea, etc.)
-            formData[name] = $element.val();
+            formulario[name] = $element.val();
         }
     });
 
-    return formData;
+    return {
+        formularioEstaValido,
+        dados: formulario
+    };
 }
+
 
 function MensagemRodape(icone, mensagem) {
     const Toast = Swal.mixin({
@@ -129,22 +161,26 @@ function MensagemRodape(icone, mensagem) {
 
 function assineMascarasDoComponente(componente) {
     componente.find('.hora').mask('00:00');
-    //componente.find('.hora').clockpicker({
-    //    placement: 'top',
-    //    align: 'left',
-    //    donetext: 'Pronto'
-    //});
+    componente.find('.hora').on('change', function () {
+        const valor = $(this).val();
+
+        if (!validarHora(valor)) {
+            MensagemRodape('warning', 'Insira uma hora válida!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
 
     componente.find('.data').attr('type', 'date');
-    //componente.find('.data').on('change', function () {
-    //    const valor = $(this).val();
+    componente.find('.data').on('focusout', function () {
+        const valor = $(this).val();
 
-    //    if (!dataValida(valor)) {
-    //        MensagemRodape('warning', 'Insira uma data válida!')
-    //        $(this).val('');
-    //        $(this).focus();
-    //    }
-    //});
+        if (!dataValida(valor)) {
+            MensagemRodape('warning', 'Insira uma data válida!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
 
     componente.find('.cpf').mask('000.000.000-00');
     componente.find('.cpf').on('change', function () {
@@ -204,16 +240,16 @@ function dataValida(dateString) {
         return true;
     }
 
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const regex = /^(\d{4})-(\d{2})-(\d{2})$/;
     const match = dateString.match(regex);
 
     if (!match) {
         return false;
     }
 
-    const day = parseInt(match[1], 10);
+    const year = parseInt(match[1], 10);
     const month = parseInt(match[2], 10) - 1;
-    const year = parseInt(match[3], 10);
+    const day = parseInt(match[3], 10);
 
     const date = new Date(year, month, day);
 
@@ -223,6 +259,7 @@ function dataValida(dateString) {
         date.getDate() === day
     );
 }
+
 
 function cpfValido(cpf) {
     if (!cpf) {
@@ -324,4 +361,45 @@ function ajusteValidacaoDeCampo(campo, valido) {
             campo.addClass('campo-invalido')
         }
     }
+}
+
+function validarHora(hora) {
+    if (!hora) {
+        return true;
+    }
+
+    var regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+    if (regex.test(hora)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function confirmaSairSistema() {
+    Swal.fire({
+        text: "Tem certeza que deseja sair do sistema?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = '/Autenticacao/Sair';
+        }
+    });
+}
+
+function downloadBase64File(base64, fileName, mimeType) {
+    const linkSource = `data:${mimeType};base64,${base64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    if (fileName.includes('.pdf')) {
+        downloadLink.target = '_blank';
+    }
+    downloadLink.download = fileName;
+    downloadLink.click();
 }

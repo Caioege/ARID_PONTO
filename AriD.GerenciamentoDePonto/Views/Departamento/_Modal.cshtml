@@ -38,6 +38,14 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
+
+                @if (Model.Id > 0)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerRegistro()">
+                        <i class='bx bx-trash'></i> Remover
+                    </button>
+                }
+
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">
                     <i class='bx bxs-save'></i> Salvar
                 </button>

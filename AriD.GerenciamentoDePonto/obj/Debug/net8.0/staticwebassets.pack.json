@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDePonto\\index.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\EventoAnual\\index.js"
     },
@@ -107,6 +111,14 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\backgrounds\\18.jpg",
       "PackagePath": "staticwebassets\\img\\backgrounds\\18.jpg"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\brasoes\\1.png",
+      "PackagePath": "staticwebassets\\img\\brasoes\\1.png"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\brasoes\\sem-foto.jpg",
+      "PackagePath": "staticwebassets\\img\\brasoes\\sem-foto.jpg"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\elements\\1.jpg",

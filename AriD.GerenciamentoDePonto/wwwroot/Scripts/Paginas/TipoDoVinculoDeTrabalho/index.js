@@ -31,9 +31,26 @@ function assineSalvarCadastroModal() {
                     MensagemRodape('success', data.mensagem);
                     CarregarPagina('/TipoDoVinculoDeTrabalho/Index');
                 } else {
-                    MensagemRodape('Warning', data.mensagem);
+                    MensagemRodape('warning', data.mensagem);
                 }
             }
         );
     });
+}
+
+function removerRegistro() {
+    RequisicaoAjaxComCarregamento(
+        '/TipoDoVinculoDeTrabalho/Remova/',
+        'DELETE',
+        { tipoId: $('#_Modal').find('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#_Modal').modal('hide');
+                MensagemRodape('success', data.mensagem);
+                CarregarPagina('/TipoDoVinculoDeTrabalho/Index');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        }
+    );
 }

@@ -18,9 +18,19 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(10);
+    options.IdleTimeout = TimeSpan.FromHours(5);
+    options.IOTimeout = TimeSpan.FromHours(1);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(5);
+    options.Cookie.MaxAge = TimeSpan.FromHours(5);
+    options.SlidingExpiration = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -33,6 +43,7 @@ builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
 builder.Services.AddScoped(typeof(IServicoDeFolhaDePonto), typeof(ServicoDeFolhaDePonto));
 builder.Services.AddScoped(typeof(IServicoDeRelatorios), typeof(ServicoDeRelatorios));
 builder.Services.AddScoped(typeof(IServicoDeEscala), typeof(ServicoDeEscala));
+builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegistroDePonto));
 
 var app = builder.Build();
 

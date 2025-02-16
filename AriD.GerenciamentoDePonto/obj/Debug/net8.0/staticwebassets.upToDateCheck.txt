@@ -9,6 +9,8 @@ wwwroot\img\avatars\5.png
 wwwroot\img\avatars\6.png
 wwwroot\img\avatars\7.png
 wwwroot\img\backgrounds\18.jpg
+wwwroot\img\brasoes\1.png
+wwwroot\img\brasoes\sem-foto.jpg
 wwwroot\img\elements\1.jpg
 wwwroot\img\elements\11.jpg
 wwwroot\img\elements\12.jpg
@@ -128,6 +130,7 @@ wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Departamento\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
+wwwroot\Scripts\Paginas\EquipamentoDePonto\index.js
 wwwroot\Scripts\Paginas\EventoAnual\index.js
 wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js

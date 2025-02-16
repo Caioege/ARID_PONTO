@@ -15,10 +15,16 @@ function AbrirModal(id) {
 
 function assineSalvarCadastroModal() {
     $('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-departamento');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
         RequisicaoAjaxComCarregamento(
             '/Departamento/Salvar/',
             'POST',
-            ObtenhaFormularioSerializado('formulario-departamento'),
+            dadosFormulario.dados,
             function (data) {
                 if (data.sucesso) {
                     $('#_Modal').modal('hide');

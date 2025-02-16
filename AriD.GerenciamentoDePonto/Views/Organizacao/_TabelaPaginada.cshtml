@@ -19,10 +19,14 @@
             </text>, width: 5f),
         tabela.Column(string.Empty, "Ação", format:
             @<text>
-        <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = item.Id })')">
+                <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = item.Id })')">
                     <i class='bx bxs-edit-alt'></i>
                 </button>
-            </text>, width: 3f)
+
+                <button type="button" class="btn btn-primary btn-sm" onclick="autenticarEmOutraOrganizacao(@item.Id)" title="Acessar essa organização">
+                        <i class='bx bx-horizontal-center'></i>
+                </button>
+            </text>, width: 8f)
     };
 }
 

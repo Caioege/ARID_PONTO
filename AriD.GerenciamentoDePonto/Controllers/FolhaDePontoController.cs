@@ -5,9 +5,11 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.Servicos.Extensao;
 using AriD.Servicos.Servicos.Interfaces;
+using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
@@ -302,7 +304,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 var organizacaoId = this.DadosDaSessao().OrganizacaoId;
 
-
                 var listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(
                     organizacaoId,
                     vinculoDeTrabalhoId,
@@ -356,17 +357,23 @@ namespace AriD.GerenciamentoDePonto.Controllers
             List<EventoAnual> eventos,
             List<PontoDoDia> listaDePonto)
         {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
             var stream = new MemoryStream();
 
             var writer = new PdfWriter(stream);
             var pdf = new PdfDocument(writer);
             var document = new Document(pdf);
 
-            document.SetFontSize(9f);
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(8f);
 
             document.Add(
                 new Div()
-                .SetMarginBottom(10)
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
@@ -649,6 +656,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             document.Add(new Div().Add(table));
+
+            Table tabela = new Table(2);
+            tabela.SetWidth(UnitValue.CreatePercentValue(100));
+
+            Cell assinatura1 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura1.SetTextAlignment(TextAlignment.CENTER);
+            assinatura1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell assinatura2 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura2.SetTextAlignment(TextAlignment.CENTER);
+            assinatura2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(assinatura1);
+            tabela.AddCell(assinatura2);
+
+            Cell nome1 = new Cell().Add(new Paragraph("Organização"));
+            nome1.SetTextAlignment(TextAlignment.CENTER);
+            nome1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell nome2 = new Cell().Add(new Paragraph(vinculoDeTrabalho.Servidor.Nome));
+            nome2.SetTextAlignment(TextAlignment.CENTER);
+            nome2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(nome1);
+            tabela.AddCell(nome2);
+
+            document.Add(new Div().SetMarginTop(30f).Add(tabela));
+
             document.Close();
 
             return stream.ToArray();
@@ -662,6 +697,56 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 contentType = "application/octet-stream";
             }
             return contentType;
+        }
+
+        private void AdicioneCabecalho(
+            Document document,
+            int organizacaoId,
+            string organizacaoNome)
+        {
+            var tableCabecalho = new Table(2)
+                .UseAllAvailableWidth()
+                .SetBorder(Border.NO_BORDER)
+                .SetMarginBottom(10f);
+
+            var path = System.IO.Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "img",
+                "brasoes",
+                $"{organizacaoId}.png");
+
+            bool possuiBrasao = false;
+            if (System.IO.File.Exists(path))
+            {
+                possuiBrasao = true;
+
+                var brasao = ImageDataFactory.Create(path);
+                var brasaoItext = new iText.Layout.Element.Image(brasao);
+                brasaoItext.SetWidth(40f);
+                brasaoItext.SetHeight(40f);
+                brasaoItext.SetPaddingLeft(0f);
+
+                tableCabecalho.AddCell(
+                    new Cell(2, 1)
+                    .SetBorder(Border.NO_BORDER)
+                    .SetPaddingLeft(0f)
+                    .SetWidth(45f)
+                    .Add(brasaoItext));
+            }
+
+            var celulaNome = new Cell(1, possuiBrasao ? 1 : 2)
+                .SetBorder(Border.NO_BORDER)
+                .Add(new Paragraph()
+                        .SetPaddingTop(15f)
+                        .SetTextAlignment(TextAlignment.LEFT)
+                        .SetFixedLeading(12f)
+                        .SetBold()
+                        .Add(new Text($"{organizacaoNome}").SetFontSize(10f)));
+
+            tableCabecalho.AddCell(celulaNome);
+
+            document.Add(new Div().Add(tableCabecalho));
         }
     }
 }

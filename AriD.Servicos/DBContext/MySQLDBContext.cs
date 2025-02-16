@@ -10,6 +10,7 @@ namespace AriD.Servicos.DBContext
         {
             if (!optionsBuilder.IsConfigured)
             {
+                var connStringProdKingHost = "Server=mysql03-farm36.kinghost.net;User Id=aridponto;Password=aridponto2021;Database=aridponto";
                 var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
                 optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))
@@ -40,5 +41,7 @@ namespace AriD.Servicos.DBContext
         public DbSet<Escala> Escala { get; set; }
         public DbSet<CicloDaEscala> CicloDaEscala { get; set; }
         public DbSet<EscalaDoServidor> EscalaDoServidor { get; set; }
+        public DbSet<EquipamentoDePonto> EquipamentoDePonto { get; set; }
+        public DbSet<RegistroDePonto> RegistroDePonto { get; set; }
     }
 }

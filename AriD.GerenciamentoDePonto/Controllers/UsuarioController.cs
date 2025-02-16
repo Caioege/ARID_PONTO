@@ -79,6 +79,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 if (usuario.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema)
                     usuario.OrganizacaoId = dadosDaSessao.OrganizacaoId;
+                else
+                    usuario.OrganizacaoId = null;
 
                 usuario.PerfilDeAcesso = dadosDaSessao.Perfil;
 
@@ -129,19 +131,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
-                    c => c.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema);
+                    c => c.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema && c.OrganizacaoId == dadosDaSessao.OrganizacaoId);
             }
             else
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
-                    c => c.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional);
+                    c => c.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional && c.OrganizacaoId == dadosDaSessao.OrganizacaoId);
             }
-
-            if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
-                filtro = ConcatenadorDeExpressao.Concatenar(
-                    filtro,
-                    c => c.OrganizacaoId == parametros.OrganizacaoId);
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
                 filtro = ConcatenadorDeExpressao.Concatenar(

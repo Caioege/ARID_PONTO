@@ -31,7 +31,7 @@ function assineSalvarCadastroModal() {
                     MensagemRodape('success', data.mensagem);
                     CarregarPagina('/Usuario/Index');
                 } else {
-                    MensagemRodape('Warning', data.mensagem);
+                    MensagemRodape('warning', data.mensagem);
                 }
             }
         );

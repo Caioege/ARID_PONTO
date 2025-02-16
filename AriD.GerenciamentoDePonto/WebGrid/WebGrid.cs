@@ -23,7 +23,7 @@ namespace AriD.GerenciamentoDePonto.WebGrid
             string header = null,
             Func<dynamic, object> format = null,
             string style = null,
-            bool canSort = true,
+            bool canSort = false,
             float? width = null)
                 => new WebGridColumn(columnName, header, format, style, canSort, width);
 

@@ -76,5 +76,44 @@ namespace AriD.Servicos.Servicos
                 throw;
             }
         }
+
+        public List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
+            int organizacaoId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var query = @"select
+	                        p.Id as PessoaId,
+                            p.Nome as PessoaNome,
+                            p.Cpf as PessoaCpf,
+                            v.Matricula as ContratoMatricula,
+                            v.Situacao as ContratoSituacao,
+                            concat('[', t.Sigla, '] ', t.Descricao) as ContratoTipo,
+                            concat('[', h.Sigla, '] ', h.Descricao) as HorarioDeTrabalho
+                        from vinculodetrabalho v
+                        inner join servidor s
+	                        on s.Id = v.ServidorId
+                        inner join pessoa p
+	                        on p.Id = s.PessoaId
+                        inner join horariodetrabalho h
+	                        on h.Id = v.HorarioDeTrabalhoId
+                        inner join tipodovinculodetrabalho t
+	                        on t.Id = v.TipoDoVinculoDeTrabalhoId
+                        where
+	                        v.OrganizacaoId = @ORGANIZACAOID";
+
+            if (horarioDeTrabalhoId.HasValue)
+                query += " and h.Id = @HORARIODETRABALHOID";
+
+            if (tipoDeVinculoDeTrabalhoId.HasValue)
+                query += " and t.Id = @TIPODEVINCULOID";
+
+            return _repositorio.ConsultaDapper<ItemRelatorioServidorPorHorarioDTO>(query, new
+            {
+                @ORGANIZACAOID = organizacaoId,
+                @HORARIODETRABALHOID = horarioDeTrabalhoId,
+                @TIPODEVINCULOID = tipoDeVinculoDeTrabalhoId
+            });
+        }
     }
 }

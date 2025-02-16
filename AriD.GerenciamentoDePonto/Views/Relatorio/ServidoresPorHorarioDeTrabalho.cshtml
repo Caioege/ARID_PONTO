@@ -1,0 +1,47 @@
+﻿<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-timer'></i> Servidores por Horário de Trabalho
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+           <div class="col col-md-6 col-sm-12">
+               <label class="form-label">Horário de Trabalho</label>
+                @Html.DropDownList("HorarioDeTrabalhoId", (SelectList)ViewBag.Horarios, "Todos", new { @class = "select2" })
+           </div>
+
+            <div class="col col-md-6 col-sm-12">
+                <label class="form-label">Tipos de Vínculo de Trabalho</label>
+                @Html.DropDownList("TipoDeVinculoDeTrabalhoId", (SelectList)ViewBag.Tipos, "Todos", new { @class = "select2" })
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-primary" onclick="processarRelatorio()">
+            <i class='bx bxs-report'></i> Processar
+        </button>
+    </div>
+</div>
+
+<script>
+    function processarRelatorio() {
+        let parametros = {
+            horarioDeTrabalhoId: $('#HorarioDeTrabalhoId').val(),
+            tipoDeVinculoDeTrabalhoId: $('#TipoDeVinculoDeTrabalhoId').val(),
+        };
+
+        RequisicaoAjaxComCarregamento(
+            '/Relatorio/ProcessarServidoresPorHorarioDeTrabalho',
+            'POST',
+            parametros,
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', 'O arquivo será baixado...');
+                    downloadBase64File(data.base64, data.fileName, data.mimeType);
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    }
+</script>

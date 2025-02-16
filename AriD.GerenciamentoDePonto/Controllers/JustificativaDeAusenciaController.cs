@@ -93,7 +93,23 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
+                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult Remova(int justificativaId)
+        {
+            try
+            {
+                var justificativa = _justificativaServico.Obtenha(justificativaId);
+                _justificativaServico.Remover(justificativa);
+
+                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
             }
         }
 

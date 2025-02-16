@@ -84,6 +84,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpDelete]
+        public IActionResult Remova(int eventoId)
+        {
+            try
+            {
+                var evento = _servico.Obtenha(eventoId);
+                _servico.Remover(evento);
+
+                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
+            }
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<EventoAnual> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);

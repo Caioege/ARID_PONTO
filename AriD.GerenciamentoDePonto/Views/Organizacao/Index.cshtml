@@ -9,3 +9,19 @@
 <div id="grid">
     @await Html.PartialAsync("_TabelaPaginada")
 </div>
+
+<script>
+    function autenticarEmOutraOrganizacao(id) {
+        RequisicaoAjaxComCarregamento(
+            '/Organizacao/AutenticarOrganizacao',
+            'POST',
+            { id },
+            function (data) {
+                if (data.sucesso) {
+                    location.reload(true);
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    }
+</script>

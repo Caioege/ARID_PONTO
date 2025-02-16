@@ -170,3 +170,48 @@ ADD CONSTRAINT `FK_PontoDoDia_Afastamento`
   REFERENCES `arid_ponto`.`afastamento` (`Id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+  
+  CREATE TABLE `arid_ponto`.`equipamentodeponto` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `Descricao` VARCHAR(100) NOT NULL,
+  `NumeroDeSerie` VARCHAR(100) NOT NULL,
+  `Ativo` TINYINT NOT NULL DEFAULT 1,
+  `UnidadeOrganizacionalId` INT NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_EquipamentoDePonto_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_EquipamentoDePonto_UnidadeOrganizacional_idx` (`UnidadeOrganizacionalId` ASC) VISIBLE,
+  CONSTRAINT `FK_EquipamentoDePonto_Organizacao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_EquipamentoDePonto_UnidadeOrganizacional`
+    FOREIGN KEY (`UnidadeOrganizacionalId`)
+    REFERENCES `arid_ponto`.`unidadeorganizacional` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE `arid_ponto`.`registrodeponto` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `EquipamentoDePontoId` INT NOT NULL,
+  `UsuarioEquipamentoId` VARCHAR(50) NOT NULL,
+  `DataHoraRegistro` DATETIME NOT NULL,
+  `DataHoraRecebimento` DATETIME NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_RegistroDePonto_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_RegistroDePonto_EquipamentoDePonto_idx` (`EquipamentoDePontoId` ASC) VISIBLE,
+  CONSTRAINT `FK_RegistroDePonto_Organizacao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RegistroDePonto_EquipamentoDePonto`
+    FOREIGN KEY (`EquipamentoDePontoId`)
+    REFERENCES `arid_ponto`.`equipamentodeponto` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+ALTER TABLE `arid_ponto`.`equipamentodeponto` 
+ADD UNIQUE INDEX `UQ_EquipamentoDePonto` (`NumeroDeSerie` ASC, `OrganizacaoId` ASC);

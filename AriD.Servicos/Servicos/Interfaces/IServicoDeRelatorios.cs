@@ -10,5 +10,10 @@ namespace AriD.Servicos.Servicos.Interfaces
             DateTime? inicio,
             DateTime? fim,
             int? justificativaId);
+
+        List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
+            int organizacaoId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId);
     }
 }

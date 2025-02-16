@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\RegistroDePonto\" />
     <Folder Include="wwwroot\img\pessoas\organizacao\" />
   </ItemGroup>
 
@@ -63,6 +64,9 @@
     <Content Update="Views\TipoDoVinculoDeTrabalho\_TabelaPaginada.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\img\brasoes\sem-foto.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
