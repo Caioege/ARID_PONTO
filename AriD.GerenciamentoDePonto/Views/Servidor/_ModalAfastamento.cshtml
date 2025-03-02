@@ -2,9 +2,10 @@
 
 @{
     var adicionar = Model.Id == 0;
+    var gerenciarAfastamentos = Context.PossuiPermissao(eItemDePermissao_Servidor.GerenciarAfastamentos);
 }
 
-<div class="modal" tabindex="-1" id="_Modal">
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -62,16 +63,19 @@
                         <i class='bx bx-window-close'></i> Fechar
                     </button>
 
-                    @if (!adicionar)
+                    @if (!adicionar && gerenciarAfastamentos)
                     {
                         <button type="button" class="btn btn-danger" id="btn-remover-modal">
                             <i class='bx bxs-trash'></i> Remover
                         </button>
                     }
 
-                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
-                        <i class='bx bxs-save'></i> Salvar
-                    </button>
+                    @if (gerenciarAfastamentos)
+                    {
+                        <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                            <i class='bx bxs-save'></i> Salvar
+                        </button>
+                    }
                 </div>
             </div>
         </div>

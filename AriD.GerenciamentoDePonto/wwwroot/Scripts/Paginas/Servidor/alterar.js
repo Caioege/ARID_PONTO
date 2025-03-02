@@ -16,7 +16,12 @@ function assineEventoBotaoSalvar() {
             'POST',
             dadosFormulario.dados,
             function (data) {
-                MensagemRodape('success', data.mensagem);
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    CarregarPagina('/Servidor/Alterar/' + data.id)
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
             });
     });
 }
@@ -58,7 +63,7 @@ function assinechangeArquivoImagem() {
 function removerFotoServidor() {
     $.ajax({
         url: '/Foto/RemoverFotoServidor',
-        type: 'DELETE',
+        type: 'POST',
         data: { id: $('#Id').val() }
     }).done(function (data) {
         $('#fechar-offcanvas').trigger('click');
@@ -151,7 +156,7 @@ function removerCadastroDeLotacao() {
 
         RequisicaoAjaxComCarregamento(
             '/Servidor/RemoverLotacao',
-            'DELETE',
+            'POST',
             { id },
             function (data) {
                 if (data.sucesso) {
@@ -314,13 +319,13 @@ function assineRemoverAfastamento() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#7b7b7b",
             confirmButtonText: "Sim",
-            cancelButtonText: 'N�o'
+            cancelButtonText: 'Não'
         }).then((result) => {
             if (result.isConfirmed) {
                 RequisicaoAjaxComCarregamento(
                     '/Servidor/RemoverAfastamento',
-                    'DELETE',
-                    { afastamentoId: $('#form-afastamento').find('#Id').val() },
+                    'POST',
+                    { afastamentoId: $('#formulario-afastamento').find('#Id').val() },
                     function (data) {
                         if (data.sucesso) {
                             MensagemRodape('success', data.mensagem);

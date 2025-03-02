@@ -4,8 +4,6 @@ using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
-using Dapper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AriD.Servicos.Servicos
 {
@@ -16,13 +14,15 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<LotacaoUnidadeOrganizacional> _repositorioLotacao;
         private readonly IRepositorio<JustificativaDeAusencia> _repositorioJustificativa;
         private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
+        private readonly IRepositorio<Afastamento> _repositorioAfastamento;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
             IRepositorio<Servidor> repositorioServidor,
             IRepositorio<LotacaoUnidadeOrganizacional> repositorioLotacao,
             IRepositorio<JustificativaDeAusencia> repositorioJustificativa,
-            IRepositorio<VinculoDeTrabalho> repositorioVinculo)
+            IRepositorio<VinculoDeTrabalho> repositorioVinculo,
+            IRepositorio<Afastamento> repositorioAfastamento)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -30,6 +30,7 @@ namespace AriD.Servicos.Servicos
             _repositorioLotacao = repositorioLotacao;
             _repositorioJustificativa = repositorioJustificativa;
             _repositorioVinculo = repositorioVinculo;
+            _repositorioAfastamento = repositorioAfastamento;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -486,7 +487,7 @@ namespace AriD.Servicos.Servicos
                 });
 
                 List<EscalaDoServidor> escalasDoPeriodo = new();
-                List<Afastamento> afastamentosDoPeriodo = new();
+                List<Afastamento> afastamentosDoPeriodo = ObtenhaAfastamentosDoPeriodo(vinculoDeTrabalhoId, inicio, fim);
                 List<EventoAnual> eventosDoPeriodo = EventosDaFolhaDePonto(organizacaoId, inicio, fim);
                 Tuple<TimeSpan?, TimeSpan?> bancoDeHoras = ObtenhaCreditoDebitoDoPeriodoAnterior(vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras, vinculoDeTrabalhoId, inicio) ?? new(null, null);
 
@@ -528,6 +529,24 @@ namespace AriD.Servicos.Servicos
                         pontosDoPeriodo.Add(pontoDoDia);
                     }
 
+                    pontoDoDia.VinculoDeTrabalhoId = vinculoDeTrabalhoId;
+                    pontoDoDia.VinculoDeTrabalho = vinculoDeTrabalho;
+
+                    if (pontoDoDia.JustificativaPeriodo1Id.HasValue)
+                        pontoDoDia.JustificativaPeriodo1 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo1Id.Value);
+
+                    if (pontoDoDia.JustificativaPeriodo2Id.HasValue)
+                        pontoDoDia.JustificativaPeriodo2 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo2Id.Value);
+
+                    if (pontoDoDia.JustificativaPeriodo3Id.HasValue)
+                        pontoDoDia.JustificativaPeriodo3 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo3Id.Value);
+
+                    if (pontoDoDia.JustificativaPeriodo4Id.HasValue)
+                        pontoDoDia.JustificativaPeriodo4 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo4Id.Value);
+
+                    if (pontoDoDia.JustificativaPeriodo5Id.HasValue)
+                        pontoDoDia.JustificativaPeriodo5 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo5Id.Value);
+
                     /* TODO: Carregar registros de frequência do servidor */
                     if (!pontoDoDia.PontoFechado && !pontoDoDia.DataFutura)
                     {
@@ -550,24 +569,6 @@ namespace AriD.Servicos.Servicos
 
                 pontosDoPeriodo.ForEach(c =>
                 {
-                    c.VinculoDeTrabalhoId = vinculoDeTrabalhoId;
-                    c.VinculoDeTrabalho = vinculoDeTrabalho;
-
-                    if (c.JustificativaPeriodo1Id.HasValue)
-                        c.JustificativaPeriodo1 = _repositorioJustificativa.Obtenha(c.JustificativaPeriodo1Id.Value);
-
-                    if (c.JustificativaPeriodo2Id.HasValue)
-                        c.JustificativaPeriodo2 = _repositorioJustificativa.Obtenha(c.JustificativaPeriodo2Id.Value);
-
-                    if (c.JustificativaPeriodo3Id.HasValue)
-                        c.JustificativaPeriodo3 = _repositorioJustificativa.Obtenha(c.JustificativaPeriodo3Id.Value);
-
-                    if (c.JustificativaPeriodo4Id.HasValue)
-                        c.JustificativaPeriodo4 = _repositorioJustificativa.Obtenha(c.JustificativaPeriodo4Id.Value);
-
-                    if (c.JustificativaPeriodo5Id.HasValue)
-                        c.JustificativaPeriodo5 = _repositorioJustificativa.Obtenha(c.JustificativaPeriodo5Id.Value);
-
                     if (c.Id == 0)
                         _repositorio.Add(c);
                     else
@@ -924,6 +925,17 @@ namespace AriD.Servicos.Servicos
                     }
                 }
             }
+        }
+
+        private List<Afastamento> ObtenhaAfastamentosDoPeriodo(
+            int vinculoDeTrabalhoId,
+            DateTime inicio,
+            DateTime fim)
+        {
+            return _repositorioAfastamento
+                .ObtenhaLista(c => 
+                    c.VinculoDeTrabalhoId == vinculoDeTrabalhoId && 
+                    ((c.Inicio >= inicio && c.Inicio <= fim) || (c.Fim >= inicio && c.Fim <= fim)));
         }
     }
 }

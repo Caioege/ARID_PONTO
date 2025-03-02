@@ -32,9 +32,26 @@ function assineSalvarCadastroModal() {
                     MensagemRodape('success', data.mensagem);
                     CarregarPagina('/JustificativaDeAusencia/Index');
                 } else {
-                    MensagemRodape('Warning', data.mensagem);
+                    MensagemRodape('warning', data.mensagem);
                 }
             }
         );
     });
+}
+
+function removerRegistro() {
+    RequisicaoAjaxComCarregamento(
+        '/JustificativaDeAusencia/Remova/',
+        'POST',
+        { justificativaId: $('#_Modal').find('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#_Modal').modal('hide');
+                MensagemRodape('success', data.mensagem);
+                CarregarPagina('/JustificativaDeAusencia/Index');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        }
+    );
 }

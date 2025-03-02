@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using AriD.BibliotecaDeClasses.DTO;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.ComponentModel;
@@ -8,16 +9,15 @@ namespace AriD.GerenciamentoDePonto.Helpers
 {
     public static class EnumHtlmlHelper
     {
-        public static IEnumerable<SelectListItem> GetEnumSelectList<TEnum>(TEnum? selectedValue = null) where TEnum : struct, Enum
+        public static SelectList GetEnumSelectList<TEnum>(TEnum? selectedValue = null) where TEnum : struct, Enum
         {
-            return Enum.GetValues(typeof(TEnum))
-                .Cast<TEnum>()
-                .Select(e => new SelectListItem
-                {
-                    Text = GetEnumDescription(e),
-                    Value = Convert.ToInt32(e).ToString(),
-                    Selected = selectedValue.HasValue && e.Equals(selectedValue.Value)
-                });
+            return new SelectList(
+                    Enum.GetValues(typeof(TEnum))
+                    .Cast<TEnum>()
+                    .Select(e => new CodigoDescricaoDTO(Convert.ToInt32(e), GetEnumDescription(e))),
+                "Codigo",
+                "Descricao",
+                selectedValue.HasValue ? Convert.ToInt32(selectedValue) : default(int?));
         }
 
         private static string GetEnumDescription<TEnum>(TEnum enumValue)
@@ -46,7 +46,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
             object htmlAttributes = null) where TEnum : struct, Enum
         {
             var selectList = GetEnumSelectList<TEnum>(selectedValue);
-            return htmlHelper.DropDownList(name, new SelectList(selectList, "Value", "Text"), htmlAttributes);
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
         }
 
         public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(
@@ -82,7 +82,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
 
             var selectList = GetEnumSelectList<TEnum>(value);
 
-            return htmlHelper.DropDownList(name, new SelectList(selectList, "Value", "Text"), label, htmlAttributes);
+            return htmlHelper.DropDownList(name, selectList, label, htmlAttributes);
         }
 
         public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(
@@ -102,7 +102,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
 
             var selectList = GetEnumSelectList<TEnum>(value);
 
-            return htmlHelper.DropDownList(name, new SelectList(selectList, "Value", "Text"), label, htmlAttributes);
+            return htmlHelper.DropDownList(name, selectList, label, htmlAttributes);
         }
     }
 }

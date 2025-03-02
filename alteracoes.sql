@@ -197,6 +197,7 @@ CREATE TABLE `arid_ponto`.`registrodeponto` (
   `OrganizacaoId` INT NOT NULL,
   `EquipamentoDePontoId` INT NOT NULL,
   `UsuarioEquipamentoId` VARCHAR(50) NOT NULL,
+  `TipoRegistro` INT NOT NULL,
   `DataHoraRegistro` DATETIME NOT NULL,
   `DataHoraRecebimento` DATETIME NOT NULL,
   PRIMARY KEY (`Id`),
@@ -215,3 +216,51 @@ CREATE TABLE `arid_ponto`.`registrodeponto` (
     
 ALTER TABLE `arid_ponto`.`equipamentodeponto` 
 ADD UNIQUE INDEX `UQ_EquipamentoDePonto` (`NumeroDeSerie` ASC, `OrganizacaoId` ASC);
+
+CREATE TABLE `arid_ponto`.`grupodepermissao` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `Sigla` VARCHAR(5) NOT NULL,
+  `Descricao` VARCHAR(100) NOT NULL,
+  `PerfilDeAcesso` INT NOT NULL,
+  `Ativo` TINYINT NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_Organizacao_GrupoDePermissao_idx` (`OrganizacaoId` ASC),
+  CONSTRAINT `FK_Organizacao_GrupoDePermissao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+CREATE TABLE `arid_ponto`.`itemdogrupodepermissao` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `GrupoDePermissaoId` INT NOT NULL,
+  `EnumeradorNome` VARCHAR(1000) NOT NULL,
+  `ValorDoEnumerador` INT NOT NULL,
+  `PermissaoAtiva` TINYINT NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_Organizacao_ItemDoGrupoDePermissao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_GrupoDePermissao_ItemDoGrupoDePermissao_idx` (`GrupoDePermissaoId` ASC) VISIBLE,
+  CONSTRAINT `FK_Organizacao_ItemDoGrupoDePermissao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_GrupoDePermissao_ItemDoGrupoDePermissao`
+    FOREIGN KEY (`GrupoDePermissaoId`)
+    REFERENCES `arid_ponto`.`grupodepermissao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+ALTER TABLE `arid_ponto`.`usuario` 
+ADD COLUMN `GrupoDePermissaoId` INT NULL AFTER `NomeDaPessoa`,
+ADD INDEX `FK_GrupoDePermissao_Usuario_idx` (`GrupoDePermissaoId` ASC) ;
+
+ALTER TABLE `arid_ponto`.`usuario` 
+ADD CONSTRAINT `FK_GrupoDePermissao_Usuario`
+  FOREIGN KEY (`GrupoDePermissaoId`)
+  REFERENCES `arid_ponto`.`grupodepermissao` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+

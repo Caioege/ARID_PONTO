@@ -68,24 +68,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public IActionResult FiltrosPontoDoDia(int unidadeId)
         {
-            try
-            {
-                var filtros = _servicoDeFolhaDePonto.ObtenhaFiltrosPontoDia(
+            var filtros = _servicoDeFolhaDePonto.ObtenhaFiltrosPontoDia(
                     HttpContext.DadosDaSessao().OrganizacaoId,
                     unidadeId);
 
-                return Json(new
-                {
-                    sucesso = true,
-                    funcoes = filtros.Funcoes,
-                    departamentos = filtros.Departamentos,
-                    horarios = filtros.Horarios
-                });
-            }
-            catch (Exception ex)
+            return Json(new
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                funcoes = filtros.Funcoes,
+                departamentos = filtros.Departamentos,
+                horarios = filtros.Horarios
+            });
         }
 
         [HttpGet]
@@ -96,33 +89,26 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int? funcaoId,
             int? departamentoId)
         {
-            try
-            {
-                if (data.Date > DateTime.Today)
-                    throw new ApplicationException("Não é possível visualizar ponto do dia para datas futuras.");
+            if (data.Date > DateTime.Today)
+                throw new ApplicationException("Não é possível visualizar ponto do dia para datas futuras.");
 
-                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
-                var pontos = _servicoDeFolhaDePonto.ObtenhaPontosDoDia(
-                    data,
-                    organizacaoId,
-                    unidadeId,
-                    horarioId,
-                    funcaoId,
-                    departamentoId);
+            var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+            var pontos = _servicoDeFolhaDePonto.ObtenhaPontosDoDia(
+                data,
+                organizacaoId,
+                unidadeId,
+                horarioId,
+                funcaoId,
+                departamentoId);
 
-                if (!pontos.Any())
-                    throw new ApplicationException("Nenhum ponto disponível no dia.");
+            if (!pontos.Any())
+                throw new ApplicationException("Nenhum ponto disponível no dia.");
 
-                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
+            ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
 
-                var html = await RenderizarComoString("_PartialPontoDoDia", pontos);
+            var html = await RenderizarComoString("_PartialPontoDoDia", pontos);
 
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html });
         }
 
         [HttpPost]
@@ -134,30 +120,23 @@ namespace AriD.GerenciamentoDePonto.Controllers
             string acao,
             bool folhaDePonto)
         {
-            try
-            {
-                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
-                var pontoDoDia = _servicoDeFolhaDePonto.AtualizePontoDoDia(
-                    organizacaoId,
-                    vinculoDeTrabalhoId,
-                    data,
-                    valorHora,
-                    justificativaId,
-                    acao);
+            var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+            var pontoDoDia = _servicoDeFolhaDePonto.AtualizePontoDoDia(
+                organizacaoId,
+                vinculoDeTrabalhoId,
+                data,
+                valorHora,
+                justificativaId,
+                acao);
 
-                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
-                ViewBag.ExibirNomeServidor = !folhaDePonto;
+            ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
+            ViewBag.ExibirNomeServidor = !folhaDePonto;
 
-                string html = string.Empty;
-                if (!folhaDePonto)
-                    html = await RenderizarComoString("_LinhaPontoDia", pontoDoDia);
+            string html = string.Empty;
+            if (!folhaDePonto)
+                html = await RenderizarComoString("_LinhaPontoDia", pontoDoDia);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", html });
         }
 
         [HttpGet]
@@ -166,58 +145,37 @@ namespace AriD.GerenciamentoDePonto.Controllers
             DateTime data, 
             string acao)
         {
-            try
-            {
-                ViewBag.Acao = acao;
-                var pontoDoDia = _servicoDeFolhaDePonto.ObtenhaPontoDoDia(vinculoDeTrabalhoId, data);
+            ViewBag.Acao = acao;
+            var pontoDoDia = _servicoDeFolhaDePonto.ObtenhaPontoDoDia(vinculoDeTrabalhoId, data);
 
-                ViewBag.Justificativas = _servicoJustificativa
-                    .ObtenhaLista(c => 
-                        c.OrganizacaoId == this.DadosDaSessao().OrganizacaoId && 
-                        c.LocalDeUso != eLocalDeUsoDeJustificativaDeAusencia.Afastamento && 
-                        c.Ativa)
-                    .Select(c => new CodigoDescricaoDTO(c.Id, c.SiglaComDescricao))
-                    .OrderBy(c => c.Descricao);
+            ViewBag.Justificativas = _servicoJustificativa
+                .ObtenhaLista(c =>
+                    c.OrganizacaoId == this.DadosDaSessao().OrganizacaoId &&
+                    c.LocalDeUso != eLocalDeUsoDeJustificativaDeAusencia.Afastamento &&
+                    c.Ativa)
+                .Select(c => new CodigoDescricaoDTO(c.Id, c.SiglaComDescricao))
+                .OrderBy(c => c.Descricao);
 
-                var html = await RenderizarComoString("_ModalPontoDoDia", pontoDoDia);
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            var html = await RenderizarComoString("_ModalPontoDoDia", pontoDoDia);
+            return Json(new { sucesso = true, html });
         }
 
         [HttpGet]
         public IActionResult ServidoresLotadosNaUnidade(int unidadeId)
         {
-            try
-            {
-                var servidores = _servicoDeFolhaDePonto
+            var servidores = _servicoDeFolhaDePonto
                     .ObtenhaServidoresLotadosNaUnidade(this.DadosDaSessao().OrganizacaoId, unidadeId);
 
-                return Json(new { sucesso = true, servidores });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, servidores });
         }
 
         [HttpGet]
         public IActionResult VinculosDoServidor(int servidorId, int unidadeId)
         {
-            try
-            {
-                var vinculos = _servicoDeFolhaDePonto
+            var vinculos = _servicoDeFolhaDePonto
                     .ObtenhaVinculosDeTrabalhoDoServido(this.DadosDaSessao().OrganizacaoId, servidorId, unidadeId);
 
-                return Json(new { sucesso = true, vinculos });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, vinculos });
         }
 
         [HttpGet]
@@ -226,35 +184,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int unidadeId,
             string mesDeReferencia)
         {
-            try
+            var mesAno = new MesAno(mesDeReferencia);
+
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            var organizacaoId = this.DadosDaSessao().OrganizacaoId;
+
+            var listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(
+                organizacaoId,
+                vinculoDeTrabalhoId,
+                unidadeId,
+                mesAno);
+
+            ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
+
+            var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
+            return Json(new
             {
-                var mesAno = new MesAno(mesDeReferencia);
-
-                if (mesAno.Inicio.Date > DateTime.Today)
-                    throw new ApplicationException("O início do período é maior que a data atual.");
-
-                var organizacaoId = this.DadosDaSessao().OrganizacaoId;
-
-                var listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(
-                    organizacaoId,
-                    vinculoDeTrabalhoId,
-                    unidadeId,
-                    mesAno);
-
-                ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
-
-                var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
-                return Json(new 
-                { 
-                    sucesso = true, html, 
-                    exibirAbrir = listaDePonto.All(c => c.PontoFechado),
-                    exibirAcoes = !listaDePonto.Any(d => d.DataFutura)
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                html,
+                exibirAbrir = listaDePonto.All(c => c.PontoFechado),
+                exibirAcoes = !listaDePonto.Any(d => d.DataFutura)
+            });
         }
 
         [HttpPost]
@@ -264,29 +216,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
             string mesDeReferencia,
             bool fechar)
         {
-            try
-            {
-                var mesAno = new MesAno(mesDeReferencia);
+            var mesAno = new MesAno(mesDeReferencia);
 
-                if (mesAno.Inicio.Date > DateTime.Today)
-                    throw new ApplicationException("O início do período é maior que a data atual.");
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
 
-                if (mesAno.Fim.Date > DateTime.Today)
-                    throw new ApplicationException("Folhas de ponto com data final futura não podem ser fechadas.");
+            if (mesAno.Fim.Date > DateTime.Today)
+                throw new ApplicationException("Folhas de ponto com data final futura não podem ser fechadas.");
 
-                _servicoDeFolhaDePonto.FecharOuAbrirFolhaDePonto(
-                    HttpContext.DadosDaSessao().OrganizacaoId,
-                    vinculoDeTrabalhoId,
-                    mesAno,
-                    unidadeId,
-                    fechar);
+            _servicoDeFolhaDePonto.FecharOuAbrirFolhaDePonto(
+                HttpContext.DadosDaSessao().OrganizacaoId,
+                vinculoDeTrabalhoId,
+                mesAno,
+                unidadeId,
+                fechar);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
         }
 
         [HttpPost]
@@ -295,44 +240,37 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int unidadeId,
             string mesDeReferencia)
         {
-            try
+            var mesAno = new MesAno(mesDeReferencia);
+
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            var organizacaoId = this.DadosDaSessao().OrganizacaoId;
+
+            var listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(
+                organizacaoId,
+                vinculoDeTrabalhoId,
+                unidadeId,
+                mesAno);
+
+            var vinculoDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId);
+            var eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
+
+            var relatorio = RelatorioFolhaDePonto(
+                vinculoDeTrabalho,
+                mesAno,
+                eventos,
+                listaDePonto);
+
+            var nomeArquivo = $"Folha de Ponto {mesAno.ToString().Replace("/", "-")}.pdf";
+
+            return Json(new
             {
-                var mesAno = new MesAno(mesDeReferencia);
-
-                if (mesAno.Inicio.Date > DateTime.Today)
-                    throw new ApplicationException("O início do período é maior que a data atual.");
-
-                var organizacaoId = this.DadosDaSessao().OrganizacaoId;
-
-                var listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(
-                    organizacaoId,
-                    vinculoDeTrabalhoId,
-                    unidadeId,
-                    mesAno);
-
-                var vinculoDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId);
-                var eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
-
-                var relatorio = RelatorioFolhaDePonto(
-                    vinculoDeTrabalho,
-                    mesAno,
-                    eventos, 
-                    listaDePonto);
-
-                var nomeArquivo = $"Folha de Ponto {mesAno.ToString().Replace("/", "-")}.pdf";
-
-                return Json(new
-                {
-                    sucesso = true,
-                    fileName = nomeArquivo,
-                    base64 = Convert.ToBase64String(relatorio),
-                    mimeType = GetMimeType(nomeArquivo)
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
         }
 
         private void ContextoPontoDoDia()
@@ -344,10 +282,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativa),
                     "Id",
                     "Nome");
-            }
-            else
-            {
-                
             }
         }
 
@@ -563,10 +497,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 var descricaoDia = $"{dia.Data.ToShortDateString()} - {dia.DiaDaSemana.SiglaDaSemanaDoEnumerador()}";
 
-                //if (eventoDoDia != null)
-                //{
-                //    descricaoDia += $"[{eventoDoDia.Descricao} ({eventoDoDia.Tipo.DescricaoDoEnumerador()})]";
-                //}
+                if (eventoDoDia != null)
+                {
+                    descricaoDia += $"[{eventoDoDia.Descricao} ({eventoDoDia.Tipo.DescricaoDoEnumerador()})]";
+                }
 
                 table.AddCell(new Cell()
                     .Add(new Paragraph()
@@ -640,11 +574,15 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                         if ((dia.BancoDeHorasCredito ?? TimeSpan.Zero) > TimeSpan.Zero)
                         {
-                            descricaoBH = $"+{dia.BancoDeHorasCredito?.ToString(@"hh\:mm")}";
+                            descricaoBH = $"+{(dia.BancoDeHorasCredito.Value.TotalHours >= 1
+                           ? $"{(int)dia.BancoDeHorasCredito.Value.TotalHours}:{dia.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                           : $"00:{dia.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}")}";
                         }
                         else if ((dia.BancoDeHorasDebito ?? TimeSpan.Zero) > TimeSpan.Zero) 
                         {
-                            descricaoBH = $"-{dia.BancoDeHorasDebito?.ToString(@"hh\:mm")}";
+                            descricaoBH = $"-{(dia.BancoDeHorasDebito.Value.TotalHours >= 1
+                           ? $"{(int)dia.BancoDeHorasDebito.Value.TotalHours}:{dia.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                           : $"00:{dia.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}")}";
                         }
 
                         table

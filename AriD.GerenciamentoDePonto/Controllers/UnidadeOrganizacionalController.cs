@@ -73,21 +73,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult Salvar(UnidadeOrganizacional unidadeOrganizacional)
         {
-            try
-            {
-                int id = unidadeOrganizacional.Id;
+            int id = unidadeOrganizacional.Id;
 
-                if (unidadeOrganizacional.Id == 0)
-                    id = _servicoUnidadeOrganizacional.Adicionar(unidadeOrganizacional);
-                else
-                    _servicoUnidadeOrganizacional.Atualizar(unidadeOrganizacional);
+            if (unidadeOrganizacional.Id == 0)
+                id = _servicoUnidadeOrganizacional.Adicionar(unidadeOrganizacional);
+            else
+                _servicoUnidadeOrganizacional.Atualizar(unidadeOrganizacional);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
     }
 }

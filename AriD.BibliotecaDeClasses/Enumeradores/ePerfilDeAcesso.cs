@@ -11,6 +11,9 @@ namespace AriD.BibliotecaDeClasses.Enumeradores
         Organizacao,
 
         [Description("Unidade")]
-        UnidadeOrganizacional
+        UnidadeOrganizacional,
+
+        [Description("Departamento")]
+        Departamento
     }
 }

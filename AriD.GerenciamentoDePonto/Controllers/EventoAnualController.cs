@@ -51,53 +51,32 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int eventoId)
         {
-            try
-            {
-                var model = eventoId == 0 ? new() : _servico.Obtenha(eventoId);
-                var html = await RenderizarComoString("_Modal", model);
-                return Json(new { sucesso = true, html = html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            var model = eventoId == 0 ? new() : _servico.Obtenha(eventoId);
+            var html = await RenderizarComoString("_Modal", model);
+            return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
         public IActionResult Salvar(EventoAnual evento)
         {
-            try
-            {
-                int id = evento.Id;
-                evento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = evento.Id;
+            evento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (evento.Id == 0)
-                    id = _servico.Adicionar(evento);
-                else
-                    _servico.Atualizar(evento);
+            if (evento.Id == 0)
+                id = _servico.Adicionar(evento);
+            else
+                _servico.Atualizar(evento);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Remova(int eventoId)
         {
-            try
-            {
-                var evento = _servico.Obtenha(eventoId);
-                _servico.Remover(evento);
+            var evento = _servico.Obtenha(eventoId);
+            _servico.Remover(evento);
 
-                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<EventoAnual> listaPaginada)

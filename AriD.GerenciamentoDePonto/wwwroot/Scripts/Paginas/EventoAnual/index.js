@@ -42,7 +42,7 @@ function assineSalvarCadastroModal() {
 function removerRegistro() {
     RequisicaoAjaxComCarregamento(
         '/EventoAnual/Remova/',
-        'DELETE',
+        'POST',
         { eventoId: $('#_Modal').find('#Id').val() },
         function (data) {
             if (data.sucesso) {

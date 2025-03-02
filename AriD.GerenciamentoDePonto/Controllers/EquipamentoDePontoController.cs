@@ -5,12 +5,10 @@ using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -57,24 +55,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int equipamentoId)
         {
-            try
-            {
-                var model = equipamentoId == 0 ?
+            var model = equipamentoId == 0 ?
                     new EquipamentoDePonto { Ativo = true } :
                     _equipamentoServico.Obtenha(equipamentoId);
 
-                if (equipamentoId == 0)
-                    ViewBag.Unidades = new SelectList(_unidadeServico.ObtenhaLista(c => c.OrganizacaoId == this.DadosDaSessao().OrganizacaoId).OrderBy(c => c.Nome),
-                        "Id", "Nome");
+            if (equipamentoId == 0)
+                ViewBag.Unidades = new SelectList(_unidadeServico.ObtenhaLista(c => c.OrganizacaoId == this.DadosDaSessao().OrganizacaoId).OrderBy(c => c.Nome),
+                    "Id", "Nome");
 
-                var html = await RenderizarComoString("_Modal", model);
+            var html = await RenderizarComoString("_Modal", model);
 
-                return Json(new { sucesso = true, html = html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
@@ -96,28 +87,27 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
+                var duplicateEntryText = "duplicate entry";
+                if (ex.Message.ToLower().Contains(duplicateEntryText) || (ex.InnerException != null && ex.InnerException.Message.ToLower().Contains(duplicateEntryText)))
+                {
+                    return Json(new { sucesso = false, mensagem = "Já existe um outro equipamento cadastrado com esse número de série." });
+                }
+
+                throw ex;
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Remova(int equipamentoId)
         {
-            try
-            {
-                var equipamento = _equipamentoServico.Obtenha(equipamentoId);
-                var numeroDeSerie = equipamento.NumeroDeSerie;
+            var equipamento = _equipamentoServico.Obtenha(equipamentoId);
+            var numeroDeSerie = equipamento.NumeroDeSerie;
 
-                _equipamentoServico.Remover(equipamento);
+            _equipamentoServico.Remover(equipamento);
 
-                EnvieNotificacaoParaGerenciadorDeEquipamento(numeroDeSerie, true);
+            EnvieNotificacaoParaGerenciadorDeEquipamento(numeroDeSerie, true);
 
-                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<EquipamentoDePonto> listaPaginada)
@@ -138,7 +128,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         c.UnidadeOrganizacional.Nome.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()));
             }
 
-            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            if (dadosDaSessao.UnidadeOrganizacionais.Any())
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(filtro,
                     c => dadosDaSessao.UnidadeOrganizacionais.Contains(c.UnidadeOrganizacionalId));

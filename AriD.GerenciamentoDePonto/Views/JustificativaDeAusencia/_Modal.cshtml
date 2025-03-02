@@ -2,9 +2,11 @@
 
 @{
     var adicionar = Model.Id == 0;
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.CadastrarOuAlterar);
 }
 
-<div class="modal" tabindex="-1" id="_Modal">
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,13 +53,19 @@
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
 
-                <button type="button" class="btn btn-danger" onclick="removerRegistro()">
-                    <i class='bx bx-trash'></i> Remover
-                </button>
+                @if (!adicionar && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerRegistro()">
+                        <i class='bx bx-trash'></i> Remover
+                    </button>
+                }
 
-                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
-                    <i class='bx bxs-save'></i> Salvar
-                </button>
+                @if (podeAlterar)
+                {
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                }
             </div>
         </div>
     </div>

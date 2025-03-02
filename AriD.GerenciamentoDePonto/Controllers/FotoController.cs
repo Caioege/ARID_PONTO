@@ -37,61 +37,47 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public ActionResult SalvarFotoServidor(int id, IFormFile file)
         {
-            try
-            {
-                byte[] arquivo = null;
-                if (file.Length > 0)
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        arquivo = ms.ToArray();
-                    }
-
-                if (!file.ContentType.Contains("image"))
-                    throw new ApplicationException("O item selecionado não é uma imagem.");
-
-                if (arquivo != null)
+            byte[] arquivo = null;
+            if (file.Length > 0)
+                using (var ms = new MemoryStream())
                 {
-                    var imagem = ImageToByteArray(ResizeImage(ByteArrayToImage(arquivo), new Size(140, 160)));
-
-                    var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-
-                    var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{organizacaoId}");
-
-                    if (!Path.Exists(pastaBase))
-                        Directory.CreateDirectory(pastaBase);
-
-                    var caminho = Path.Combine(pastaBase, $"{id}.png");
-
-                    using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
-                        fs.Write(imagem, 0, (int)imagem.Length);
+                    file.CopyTo(ms);
+                    arquivo = ms.ToArray();
                 }
 
-                return Json(new { sucesso = true, mensagem = "A imagem foi atualizada." });
-            }
-            catch (Exception ex)
+            if (!file.ContentType.Contains("image"))
+                throw new ApplicationException("O item selecionado não é uma imagem.");
+
+            if (arquivo != null)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                var imagem = ImageToByteArray(ResizeImage(ByteArrayToImage(arquivo), new Size(140, 160)));
+
+                var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+
+                var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{organizacaoId}");
+
+                if (!Path.Exists(pastaBase))
+                    Directory.CreateDirectory(pastaBase);
+
+                var caminho = Path.Combine(pastaBase, $"{id}.png");
+
+                using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
+                    fs.Write(imagem, 0, (int)imagem.Length);
             }
+
+            return Json(new { sucesso = true, mensagem = "A imagem foi atualizada." });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult RemoverFotoServidor(int id)
         {
-            try
-            {
-                var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-                var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{organizacaoId}", $"{id}.png");
+            var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{organizacaoId}", $"{id}.png");
 
-                if (Path.Exists(caminhoArquivo))
-                    System.IO.File.Delete(caminhoArquivo);
+            if (Path.Exists(caminhoArquivo))
+                System.IO.File.Delete(caminhoArquivo);
 
-                return Json(new { sucesso = true, mensagem = "A imagem foi removida." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "A imagem foi removida." });
         }
 
         private static byte[] ImageToByteArray(System.Drawing.Image image)

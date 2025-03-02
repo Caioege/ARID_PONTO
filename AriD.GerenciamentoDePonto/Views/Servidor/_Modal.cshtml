@@ -2,9 +2,11 @@
 
 @{
     var adicionar = Model.Id == 0;
+    var gerenciarVinculo = Context.PossuiPermissao(eItemDePermissao_Servidor.CadastrarOuAlterar);
+    var gerenciarLotacoes = Context.PossuiPermissao(eItemDePermissao_Servidor.GerenciarLotacoes);
 }
 
-<div class="modal" tabindex="-1" id="_Modal">
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -104,22 +106,29 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class='bx bx-window-close'></i> Fechar
                     </button>
-                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
-                        <i class='bx bxs-save'></i> Salvar
-                    </button>
+                    @if (gerenciarLotacoes)
+                    {
+                        <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                            <i class='bx bxs-save'></i> Salvar
+                        </button>
+                    }
                 </div>
                 <div id="modal-footer-lotacao" style="display:none;">
                     <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoLotacao()">
                         <i class='bx bx-left-arrow-alt'></i> Voltar
                     </button>
 
-                    <button type="button" class="btn btn-danger" id="btn-remover-lotacao">
-                        <i class='bx bxs-trash'></i> Remover
-                    </button>
+                    @if (gerenciarVinculo)
+                    {
+                        <button type="button" class="btn btn-danger" id="btn-remover-lotacao">
+                            <i class='bx bxs-trash'></i> Remover
+                        </button>
 
-                    <button type="button" class="btn btn-primary" id="btn-salvar-lotacao">
-                        <i class='bx bxs-save'></i> Salvar
-                    </button>
+                        <button type="button" class="btn btn-primary" id="btn-salvar-lotacao">
+                            <i class='bx bxs-save'></i> Salvar
+                        </button>
+                    }
+
                 </div>
             </div>
         </div>

@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\RegistroDePonto\" />
     <Folder Include="wwwroot\img\pessoas\organizacao\" />
   </ItemGroup>
 

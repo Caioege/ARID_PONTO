@@ -1,0 +1,38 @@
+﻿@using AriD.Servicos.Extensao
+@model Tuple<string, Type, GrupoDePermissao>
+
+@{
+    var fullName = Model.Item2.FullName;
+}
+
+<table class="table-permissao">
+    <tr>
+        <td rowspan="2"
+        style="vertical-align: middle">
+            @Model.Item1
+        </td>
+        @foreach (Enum item in Enum.GetValues(Model.Item2)) 
+        {
+            <td class="text-center" width="15%">
+                @item.DescricaoDoEnumerador()
+            </td>
+        }
+    </tr>
+    <tr>
+        @foreach (var item in Enum.GetValues(Model.Item2))
+        {
+            var permissao = Model
+                .Item3
+                .ListaDePermissao
+                .FirstOrDefault(c => c.EnumeradorNome == fullName && c.ValorDoEnumerador == (int)item);
+
+            <td class="text-center">
+                <input type="checkbox"
+                       data-id="@(permissao?.Id ?? 0)"
+                       data-enumeradornome="@fullName"
+                       data-valorenumerador="@((int)item)"
+                       checked="@(permissao?.PermissaoAtiva ?? false)" />
+            </td>
+        }
+    </tr>
+</table>

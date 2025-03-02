@@ -2,6 +2,7 @@
 
 @{
     var afastamentos = Model.VinculosDeTrabalho.SelectMany(c => c.Afastamentos);
+    var gerenciarAfastamentos = Context.PossuiPermissao(eItemDePermissao_Servidor.GerenciarAfastamentos);
 }
 
 <table class="table table-bordered">
@@ -12,9 +13,12 @@
             <th class="text-center" width="15%">Início</th>
             <th class="text-center" width="15%">Fim</th>
             <th class="text-center" width="5%">
-                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAfastamento(0)">
-                    <i class='bx bx-list-plus'></i>
-                </button>
+                @if (gerenciarAfastamentos)
+                {
+                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAfastamento(0)">
+                        <i class='bx bx-list-plus'></i>
+                    </button>
+                }
             </th>
         </tr>
     </thead>

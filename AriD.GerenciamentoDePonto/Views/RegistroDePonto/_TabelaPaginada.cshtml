@@ -1,0 +1,30 @@
+﻿@using AriD.BibliotecaDeClasses.DTO;
+@using AriD.BibliotecaDeClasses.Enumeradores
+@model ListaPaginada<RegistroDePontoIndexDTO>
+
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+    var tabela = new WebGrid<RegistroDePontoIndexDTO>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("EquipamentoDescricao", "Equipamento", width: 20f),
+        tabela.Column("IdEquipamento", "Matrícula Equipamento", width: 10f),
+        tabela.Column("PessoaNome", "Servidor", width: 25f),
+        tabela.Column("DataHoraRegistro", "Registro", format: 
+            @<text>
+                @(((DateTime)item.DataHoraRegistro).ToString("dd/MM/yyyy HH:mm"))
+            </text>, width: 10f),
+        tabela.Column("DataHoraRecebimento", "Recebimento",
+            @<text>
+                @(((DateTime)item.DataHoraRecebimento).ToString("dd/MM/yyyy HH:mm"))
+            </text>, width: 10f),
+    };
+
+    if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao) 
+    {
+        listaDeColunas.Add(tabela.Column("UnidadeOrganizacionalNome", "Unidade"));
+    }
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

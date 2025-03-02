@@ -55,62 +55,41 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int justificativaId)
         {
-            try
-            {
-                var model = justificativaId == 0 ?
-                    new JustificativaDeAusencia 
+            var model = justificativaId == 0 ?
+                    new JustificativaDeAusencia
                     {
-                        Ativa = true, 
+                        Ativa = true,
                         LocalDeUso = eLocalDeUsoDeJustificativaDeAusencia.AfastamentoEFolhaDePonto,
                         Abono = true
                     } :
                     _justificativaServico.Obtenha(justificativaId);
 
-                var html = await RenderizarComoString("_Modal", model);
+            var html = await RenderizarComoString("_Modal", model);
 
-                return Json(new { sucesso = true, html = html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
         public IActionResult Salvar(JustificativaDeAusencia justificativa)
         {
-            try
-            {
-                int id = justificativa.Id;
-                justificativa.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = justificativa.Id;
+            justificativa.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (justificativa.Id == 0)
-                    id = _justificativaServico.Adicionar(justificativa);
-                else
-                    _justificativaServico.Atualizar(justificativa);
+            if (justificativa.Id == 0)
+                id = _justificativaServico.Adicionar(justificativa);
+            else
+                _justificativaServico.Atualizar(justificativa);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Remova(int justificativaId)
         {
-            try
-            {
-                var justificativa = _justificativaServico.Obtenha(justificativaId);
-                _justificativaServico.Remover(justificativa);
+            var justificativa = _justificativaServico.Obtenha(justificativaId);
+            _justificativaServico.Remover(justificativa);
 
-                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<JustificativaDeAusencia> listaPaginada)

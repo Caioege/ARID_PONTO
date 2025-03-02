@@ -10,7 +10,9 @@ namespace AriD.BibliotecaDeClasses.DTO
             ePerfilDeAcesso perfil,
             int organizacaoId,
             string organizacaoNome,
-            List<int> unidades)
+            List<int> unidades,
+            List<KeyValuePair<string, int>> permissoes,
+            bool usuarioAdministradorAutenticado = false)
         {
             UsuarioId = usuarioId;
             UsuarioNome = usuarioNome;
@@ -18,6 +20,8 @@ namespace AriD.BibliotecaDeClasses.DTO
             OrganizacaoId = organizacaoId;
             UnidadeOrganizacionais = unidades;
             OrganizacaoNome = organizacaoNome;
+            Permissoes = permissoes;
+            UsuarioAdministradorAutenticado = usuarioAdministradorAutenticado;
         }
 
         public int UsuarioId { get; set; }
@@ -27,6 +31,10 @@ namespace AriD.BibliotecaDeClasses.DTO
 
         public int OrganizacaoId { get; set; }
         public string OrganizacaoNome { get; set; }
+
+        public bool UsuarioAdministradorAutenticado { get; set; }
+
         public List<int> UnidadeOrganizacionais { get; set; } = new();
+        public List<KeyValuePair<string, int>> Permissoes { get; set; } = new();
     }
 }

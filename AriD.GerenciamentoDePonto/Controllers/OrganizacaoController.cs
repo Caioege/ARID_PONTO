@@ -76,47 +76,33 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult Salvar(Organizacao organizacao)
         {
-            try
-            {
-                int id = organizacao.Id;
+            int id = organizacao.Id;
 
-                if (organizacao.Id == 0)
-                    id = _servico.Adicionar(organizacao);
-                else 
-                    _servico.Atualizar(organizacao);
+            if (organizacao.Id == 0)
+                id = _servico.Adicionar(organizacao);
+            else
+                _servico.Atualizar(organizacao);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         [HttpPost]
         public ActionResult AutenticarOrganizacao(int id)
         {
-            try
-            {
-                var organizacao = _servico.Obtenha(id);
+            var organizacao = _servico.Obtenha(id);
 
-                var dadosDaSessao = HttpContext.DadosDaSessao();
-                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
-                    throw new ApplicationException("Sem permissão");
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                throw new ApplicationException("Sem permissão");
 
-                HttpContext?.Session?.Clear();
+            HttpContext?.Session?.Clear();
 
-                dadosDaSessao.OrganizacaoId = id;
-                dadosDaSessao.OrganizacaoNome = organizacao.Nome;
-                dadosDaSessao.Perfil = ePerfilDeAcesso.Organizacao;
-                this.Autenticar(dadosDaSessao);
+            dadosDaSessao.OrganizacaoId = id;
+            dadosDaSessao.OrganizacaoNome = organizacao.Nome;
+            dadosDaSessao.Perfil = ePerfilDeAcesso.Organizacao;
+            this.Autenticar(dadosDaSessao);
 
-                return Json(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true });
         }
 
         [HttpGet]
@@ -137,34 +123,27 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public ActionResult PostBrasao(int id, IFormFile file)
         {
-            try
-            {
-                byte[] arquivo = null;
-                if (file.Length > 0)
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        arquivo = ms.ToArray();
-                    }
-
-                if (!file.ContentType.Contains("image"))
-                    throw new ApplicationException("O item selecionado não é uma imagem.");
-
-                if (arquivo != null)
+            byte[] arquivo = null;
+            if (file.Length > 0)
+                using (var ms = new MemoryStream())
                 {
-                    var imagem = ImageToByteArray(ResizeImage(ByteArrayToImage(arquivo), new Size(140, 140)));
-
-                    var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "brasoes", $"{id}.png");
-                    using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
-                        fs.Write(imagem, 0, (int)imagem.Length);
+                    file.CopyTo(ms);
+                    arquivo = ms.ToArray();
                 }
 
-                return Json(new { sucesso = true, mensagem = "Imagem atualizada." });
-            }
-            catch (Exception ex)
+            if (!file.ContentType.Contains("image"))
+                throw new ApplicationException("O item selecionado não é uma imagem.");
+
+            if (arquivo != null)
             {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
+                var imagem = ImageToByteArray(ResizeImage(ByteArrayToImage(arquivo), new Size(140, 140)));
+
+                var path = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "brasoes", $"{id}.png");
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+                    fs.Write(imagem, 0, (int)imagem.Length);
             }
+
+            return Json(new { sucesso = true, mensagem = "Imagem atualizada." });
         }
 
         private static byte[] ImageToByteArray(System.Drawing.Image image)

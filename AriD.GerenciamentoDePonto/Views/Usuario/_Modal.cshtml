@@ -1,11 +1,14 @@
-﻿@using AriD.Servicos.Extensao
+﻿@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model Usuario
 
 @{
     var adicionar = Model.Id == 0;
+    var dadosDaSessao = Context.DadosDaSessao();
 }
 
-<div class="modal" tabindex="-1" id="_Modal">
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -41,9 +44,32 @@
 
                         <div class="col col-lg-8 col-md-6 col-sm-12">
                             <label class="form-label obrigatorio" for="PerfilDeAcesso">Perfil de Acesso</label>
-                            @Html.TextBox("PerfilDeAcessoDescricao", Model.PerfilDeAcesso.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                            @if (Model.Id > 0 || dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)    {
+                                @Html.TextBox("PerfilDeAcessoDescricao", Model.PerfilDeAcesso.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                            }
+                            else 
+                            {
+                                var listaDePerfis = new List<CodigoDescricaoDTO>()
+                                {
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.Organizacao, ePerfilDeAcesso.Organizacao.DescricaoDoEnumerador()),
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.UnidadeOrganizacional, ePerfilDeAcesso.UnidadeOrganizacional.DescricaoDoEnumerador()),
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.Departamento, ePerfilDeAcesso.Departamento.DescricaoDoEnumerador())
+                                };
+
+                                @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })
+                            }
                         </div>
                     </div>
+
+                    @if (Context.DadosDaSessao().Perfil != ePerfilDeAcesso.AdministradorDeSistema) 
+                    {
+                        <div class="row">
+                            <div class="col col-lg-12">
+                                <label class="form-label obrigatorio" for="GrupoDePermissaoId">Grupo de Permissão</label>
+                                @Html.DropDownListFor(model => model.GrupoDePermissaoId, (SelectList)ViewBag.Grupos, string.Empty, new { @class = "select2" })
+                            </div>
+                        </div>
+                    }
                 </form>
             </div>
             <div class="modal-footer">

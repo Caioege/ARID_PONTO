@@ -72,28 +72,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
             DateTime? fim,
             int? justificativaId)
         {
-            try
-            {
-                var relatorio = ObtenhaRelatorioServidoresComAfastamento(
-                    unidadeLotacaoId, 
-                    inicio, 
-                    fim, 
+            var relatorio = ObtenhaRelatorioServidoresComAfastamento(
+                    unidadeLotacaoId,
+                    inicio,
+                    fim,
                     justificativaId);
 
-                var nomeArquivo = "Servidores com Afastamento.pdf";
+            var nomeArquivo = "Servidores com Afastamento.pdf";
 
-                return Json(new 
-                { 
-                    sucesso = true,
-                    fileName = nomeArquivo,
-                    base64 = Convert.ToBase64String(relatorio),
-                    mimeType = GetMimeType(nomeArquivo)
-                });
-            }
-            catch (Exception ex)
+            return Json(new
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
         }
 
         [HttpGet]
@@ -154,26 +147,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int? horarioDeTrabalhoId,
             int? tipoDeVinculoDeTrabalhoId)
         {
-            try
-            {
-                var relatorio = RelatorioServidoresPorHorario(
-                    horarioDeTrabalhoId, 
+            var relatorio = RelatorioServidoresPorHorario(
+                    horarioDeTrabalhoId,
                     tipoDeVinculoDeTrabalhoId);
 
-                var nomeArquivo = "Servidores por Horário.pdf";
+            var nomeArquivo = "Servidores por Horário.pdf";
 
-                return Json(new 
-                { 
-                    sucesso = true,
-                    fileName = nomeArquivo,
-                    base64 = Convert.ToBase64String(relatorio),
-                    mimeType = GetMimeType(nomeArquivo)
-                });
-            }
-            catch (Exception ex)
+            return Json(new
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
         }
 
         #endregion

@@ -1,13 +1,18 @@
 ﻿@using AriD.BibliotecaDeClasses.Enumeradores
 @model HorarioDeTrabalho
 
+@{
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.CadastrarOuAlterar);
+}
+
 <style>
     .linha > td:not(:first-child) {
-        padding: 5px !important;
+    padding: 5px !important;
     }
 
     .linha > td > input {
-        text-align: center !important;
+    text-align: center !important;
     }
 </style>
 
@@ -132,9 +137,12 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (podeAlterar)
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
         </form>
     </div>
 </div>

@@ -1,4 +1,6 @@
-﻿@model ListaPaginada<UnidadeOrganizacional>
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model ListaPaginada<UnidadeOrganizacional>
 
 @{
     var tabela = new WebGrid<UnidadeOrganizacional>(Model, "grid", null);
@@ -7,7 +9,10 @@
     {
         tabela.Column("Nome", "Nome", width: 65f),
         tabela.Column("CNPJ", "CNPJ", width: 15f),
-        tabela.Column("Tipo", "Tipo", width: 10f),
+        tabela.Column("Tipo", "Tipo", format: 
+            @<text>
+                @(((eTipoUnidadeOrganizacional)item.Tipo).DescricaoDoEnumerador())
+            </text>, width: 10f),
         tabela.Column("Ativa", "Ativa", format:
             @<text>
                 @if (item.Ativa)

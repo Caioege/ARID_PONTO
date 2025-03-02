@@ -32,9 +32,26 @@ function assineSalvarCadastroModal() {
                     MensagemRodape('success', data.mensagem);
                     CarregarPagina('/EventoAnual/Index');
                 } else {
-                    MensagemRodape('Warning', data.mensagem);
+                    MensagemRodape('warning', data.mensagem);
                 }
             }
         );
     });
+}
+
+function removerRegistro() {
+    RequisicaoAjaxComCarregamento(
+        '/EventoAnual/Remova/',
+        'POST',
+        { eventoId: $('#_Modal').find('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#_Modal').modal('hide');
+                MensagemRodape('success', data.mensagem);
+                CarregarPagina('/EventoAnual/Index');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        }
+    );
 }

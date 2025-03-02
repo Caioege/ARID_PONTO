@@ -46,6 +46,7 @@ builder.Services.AddScoped(typeof(IServicoDeEscala), typeof(ServicoDeEscala));
 builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegistroDePonto));
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

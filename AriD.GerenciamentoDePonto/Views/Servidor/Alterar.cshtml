@@ -1,22 +1,27 @@
 ﻿@model Servidor
 
+@{
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Servidor.CadastrarOuAlterar);
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Servidor.Excluir);
+}
+
 <style>
     .tab-content {
-        padding: 0px !important;
+    padding: 0px !important;
     }
 
     .img-servidor {
-        height: 100%;
-        width: 100%
+    height: 100%;
+    width: 100%
     }
 
     .img-servidor:hover {
-        cursor: pointer;
+    cursor: pointer;
     }
 
     #formulario-servidor .nav-item {
-        border: 1px solid #a9afb4;
-        border-radius: 10px;
+    border: 1px solid #a9afb4;
+    border-radius: 10px;
     }
 </style>
 
@@ -144,9 +149,12 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (podeAlterar)
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
         </form>
     </div>
 </div>

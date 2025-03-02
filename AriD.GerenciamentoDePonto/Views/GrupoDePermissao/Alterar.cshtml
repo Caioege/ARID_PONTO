@@ -1,0 +1,215 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@model GrupoDePermissao
+
+@{
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_GrupoDePermissao.CadastrarOuAlterar);
+}
+
+<style>
+    .table-permissao {
+    width: 100%;
+    margin-bottom: 3px;
+    }
+
+    .table-permissao td {
+    border: 1px solid #b3b3b3;
+    padding: 2px 5px 2px 5px;
+    }
+
+    .table-titulo  {
+    width: 100%
+    }
+
+    .table-titulo td {
+    padding: 5px;
+    border: 1px solid #b3b3b3;
+    background-color: lightgrey;
+    color: black;
+    font-weight: 800;
+    }
+
+</style>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Alterar Grupo de Permissão
+        </h5>
+    </div>
+    <div class="card-body">
+        <form id="formulario-grupodepermissao">
+            @Html.HiddenFor(model => model.Id)
+            <div class="row">
+                <div class="col col-lg-3 col-md-12 col-sm-6">
+                    <label class="form-label obrigatorio" for="Sigla">Sigla</label>
+                    @Html.TextBoxFor(model => model.Sigla, new { @class = "form-control", @maxlength = "5" })
+                </div>
+
+                <div class="col col-lg-3 col-md-12 col-sm-6 float-end">
+                    <label class="form-label obrigatorio" for="Ativo">Ativo</label>
+                    @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-6 col-md-12 col-sm-12">
+                    <label class="form-label obrigatorio" for="Descricao">Perfil de Acesso</label>
+                    @Html.TextBox("PerfilDeAcessoDescricao", Model.PerfilDeAcesso.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    @Html.HiddenFor(model => model.PerfilDeAcesso)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-lg-12 col-md-12 col-sm-12">
+                    <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                    @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                </div>
+            </div>
+
+            <br />
+            <table class="table-titulo">
+                <tr>
+                    <td class="text-center">
+                        <i class="bx bx-slider-alt"></i>
+                        Administração
+                    </td>
+                </tr>
+            </table>
+            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
+            {
+                var modelDepartamento = 
+                    new Tuple<string, Type, GrupoDePermissao>("Departamento", typeof(eItemDePermissao_Departamento), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelDepartamento)
+
+                var modelEventoAnual =
+                new Tuple<string, Type, GrupoDePermissao>("Evento Anual", typeof(eItemDePermissao_EventoAnual), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelEventoAnual)
+
+                var modelFuncao =
+                new Tuple<string, Type, GrupoDePermissao>("Função", typeof(eItemDePermissao_Funcao), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelFuncao)
+            }
+
+            @{
+                var modelEquipamento =
+                new Tuple<string, Type, GrupoDePermissao>("Equipamento de Ponto", typeof(eItemDePermissao_EquipamentoDePonto), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelEquipamento)
+
+            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
+            {
+                var modelHorario =
+                new Tuple<string, Type, GrupoDePermissao>("Horário de Trabalho", typeof(eItemDePermissao_HorarioDeTrabalho), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelHorario)
+
+                var modelJustificativa =
+                new Tuple<string, Type, GrupoDePermissao>("Justificativa de Ausência", typeof(eItemDePermissao_JustificativaDeAusencia), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelJustificativa)
+
+                var modelTipoDeVinculo =
+                new Tuple<string, Type, GrupoDePermissao>("Tipo de Vínculo de Trabalho", typeof(eItemDePermissao_TipoDeVinculoDeTrabalho), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelTipoDeVinculo)
+            }
+
+            <br />
+            <table class="table-titulo">
+                <tr>
+                    <td class="text-center">
+                        <i class='bx bxs-user-circle'></i>
+                        Servidor
+                    </td>
+                </tr>
+            </table>
+            @{
+                var modelServidor =
+                new Tuple<string, Type, GrupoDePermissao>("Cadastro de Servidores", typeof(eItemDePermissao_Servidor), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelServidor)
+
+            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
+            {
+                var modelEscala =
+                new Tuple<string, Type, GrupoDePermissao>("Escalas", typeof(eItemDePermissao_Escala), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelEscala)
+            }
+
+            @{
+                var modelFolhaDePonto =
+                new Tuple<string, Type, GrupoDePermissao>("Folha de Ponto", typeof(eItemDePermissao_FolhaDePonto), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelFolhaDePonto)
+
+            @{
+                var modelRegistrosDePonto =
+                new Tuple<string, Type, GrupoDePermissao>("Registros de Ponto", typeof(eItemDePermissao_RegistrosDePonto), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRegistrosDePonto)
+
+            <br />
+            <table class="table-titulo">
+                <tr>
+                    <td class="text-center">
+                        <i class='bx bxs-report'></i>
+                        Relatórios
+                    </td>
+                </tr>
+            </table>
+
+            @{
+                var modelRelServidoresComAfastamento =
+                new Tuple<string, Type, GrupoDePermissao>("Servidores com Afastamentos", typeof(eItemDePermissao_RelatorioServidoresComAfastamento), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresComAfastamento)
+
+            @{
+                var modelRelServidoresPorEscala =
+                new Tuple<string, Type, GrupoDePermissao>("Servidores por Escala", typeof(eItemDePermissao_RelatorioServidoresComEscala), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorEscala)
+
+            @{
+                var modelRelServidoresPorHorario =
+                new Tuple<string, Type, GrupoDePermissao>("Servidores por Horário de Trabalho", typeof(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorHorario)
+
+            <br />
+            <table class="table-titulo">
+                <tr>
+                    <td class="text-center">
+                        <i class='bx bxs-user-badge'></i>
+                        Usuários
+                    </td>
+                </tr>
+            </table>
+
+            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
+            {
+                var modelCadastroUsuarios =
+                new Tuple<string, Type, GrupoDePermissao>("Cadastro de Usuários", typeof(eItemDePermissao_Usuarios), Model);
+
+                @await Html.PartialAsync("_PartialItemPermissao", modelCadastroUsuarios)
+
+                var modelGrupoDePermissao =
+                new Tuple<string, Type, GrupoDePermissao>("Grupos de Permissão", typeof(eItemDePermissao_GrupoDePermissao), Model);
+
+                @await Html.PartialAsync("_PartialItemPermissao", modelGrupoDePermissao)
+            }
+
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            @if (podeAlterar)
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/GrupoDePermissao/alterar.js?t=@DateTime.Now.Ticks"></script>

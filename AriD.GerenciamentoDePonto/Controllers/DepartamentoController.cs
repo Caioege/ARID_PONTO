@@ -55,57 +55,36 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int departamentoId)
         {
-            try
-            {
-                var model = departamentoId == 0 ?
+            var model = departamentoId == 0 ?
                     new Departamento { Ativo = true } :
                     _servicoDepartamento.Obtenha(departamentoId);
 
-                var html = await RenderizarComoString("_Modal", model);
+            var html = await RenderizarComoString("_Modal", model);
 
-                return Json(new { sucesso = true, html = html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
         public IActionResult Salvar(Departamento departamento)
         {
-            try
-            {
-                int id = departamento.Id;
-                departamento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = departamento.Id;
+            departamento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (departamento.Id == 0)
-                    id = _servicoDepartamento.Adicionar(departamento);
-                else
-                    _servicoDepartamento.Atualizar(departamento);
+            if (departamento.Id == 0)
+                id = _servicoDepartamento.Adicionar(departamento);
+            else
+                _servicoDepartamento.Atualizar(departamento);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Remova(int departamentoId)
         {
-            try
-            {
-                var departamento = _servicoDepartamento.Obtenha(departamentoId);
-                _servicoDepartamento.Remover(departamento);
+            var departamento = _servicoDepartamento.Obtenha(departamentoId);
+            _servicoDepartamento.Remover(departamento);
 
-                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Departamento> listaPaginada)

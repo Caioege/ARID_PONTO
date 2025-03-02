@@ -16,7 +16,7 @@ function assineEventoBotaoSalvar() {
             dadosFormulario.dados,
             function (data) {
                 MensagemRodape('success', data.mensagem);
-                $('#Id').val(data.id);
+                CarregarPagina('/Servidor/Alterar/' + data.id)
             });
     });
 }

@@ -54,57 +54,36 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int funcaoId)
         {
-            try
-            {
-                var model = funcaoId == 0 ?
+            var model = funcaoId == 0 ?
                     new Funcao { Ativa = true } :
                     _funcaoServico.Obtenha(funcaoId);
 
-                var html = await RenderizarComoString("_Modal", model);
+            var html = await RenderizarComoString("_Modal", model);
 
-                return Json(new { sucesso = true, html = html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
         public IActionResult Salvar(Funcao funcao)
         {
-            try
-            {
-                int id = funcao.Id;
-                funcao.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = funcao.Id;
+            funcao.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (funcao.Id == 0)
-                    id = _funcaoServico.Adicionar(funcao);
-                else
-                    _funcaoServico.Atualizar(funcao);
+            if (funcao.Id == 0)
+                id = _funcaoServico.Adicionar(funcao);
+            else
+                _funcaoServico.Atualizar(funcao);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Remova(int funcaoId)
         {
-            try
-            {
-                var funcao = _funcaoServico.Obtenha(funcaoId);
-                _funcaoServico.Remover(funcao);
+            var funcao = _funcaoServico.Obtenha(funcaoId);
+            _funcaoServico.Remover(funcao);
 
-                return Json(new { sucesso = true, mensagem = "O registro foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Funcao> listaPaginada)

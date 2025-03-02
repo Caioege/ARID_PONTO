@@ -41,7 +41,7 @@ function assineSalvarCadastroModal() {
 function removerRegistro() {
     RequisicaoAjaxComCarregamento(
         '/TipoDoVinculoDeTrabalho/Remova/',
-        'DELETE',
+        'POST',
         { tipoId: $('#_Modal').find('#Id').val() },
         function (data) {
             if (data.sucesso) {

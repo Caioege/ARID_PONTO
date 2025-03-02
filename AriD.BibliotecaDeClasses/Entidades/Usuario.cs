@@ -25,5 +25,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public bool Ativo { get; set; }
+
+        public int? GrupoDePermissaoId { get; set; }
+        [ForeignKey(nameof(GrupoDePermissaoId))]
+        public virtual GrupoDePermissao GrupoDePermissao { get; set; }
     }
 }

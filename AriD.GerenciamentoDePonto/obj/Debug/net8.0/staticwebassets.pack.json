@@ -37,6 +37,14 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Funcao\\index.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\GrupoDePermissao\\alterar.js"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\GrupoDePermissao\\index.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\HorarioDeTrabalho\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\HorarioDeTrabalho\\alterar.js"
     },

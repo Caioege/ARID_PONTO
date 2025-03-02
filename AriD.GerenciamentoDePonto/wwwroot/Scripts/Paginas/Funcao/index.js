@@ -41,7 +41,7 @@ function assineSalvarCadastroModal() {
 function removerRegistro() {
     RequisicaoAjaxComCarregamento(
         '/Funcao/Remova/',
-        'DELETE',
+        'POST',
         { funcaoId: $('#_Modal').find('#Id').val() },
         function (data) {
             if (data.sucesso) {

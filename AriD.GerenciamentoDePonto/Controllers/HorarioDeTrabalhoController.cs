@@ -91,38 +91,24 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public IActionResult CalculaCargaHorariaDoDia(HorarioDeTrabalhoDia dia)
         {
-            try
-            {
-                var cargaHoraria = dia.CalculeCargaHorariaTotal(false);
-                return Json(new { sucesso = true, cargaHoraria = cargaHoraria?.ToString(@"hh\:mm") });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucess = false, mensagem = ex.Message });
-            }
+            var cargaHoraria = dia.CalculeCargaHorariaTotal(false);
+            return Json(new { sucesso = true, cargaHoraria = cargaHoraria?.ToString(@"hh\:mm") });
         }
 
         [HttpPost]
         public IActionResult Salvar(HorarioDeTrabalho horarioDeTrabalho)
         {
-            try
-            {
-                int id = horarioDeTrabalho.Id;
-                horarioDeTrabalho.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = horarioDeTrabalho.Id;
+            horarioDeTrabalho.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                horarioDeTrabalho.Dias.ForEach(c => c.OrganizacaoId = horarioDeTrabalho.OrganizacaoId);
+            horarioDeTrabalho.Dias.ForEach(c => c.OrganizacaoId = horarioDeTrabalho.OrganizacaoId);
 
-                if (horarioDeTrabalho.Id == 0)
-                    id = _servico.Adicionar(horarioDeTrabalho);
-                else
-                    _servico.Atualizar(horarioDeTrabalho);
+            if (horarioDeTrabalho.Id == 0)
+                id = _servico.Adicionar(horarioDeTrabalho);
+            else
+                _servico.Atualizar(horarioDeTrabalho);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = true, mensagem = "Ocorreu um erro." });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<HorarioDeTrabalho> listaPaginada)

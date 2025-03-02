@@ -107,118 +107,92 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult Salvar(Servidor servidor)
         {
-            try
-            {
-                int id = servidor.Id;
-                servidor.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-                servidor.Pessoa.OrganizacaoId = servidor.OrganizacaoId;
+            int id = servidor.Id;
+            servidor.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            servidor.Pessoa.OrganizacaoId = servidor.OrganizacaoId;
 
-                if (servidor.Id == 0)
-                {
-                    servidor.DataDeCadastro = DateTime.Now;
-                    id = _servico.Adicionar(servidor);
-                }
-                else
-                    _servico.Atualizar(servidor);
+            ValideExistenciaDeServidorComCpf(servidor.OrganizacaoId, servidor.Id, servidor.Pessoa.Cpf);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
+            if (servidor.Id == 0)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                servidor.DataDeCadastro = DateTime.Now;
+                id = _servico.Adicionar(servidor);
             }
+            else
+                _servico.Atualizar(servidor);
+
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         [HttpGet]
         public async Task<IActionResult> ModalVinculoDeTrabalho(int id)
         {
-            try
-            {
-                var modelo = id == 0 ?
+            var modelo = id == 0 ?
                     new VinculoDeTrabalho() { Inicio = DateTime.Now } :
                     _servicoVinculoDeTrabalho.Obtenha(id);
 
-                var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-                var tipos = _servicoTipoDoVinculo
-                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
-                    .OrderBy(c => c.SiglaComDescricao);
-                ViewBag.Tipos = new SelectList(tipos, "Id", "SiglaComDescricao");
+            var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            var tipos = _servicoTipoDoVinculo
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                .OrderBy(c => c.SiglaComDescricao);
+            ViewBag.Tipos = new SelectList(tipos, "Id", "SiglaComDescricao");
 
-                var funcoes = _servicoFuncao
-                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativa)
-                    .OrderBy(c => c.SiglaComDescricao);
-                ViewBag.Funcoes = new SelectList(funcoes, "Id", "SiglaComDescricao");
+            var funcoes = _servicoFuncao
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativa)
+                .OrderBy(c => c.SiglaComDescricao);
+            ViewBag.Funcoes = new SelectList(funcoes, "Id", "SiglaComDescricao");
 
-                var departamentos = _servicoDepartamento
-                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
-                    .OrderBy(c => c.SiglaComDescricao);
-                ViewBag.Departamentos = new SelectList(departamentos, "Id", "SiglaComDescricao");
+            var departamentos = _servicoDepartamento
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                .OrderBy(c => c.SiglaComDescricao);
+            ViewBag.Departamentos = new SelectList(departamentos, "Id", "SiglaComDescricao");
 
-                var horarios = _servicoHorarioDeTrabalho
-                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
-                    .OrderBy(c => c.SiglaComDescricao);
-                ViewBag.Horarios = new SelectList(horarios, "Id", "SiglaComDescricao");
+            var horarios = _servicoHorarioDeTrabalho
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                .OrderBy(c => c.SiglaComDescricao);
+            ViewBag.Horarios = new SelectList(horarios, "Id", "SiglaComDescricao");
 
-                var html = await RenderizarComoString("_Modal", modelo);
+            var html = await RenderizarComoString("_Modal", modelo);
 
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html });
         }
 
         [HttpPost]
         public IActionResult SalvarVinculoDeTrabalho(VinculoDeTrabalho vinculoDeTrabalho)
         {
-            try
-            {
-                int id = vinculoDeTrabalho.Id;
-                vinculoDeTrabalho.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = vinculoDeTrabalho.Id;
+            vinculoDeTrabalho.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (vinculoDeTrabalho.Id == 0)
-                    id = _servicoVinculoDeTrabalho.Adicionar(vinculoDeTrabalho);
-                else
-                    _servicoVinculoDeTrabalho.Atualizar(vinculoDeTrabalho);
+            if (vinculoDeTrabalho.Id == 0)
+                id = _servicoVinculoDeTrabalho.Adicionar(vinculoDeTrabalho);
+            else
+                _servicoVinculoDeTrabalho.Atualizar(vinculoDeTrabalho);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         [HttpGet]
         public IActionResult DadosEdicaoLotacao(int id)
         {
-            try
-            {
-                var lotacao = id == 0 ?
+            var lotacao = id == 0 ?
                     null :
                     _servicoLotacao.Obtenha(id);
 
-                var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                return Json(new
-                {
-                    sucesso = true,
-                    id = id,
-                    unidadeId = lotacao?.UnidadeOrganizacionalId,
-                    unidades = _servicoUnidadeOrganizacional
-                        .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
-                        .OrderBy(c => c.Nome)
-                        .Select(c => new CodigoDescricaoDTO(c.Id, c.Nome)),
-                    entrada = lotacao?.Entrada.ToShortDateString(),
-                    saida = lotacao?.Saida?.ToShortDateString(),
-                    matriculaEquipamento = lotacao?.MatriculaEquipamento
-                });
-            }
-            catch (Exception ex)
+            return Json(new
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+                sucesso = true,
+                id = id,
+                unidadeId = lotacao?.UnidadeOrganizacionalId,
+                unidades = _servicoUnidadeOrganizacional
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.Nome)
+                    .Select(c => new CodigoDescricaoDTO(c.Id, c.Nome)),
+                entrada = lotacao?.Entrada.ToString("yyyy-MM-dd"),
+                saida = lotacao?.Saida?.ToString("yyyy-MM-dd"),
+                matriculaEquipamento = lotacao?.MatriculaEquipamento
+            });
         }
 
         [HttpPost]
@@ -238,126 +212,90 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                var duplicateEntryText = "duplicate entry";
+                if (ex.Message.ToLower().Contains(duplicateEntryText) || (ex.InnerException != null && ex.InnerException.Message.ToLower().Contains(duplicateEntryText)))
+                {
+                    return Json(new { sucesso = false, mensagem = "Já existe um outro servidor utilizando esse mesmo ID de equipamento nessa unidade." });
+                }
+
+                throw ex;
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> PartialLotacoes(int vinculoId)
         {
-            try
-            {
-                var vinculo = _servicoVinculoDeTrabalho.Obtenha(vinculoId);
-                var html = await RenderizarComoString("_Lotacoes", vinculo.Lotacoes);
+            var vinculo = _servicoVinculoDeTrabalho.Obtenha(vinculoId);
+            var html = await RenderizarComoString("_Lotacoes", vinculo.Lotacoes);
 
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult RemoverLotacao(int id)
         {
-            try
-            {
-                _servicoLotacao.Remover(_servicoLotacao.Obtenha(id));
-                return Json(new { sucesso = true, mensagem = "A lotação foi removida." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            _servicoLotacao.Remover(_servicoLotacao.Obtenha(id));
+            return Json(new { sucesso = true, mensagem = "A lotação foi removida." });
         }
 
         [HttpGet]
         public async Task<IActionResult> ModalAfastamento(int id, int servidorId)
         {
-            try
-            {
-                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+            var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
 
-                var modelo = id == 0 ?
-                    new Afastamento() :
-                    _servicoAfastamento.Obtenha(id);
+            var modelo = id == 0 ?
+                new Afastamento() :
+                _servicoAfastamento.Obtenha(id);
 
-                if (id == 0)
-                    ViewBag.Vinculos = new SelectList(
-                        _servicoVinculoDeTrabalho
-                            .ObtenhaLista(c => c.ServidorId == servidorId)
-                            .OrderBy(c => c.Inicio)
-                            .ThenBy(c => c.Matricula)
-                            .Select(c => new CodigoDescricaoDTO(c.Id, c.ToString())),
-                        "Codigo",
-                        "Descricao");
+            if (id == 0)
+                ViewBag.Vinculos = new SelectList(
+                    _servicoVinculoDeTrabalho
+                        .ObtenhaLista(c => c.ServidorId == servidorId)
+                        .OrderBy(c => c.Inicio)
+                        .ThenBy(c => c.Matricula)
+                        .Select(c => new CodigoDescricaoDTO(c.Id, c.ToString())),
+                    "Codigo",
+                    "Descricao");
 
-                ViewBag.Justificativas = new SelectList(
-                    _servicoJustificativa
-                    .ObtenhaLista(c =>
-                        c.OrganizacaoId == organizacaoId && c.Ativa && c.LocalDeUso != eLocalDeUsoDeJustificativaDeAusencia.FolhaDePonto)
-                    .OrderBy(c => c.SiglaComDescricao),
-                    "Id", "SiglaComDescricao");
+            ViewBag.Justificativas = new SelectList(
+                _servicoJustificativa
+                .ObtenhaLista(c =>
+                    c.OrganizacaoId == organizacaoId && c.Ativa && c.LocalDeUso != eLocalDeUsoDeJustificativaDeAusencia.FolhaDePonto)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id", "SiglaComDescricao");
 
-                var html = await RenderizarComoString("_ModalAfastamento", modelo);
+            var html = await RenderizarComoString("_ModalAfastamento", modelo);
 
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, html });
         }
 
         [HttpPost]
         public IActionResult SalvarAfastamento(Afastamento afastamento)
         {
-            try
-            {
-                int id = afastamento.Id;
-                afastamento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = afastamento.Id;
+            afastamento.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (afastamento.Id == 0)
-                    id = _servicoAfastamento.Adicionar(afastamento);
-                else
-                    _servicoAfastamento.Atualizar(afastamento);
+            if (afastamento.Id == 0)
+                id = _servicoAfastamento.Adicionar(afastamento);
+            else
+                _servicoAfastamento.Atualizar(afastamento);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         [HttpGet]
         public async Task<IActionResult> PartialAfastamentos(int servidorId)
         {
-            try
-            {
-                var servidor = _servico.Obtenha(servidorId);
-                var html = await RenderizarComoString("_Afastamentos", servidor);
-                return Json(new { sucesso = true, html });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            var servidor = _servico.Obtenha(servidorId);
+            var html = await RenderizarComoString("_Afastamentos", servidor);
+            return Json(new { sucesso = true, html });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult RemoverAfastamento(int afastamentoId)
         {
-            try
-            {
-                _servicoAfastamento.Remover(_servicoAfastamento.Obtenha(afastamentoId));
-                return Json(new { sucesso = true, mensagem = "O afastamento foi removido." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            _servicoAfastamento.Remover(_servicoAfastamento.Obtenha(afastamentoId));
+            return Json(new { sucesso = true, mensagem = "O afastamento foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
@@ -406,6 +344,24 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 return returnIfNull;
 
             return retorno;
+        }
+
+        private void ValideExistenciaDeServidorComCpf(
+            int organizacaoId,
+            int servidorId,
+            string cpf)
+        {
+            if (!string.IsNullOrEmpty(cpf))
+            {
+                if (_servico.Obtenha(c =>
+                                c.OrganizacaoId == organizacaoId &&
+                                !string.IsNullOrEmpty(c.Pessoa.Cpf) &&
+                                c.Pessoa.Cpf == cpf &&
+                                c.Id != servidorId) != null)
+                {
+                    throw new ApplicationException("Já existe um outro servidor cadastrado com esse CPF.");
+                }
+            }
         }
     }
 }

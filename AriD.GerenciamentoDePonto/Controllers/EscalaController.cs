@@ -77,22 +77,15 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult Salvar(Escala escala)
         {
-            try
-            {
-                int id = escala.Id;
-                escala.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = escala.Id;
+            escala.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                if (escala.Id == 0)
-                    id = _servico.Adicionar(escala);
-                else
-                    _servico.Atualizar(escala);
+            if (escala.Id == 0)
+                id = _servico.Adicionar(escala);
+            else
+                _servico.Atualizar(escala);
 
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Escala> listaPaginada)

@@ -42,7 +42,7 @@ function assineSalvarCadastroModal() {
 function removerRegistro() {
     RequisicaoAjaxComCarregamento(
         '/JustificativaDeAusencia/Remova/',
-        'DELETE',
+        'POST',
         { justificativaId: $('#_Modal').find('#Id').val() },
         function (data) {
             if (data.sucesso) {

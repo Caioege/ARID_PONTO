@@ -41,7 +41,7 @@ function assineSalvarCadastroModal() {
 function removerRegistro() {
     RequisicaoAjaxComCarregamento(
         '/Departamento/Remova/',
-        'DELETE',
+        'POST',
         { departamentoId: $('#_Modal').find('#Id').val() },
         function (data) {
             if (data.sucesso) {

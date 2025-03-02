@@ -136,6 +136,8 @@ wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\pontoDoDia.js
 wwwroot\Scripts\Paginas\Funcao\index.js
+wwwroot\Scripts\Paginas\GrupoDePermissao\alterar.js
+wwwroot\Scripts\Paginas\GrupoDePermissao\index.js
 wwwroot\Scripts\Paginas\HorarioDeTrabalho\alterar.js
 wwwroot\Scripts\Paginas\JustificativaDeAusencia\index.js
 wwwroot\Scripts\Paginas\Organizacao\alterar.js
