@@ -1,0 +1,66 @@
+@using AriD.Servicos.Extensao
+@model Usuario
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-usuario">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="NomeDaPessoa">Nome da Pessoa</label>
+                            @Html.TextBoxFor(model => model.NomeDaPessoa, new { @class = "form-control", @maxlength = "100"})
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-lg-6 col-md-6 col-md-12">
+                            <label class="form-label obrigatorio" for="UsuarioDeAcesso">Usuário</label>
+                            @Html.TextBoxFor(model => model.UsuarioDeAcesso, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+
+                        <div class="col col-lg-6 col-md-6 col-md-12">
+                            <label class="form-label @(Model.Id == 0 ? "obrigatorio" : string.Empty)" for="Senha">Senha</label>
+                            @Html.PasswordFor(model => model.Senha, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label obrigatorio" for="Ativo">Ativo</label>
+                            @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
+                        </div>
+
+                        <div class="col col-lg-8 col-md-6 col-sm-12">
+                            <label class="form-label obrigatorio" for="PerfilDeAcesso">Perfil de Acesso</label>
+                            @Html.TextBox("PerfilDeAcessoDescricao", Model.PerfilDeAcesso.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-lg-12">
+                            <label class="form-label obrigatorio">Grupo de Permissão</label>
+                            @Html.DropDownListFor(model => model.GrupoDePermissaoId, (SelectList)ViewBag.Grupos, string.Empty, new { @class = "select2" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,693 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\AriD.GerenciamentoEscolar.bundle.scp.css",
+      "PackagePath": "staticwebassets\\AriD.GerenciamentoEscolar.g7icfscb72.bundle.scp.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Endereco\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\EquipamentoDeFrequencia\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDeFrequencia\\index.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Escola\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Escola\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\GrupoDePermissao\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\GrupoDePermissao\\index.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\adicionar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Servidor\\adicionar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Servidor\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Turma\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Usuario\\index.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\demo.css",
+      "PackagePath": "staticwebassets\\css\\demo.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\jquery-clockpicker.min.css",
+      "PackagePath": "staticwebassets\\css\\jquery-clockpicker.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\jquery-ui.css",
+      "PackagePath": "staticwebassets\\css\\jquery-ui.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\select2.min.css",
+      "PackagePath": "staticwebassets\\css\\select2.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\avatars\\1.png",
+      "PackagePath": "staticwebassets\\img\\avatars\\1.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\avatars\\5.png",
+      "PackagePath": "staticwebassets\\img\\avatars\\5.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\avatars\\6.png",
+      "PackagePath": "staticwebassets\\img\\avatars\\6.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\avatars\\7.png",
+      "PackagePath": "staticwebassets\\img\\avatars\\7.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\backgrounds\\18.jpg",
+      "PackagePath": "staticwebassets\\img\\backgrounds\\18.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\brasoes\\1.png",
+      "PackagePath": "staticwebassets\\img\\brasoes\\1.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\brasoes\\2.png",
+      "PackagePath": "staticwebassets\\img\\brasoes\\2.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\brasoes\\sem-foto.jpg",
+      "PackagePath": "staticwebassets\\img\\brasoes\\sem-foto.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\1.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\1.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\11.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\11.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\12.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\12.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\13.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\13.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\17.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\17.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\18.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\18.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\19.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\19.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\2.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\2.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\20.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\20.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\3.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\3.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\4.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\4.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\5.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\5.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\elements\\7.jpg",
+      "PackagePath": "staticwebassets\\img\\elements\\7.jpg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\favicon\\favicon.ico",
+      "PackagePath": "staticwebassets\\img\\favicon\\favicon.ico"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\asana.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\asana.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\behance.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\behance.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\dribbble.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\dribbble.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\facebook.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\facebook.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\github.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\github.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\google.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\google.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\instagram.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\instagram.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\linkedin.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\linkedin.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\mailchimp.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\mailchimp.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\slack.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\slack.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\brands\\twitter.png",
+      "PackagePath": "staticwebassets\\img\\icons\\brands\\twitter.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\cc-primary.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\cc-primary.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\cc-success.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\cc-success.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\cc-warning.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\cc-warning.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\chart-success.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\chart-success.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\chart.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\chart.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\paypal.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\paypal.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\wallet-info.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\wallet-info.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\icons\\unicons\\wallet.png",
+      "PackagePath": "staticwebassets\\img\\icons\\unicons\\wallet.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\illustrations\\girl-doing-yoga-light.png",
+      "PackagePath": "staticwebassets\\img\\illustrations\\girl-doing-yoga-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\illustrations\\man-with-laptop.png",
+      "PackagePath": "staticwebassets\\img\\illustrations\\man-with-laptop.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\illustrations\\page-misc-error-light.png",
+      "PackagePath": "staticwebassets\\img\\illustrations\\page-misc-error-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-container-light.png",
+      "PackagePath": "staticwebassets\\img\\layouts\\layout-container-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-fluid-light.png",
+      "PackagePath": "staticwebassets\\img\\layouts\\layout-fluid-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-without-menu-light.png",
+      "PackagePath": "staticwebassets\\img\\layouts\\layout-without-menu-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-without-navbar-light.png",
+      "PackagePath": "staticwebassets\\img\\layouts\\layout-without-navbar-light.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-livro.png",
+      "PackagePath": "staticwebassets\\img\\logo-livro.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo.png",
+      "PackagePath": "staticwebassets\\img\\logo.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\organizacao\\1\\1.png",
+      "PackagePath": "staticwebassets\\img\\pessoas\\organizacao\\1\\1.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\sem-foto.png",
+      "PackagePath": "staticwebassets\\img\\pessoas\\sem-foto.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\bootstrap-clockpicker.min.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap-clockpicker.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\config.js",
+      "PackagePath": "staticwebassets\\js\\config.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\dashboards-analytics.js",
+      "PackagePath": "staticwebassets\\js\\dashboards-analytics.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\extended-ui-perfect-scrollbar.js",
+      "PackagePath": "staticwebassets\\js\\extended-ui-perfect-scrollbar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\form-basic-inputs.js",
+      "PackagePath": "staticwebassets\\js\\form-basic-inputs.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\jquery-ui.js",
+      "PackagePath": "staticwebassets\\js\\jquery-ui.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\jquery.loading.min.js",
+      "PackagePath": "staticwebassets\\js\\jquery.loading.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\jquery.mask.min.js",
+      "PackagePath": "staticwebassets\\js\\jquery.mask.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\main.js",
+      "PackagePath": "staticwebassets\\js\\main.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\pages-account-settings-account.js",
+      "PackagePath": "staticwebassets\\js\\pages-account-settings-account.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\select2.min.js",
+      "PackagePath": "staticwebassets\\js\\select2.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\ui-modals.js",
+      "PackagePath": "staticwebassets\\js\\ui-modals.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\ui-popover.js",
+      "PackagePath": "staticwebassets\\js\\ui-popover.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\ui-toasts.js",
+      "PackagePath": "staticwebassets\\js\\ui-toasts.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\lib\\sweetalert2\\sweetalert2@11.js",
+      "PackagePath": "staticwebassets\\lib\\sweetalert2\\sweetalert2@11.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\core.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\core.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\pages\\page-account-settings.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\pages\\page-account-settings.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\pages\\page-auth.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\pages\\page-auth.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\pages\\page-icons.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\pages\\page-icons.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\pages\\page-misc.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\pages\\page-misc.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\css\\theme-default.css",
+      "PackagePath": "staticwebassets\\vendor\\css\\theme-default.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons.css",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons\\boxicons.eot",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons\\boxicons.eot"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons\\boxicons.svg",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons\\boxicons.svg"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons\\boxicons.ttf",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons\\boxicons.ttf"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons\\boxicons.woff",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons\\boxicons.woff"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\fonts\\boxicons\\boxicons.woff2",
+      "PackagePath": "staticwebassets\\vendor\\fonts\\boxicons\\boxicons.woff2"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\vendor\\js\\bootstrap.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\js\\helpers.js",
+      "PackagePath": "staticwebassets\\vendor\\js\\helpers.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\js\\menu.js",
+      "PackagePath": "staticwebassets\\vendor\\js\\menu.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\apex-charts\\apex-charts.css",
+      "PackagePath": "staticwebassets\\vendor\\libs\\apex-charts\\apex-charts.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\apex-charts\\apexcharts.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\apex-charts\\apexcharts.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\highlight\\highlight-github.css",
+      "PackagePath": "staticwebassets\\vendor\\libs\\highlight\\highlight-github.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\highlight\\highlight.css",
+      "PackagePath": "staticwebassets\\vendor\\libs\\highlight\\highlight.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\highlight\\highlight.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\highlight\\highlight.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\jquery\\jquery.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\jquery\\jquery.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\masonry\\masonry.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\masonry\\masonry.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\perfect-scrollbar\\perfect-scrollbar.css",
+      "PackagePath": "staticwebassets\\vendor\\libs\\perfect-scrollbar\\perfect-scrollbar.css"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\perfect-scrollbar\\perfect-scrollbar.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\perfect-scrollbar\\perfect-scrollbar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\vendor\\libs\\popper\\popper.js",
+      "PackagePath": "staticwebassets\\vendor\\libs\\popper\\popper.js"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.AriD.GerenciamentoEscolar.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.AriD.GerenciamentoEscolar.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.AriD.GerenciamentoEscolar.props",
+      "PackagePath": "build\\AriD.GerenciamentoEscolar.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.AriD.GerenciamentoEscolar.props",
+      "PackagePath": "buildMultiTargeting\\AriD.GerenciamentoEscolar.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.AriD.GerenciamentoEscolar.props",
+      "PackagePath": "buildTransitive\\AriD.GerenciamentoEscolar.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,113 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@model RedeDeEnsino
+
+@{
+    var dadosDaSessao = this.Context.DadosDaSessao();
+}
+
+<style>
+    #div-dados-esquerda {
+        position: absolute;
+        float: left;
+        margin-bottom: 10px;
+    }
+
+    #div-dados-direita {
+        margin-left: 170px;
+    }
+
+    .img-foto {
+        margin-bottom: 10px;
+        border: 1px solid gray
+    }
+
+        .img-foto:hover {
+            cursor: pointer;
+        }
+
+    @@media (width <= 770px) {
+        #div-dados-direita {
+            margin-left: 0px;
+        }
+
+        #div-dados-esquerda {
+            position: initial;
+            float: none;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            @(dadosDaSessao.Perfil == ePerfilDeAcesso.RedeDeEnsino ? "Minha Rede de Ensino" : "Alterar Rede de Ensino")
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-redeDeEnsino">
+            <div id="div-dados-esquerda">
+                <img class="img-foto" src="/RedeDeEnsino/Brasao/@(Model.Id)?c=@DateTime.Now.Ticks" width="140px" height="140px" />
+            </div>
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.EnderecoId)
+            <div id="div-dados-direita">
+                <div class="row">
+                    <div class="col col-lg-12 col-md-12 col-xs-12">
+                        <label class="form-label obrigatorio" for="Nome">Nome</label>
+                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-lg-2 col-md-4 col-xs-12">
+                        <label class="form-label obrigatorio" for="Ativa">Ativa</label>
+                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                        }
+                        else
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            @{
+                ViewBag.PrefixoEndereco = "Endereco.";
+            }
+            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
+            <br />
+
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "RedeDeEnsino")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+
+        <br />
+        <div class="row">
+            <div class="col col-md-8 col-xs-12">
+                <h5>Escolas</h5>
+            </div>
+            <div class="col col-md-4 col-xs-12 float-end">
+                <button type="button" class="btn btn-primary btn-sm float-end" onclick="CarregarPagina('@Url.Action("Adicionar", "Escola", new { redeDeEnsinoId = Model.Id })')">
+                    <i class='bx bx-list-plus'></i>
+                </button>
+            </div>
+        </div>
+
+        @Html.Hidden("Adicional")
+        <div id="grid"></div>
+    </div>
+</div>
+<input type="file" accept=".png, .jpg, .jpeg" id="fotoInput" style="display: none;" />
+
+<script src="/Scripts/Paginas/RedeDeEnsino/alterar.js?t=@DateTime.Now.Ticks"></script>

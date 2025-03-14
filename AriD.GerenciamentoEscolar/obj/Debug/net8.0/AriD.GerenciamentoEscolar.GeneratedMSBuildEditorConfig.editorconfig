@@ -1,0 +1,229 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = AriD.GerenciamentoEscolar
+build_property.RootNamespace = AriD.GerenciamentoEscolar
+build_property.ProjectDir = D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Autenticacao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0ZW50aWNhY2FvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/EquipamentoDeFrequencia/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXF1aXBhbWVudG9EZUZyZXF1ZW5jaWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/EquipamentoDeFrequencia/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXF1aXBhbWVudG9EZUZyZXF1ZW5jaWFcX01vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/EquipamentoDeFrequencia/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXF1aXBhbWVudG9EZUZyZXF1ZW5jaWFcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Escola/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjb2xhXEFkaWNpb25hci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Escola/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjb2xhXEFsdGVyYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Escola/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXNjb2xhXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/GrupoDePermissao/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3J1cG9EZVBlcm1pc3Nhb1xBbHRlcmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/GrupoDePermissao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3J1cG9EZVBlcm1pc3Nhb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/GrupoDePermissao/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3J1cG9EZVBlcm1pc3Nhb1xfTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/GrupoDePermissao/_PartialItemPermissao.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3J1cG9EZVBlcm1pc3Nhb1xfUGFydGlhbEl0ZW1QZXJtaXNzYW8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/GrupoDePermissao/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3J1cG9EZVBlcm1pc3Nhb1xfVGFiZWxhUGFnaW5hZGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RedeDeEnsino/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVkZURlRW5zaW5vXEFkaWNpb25hci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RedeDeEnsino/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVkZURlRW5zaW5vXEFsdGVyYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RedeDeEnsino/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVkZURlRW5zaW5vXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RedeDeEnsino/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVkZURlRW5zaW5vXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RegistroDePonto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9EZVBvbnRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/RegistroDePonto/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9EZVBvbnRvXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/ServidoresComAfastamento.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNDb21BZmFzdGFtZW50by5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/ServidoresPorHorarioDeTrabalho.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNQb3JIb3JhcmlvRGVUcmFiYWxoby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/Footer/_Footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXEZvb3RlclxfRm9vdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/Menu/_VerticalMenu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE1lbnVcX1ZlcnRpY2FsTWVudS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/Navbar/_Navbar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE5hdmJhclxfTmF2YmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/Navbar/_NavbarPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXE5hdmJhclxfTmF2YmFyUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/_Scripts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TY3JpcHRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/_ScriptsIncludes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TY3JpcHRzSW5jbHVkZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/_Styles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9TdHlsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Sections/_Variables.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXFNlY3Rpb25zXF9WYXJpYWJsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_BlankLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9CbGFua0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_CommonMasterLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db21tb25NYXN0ZXJMYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_ContentNavbarLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db250ZW50TmF2YmFyTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_EnderecoPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9FbmRlcmVjb1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_PaginacaoWebGrid.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdpbmFjYW9XZWJHcmlkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Usuario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Usuario/_Modal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xfTW9kYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Usuario/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xfVGFiZWxhUGFnaW5hZGEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/_Partials/_Macros.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1BhcnRpYWxzXF9NYWNyb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-xk1tdfgcck

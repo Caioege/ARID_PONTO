@@ -1,0 +1,84 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@model Turma
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Alterar Turma
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-turma">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.RedeDeEnsinoId)
+
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="form-label obrigatorio" for="EscolaId">Escola</label>
+                    @Html.TextBox("EscolaNome", Model.Escola.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    @Html.Hidden("EscolaId", Model.EscolaId)
+                </section>
+            </div>
+
+            <div class="row">
+                <section class="col col-md-3 col-sm-12">
+                    <label class="form-label obrigatorio" for="AnoLetivo">Ano Letivo</label>
+                    @Html.TextBoxFor(model => model.AnoLetivo, new { @class = "form-control ano", @disabled = "disabled", @readonly = "readonly" })
+                </section>
+
+                <section class="col col-md-3 col-sm-12">
+                    <label class="form-label obrigatorio" for="InicioDasAulas">Início das Aulas</label>
+                    @Html.TextBox("InicioDasAulas", Model.InicioDasAulas.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                </section>
+
+                <section class="col col-md-3 col-sm-12">
+                    <label class="form-label obrigatorio" for="FimDasAulas">Fim das Aulas</label>
+                    @Html.TextBox("FimDasAulas", Model.FimDasAulas.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                </section>
+
+                <section class="col col-md-3 col-sm-12">
+                    <label class="form-label obrigatorio">Situação</label>
+                    @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
+                </section>
+            </div>
+
+            <div class="row">
+                <section class="col col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                    @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                </section>
+
+                <section class="col col-md-8 col-sm-12">
+                    <label class="form-label obrigatorio" for="AnoEscolar">Ano Escolar</label>
+                    @Html.EnumDropDownListFor(model => model.AnoEscolar, new { @class = "select2", @disabled = "disabled", @readonly = "readonly" })
+                </section>
+            </div>
+
+            <div class="row">
+                <section class="col col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="Turno">Turno</label>
+                    @Html.EnumDropDownListFor(model => model.Turno, new { @class = "form-select" })
+                </section>
+
+                <section class="col col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="TipoDoDiario">Tipo do Diário</label>
+                    @Html.EnumDropDownListFor(model => model.TipoDoDiario, new { @class = "form-select" })
+                </section>
+            </div>
+
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Turma")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/Turma/alterar.js?t=@DateTime.Now.Ticks"></script>

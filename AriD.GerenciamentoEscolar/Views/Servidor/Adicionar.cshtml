@@ -1,0 +1,63 @@
+@model Aluno
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            Adicionar Servidor
+        </h5>
+        <small class="text-muted float-end">
+            Campos com <span style="color: red">*</span> são obrigatórios.
+        </small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-servidor">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.Pessoa.EnderecoId)
+            <div class="row">
+                <div class="col col-lg-12col-xs-12">
+                    <label class="form-label obrigatorio" for="Pessoa_Nome">Nome</label>
+                    @Html.TextBoxFor(model => model.Pessoa.Nome, new { @class = "form-control", @maxlength = "100" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-lg-12col-xs-12">
+                    <label class="form-label">Nome Social</label>
+                    @Html.TextBoxFor(model => model.Pessoa.NomeSocial, new { @class = "form-control", @maxlength = "100" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-lg-4 col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="Pessoa_Cpf">CPF</label>
+                    @Html.TextBoxFor(model => model.Pessoa.Cpf, new { @class = "form-control cpf" })
+                </div>
+
+                <div class="col col-lg-4 col-md-4 col-sm-12">
+                    <label class="form-label obrigatorio" for="Pessoa_DataDeNascimento">Data de Nascimento</label>
+                    @Html.TextBoxFor(model => model.Pessoa.DataDeNascimento, new { @class = "form-control data" })
+                </div>
+
+                <div class="col col-lg-4 col-md-4 col-sm-12">
+                    <label class="form-label">RG</label>
+                    @Html.TextBoxFor(model => model.Pessoa.Rg, new { @class = "form-control so-numeros" })
+                </div>
+            </div>
+            <br />
+            @{
+                ViewBag.PrefixoEndereco = "Pessoa.Endereco.";
+                ViewBag.EnderecoObrigatorio = true;
+            }
+            @await Html.PartialAsync("_EnderecoPartial", Model.Pessoa.Endereco)
+
+            <br />
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Servidor")')">
+                <i class='bx bxs-left-arrow-circle'></i> Voltar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save'></i> Salvar
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/Servidor/alterar.js"></script>

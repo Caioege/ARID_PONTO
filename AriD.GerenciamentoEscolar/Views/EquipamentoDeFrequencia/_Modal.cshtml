@@ -1,0 +1,69 @@
+@model EquipamentoDeFrequencia
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Equipamento de Frequência</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-equipamento">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <div class="col col-lg-12">
+                            <label class="form-label obrigatorio" for="EscolaId">Escola</label>
+                            @if (Model.Id > 0) 
+                            {
+                                @Html.TextBox("escolaNome", Model.Escola.Nome, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
+                                @Html.HiddenFor(model => model.EscolaId)
+                            }
+                            else 
+                            {
+                                @Html.DropDownListFor(model => model.EscolaId, (SelectList)ViewBag.escolas, string.Empty, new { @class = "select2" })
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-lg-8 col-md-12">
+                            <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                            @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+
+                        <div class="col col-lg-4 col-md-12 col-sm-6 float-end">
+                            <label class="form-label obrigatorio" for="Ativo">Ativo</label>
+                            @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-lg-12">
+                            <label class="form-label obrigatorio" for="NumeroDeSerie">Número de Série</label>
+                            @Html.TextBoxFor(model => model.NumeroDeSerie, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (Model.Id > 0) 
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerRegistro()">
+                        <i class='bx bx-trash'></i> Remover
+                    </button>
+                }
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

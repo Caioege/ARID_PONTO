@@ -1,0 +1,34 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model ListaPaginada<Turma>
+
+@{
+    var ehRedeDeEnsino = Context.DadosDaSessao().Perfil == ePerfilDeAcesso.RedeDeEnsino;
+    var tabela = new WebGrid<Turma>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Descricao", "Descrição", width: ehRedeDeEnsino ? 25f : 46f),
+        tabela.Column("AnoEscolar", "Ano Escolar", width: ehRedeDeEnsino ? 25f : 46f, format: @<text>@(((eAnoEscolar)item.AnoEscolar).DescricaoDoEnumerador())</text>)
+    };
+
+    if (ehRedeDeEnsino)
+    {
+        listaDeColunas.Add(
+            tabela.Column("Escola.Nome", "Escola", width: 25f));
+    }
+
+    listaDeColunas.Add(
+        tabela.Column("Situacao", "Situação", format:
+            @<text>@(((eSituacaoTurma)item.Situacao).DescricaoDoEnumerador())</text>, width: 5f));
+
+    listaDeColunas.Add(
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('/Turma/Alterar/@item.Id')">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f));
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

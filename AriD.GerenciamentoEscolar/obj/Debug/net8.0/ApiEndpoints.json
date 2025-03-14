@@ -1,0 +1,49 @@
+[
+  {
+    "ContainingType": "AriD.GerenciamentoEscolar.Controllers.BaseController",
+    "Method": "RenderizarComoString",
+    "RelativePath": "api/registro",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "viewName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "model",
+        "Type": "System.Object",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoEscolar.Controllers.RegistroApiController",
+    "Method": "ReceberRegistro",
+    "RelativePath": "api/registro/registro-equipamento",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dados",
+        "Type": "AriD.BibliotecaDeClasses.DTO.RegistroEquipamentoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
