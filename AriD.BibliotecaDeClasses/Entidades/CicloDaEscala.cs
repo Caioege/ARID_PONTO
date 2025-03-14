@@ -28,5 +28,20 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public TimeSpan? Entrada5 { get; set; }
         public TimeSpan? Saida5 { get; set; }
+
+        public HorarioDeTrabalhoDia ObtenhaHorarioDia()
+            => new()
+            {
+                Entrada1 = Entrada1,
+                Entrada2 = Entrada2,
+                Entrada3 = Entrada3,
+                Entrada4 = Entrada4,
+                Entrada5 = Entrada5,
+                Saida1 = Saida1,
+                Saida2 = Saida2,
+                Saida3 = Saida3,
+                Saida4 = Saida4,
+                Saida5 = Saida5,
+            };
     }
 }

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using iText.IO.Image;
 using iText.Layout.Borders;
+using AriD.Servicos.Extensao;
+using AriD.BibliotecaDeClasses.DTO;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -22,19 +24,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<UnidadeOrganizacional> _servicoUnidade;
         private readonly IServico<HorarioDeTrabalho> _servicoHorario;
         private readonly IServico<TipoDoVinculoDeTrabalho> _servicoTipo;
+        private readonly IServico<Escala> _servicoEscala;
 
         public RelatorioController(
             IServicoDeRelatorios servicoDeRelatorios,
             IServico<JustificativaDeAusencia> servicoJustificativa,
             IServico<UnidadeOrganizacional> servicoUnidade,
             IServico<HorarioDeTrabalho> servicoHorario,
-            IServico<TipoDoVinculoDeTrabalho> servicoTipo)
+            IServico<TipoDoVinculoDeTrabalho> servicoTipo,
+            IServico<Escala> servicoEscala)
         {
             _servicoDeRelatorios = servicoDeRelatorios;
             _servicoJustificativa = servicoJustificativa;
             _servicoUnidade = servicoUnidade;
             _servicoHorario = servicoHorario;
             _servicoTipo = servicoTipo;
+            _servicoEscala = servicoEscala;
         }
 
         #region Views
@@ -94,6 +99,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+                ViewBag.Escalas = new SelectList(
+                    _servicoEscala.ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.UnidadeOrganizacional.Nome)
+                    .ThenBy(c => c.Descricao)
+                    .Select(c => new CodigoDescricaoGrupoDTO(c.Id, c.Descricao, c.UnidadeOrganizacional.Nome)),
+                    "Codigo",
+                    "Descricao",
+                    null,
+                    "Grupo");
                 return View();
             }
             catch (Exception ex)
@@ -103,10 +118,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProcessarServidoresPorEscala()
+        public IActionResult ProcessarServidoresPorEscala(int? escalaId)
         {
             try
             {
+                var relatorio = RelatorioServidoresPorEscala(escalaId);
+                var nomeArquivo = "Servidores por Escala.pdf";
+
+                return Json(new
+                {
+                    sucesso = true,
+                    fileName = nomeArquivo,
+                    base64 = Convert.ToBase64String(relatorio),
+                    mimeType = GetMimeType(nomeArquivo)
+                });
+
                 return Json(new { sucesso = true });
             }
             catch (Exception ex)
@@ -388,6 +414,118 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
 
                 document.Add(new Div().SetMarginBottom(3).Add(table));
+            }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] RelatorioServidoresPorEscala(int? escalaId)
+        {
+            var dadosDeSessao = HttpContext.DadosDaSessao();
+
+            var servidores = _servicoDeRelatorios.ObtenhaServidoresPorEscala(
+                dadosDeSessao.OrganizacaoId,
+                escalaId);
+
+            if (!servidores.Any())
+                throw new ApplicationException("Nenhum registro encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDeSessao.OrganizacaoId,
+                dadosDeSessao.OrganizacaoNome);
+
+            document.SetFontSize(10);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add("Servidores por Horário de Trabalho")));
+
+            var grupoUnidade = servidores
+                .OrderBy(c => c.UnidadeNome)
+                .GroupBy(c => c.UnidadeId)
+                .OrderBy(c => c.Key);
+
+            foreach (var unidade in grupoUnidade)
+            {
+                var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    55f,
+                    15f,
+                    30f,
+                })).UseAllAvailableWidth();
+
+                table
+                    .AddCell(new Cell(1, 3)
+                    .Add(new Paragraph()
+                            .Add(new Text($"{unidade.First().UnidadeNome}")))
+                            .SetBold()
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE));
+
+                foreach (var escala in unidade
+                    .OrderBy(c => c.EscalaDescricao)
+                    .GroupBy(c => c.EscalaId))
+                {
+                    table
+                        .AddCell(new Cell(1, 5)
+                        .Add(new Paragraph()
+                                .Add(new Text($"Escala: {escala.First().EscalaDescricao} - {escala.First().EscalaTipo.DescricaoDoEnumerador()}")))
+                                .SetBold()
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE))
+                            .AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .Add(new Text("Servidor"))
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                            .AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .Add(new Text("CPF"))
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                            .AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .Add(new Text("Contrato"))
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+                    foreach (var contrato in escala.OrderBy(c => c.PessoaNome))
+                    {
+                        table.AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text(contrato.PessoaNome))));
+
+                        table.AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text(contrato.PessoaCpf))));
+
+                        table.AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text($"{contrato.MatriculaVinculo} - {contrato.TipoContrato}"))));
+                    }
+
+                    document.Add(new Div().SetMarginBottom(3).Add(table));
+                }
             }
 
             document.Close();

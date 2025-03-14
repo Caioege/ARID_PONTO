@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "mJcfhEI/6EDA53GF9p3HaD6NznVdk9tAnVf2kM/Ejdo=",
+  "Hash": "LNwuMSnQOdd6YGGekFgRjUrzhSUr5lCpOLUEHOIhG3k=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -2850,6 +2850,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js"
+    },
+    {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "Scripts/Paginas/Escala/alterar#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "3yk413txmq",
+      "Integrity": "9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Escala\\alterar.js"
     },
     {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
@@ -14760,6 +14781,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-zH/UcMvGNCgPAQIVL/P/OgZ57+FG1kUv99R1poPcUUw="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Escala/alterar.3yk413txmq.js",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3yk413txmq"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Escala/alterar.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Escala/alterar.js",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
         }
       ]
     },

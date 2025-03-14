@@ -5,7 +5,7 @@
 }
 
 <div class="modal" tabindex="-1" id="_ModalCiclo" data-bs-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Ciclo da Escala</h5>
@@ -15,17 +15,67 @@
                 <form id="formulario-ciclo">
                     @Html.HiddenFor(model => model.Id)
                     <div class="row">
-                        <div class="col col-lg-4 col-md-12 col-sm-6">
+                        <div class="col col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label obrigatorio" for="Ciclo">Ciclo</label>
                             @Html.TextBoxFor(model => model.Ciclo, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
                         </div>
                     </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                @{
+                                    var larguraColuna = 100f / 7f;
+                                }
+                                <th width="@larguraColuna%"><b>Ent. 1</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 1</b></th>
+                                <th width="@larguraColuna%"><b>Ent. 2</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 2</b></th>
+                                <th width="@larguraColuna%"><b>Ent. 3</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 3</b></th>
+                                <th width="@larguraColuna%" class="text-center"><b>CH</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="linha">
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent1", Model.Entrada1, new { @class = "form-control hora entrada1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai1", Model.Saida1, new { @class = "form-control hora saida1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent2", Model.Entrada2, new { @class = "form-control hora entrada2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai2", Model.Saida2, new { @class = "form-control hora saida2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent3", Model.Entrada3, new { @class = "form-control hora entrada3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai3", Model.Saida3, new { @class = "form-control hora saida3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center carga-horaria">
+                                    @(Model.ObtenhaHorarioDia().CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
+
+                @if (!adicionar) 
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerCiclo(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
 
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">
                     <i class='bx bxs-save'></i> Salvar

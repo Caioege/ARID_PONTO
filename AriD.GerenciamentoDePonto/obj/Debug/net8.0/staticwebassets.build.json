@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DAEp8LEKDFgTZCUv1lzQbnji+zj5fas721vK6F+2Izw=",
+  "Hash": "7uSpYHSMJcYqs+n2ZsG4AyAHDxCL8rfm1Crt9on6YfU=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -2852,6 +2852,27 @@
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js"
     },
     {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "Scripts/Paginas/Escala/alterar#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "3yk413txmq",
+      "Integrity": "9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Escala\\alterar.js"
+    },
+    {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
       "SourceId": "AriD.GerenciamentoDePonto",
       "SourceType": "Discovered",
@@ -3097,8 +3118,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "hajvp6g6mv",
-      "Integrity": "aYTf4/+NEJZ8swNgf+vlhEVsTmPsa5V7zHTLwBTGS5g=",
+      "Fingerprint": "09u3duhnby",
+      "Integrity": "5PC57N6XmvZmwql1Hgt59pY5xXM9pbGK6j8syoxWq28=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js"
@@ -14540,7 +14561,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:25 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14577,7 +14598,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:25 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:32 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14764,6 +14785,88 @@
       ]
     },
     {
+      "Route": "Scripts/Paginas/Escala/alterar.3yk413txmq.js",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3yk413txmq"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Escala/alterar.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Escala/alterar.js",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
+        }
+      ]
+    },
+    {
       "Route": "Scripts/Paginas/EventoAnual/index.i4bip8emwu.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
       "Selectors": [],
@@ -14786,7 +14889,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:43 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14831,7 +14934,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:43 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14868,7 +14971,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 01:04:05 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14905,7 +15008,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 04 Feb 2025 01:04:05 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15032,7 +15135,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 19 Jan 2025 21:07:51 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15069,7 +15172,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 19 Jan 2025 21:07:51 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15114,7 +15217,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15159,7 +15262,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
+          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15666,7 +15769,7 @@
       ]
     },
     {
-      "Route": "Scripts/Paginas/Servidor/alterar.hajvp6g6mv.js",
+      "Route": "Scripts/Paginas/Servidor/alterar.09u3duhnby.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15676,7 +15779,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11617"
+          "Value": "11766"
         },
         {
           "Name": "Content-Type",
@@ -15684,11 +15787,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"aYTf4/+NEJZ8swNgf+vlhEVsTmPsa5V7zHTLwBTGS5g=\""
+          "Value": "\"5PC57N6XmvZmwql1Hgt59pY5xXM9pbGK6j8syoxWq28=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:55:08 GMT"
+          "Value": "Sun, 02 Mar 2025 16:31:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15698,7 +15801,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "hajvp6g6mv"
+          "Value": "09u3duhnby"
         },
         {
           "Name": "label",
@@ -15706,7 +15809,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-aYTf4/+NEJZ8swNgf+vlhEVsTmPsa5V7zHTLwBTGS5g="
+          "Value": "sha256-5PC57N6XmvZmwql1Hgt59pY5xXM9pbGK6j8syoxWq28="
         }
       ]
     },
@@ -15721,7 +15824,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11617"
+          "Value": "11766"
         },
         {
           "Name": "Content-Type",
@@ -15729,11 +15832,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"aYTf4/+NEJZ8swNgf+vlhEVsTmPsa5V7zHTLwBTGS5g=\""
+          "Value": "\"5PC57N6XmvZmwql1Hgt59pY5xXM9pbGK6j8syoxWq28=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:55:08 GMT"
+          "Value": "Sun, 02 Mar 2025 16:31:24 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15743,7 +15846,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-aYTf4/+NEJZ8swNgf+vlhEVsTmPsa5V7zHTLwBTGS5g="
+          "Value": "sha256-5PC57N6XmvZmwql1Hgt59pY5xXM9pbGK6j8syoxWq28="
         }
       ]
     },

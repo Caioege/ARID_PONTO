@@ -117,7 +117,7 @@
         </td>
 
         <td class="text-center">
-            @(horarioDeTrabalho.ObtenhaCargaHorariaDoDia((eDiaDaSemana)Model.Data.DayOfWeek, eventoDoDia != null)?.ToString(@"hh\:mm"))
+            @(Model.CargaHoraria?.ToString(@"hh\:mm"))
         </td>
 
         <td class="text-center">

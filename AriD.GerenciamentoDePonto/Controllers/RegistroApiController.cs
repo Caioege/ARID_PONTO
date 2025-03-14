@@ -1,10 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
-using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
-using AriD.GerenciamentoDePonto.Helpers;
-using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {

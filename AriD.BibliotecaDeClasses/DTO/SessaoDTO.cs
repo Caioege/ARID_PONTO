@@ -34,6 +34,8 @@ namespace AriD.BibliotecaDeClasses.DTO
 
         public bool UsuarioAdministradorAutenticado { get; set; }
 
+        public int? DepartamentoId { get; set; }
+
         public List<int> UnidadeOrganizacionais { get; set; } = new();
         public List<KeyValuePair<string, int>> Permissoes { get; set; } = new();
     }

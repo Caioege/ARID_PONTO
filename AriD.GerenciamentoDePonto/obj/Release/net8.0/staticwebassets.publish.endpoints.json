@@ -331,6 +331,88 @@
       ]
     },
     {
+      "Route": "Scripts/Paginas/Escala/alterar.3yk413txmq.js",
+      "AssetFile": "Scripts/Paginas/Escala/alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3yk413txmq"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Escala/alterar.js"
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Escala/alterar.js",
+      "AssetFile": "Scripts/Paginas/Escala/alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9391"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 09 Mar 2025 18:17:11 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9R/KAjNY72mv3siq7sjQv6TyvTLVI3p0IsIGqQOfdEk="
+        }
+      ]
+    },
+    {
       "Route": "Scripts/Paginas/EventoAnual/index.i4bip8emwu.js",
       "AssetFile": "Scripts/Paginas/EventoAnual/index.js",
       "Selectors": [],

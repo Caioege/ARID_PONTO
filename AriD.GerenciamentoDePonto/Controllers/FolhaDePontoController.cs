@@ -509,11 +509,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 if (dia.DataFutura) 
                 {
-                    table.AddCell(new Cell()
+                    table.AddCell(new Cell(1, totalDeColunas - 1)
                         .SetBackgroundColor(ColorConstants.GRAY, 0.15f)
                         .Add(new Paragraph()
-                        .Add(new Text("Data Futura")
-                        .SetTextAlignment(TextAlignment.CENTER))));
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text("Data Futura"))));
                 }
                 else
                 {
@@ -587,7 +587,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                         table
                             .AddCell(new Cell()
+                                .SetWidth(larguraColunas)
                                 .Add(new Paragraph()
+                                .SetTextAlignment(TextAlignment.CENTER)
                                 .Add(new Text(descricaoBH ?? string.Empty))));
                     }
                 }

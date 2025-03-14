@@ -14,14 +14,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
 {
     public class EquipamentoDePontoController : BaseController
     {
+        private readonly IConfiguration _configuration;
         private readonly IServico<EquipamentoDePonto> _equipamentoServico;
         private readonly IServico<UnidadeOrganizacional> _unidadeServico;
 
         public EquipamentoDePontoController(
-            IServico<EquipamentoDePonto> equipamentoServico, IServico<UnidadeOrganizacional> unidadeServico)
+            IServico<EquipamentoDePonto> equipamentoServico, 
+            IServico<UnidadeOrganizacional> unidadeServico,
+            IConfiguration configuration)
         {
             _equipamentoServico = equipamentoServico;
             _unidadeServico = unidadeServico;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -143,7 +147,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                httpClient.BaseAddress = new Uri("http://localhost:7788/");
+                httpClient.BaseAddress = new Uri(_configuration.GetValue<string>("URI_EQUIPAMENTO_SERVIDOR"));
                 httpClient.DefaultRequestHeaders.Add(
                     "ARID-TECNOLOGIA-ACTION", 
                     remover ? "REMOVER-EQUIPAMENTO" : "CADASTRO-EQUIPAMENTO");

@@ -131,6 +131,7 @@ wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Departamento\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
 wwwroot\Scripts\Paginas\EquipamentoDePonto\index.js
+wwwroot\Scripts\Paginas\Escala\alterar.js
 wwwroot\Scripts\Paginas\EventoAnual\index.js
 wwwroot\Scripts\Paginas\FolhaDePonto\folhaDePonto.js
 wwwroot\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js

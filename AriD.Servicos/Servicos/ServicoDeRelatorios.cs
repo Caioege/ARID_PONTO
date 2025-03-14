@@ -115,5 +115,54 @@ namespace AriD.Servicos.Servicos
                 @TIPODEVINCULOID = tipoDeVinculoDeTrabalhoId
             });
         }
+
+        public List<ItemRelatorioServidorPorEscalaDTO> ObtenhaServidoresPorEscala(
+            int organizacaoId,
+            int? escalaId)
+        {
+            try
+            {
+                var query =
+                    @"select
+	                    s.Id as ServidorId,
+                        p.Nome as PessoaNome,
+                        p.Cpf as PessoaCpf,
+                        v.Matricula as MatriculaVinculo,
+                        concat('[', t.Sigla, '] ', t.Descricao) as TipoContrato,
+                        e.Descricao as EscalaDescricao,
+                        e.Id as EscalaId,
+                        e.Tipo as EscalaTipo,
+                        u.Id as UnidadeNome,
+                        u.Nome as UnidadeNome
+                    from escaladoservidor es
+                    inner join vinculodetrabalho v
+	                    on v.Id = es.VinculoDeTrabalhoId
+                    inner join tipodovinculodetrabalho t
+	                    on t.Id = v.TipoDoVinculoDeTrabalhoId
+                    inner join servidor s
+	                    on s.Id = v.ServidorId
+                    inner join pessoa p
+	                    on p.Id = s.PessoaId
+                    inner join escala e
+	                    on e.Id = es.EscalaId
+                    inner join unidadeorganizacional u
+	                    on u.Id = e.UnidadeOrganizacionalId
+                    where
+	                    es.OrganizacaoId = @ORGANIZACAOID";
+
+                if (escalaId.HasValue)
+                    query += " and e.Id = @ESCALAID";
+
+                return _repositorio.ConsultaDapper<ItemRelatorioServidorPorEscalaDTO>(query, new
+                {
+                    @ORGANIZACAOID = organizacaoId,
+                    @ESCALAID = escalaId
+                });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

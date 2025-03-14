@@ -1,6 +1,10 @@
 ﻿@using AriD.BibliotecaDeClasses.Enumeradores
 @model Escala
 
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -9,6 +13,21 @@
     </div>
     <div class="card-body">
         <form id="formulario-escala">
+            @Html.HiddenFor(model => model.Id)
+            @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                <div class="row">
+                    <section class="col col-md-12">
+                        <label class="form-label obrigatorio" for="UnidadeOrganizacionalId">Unidade</label>
+                        @Html.DropDownListFor(model => model.UnidadeOrganizacionalId, (SelectList)ViewBag.Unidades, string.Empty, new { @class = "select2" })
+                    </section>
+                </div>
+            }
+            else
+            {
+                @Html.Hidden("UnidadeOrganizacionalId", dadosDaSessao.UnidadeOrganizacionais.First())
+            }
+
             <div class="row">
                 <div class="col col-md-8 col-sm-12">
                     <label class="form-label obrigatorio" for="Descricao">Descrição</label>

@@ -15,5 +15,9 @@ namespace AriD.Servicos.Servicos.Interfaces
             int organizacaoId,
             int? horarioDeTrabalhoId,
             int? tipoDeVinculoDeTrabalhoId);
+
+        List<ItemRelatorioServidorPorEscalaDTO> ObtenhaServidoresPorEscala(
+            int organizacaoId,
+            int? escalaId);
     }
 }

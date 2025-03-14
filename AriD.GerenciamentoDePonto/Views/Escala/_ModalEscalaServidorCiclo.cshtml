@@ -1,0 +1,62 @@
+﻿@model EscalaDoServidor
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_ModalEscalaServidorCiclo" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Ciclo da Escala do Servidor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-ciclo-servidor">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <section class="col col-md-12">
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Servidor</label>
+                            @if (adicionar) 
+                            {
+                                @Html.DropDownListFor(model => model.VinculoDeTrabalhoId, (SelectList)ViewBag.Servidores, string.Empty, new { @class = "select2" })
+                            }
+                            else 
+                            {
+                                @Html.TextBox("ServidorNome", Model.VinculoDeTrabalho.Servidor.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                                @Html.HiddenFor(model => model.VinculoDeTrabalhoId)
+                            }
+                        </section>
+                    </div>
+                    <div class="row">
+                        <section class="col col-md-4">
+                            <label class="form-label obrigatorio" for="Data">Início 1º Ciclo</label>
+                            @Html.TextBox("Data", Model.Data.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                        </section>
+
+                        <section class="col col-md-4">
+                            <label class="form-label">Fim Escala</label>
+                            @Html.TextBox("DataFim", Model.DataFim?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                        </section>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (!adicionar)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerServidorEscalaCiclo(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

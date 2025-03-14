@@ -264,3 +264,28 @@ ADD CONSTRAINT `FK_GrupoDePermissao_Usuario`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+ALTER TABLE `arid_ponto`.`escaladoservidor` 
+ADD UNIQUE INDEX `FK_UQ_EscalaServidor` (`OrganizacaoId` ASC, `EscalaId` ASC, `VinculoDeTrabalhoId` ASC, `Data` ASC);
+
+ALTER TABLE `arid_ponto`.`escala` 
+ADD COLUMN `UnidadeOrganizacionalId` INT NOT NULL AFTER `Descricao`,
+ADD INDEX `FK_Unidade_Escala_idx` (`UnidadeOrganizacionalId` ASC);
+
+ALTER TABLE `arid_ponto`.`escala` 
+ADD CONSTRAINT `FK_Unidade_Escala`
+  FOREIGN KEY (`UnidadeOrganizacionalId`)
+  REFERENCES `arid_ponto`.`unidadeorganizacional` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+  
+ALTER TABLE `arid_ponto`.`escaladoservidor` 
+ADD COLUMN `DataFim` DATETIME NULL;
+
+ALTER TABLE `arid_ponto`.`escaladoservidor` 
+DROP FOREIGN KEY `FK_CicloDaEscala_EscalaDoServidor`;
+ALTER TABLE `arid_ponto`.`escaladoservidor` 
+CHANGE COLUMN `CicloDaEscalaId` `CicloDaEscalaId` INT NULL ;
+ALTER TABLE `arid_ponto`.`escaladoservidor` 
+ADD CONSTRAINT `FK_CicloDaEscala_EscalaDoServidor`
+  FOREIGN KEY (`CicloDaEscalaId`)
+  REFERENCES `arid_ponto`.`ciclodaescala` (`Id`);

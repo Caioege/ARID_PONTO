@@ -27,7 +27,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
 
             if (!string.IsNullOrEmpty(userAgent) && userAgent.Equals("AIFaceEVO.API-ARID.TECNOLOGIA"))
             {
-                if (controller != "registro" && action != "registro-equipament")
+                if (controller != "registroapi" && action != "registro-equipamento")
                 {
                     context.HttpContext.Response.StatusCode = 403;
                     context.Result = new JsonResult(new { message = "Sem permissão" });

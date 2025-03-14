@@ -4,6 +4,7 @@ using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AriD.Servicos.Servicos
 {
@@ -15,6 +16,7 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<JustificativaDeAusencia> _repositorioJustificativa;
         private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
         private readonly IRepositorio<Afastamento> _repositorioAfastamento;
+        private readonly IRepositorio<EscalaDoServidor> _repositorioEscala;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
@@ -22,7 +24,8 @@ namespace AriD.Servicos.Servicos
             IRepositorio<LotacaoUnidadeOrganizacional> repositorioLotacao,
             IRepositorio<JustificativaDeAusencia> repositorioJustificativa,
             IRepositorio<VinculoDeTrabalho> repositorioVinculo,
-            IRepositorio<Afastamento> repositorioAfastamento)
+            IRepositorio<Afastamento> repositorioAfastamento,
+            IRepositorio<EscalaDoServidor> repositorioEscala)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -31,6 +34,7 @@ namespace AriD.Servicos.Servicos
             _repositorioJustificativa = repositorioJustificativa;
             _repositorioVinculo = repositorioVinculo;
             _repositorioAfastamento = repositorioAfastamento;
+            _repositorioEscala = repositorioEscala;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -486,10 +490,25 @@ namespace AriD.Servicos.Servicos
                     @FIM = fim
                 });
 
-                List<EscalaDoServidor> escalasDoPeriodo = new();
+                List<RegistroDePonto> registrosDePonto = ObtenhaRegistrosDePontoDoPeriodo(vinculoDeTrabalhoId, unidadeLotacaoId, inicio, fim);
+                List<EscalaDoServidor> escalasDoPeriodo = ObtenhaEscalasDoServidorNoPeriodo(vinculoDeTrabalhoId, inicio, fim);
                 List<Afastamento> afastamentosDoPeriodo = ObtenhaAfastamentosDoPeriodo(vinculoDeTrabalhoId, inicio, fim);
                 List<EventoAnual> eventosDoPeriodo = EventosDaFolhaDePonto(organizacaoId, inicio, fim);
                 Tuple<TimeSpan?, TimeSpan?> bancoDeHoras = ObtenhaCreditoDebitoDoPeriodoAnterior(vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras, vinculoDeTrabalhoId, inicio) ?? new(null, null);
+
+                // Aplicar tolerância de 5 minutos para remover registros duplicados
+                registrosDePonto = registrosDePonto
+                    .OrderBy(r => r.DataHoraRegistro)
+                    .GroupBy(r => r.DataHoraRegistro.Date) // Agrupar por dia
+                    .SelectMany(g =>
+                        g.Aggregate(new List<RegistroDePonto>(), (acc, atual) =>
+                        {
+                            if (!acc.Any() || (atual.DataHoraRegistro - acc.Last().DataHoraRegistro).TotalMinutes > 5)
+                                acc.Add(atual);
+                            return acc;
+                        })
+                    )
+                .ToList();
 
                 var dataAuxiliar = inicio;
                 while (dataAuxiliar <= fim)
@@ -500,23 +519,48 @@ namespace AriD.Servicos.Servicos
                         .FirstOrDefault(d => d.Inicio.Date <= dataAuxiliar.Date && (!d.Fim.HasValue || d.Fim.Value.Date >= dataAuxiliar.Date));
                     var horarioDoDia = vinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == (eDiaDaSemana)dataAuxiliar.DayOfWeek);
 
-                    var escalaNoDia = escalasDoPeriodo.FirstOrDefault(c => c.Data.Date == dataAuxiliar.Date);
+                    var escalaNoDia = escalasDoPeriodo
+                        .FirstOrDefault(c =>
+                            (c.Escala.Tipo == eTipoDeEscala.Mensal && c.Data.Date == dataAuxiliar.Date) ||
+                            (c.Escala.Tipo == eTipoDeEscala.Ciclica && c.Data <= dataAuxiliar && (!c.DataFim.HasValue || c.DataFim >= dataAuxiliar)));
+
                     if (escalaNoDia != null)
                     {
-                        horarioDoDia = new()
+                        if (escalaNoDia.Escala.Tipo == eTipoDeEscala.Mensal)
                         {
-                            DiaDaSemana = (eDiaDaSemana)dataAuxiliar.DayOfWeek,
-                            Entrada1 = escalaNoDia.CicloDaEscala.Entrada1,
-                            Entrada2 = escalaNoDia.CicloDaEscala.Entrada2,
-                            Entrada3 = escalaNoDia.CicloDaEscala.Entrada3,
-                            Entrada4 = escalaNoDia.CicloDaEscala.Entrada4,
-                            Entrada5 = escalaNoDia.CicloDaEscala.Entrada5,
-                            Saida1 = escalaNoDia.CicloDaEscala.Saida1,
-                            Saida2 = escalaNoDia.CicloDaEscala.Saida2,
-                            Saida3 = escalaNoDia.CicloDaEscala.Saida3,
-                            Saida4 = escalaNoDia.CicloDaEscala.Saida4,
-                            Saida5 = escalaNoDia.CicloDaEscala.Saida5
-                        };
+                            horarioDoDia = new()
+                            {
+                                DiaDaSemana = (eDiaDaSemana)dataAuxiliar.DayOfWeek,
+                                Entrada1 = escalaNoDia.CicloDaEscala.Entrada1,
+                                Entrada2 = escalaNoDia.CicloDaEscala.Entrada2,
+                                Entrada3 = escalaNoDia.CicloDaEscala.Entrada3,
+                                Entrada4 = escalaNoDia.CicloDaEscala.Entrada4,
+                                Entrada5 = escalaNoDia.CicloDaEscala.Entrada5,
+                                Saida1 = escalaNoDia.CicloDaEscala.Saida1,
+                                Saida2 = escalaNoDia.CicloDaEscala.Saida2,
+                                Saida3 = escalaNoDia.CicloDaEscala.Saida3,
+                                Saida4 = escalaNoDia.CicloDaEscala.Saida4,
+                                Saida5 = escalaNoDia.CicloDaEscala.Saida5
+                            };
+                        }
+                        else
+                        {
+                            var cicloDoDia = escalaNoDia.ObterCicloAtual(dataAuxiliar);
+                            horarioDoDia = new()
+                            {
+                                DiaDaSemana = (eDiaDaSemana)dataAuxiliar.DayOfWeek,
+                                Entrada1 = cicloDoDia.Entrada1,
+                                Entrada2 = cicloDoDia.Entrada2,
+                                Entrada3 = cicloDoDia.Entrada3,
+                                Entrada4 = cicloDoDia.Entrada4,
+                                Entrada5 = cicloDoDia.Entrada5,
+                                Saida1 = cicloDoDia.Saida1,
+                                Saida2 = cicloDoDia.Saida2,
+                                Saida3 = cicloDoDia.Saida3,
+                                Saida4 = cicloDoDia.Saida4,
+                                Saida5 = cicloDoDia.Saida5
+                            };
+                        }
                     }
 
                     PontoDoDia pontoDoDia = pontosDoPeriodo
@@ -528,6 +572,11 @@ namespace AriD.Servicos.Servicos
                             { Data = dataAuxiliar, VinculoDeTrabalhoId = vinculoDeTrabalhoId, OrganizacaoId = organizacaoId };
                         pontosDoPeriodo.Add(pontoDoDia);
                     }
+
+                    var registrosNoDia = registrosDePonto
+                        .Where(r => r.DataHoraRegistro.Date == dataAuxiliar.Date)
+                        .OrderBy(r => r.DataHoraRegistro)
+                    .ToList();
 
                     pontoDoDia.VinculoDeTrabalhoId = vinculoDeTrabalhoId;
                     pontoDoDia.VinculoDeTrabalho = vinculoDeTrabalho;
@@ -553,7 +602,20 @@ namespace AriD.Servicos.Servicos
                         if (afastamento != null)
                             pontoDoDia.AfastamentoId = afastamento.Id;
                         else
+                        {
                             pontoDoDia.AfastamentoId = null;
+
+                            if (registrosNoDia.Count > 0) pontoDoDia.Entrada1 = registrosNoDia.ElementAtOrDefault(0)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 1) pontoDoDia.Saida1 = registrosNoDia.ElementAtOrDefault(1)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 2) pontoDoDia.Entrada2 = registrosNoDia.ElementAtOrDefault(2)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 3) pontoDoDia.Saida2 = registrosNoDia.ElementAtOrDefault(3)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 4) pontoDoDia.Entrada3 = registrosNoDia.ElementAtOrDefault(4)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 5) pontoDoDia.Saida3 = registrosNoDia.ElementAtOrDefault(5)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 6) pontoDoDia.Entrada4 = registrosNoDia.ElementAtOrDefault(6)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 7) pontoDoDia.Saida4 = registrosNoDia.ElementAtOrDefault(7)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 8) pontoDoDia.Entrada5 = registrosNoDia.ElementAtOrDefault(8)?.DataHoraRegistro.TimeOfDay;
+                            if (registrosNoDia.Count > 9) pontoDoDia.Saida5 = registrosNoDia.ElementAtOrDefault(9)?.DataHoraRegistro.TimeOfDay;
+                        }
 
                         CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
                         CalculeHorasTrabalhadas(ref pontoDoDia);
@@ -936,6 +998,49 @@ namespace AriD.Servicos.Servicos
                 .ObtenhaLista(c => 
                     c.VinculoDeTrabalhoId == vinculoDeTrabalhoId && 
                     ((c.Inicio >= inicio && c.Inicio <= fim) || (c.Fim >= inicio && c.Fim <= fim)));
+        }
+
+        public List<EscalaDoServidor> ObtenhaEscalasDoServidorNoPeriodo(
+            int vinculoDeTrabalhoId,
+            DateTime inicio,
+            DateTime fim)
+        {
+            return _repositorioEscala
+                .ObtenhaLista(c =>
+                    c.VinculoDeTrabalhoId == vinculoDeTrabalhoId);
+        }
+
+        public List<RegistroDePonto> ObtenhaRegistrosDePontoDoPeriodo(
+            int vinculoDeTrabalhoId,
+            int unidadeId,
+            DateTime inicio,
+            DateTime fim)
+        {
+            var query = 
+                    @"select
+	                    *
+                    from registrodeponto r
+                    inner join equipamentodeponto e
+	                    on e.Id = r.EquipamentoDePontoId
+                    where
+	                    date(r.DataHoraRegistro) between date(@INICIO) and date(@FIM)
+                        and e.UnidadeOrganizacionalId = @UNIDADEID
+                        and r.UsuarioEquipamentoId in 
+	                    (SELECT DISTINCT
+		                    MatriculaEquipamento
+	                    FROM
+		                    lotacaounidadeorganizacional l
+	                    WHERE
+		                    l.VinculoDeTrabalhoId = @VINCULOID
+		                    and l.UnidadeOrganizacionalId = @UNIDADEID);";
+
+            return _repositorio.ConsultaDapper<RegistroDePonto>(query, new
+            {
+                @UNIDADEID = unidadeId,
+                @VINCULOID = vinculoDeTrabalhoId,
+                @INICIO = inicio,
+                @FIM = fim
+            });
         }
     }
 }

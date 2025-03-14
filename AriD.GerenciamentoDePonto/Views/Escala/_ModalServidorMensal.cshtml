@@ -1,0 +1,107 @@
+﻿@model EscalaDoServidor
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_ModalServidorMensal" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Servidor da Escala Mensal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-mensal">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <section class="col col-md-8">
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Servidor</label>
+                            @if (adicionar)
+                            {
+                                @Html.DropDownListFor(model => model.VinculoDeTrabalhoId, (SelectList)ViewBag.Servidores, string.Empty, new { @class = "select2" })
+                            }
+                            else
+                            {
+                                @Html.TextBox("ServidorNome", Model.VinculoDeTrabalho.Servidor.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                                @Html.HiddenFor(model => model.VinculoDeTrabalhoId)
+                            }
+                        </section>
+
+                        <section class="col col-md-4">
+                            <label class="form-label obrigatorio" for="Data">Data</label>
+                            @if (adicionar)
+                            {
+                                @Html.TextBox("Data", Model.Data.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                            }
+                            else
+                            {
+                                @Html.TextBox("Data", Model.Data.ToString("yyyy-MM-dd"), new { @class = "form-control data", @disabled = "disabled", @readonly = "readonly" })
+                            }
+                        </section>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                @{
+                                    var larguraColuna = 100f / 7f;
+                                }
+                                <th width="@larguraColuna%"><b>Ent. 1</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 1</b></th>
+                                <th width="@larguraColuna%"><b>Ent. 2</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 2</b></th>
+                                <th width="@larguraColuna%"><b>Ent. 3</b></th>
+                                <th width="@larguraColuna%"><b>Sai. 3</b></th>
+                                <th width="@larguraColuna%" class="text-center"><b>CH</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="linha">
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent1", Model.CicloDaEscala.Entrada1, new { @class = "form-control hora entrada1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai1", Model.CicloDaEscala.Saida1, new { @class = "form-control hora saida1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent2", Model.CicloDaEscala.Entrada2, new { @class = "form-control hora entrada2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai2", Model.CicloDaEscala.Saida2, new { @class = "form-control hora saida2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+
+                                <td class="text-center">
+                                    @Html.TextBox($"_Ent3", Model.CicloDaEscala.Entrada3, new { @class = "form-control hora entrada3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center">
+                                    @Html.TextBox($"_Sai3", Model.CicloDaEscala.Saida3, new { @class = "form-control hora saida3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
+                                </td>
+                                <td class="text-center carga-horaria">
+                                    @(Model.CicloDaEscala.ObtenhaHorarioDia().CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (!adicionar) 
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerServidorEscalaCiclo(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,11 @@
 @using AriD.Servicos.Extensao
 @model Escala
 
+@{
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Escala.CadastrarOuAlterar);
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Escala.Excluir);
+}
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -10,6 +15,15 @@
     </div>
     <div class="card-body">
         <form id="formulario-escala">
+            @Html.HiddenFor(model => model.Id)
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="form-label obrigatorio" for="UnidadeOrganizacionalId">Unidade</label>
+                    @Html.TextBox("UnidadeNome", Model.UnidadeOrganizacional.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    @Html.HiddenFor(model => model.UnidadeOrganizacionalId)
+                </section>
+            </div>
+
             <div class="row">
                 <div class="col col-md-8 col-sm-12">
                     <label class="form-label obrigatorio" for="Descricao">Descrição</label>
@@ -22,17 +36,308 @@
                     @Html.HiddenFor(model => model.Tipo)
                 </div>
             </div>
+            <br />
+            @if (Model.Tipo == eTipoDeEscala.Ciclica) 
+            {
+                <h6>Ciclos</h6>
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr style="background-color: aliceblue;">
+                            <th class="text-center">
+                                Ciclo
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                1
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                1
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                2
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                2
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                3
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                3
+                            </th>
+                            <th width="7%" class="text-center">
+                                CH
+                            </th>
+                            <th width="10%" class="text-center">
+                                @if (podeAlterar)
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAdicionarCiclo(0, @Model.Id)">
+                                        <i class='bx bx-list-plus'></i>
+                                    </button>
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Ciclos.Any()) 
+                        {
+                            foreach (var ciclo in Model.Ciclos.OrderBy(c => c.Ciclo)) 
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @ciclo.Ciclo
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Entrada1?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Saida1?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Entrada2?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Saida2?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Entrada3?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.Saida3?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(ciclo.ObtenhaHorarioDia().CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @if (podeAlterar)
+                                        {
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAdicionarCiclo(@ciclo.Id, @Model.Id)">
+                                                <i class='bx bx-edit-alt'></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else 
+                        {
+                            <tr>
+                                <td class="text-center" colspan="99">
+                                    Nenhum ciclo adicionado na escala
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <br />
+
+                <h6>Servidores</h6>
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr style="background-color: aliceblue;">
+                            <th class="text-center" width="55%">
+                                Servidor
+                            </th>
+                            <th class="text-center" width="20%">
+                                Inicio 1º Ciclo
+                            </th>
+                            <th class="text-center" width="20%">
+                                Data Fim
+                            </th>
+                            <th class="text-center" width="10%">
+                                @if (podeAlterar)
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(0)">
+                                        <i class='bx bx-list-plus'></i>
+                                    </button>
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EscalaDoServidor.Any()) 
+                        {
+                            foreach (var servidor in Model
+                                .EscalaDoServidor
+                                .OrderBy(c => c.VinculoDeTrabalho.Servidor.Nome)) 
+                            {
+                                <tr>
+                                    <td>
+                                        @servidor.VinculoDeTrabalho.Servidor.Nome
+                                    </td>
+                                    <td class="text-center">
+                                        @servidor.Data.ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @(servidor.DataFim?.ToString("dd/MM/yyyy") ?? "-")
+                                    </td>
+                                    <td>
+                                        @if (podeAlterar)
+                                        {
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(@servidor.Id)">
+                                                <i class='bx bx-edit-alt'></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td class="text-center" colspan="3">
+                                    Nenhum servidor alocado na escala
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (Model.Tipo == eTipoDeEscala.Mensal) 
+            {
+                <h6>Servidores</h6>
+                <table class="table table-bordered table-condensed">
+                    <thead>
+                        <tr style="background-color: aliceblue;">
+                            <th class="text-center">
+                                Servidor
+                            </th>
+                            <th class="text-center" width="10%">
+                                Data
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                1
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                1
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                2
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                2
+                            </th>
+                            <th width="7%" class="text-center">
+                                ENT.
+                                <br />
+                                3
+                            </th>
+                            <th width="7%" class="text-center">
+                                SAI.
+                                <br />
+                                3
+                            </th>
+                            <th width="7%" class="text-center">
+                                CH
+                            </th>
+                            <th width="10%" class="text-center">
+                                @if (podeAlterar)
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorMensal(0, @Model.Id)">
+                                        <i class='bx bx-list-plus'></i>
+                                    </button>
+                                }
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EscalaDoServidor.Any()) 
+                        {
+                            @foreach (var diaServidor in Model.EscalaDoServidor.OrderBy(c => c.Data).ThenBy(c => c.VinculoDeTrabalho.Servidor.Nome)) 
+                            {
+                                <tr>
+                                    <td>
+                                        @diaServidor.VinculoDeTrabalho.Servidor.Nome
+                                    </td>
+                                    <td class="text-center">
+                                        @diaServidor.Data.ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Entrada1?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Saida1?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Entrada2?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Saida2?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Entrada3?.ToString(@"hh\:mm"))
+                                    </td>
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.Saida3?.ToString(@"hh\:mm"))
+                                    </td>
+
+                                    <td class="text-center">
+                                        @(diaServidor.CicloDaEscala.ObtenhaHorarioDia().CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (podeAlterar)
+                                        {
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorMensal(@diaServidor.Id, @Model.Id)">
+                                                <i class='bx bx-edit-alt'></i>
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else 
+                        {
+                            <tr>
+                                <td class="text-center" colspan="99">
+                                    Nenhum servidor na escala
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
 
             <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Escala")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (Model.Id > 0 && podeRemover) 
+            {
+                <button type="button" class="btn btn-danger" onclick="removerEscala(@Model.Id)">
+                    <i class="bx bx-trash"></i> Remover
+                </button>
+            }
+
+            @if (podeAlterar) 
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
         </form>
     </div>
 </div>
 
+<div id="div-modal"></div>
 <script src="/Scripts/Paginas/Escala/alterar.js?t=@DateTime.Now.Ticks"></script>

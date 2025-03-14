@@ -11,8 +11,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(EscalaId))]
         public virtual Escala Escala { get; set; }
 
-        [Required]
-        public int CicloDaEscalaId { get; set; }
+        public int? CicloDaEscalaId { get; set; }
         [ForeignKey(nameof(CicloDaEscalaId))]
         public virtual CicloDaEscala CicloDaEscala { get; set; }
 
@@ -23,5 +22,14 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public DateTime Data { get; set; }
+
+        public DateTime? DataFim { get; set; }
+
+        public CicloDaEscala ObterCicloAtual(DateTime dataConsulta)
+        {
+            int diasPassados = (dataConsulta - Data).Days;
+            var cicloAtual = (diasPassados % Escala.Ciclos.Count()) + 1;
+            return Escala.Ciclos.FirstOrDefault(c => c.Ciclo == cicloAtual);
+        }
     }
 }
