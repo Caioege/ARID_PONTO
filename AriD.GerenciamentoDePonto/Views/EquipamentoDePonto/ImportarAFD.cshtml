@@ -1,0 +1,34 @@
+﻿<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-file-import'></i> Importar AFD
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col col-md-9">
+                <label class="form-label obrigatorio">Equipamento</label>
+                @Html.DropDownList("EquipamentoId", (SelectList)ViewBag.Equipamentos, string.Empty, new { @class = "select2" })
+            </div>
+
+            <div class="col col-md-3">
+                <label class="form-label">Último NSR</label>
+                @Html.TextBox("UltimoNSRLido", string.Empty, new { @class = "form-control numeroAte999" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-12">
+                <label class="form-label obrigatorio" for="ArquivoAFD">Arquivo</label>
+                <input class="form-control" type="file" accept=".txt" id="ArquivoAFD">
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-primary" id="btn-processar">
+            <i class='bx bxs-save'></i> Processar Registros
+        </button>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/EquipamentoDePonto/importarAFD.js?t=@DateTime.Now.Ticks"></script>

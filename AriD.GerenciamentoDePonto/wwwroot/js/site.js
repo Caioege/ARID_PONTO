@@ -240,6 +240,8 @@ function assineMascarasDoComponente(componente) {
             }
         }
     });
+
+    componente.find('.numeroAte999').mask('000');
 }
 
 function dataValida(dateString) {

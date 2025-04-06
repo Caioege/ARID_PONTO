@@ -36,13 +36,12 @@
                         <div class="col col-md-12">
                             <label class="form-label obrigatorio" for="PerfilDeAcesso">Perfil de Acesso</label>
                             @{
-                                var listaDePerfis = new List<CodigoDescricaoDTO>
-                                ()
-                            {
-                            new CodigoDescricaoDTO((int)ePerfilDeAcesso.Organizacao, ePerfilDeAcesso.Organizacao.DescricaoDoEnumerador()),
-                            new CodigoDescricaoDTO((int)ePerfilDeAcesso.UnidadeOrganizacional, ePerfilDeAcesso.UnidadeOrganizacional.DescricaoDoEnumerador()),
-                            new CodigoDescricaoDTO((int)ePerfilDeAcesso.Departamento, ePerfilDeAcesso.Departamento.DescricaoDoEnumerador())
-                            };
+                                var listaDePerfis = new List<CodigoDescricaoDTO>()
+                                {
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.Organizacao, ePerfilDeAcesso.Organizacao.DescricaoDoEnumerador()),
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.UnidadeOrganizacional, ePerfilDeAcesso.UnidadeOrganizacional.DescricaoDoEnumerador()),
+                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.Departamento, ePerfilDeAcesso.Departamento.DescricaoDoEnumerador())
+                                };
                             }
 
                                 @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })

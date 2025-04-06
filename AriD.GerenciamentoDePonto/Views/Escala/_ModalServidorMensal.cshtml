@@ -2,6 +2,7 @@
 
 @{
     var adicionar = Model.Id == 0;
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Escala.Excluir);
 }
 
 <div class="modal" tabindex="-1" id="_ModalServidorMensal" data-bs-backdrop="static">

@@ -5,6 +5,7 @@ using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
 
@@ -16,7 +17,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<ItemDoGrupoDePermissao> _servicoPermissao;
 
         public GrupoDePermissaoController(
-            IServico<GrupoDePermissao> servico, 
+            IServico<GrupoDePermissao> servico,
             IServico<ItemDoGrupoDePermissao> servicoPermissao)
         {
             _servico = servico;
@@ -56,6 +57,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             var model = new GrupoDePermissao { Ativo = true };
             var html = await RenderizarComoString("_Modal", model);
+
             return Json(new { sucesso = true, html = html });
         }
 
@@ -97,9 +99,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Remova(int grupoDePermissaoId)
+        public IActionResult Remover(int id)
         {
-            var grupoDePermissao = _servico.Obtenha(grupoDePermissaoId);
+            var grupoDePermissao = _servico.Obtenha(id);
 
             foreach (var item in grupoDePermissao.ListaDePermissao)
                 _servicoPermissao.Remover(item);

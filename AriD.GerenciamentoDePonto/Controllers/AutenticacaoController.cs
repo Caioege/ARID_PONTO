@@ -45,7 +45,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 usuarioAcesso.PerfilDeAcesso,
                 usuarioAcesso.OrganizacaoId ?? 0,
                 usuarioAcesso.Organizacao?.Nome ?? "ADMINISTRAÇÃO DO SISTEMA",
-                new(),
+                usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional ?[usuarioAcesso.UnidadeOrganizacionalId.Value] : [],
+                usuarioAcesso.DepartamentoId,
                 ObtenhaListaDePermissoes(usuarioAcesso),
                 usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
 

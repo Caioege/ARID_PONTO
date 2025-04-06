@@ -18,5 +18,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public bool Ativo { get; set; }
+
+        public int UltimoNSRLido { get; set; } = 0;
     }
 }

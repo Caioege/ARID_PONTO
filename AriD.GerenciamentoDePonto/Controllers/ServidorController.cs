@@ -298,6 +298,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Json(new { sucesso = true, mensagem = "O afastamento foi removido." });
         }
 
+        [HttpPost]
+        public ActionResult Remover(int id)
+        {
+            var servidor = _servico.Obtenha(id);
+
+            if (servidor.VinculosDeTrabalho.Count > 0)
+                throw new ApplicationException("Não é possível remover o cadastro do servidor, pois existem vínculos de trabalho cadastrados para ele.");
+
+            _servico.Remover(servidor);
+
+            return Json(new { sucesso = true, mensagem = "O servidor foi removido." });
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
         {
             var dados = _servico.ObtenhaListaPaginada(

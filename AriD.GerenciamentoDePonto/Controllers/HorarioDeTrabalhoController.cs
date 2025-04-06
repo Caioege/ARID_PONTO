@@ -15,11 +15,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
     public class HorarioDeTrabalhoController : Controller
     {
         private readonly IServico<HorarioDeTrabalho> _servico;
+        private readonly IServico<HorarioDeTrabalhoDia> _servicoDia;
 
         public HorarioDeTrabalhoController(
-            IServico<HorarioDeTrabalho> servico)
+            IServico<HorarioDeTrabalho> servico, 
+            IServico<HorarioDeTrabalhoDia> servicoDia)
         {
             _servico = servico;
+            _servicoDia = servicoDia;
         }
 
         [HttpGet]
@@ -109,6 +112,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 _servico.Atualizar(horarioDeTrabalho);
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
+        }
+
+        [HttpPost]
+        public ActionResult Remover(int id)
+        {
+            var horario = _servico.Obtenha(id);
+            foreach (var dia in horario.Dias)
+                _servicoDia.Remover(dia);
+
+            _servico.Remover(horario);
+
+            return Json(new { sucesso = true, mensagem = "O horário de trabalho foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<HorarioDeTrabalho> listaPaginada)

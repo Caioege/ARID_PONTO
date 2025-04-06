@@ -67,15 +67,19 @@
                 </div>
             </div>
 
-            <br />
-            <table class="table-titulo">
-                <tr>
-                    <td class="text-center">
-                        <i class="bx bx-slider-alt"></i>
-                        Administração
-                    </td>
-                </tr>
-            </table>
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
+            {
+                <br />
+                <table class="table-titulo">
+                    <tr>
+                        <td class="text-center">
+                            <i class="bx bx-slider-alt"></i>
+                            Administração
+                        </td>
+                    </tr>
+                </table>
+            }
+
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
                 var modelDepartamento = 
@@ -91,18 +95,30 @@
                 @await Html.PartialAsync("_PartialItemPermissao", modelFuncao)
             }
 
-            @{
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
+            {
                 var modelEquipamento =
                 new Tuple<string, Type, GrupoDePermissao>("Equipamento de Ponto", typeof(eItemDePermissao_EquipamentoDePonto), Model);
+
+                @await Html.PartialAsync("_PartialItemPermissao", modelEquipamento)
             }
-            @await Html.PartialAsync("_PartialItemPermissao", modelEquipamento)
 
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
                 var modelHorario =
                 new Tuple<string, Type, GrupoDePermissao>("Horário de Trabalho", typeof(eItemDePermissao_HorarioDeTrabalho), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelHorario)
+            }
 
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
+            {
+                var modelImportarAFD =
+                new Tuple<string, Type, GrupoDePermissao>("Importar AFD", typeof(eItemDePermissao_ImportarAFD), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelImportarAFD)
+            }
+
+            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
+            {
                 var modelJustificativa =
                 new Tuple<string, Type, GrupoDePermissao>("Justificativa de Ausência", typeof(eItemDePermissao_JustificativaDeAusencia), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelJustificativa)
@@ -121,14 +137,13 @@
                     </td>
                 </tr>
             </table>
-            @{
-                var modelServidor =
-                new Tuple<string, Type, GrupoDePermissao>("Cadastro de Servidores", typeof(eItemDePermissao_Servidor), Model);
-            }
-            @await Html.PartialAsync("_PartialItemPermissao", modelServidor)
 
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
+                var modelServidor =
+                new Tuple<string, Type, GrupoDePermissao>("Cadastro de Servidores", typeof(eItemDePermissao_Servidor), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelServidor)
+
                 var modelEscala =
                 new Tuple<string, Type, GrupoDePermissao>("Escalas", typeof(eItemDePermissao_Escala), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelEscala)
@@ -174,18 +189,18 @@
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorHorario)
 
-            <br />
-            <table class="table-titulo">
-                <tr>
-                    <td class="text-center">
-                        <i class='bx bxs-user-badge'></i>
-                        Usuários
-                    </td>
-                </tr>
-            </table>
-
-            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
+                <br />
+                <table class="table-titulo">
+                    <tr>
+                        <td class="text-center">
+                            <i class='bx bxs-user-badge'></i>
+                            Usuários
+                        </td>
+                    </tr>
+                </table>
+
                 var modelCadastroUsuarios =
                 new Tuple<string, Type, GrupoDePermissao>("Cadastro de Usuários", typeof(eItemDePermissao_Usuarios), Model);
 
@@ -201,6 +216,13 @@
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
+
+            @if (podeRemover)
+            {
+                <button type="button" class="btn btn-danger" onclick="removerGrupo(@Model.Id)">
+                    <i class="bx bx-trash"></i> Remover
+                </button>
+            }
 
             @if (podeAlterar)
             {

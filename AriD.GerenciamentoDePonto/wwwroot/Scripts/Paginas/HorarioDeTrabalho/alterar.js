@@ -82,3 +82,30 @@ function obtenhaHorarioDia(linha) {
         Saida5: linha.find('.saida5').val(),
     };
 }
+
+function removerHorario(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse horário de trabalho?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/HorarioDeTrabalho/Remover',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/HorarioDeTrabalho/Index');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
+}

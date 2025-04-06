@@ -108,6 +108,17 @@
                             </a>
                         </li>
                     }
+                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_ImportarAFD.ImportarArquivoFonteDeDados, usuarioAdm))
+                    {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("ImportarAFD", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
+                                <div>
+                                    <i class='bx bxs-file-import'></i>
+                                    Importar AFD
+                                </div>
+                            </a>
+                        </li>
+                    }
                     if (listaDePermissao.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.Visualizar, usuarioAdm))
                     {
                         <li class='menu-item'>
@@ -208,6 +219,17 @@
                     </div>
                 </div>
                 <ul class="menu-sub">
+                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
+                    { 
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("ListaDeServidores", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bxs-user-account'></i>
+                                    Lista de Servidores
+                                </div>
+                            </a>
+                        </li>
+                    }
                     @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComAfastamento.Visualizar, usuarioAdm))
                     { 
                         <li class='menu-item'>

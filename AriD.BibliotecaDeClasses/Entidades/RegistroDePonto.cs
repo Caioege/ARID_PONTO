@@ -23,5 +23,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public eTipoDeRegistroEquipamento TipoRegistro { get; set; }
+
+        public int? UsuarioImportacaoId { get; set; }
+        [ForeignKey(nameof(UsuarioImportacaoId))]
+        public virtual Usuario UsuarioImportacao { get; set; }
+
+        public DateTime? DataImportacao { get; set; }
     }
 }

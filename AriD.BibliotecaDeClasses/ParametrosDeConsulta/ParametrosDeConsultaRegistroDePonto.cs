@@ -7,5 +7,6 @@
         public string Pesquisa { get; set; }
         public int Pagina { get; set; }
         public int TotalPorPagina { get; set; }
+        public int? DepartamentoId { get; set; }
     }
 }

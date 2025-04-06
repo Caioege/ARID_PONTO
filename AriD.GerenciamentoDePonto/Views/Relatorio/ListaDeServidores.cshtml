@@ -6,27 +6,10 @@
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class="bx bxs-user-voice"></i> Servidores com Afastamentos
+            <i class='bx bxs-user-account'></i> Lista de Servidores
         </h5>
     </div>
     <div class="card-body">
-        <div class="row">
-           <div class="col col-md-6 col-sm-12">
-               <label class="form-label">Justificativa de Ausência</label>
-               @Html.DropDownList("JustificativaDeAusenciaId", (SelectList)ViewBag.Justificativas, "Todas", new { @class = "select2" })
-           </div>
-
-           <div class="col col-md-3 col-sm-6">
-                <label class="form-label">Início</label>
-                @Html.TextBox("Inicio", string.Empty, new { @class = "form-control data" })
-           </div>
-
-            <div class="col col-md-3 col-sm-6">
-                <label class="form-label">Fim</label>
-                @Html.TextBox("Fim", string.Empty, new { @class = "form-control data" })
-            </div>
-        </div>
-
         @if (dadosDaSessao.Perfil != ePerfilDeAcesso.UnidadeOrganizacional)
         {
             <div class="row">
@@ -36,6 +19,18 @@
                 </div>
             </div>
         }
+
+        <div class="row">
+            <div class="col col-md-6 col-sm-12">
+                <label class="form-label">Horário de Trabalho</label>
+                @Html.DropDownList("HorarioDeTrabalhoId", (SelectList)ViewBag.Horarios, "Todos", new { @class = "select2" })
+            </div>
+
+            <div class="col col-md-6 col-sm-12">
+                <label class="form-label">Tipos de Vínculo de Trabalho</label>
+                @Html.DropDownList("TipoDeVinculoDeTrabalhoId", (SelectList)ViewBag.Tipos, "Todos", new { @class = "select2" })
+            </div>
+        </div>
 
         <br />
         <button type="button" class="btn btn-primary" onclick="processarRelatorio()">
@@ -47,14 +42,13 @@
 <script>
     function processarRelatorio() {
         let parametros = {
-            unidadeLotacaoId: $('#UnidadeId').val(),
-            inicio: $('#Inicio').val(),
-            fim: $('#Fim').val(),
-            justificativaId: $('#JustificativaDeAusenciaId').val()
+            unidadeId: $('#UnidadeId').val(),
+            horarioDeTrabalhoId: $('#HorarioDeTrabalhoId').val(),
+            tipoDeVinculoDeTrabalhoId: $('#TipoDeVinculoDeTrabalhoId').val()
         };
 
         RequisicaoAjaxComCarregamento(
-            '/Relatorio/ProcessarServidoresComAfastamento',
+            '/Relatorio/ProcessarListaDeServidores',
             'POST',
             parametros,
             function (data) {

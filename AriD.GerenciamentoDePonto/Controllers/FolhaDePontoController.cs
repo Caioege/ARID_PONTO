@@ -163,8 +163,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public IActionResult ServidoresLotadosNaUnidade(int unidadeId)
         {
-            var servidores = _servicoDeFolhaDePonto
-                    .ObtenhaServidoresLotadosNaUnidade(this.DadosDaSessao().OrganizacaoId, unidadeId);
+            var dadosDaSessao = this.DadosDaSessao();
+            var servidores = _servicoDeFolhaDePonto.ObtenhaServidoresLotadosNaUnidade(
+                dadosDaSessao.OrganizacaoId, 
+                unidadeId,
+                dadosDaSessao.DepartamentoId);
 
             return Json(new { sucesso = true, servidores });
         }
@@ -172,8 +175,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public IActionResult VinculosDoServidor(int servidorId, int unidadeId)
         {
-            var vinculos = _servicoDeFolhaDePonto
-                    .ObtenhaVinculosDeTrabalhoDoServido(this.DadosDaSessao().OrganizacaoId, servidorId, unidadeId);
+            var dadosDaSessao = this.DadosDaSessao();
+            var vinculos = _servicoDeFolhaDePonto.ObtenhaVinculosDeTrabalhoDoServido(
+                dadosDaSessao.OrganizacaoId, 
+                servidorId, 
+                unidadeId,
+                dadosDaSessao.DepartamentoId);
 
             return Json(new { sucesso = true, vinculos });
         }
@@ -276,12 +283,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private void ContextoPontoDoDia()
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
-            if (dadosDaSessao.Perfil != ePerfilDeAcesso.UnidadeOrganizacional)
+            switch (dadosDaSessao.Perfil)
             {
-                ViewBag.Unidades = new SelectList(
-                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativa),
-                    "Id",
-                    "Nome");
+                case ePerfilDeAcesso.Organizacao:
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativa),
+                        "Id",
+                        "Nome");
+                    break;
+
+                case ePerfilDeAcesso.Departamento:
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(dadosDaSessao.OrganizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Codigo",
+                        "Descricao");
+                    break;
             }
         }
 

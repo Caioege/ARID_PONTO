@@ -30,12 +30,14 @@ namespace AriD.Servicos.Servicos.Interfaces
 
         List<CodigoDescricaoDTO> ObtenhaServidoresLotadosNaUnidade(
             int organizacaoId,
-            int unidadeId);
+            int unidadeId,
+            int? departamentoId);
 
         List<CodigoDescricaoDTO> ObtenhaVinculosDeTrabalhoDoServido(
             int organizacaoId,
             int servidorId,
-            int unidadeId);
+            int unidadeId,
+            int? departamentoId);
 
         List<PontoDoDia> CarregueFolhaDePonto(
             int organizacaoId,
@@ -54,5 +56,9 @@ namespace AriD.Servicos.Servicos.Interfaces
             MesAno mesAno,
             int unidadeLotacaoId,
             bool fechar);
+
+        List<CodigoDescricaoDTO> ObtenhaListaDeUnidadesLotadasNoDepartamento(
+            int organizacaoId,
+            int departamentoId);
     }
 }

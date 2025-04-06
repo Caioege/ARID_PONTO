@@ -11,6 +11,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             int organizacaoId,
             string organizacaoNome,
             List<int> unidades,
+            int? departamentoId,
             List<KeyValuePair<string, int>> permissoes,
             bool usuarioAdministradorAutenticado = false)
         {
@@ -21,6 +22,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             UnidadeOrganizacionais = unidades;
             OrganizacaoNome = organizacaoNome;
             Permissoes = permissoes;
+            DepartamentoId = departamentoId;
             UsuarioAdministradorAutenticado = usuarioAdministradorAutenticado;
         }
 

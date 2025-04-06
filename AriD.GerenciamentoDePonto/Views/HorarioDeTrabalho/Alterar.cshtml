@@ -137,6 +137,13 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
+            @if (Model.Id > 0 && podeRemover)
+            {
+                <button type="button" class="btn btn-danger" onclick="removerHorario(@Model.Id)">
+                    <i class="bx bx-trash"></i> Remover
+                </button>
+            }
+
             @if (podeAlterar)
             {
                 <button type="button" class="btn btn-primary" id="btn-salvar">
@@ -147,4 +154,4 @@
     </div>
 </div>
 
-<script src="/Scripts/Paginas/HorarioDeTrabalho/alterar.js"></script>
+<script src="/Scripts/Paginas/HorarioDeTrabalho/alterar.js?t=@DateTime.Now.Ticks"></script>

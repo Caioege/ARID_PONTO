@@ -363,7 +363,8 @@ namespace AriD.Servicos.Servicos
 
         public List<CodigoDescricaoDTO> ObtenhaServidoresLotadosNaUnidade(
             int organizacaoId,
-            int unidadeId)
+            int unidadeId,
+            int? departamentoId)
         {
             try
             {
@@ -379,13 +380,18 @@ namespace AriD.Servicos.Servicos
 	                            on p.Id = s.PessoaId
                             where
 	                            l.UnidadeOrganizacionalId = @UNIDADEID
-                                and s.OrganizacaoId = @ORGANIZACAOID
-                            order by p.Nome";
+                                and s.OrganizacaoId = @ORGANIZACAOID ";
+
+                if (departamentoId.HasValue)
+                    query += " and v.DepartamentoId = @DEPARTAMENTOID ";
+
+                query += " order by p.Nome";
 
                 var servidores = _repositorio.ConsultaDapper<CodigoDescricaoDTO>(query, new
                 {
                     @UNIDADEID = unidadeId,
-                    @ORGANIZACAOID = organizacaoId
+                    @ORGANIZACAOID = organizacaoId,
+                    @DEPARTAMENTOID = departamentoId
                 });
 
                 return servidores
@@ -401,7 +407,8 @@ namespace AriD.Servicos.Servicos
         public List<CodigoDescricaoDTO> ObtenhaVinculosDeTrabalhoDoServido(
             int organizacaoId,
             int servidorId,
-            int unidadeId)
+            int unidadeId,
+            int? departamentoId)
         {
             try
             {
@@ -416,14 +423,19 @@ namespace AriD.Servicos.Servicos
                             where
 	                            l.OrganizacaoId = @ORGANIZACAOID
                                 and v.ServidorId = @SERVIDORID
-                                and l.UnidadeOrganizacionalId = @UNIDADEID
-                            order by v.Inicio, v.Matricula";
+                                and l.UnidadeOrganizacionalId = @UNIDADEID";
+
+                if (departamentoId.HasValue)
+                    query += " and v.DepartamentoId = @DEPARTAMENTOID ";
+
+                query += " order by v.Inicio, v.Matricula";
 
                 var vinculos = _repositorio.ConsultaDapper<CodigoDescricaoDTO>(query, new
                 {
                     @UNIDADEID = unidadeId,
                     @ORGANIZACAOID = organizacaoId,
-                    @SERVIDORID = servidorId
+                    @SERVIDORID = servidorId,
+                    @DEPARTAMENTOID = departamentoId
                 });
 
                 return vinculos
@@ -739,6 +751,38 @@ namespace AriD.Servicos.Servicos
                 }
 
                 _repositorio.Commit();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<CodigoDescricaoDTO> ObtenhaListaDeUnidadesLotadasNoDepartamento(
+            int organizacaoId,
+            int departamentoId)
+        {
+            try
+            {
+                var query =
+                    @"select
+	                    distinct u.Id as Codigo,
+                        u.Nome as Descricao
+                    from vinculodetrabalho v
+                    inner join lotacaounidadeorganizacional l
+	                    on l.VinculoDeTrabalhoId = v.Id
+                    inner join unidadeorganizacional u
+	                    on u.Id = l.UnidadeOrganizacionalId
+                    where
+	                    v.OrganizacaoId = @ORGANIZACAOID
+                        and v.DepartamentoId = @DEPARTAMENTOID
+                    order by 2";
+
+                return _repositorio.ConsultaDapper<CodigoDescricaoDTO>(query, new
+                {
+                    @ORGANIZACAOID = organizacaoId,
+                    @DEPARTAMENTOID = departamentoId
+                });
             }
             catch (Exception)
             {

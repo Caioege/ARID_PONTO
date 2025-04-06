@@ -115,19 +115,31 @@ function assineSalvarModal() {
 }
 
 function removerCiclo(id) {
-    RequisicaoAjaxComCarregamento(
-        '/Escala/RemoverCiclo',
-        'POST',
-        { id },
-        function (data) {
-            if (data.sucesso) {
-                MensagemRodape('success', data.mensagem);
-                $('#_ModalCiclo').modal('hide');
-                CarregarPagina('/Escala/Alterar/' + $('#formulario-escala').find('#Id').val())
-            } else {
-                MensagemRodape('warning', data.mensagem);
-            }
-        });
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse ciclo?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Escala/RemoverCiclo',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        $('#_ModalCiclo').modal('hide');
+                        CarregarPagina('/Escala/Alterar/' + $('#formulario-escala').find('#Id').val())
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
 }
 
 function abrirModalServidorCiclo(id) {
@@ -193,20 +205,32 @@ function abrirModalServidorMensal(id, escalaId) {
 }
 
 function removerServidorEscalaCiclo(id) {
-    RequisicaoAjaxComCarregamento(
-        '/Escala/RemoverServidorCiclo',
-        'POST',
-        { id },
-        function (data) {
-            if (data.sucesso) {
-                MensagemRodape('success', data.mensagem);
-                $('#_ModalEscalaServidorCiclo').modal('hide');
-                $('#_ModalServidorMensal').modal('hide');
-                CarregarPagina('/Escala/Alterar/' + $('#formulario-escala').find('#Id').val());
-            } else {
-                MensagemRodape('warning', data.mensagem);
-            }
-        });
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse registro?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Escala/RemoverServidorCiclo',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        $('#_ModalEscalaServidorCiclo').modal('hide');
+                        $('#_ModalServidorMensal').modal('hide');
+                        CarregarPagina('/Escala/Alterar/' + $('#formulario-escala').find('#Id').val());
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
 }
 
 function assineSalvarEscalaServidorMensal() {
@@ -248,16 +272,28 @@ function assineSalvarEscalaServidorMensal() {
 }
 
 function removerEscala() {
-    RequisicaoAjaxComCarregamento(
-        '/Escala/RemoverEscala',
-        'POST',
-        { id },
-        function (data) {
-            if (data.sucesso) {
-                MensagemRodape('success', data.mensagem);
-                CarregarPagina('/Escala/Index');
-            } else {
-                MensagemRodape('warning', data.mensagem);
-            }
-        });
+    Swal.fire({
+        text: "Tem certeza que deseja remover essa escala?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Escala/RemoverEscala',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/Escala/Index');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
 }

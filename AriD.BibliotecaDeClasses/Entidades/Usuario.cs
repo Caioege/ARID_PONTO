@@ -26,8 +26,16 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public bool Ativo { get; set; }
 
+        public int? UnidadeOrganizacionalId { get; set; }
+        [ForeignKey(nameof(UnidadeOrganizacionalId))]
+        public virtual UnidadeOrganizacional UnidadeOrganizacional { get; set; }
+
         public int? GrupoDePermissaoId { get; set; }
         [ForeignKey(nameof(GrupoDePermissaoId))]
         public virtual GrupoDePermissao GrupoDePermissao { get; set; }
+
+        public int? DepartamentoId { get; set; }
+        [ForeignKey(nameof(DepartamentoId))]
+        public virtual Departamento Departamento { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using iText.IO.Image;
 using iText.Layout.Borders;
 using AriD.Servicos.Extensao;
 using AriD.BibliotecaDeClasses.DTO;
+using System.Diagnostics.Contracts;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -25,6 +26,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<HorarioDeTrabalho> _servicoHorario;
         private readonly IServico<TipoDoVinculoDeTrabalho> _servicoTipo;
         private readonly IServico<Escala> _servicoEscala;
+        private readonly IServicoDeFolhaDePonto _servicoDeFolhaDePonto;
 
         public RelatorioController(
             IServicoDeRelatorios servicoDeRelatorios,
@@ -32,7 +34,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<UnidadeOrganizacional> servicoUnidade,
             IServico<HorarioDeTrabalho> servicoHorario,
             IServico<TipoDoVinculoDeTrabalho> servicoTipo,
-            IServico<Escala> servicoEscala)
+            IServico<Escala> servicoEscala,
+            IServicoDeFolhaDePonto servicoDeFolhaDePonto)
         {
             _servicoDeRelatorios = servicoDeRelatorios;
             _servicoJustificativa = servicoJustificativa;
@@ -40,6 +43,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoHorario = servicoHorario;
             _servicoTipo = servicoTipo;
             _servicoEscala = servicoEscala;
+            _servicoDeFolhaDePonto = servicoDeFolhaDePonto;
         }
 
         #region Views
@@ -49,7 +53,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
-                int organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
 
                 ViewBag.Justificativas = new SelectList(
                     _servicoJustificativa
@@ -58,9 +63,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .OrderBy(c => c.SiglaComDescricao),
                     "Id", "SiglaComDescricao");
 
-                ViewBag.Unidades = new SelectList(
-                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
-                    "Id", "Nome");
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
 
                 return View();
             }
@@ -99,9 +113,28 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
-                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                var organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                var escalas = _servicoEscala.ObtenhaLista(c => c.OrganizacaoId == organizacaoId);
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                {
+                    escalas = escalas
+                        .Where(c => dadosDaSessao.UnidadeOrganizacionais.Contains(c.UnidadeOrganizacionalId))
+                        .ToList();
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    var unidadesComDepartamento = _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value);
+
+                    escalas = escalas
+                        .Where(c => unidadesComDepartamento.Select(c => c.Codigo).Contains(c.UnidadeOrganizacionalId))
+                        .ToList();
+                }
+
                 ViewBag.Escalas = new SelectList(
-                    _servicoEscala.ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    escalas
                     .OrderBy(c => c.UnidadeOrganizacional.Nome)
                     .ThenBy(c => c.Descricao)
                     .Select(c => new CodigoDescricaoGrupoDTO(c.Id, c.Descricao, c.UnidadeOrganizacional.Nome)),
@@ -109,6 +142,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     "Descricao",
                     null,
                     "Grupo");
+
                 return View();
             }
             catch (Exception ex)
@@ -117,7 +151,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult ProcessarServidoresPorEscala(int? escalaId)
         {
             try
@@ -188,6 +222,62 @@ namespace AriD.GerenciamentoDePonto.Controllers
             });
         }
 
+        [HttpGet]
+        public IActionResult ListaDeServidores()
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            var organizacaoId = dadosDaSessao.OrganizacaoId;
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                    "Id", "Nome");
+            }
+            else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                    "Id", "Nome");
+            }
+
+            ViewBag.Horarios = new SelectList(_servicoHorario
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            ViewBag.Tipos = new SelectList(_servicoTipo
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarListaDeServidores(
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var relatorio = RelatorioListaDeServidores(
+                unidadeId,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId);
+
+            var nomeArquivo = "Lista de Servidores.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
         #endregion
 
         #region Relatórios
@@ -200,12 +290,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
 
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeLotacaoId = dadosDaSessao.UnidadeOrganizacionais.First();
+
             var afastamentos = _servicoDeRelatorios.ObtenhaAfastamentosParaRelatorio(
                 dadosDaSessao.OrganizacaoId,
                 unidadeLotacaoId,
                 inicio,
                 fim,
-                justificativaId);
+                justificativaId,
+                dadosDaSessao.DepartamentoId);
 
             if (afastamentos.Count == 0)
                 throw new ApplicationException("Nenhum afastamento encontrado para os filtros informados.");
@@ -331,7 +425,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var horarios = _servicoDeRelatorios.ObtenhaServidoresPorHorario(
                 dadosDeSessao.OrganizacaoId,
                 horarioDeTrabalhoId,
-                tipoDeVinculoDeTrabalhoId);
+                tipoDeVinculoDeTrabalhoId,
+                dadosDeSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional ? dadosDeSessao.UnidadeOrganizacionais.First() : null,
+                dadosDeSessao.DepartamentoId);
 
             if (!horarios.Any())
                 throw new ApplicationException("Nenhum registro encontrado para os filtros informados.");
@@ -426,7 +522,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var servidores = _servicoDeRelatorios.ObtenhaServidoresPorEscala(
                 dadosDeSessao.OrganizacaoId,
-                escalaId);
+                escalaId,
+                dadosDeSessao.DepartamentoId);
 
             if (!servidores.Any())
                 throw new ApplicationException("Nenhum registro encontrado para os filtros informados.");
@@ -527,6 +624,97 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     document.Add(new Div().SetMarginBottom(3).Add(table));
                 }
             }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] RelatorioListaDeServidores(
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = dadosDaSessao.UnidadeOrganizacionais.First();
+
+            var servidores = _servicoDeRelatorios.ObtenhaListaDeServidores(
+                dadosDaSessao.OrganizacaoId,
+                unidadeId,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId,
+                dadosDaSessao.DepartamentoId);
+
+            if (servidores.Count == 0)
+                throw new ApplicationException("Nenhum servidor encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(10);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add("Lista de Servidores")));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    50f,
+                    25f,
+                    25f,
+                })).UseAllAvailableWidth();
+
+            table
+                .AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .Add(new Text("Nome"))
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .Add(new Text("CPF"))
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .Add(new Text("Data de Nascimento"))
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            foreach (var servidor in servidores)
+            {
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .Add(new Text(servidor.PessoaNome))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .Add(new Text($"{servidor.PessoaCpf}"))));
+
+                table.AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .Add(new Text(servidor.DataDeNascimento.ToString("dd/MM/yyyy")))));
+            }
+
+            document.Add(new Div().Add(table));
 
             document.Close();
             return stream.ToArray();

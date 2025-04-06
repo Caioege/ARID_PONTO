@@ -11,7 +11,7 @@
             <div class="col-md-5 col-sm-6 col-xs-12">
                 <div class="input-group">
                     @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Digite para buscar", @style = "background: white" })
-                    <button class="btn btn-primary" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginada")')">
+                    <button class="btn btn-primary" id="btn-pesquisar" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginada")')">
                         <i class='bx bx-search-alt'></i> Pesquisar
                     </button>
                 </div>

@@ -17,15 +17,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IConfiguration _configuration;
         private readonly IServico<EquipamentoDePonto> _equipamentoServico;
         private readonly IServico<UnidadeOrganizacional> _unidadeServico;
+        private readonly IServicoDeArquivoFonteDeDados _servicoDeArquivoFonteDeDados;
 
         public EquipamentoDePontoController(
-            IServico<EquipamentoDePonto> equipamentoServico, 
+            IServico<EquipamentoDePonto> equipamentoServico,
             IServico<UnidadeOrganizacional> unidadeServico,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IServicoDeArquivoFonteDeDados servicoDeArquivoFonteDeDados)
         {
             _equipamentoServico = equipamentoServico;
             _unidadeServico = unidadeServico;
             _configuration = configuration;
+            _servicoDeArquivoFonteDeDados = servicoDeArquivoFonteDeDados;
         }
 
         [HttpGet]
@@ -112,6 +115,62 @@ namespace AriD.GerenciamentoDePonto.Controllers
             EnvieNotificacaoParaGerenciadorDeEquipamento(numeroDeSerie, true);
 
             return Json(new { sucesso = true, mensagem = "O registro foi removido." });
+        }
+
+        [HttpGet]
+        public ActionResult ImportarAFD()
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                var equipamentos = _equipamentoServico
+                    .ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativo)
+                    .OrderBy(c => c.UnidadeOrganizacional.Nome)
+                    .ThenBy(c => c.Descricao);
+
+                ViewBag.Equipamentos = new SelectList(equipamentos, "Id", "Descricao", null, "UnidadeOrganizacional.Nome");
+            }
+            else
+            {
+                var unidadeId = dadosDaSessao.UnidadeOrganizacionais.First();
+                var equipamentos = _equipamentoServico
+                    .ObtenhaLista(c => c.UnidadeOrganizacionalId == unidadeId && c.Ativo)
+                    .OrderBy(c => c.Descricao);
+
+                ViewBag.Equipamentos = new SelectList(equipamentos, "Id", "Descricao");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ImportarAFD(
+            int equipamentoId, 
+            int ultimoNSRInformado, 
+            IFormFile arquivo)
+        {
+            if (arquivo == null || Path.GetExtension(arquivo.FileName) != ".txt")
+                throw new ApplicationException("Arquivo inválido.");
+
+            var qtd = _servicoDeArquivoFonteDeDados
+                .ImportarArquivoAFD(equipamentoId, ultimoNSRInformado, this.DadosDaSessao(), arquivo.OpenReadStream());
+
+            return Json(new 
+            { 
+                sucesso = true, 
+                mensagem = qtd == 0 
+                    ? "O arquivo foi recebido mas nenhum registro foi importado." 
+                    : qtd == 1 
+                        ? "Um registro de ponto foi importado." 
+                        : $"{qtd} registros de ponto foram imporatdos." 
+            });
+        }
+
+        [HttpGet]
+        public ActionResult ObtenhaNSR(int equipamentoId)
+        {
+            var equipamento = _equipamentoServico.Obtenha(equipamentoId);
+            return Json(new { sucesso = true, nsr = equipamento?.UltimoNSRLido ?? 0 });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<EquipamentoDePonto> listaPaginada)

@@ -149,8 +149,16 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
+            @if (Model.Id > 0 && podeRemover)
+            {
+                <button type="button" class="btn btn-danger" onclick="removerServidor(@Model.Id)">
+                    <i class="bx bx-trash"></i> Remover
+                </button>
+            }
+
             @if (podeAlterar)
             {
+
                 <button type="button" class="btn btn-primary" id="btn-salvar">
                     <i class='bx bxs-save'></i> Salvar
                 </button>

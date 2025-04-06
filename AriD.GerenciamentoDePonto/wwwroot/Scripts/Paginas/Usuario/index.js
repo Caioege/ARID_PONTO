@@ -43,6 +43,25 @@ function assineSalvarCadastroModal() {
 function assineChangeGrupoDePermissao() {
     $('#PerfilDeAcesso').on('change', function () {
         let perfil = $(this).val();
+
+        if (perfil == '3' || perfil == 'Departamento') {
+            $('#_Modal #label-departamento').addClass('obrigatorio');
+            $('#_Modal #div-departamento').show();
+        } else {
+            $('#_Modal #div-departamento').hide();
+            $('#_Modal #label-departamento').removeClass('obrigatorio');
+            $('#_Modal #DepartamentoId').val('').trigger('change');
+        }
+
+        if (perfil == '2' || perfil == 'UnidadeOrganizacional') {
+            $('#_Modal #label-unidade').addClass('obrigatorio');
+            $('#_Modal #div-unidade').show();
+        } else {
+            $('#_Modal #div-unidade').hide();
+            $('#_Modal #label-unidade').removeClass('obrigatorio');
+            $('#_Modal #UnidadeOrganizacionalId').val('').trigger('change');
+        }
+
         $('#GrupoDePermissaoId').html('');
 
         if (perfil) {
@@ -67,4 +86,32 @@ function assineChangeGrupoDePermissao() {
     if ($('#_Modal').find('#Id').val() == '0') {
         $('#PerfilDeAcesso').trigger('change');
     }
+}
+
+function removerUsuario(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse usuário?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Usuario/Remover',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        $('#_Modal').modal('hide');
+                        $('#btn-pesquisar').trigger('click');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
 }

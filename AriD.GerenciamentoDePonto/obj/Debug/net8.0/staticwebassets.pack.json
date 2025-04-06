@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\importarAFD.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDePonto\\importarAFD.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDePonto\\index.js"
     },

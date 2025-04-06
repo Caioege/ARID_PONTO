@@ -6,6 +6,8 @@
 @{
     var adicionar = Model.Id == 0;
     var dadosDaSessao = Context.DadosDaSessao();
+
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Usuarios.Excluir);
 }
 
 <div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
@@ -69,6 +71,43 @@
                                 @Html.DropDownListFor(model => model.GrupoDePermissaoId, (SelectList)ViewBag.Grupos, string.Empty, new { @class = "select2" })
                             </div>
                         </div>
+
+                        @if (Model.Id == 0)
+                        {
+                            <div class="row" id="div-unidade" style="display:none;">
+                                <div class="col col-lg-12">
+                                    <label class="form-label" id="label-unidade" for="UnidadeOrganizacionalId">Unidade</label>
+                                    @Html.DropDownListFor(model => model.UnidadeOrganizacionalId, (SelectList)ViewBag.Unidades, string.Empty, new { @class = "select2" })
+                                </div>
+                            </div>
+
+                            <div class="row" style="display:none;" id="div-departamento">
+                                <div class="col col-md-12">
+                                    <label class="form-label" id="label-departamento" for="DepartamentoId">Departamento</label>
+                                    @Html.DropDownList("DepartamentoId", (SelectList)ViewBag.Departamentos, string.Empty, new { @class = "select2" })
+                                </div>
+                            </div>
+                        }
+                        else if (Model.PerfilDeAcesso == ePerfilDeAcesso.Departamento)
+                        {
+                            <div class="row" >
+                                <div class="col col-md-12">
+                                    <label class="form-label obrigatorio" for="DepartamentoId">Departamento</label>
+                                    @Html.HiddenFor(model => model.DepartamentoId)
+                                    @Html.TextBox("DepartamentoNome", Model.Departamento.SiglaComDescricao, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        }
+                        else if (Model.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional)
+                        {
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <label class="form-label obrigatorio" for="UnidadeOrganizacionalId">Unidade</label>
+                                    @Html.TextBox("UnidadeNome", Model.UnidadeOrganizacional.Nome, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
+                                    @Html.HiddenFor(model => model.UnidadeOrganizacionalId)
+                                </div>
+                            </div>
+                        }
                     }
                 </form>
             </div>
@@ -76,6 +115,14 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
+
+                @if (Model.Id > 0 && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerUsuario(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
+
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">
                     <i class='bx bxs-save'></i> Salvar
                 </button>

@@ -88,6 +88,9 @@ namespace AriD.Servicos.Servicos
                 if (parametros.Unidades.Any())
                     fromAndWhere += " and uni.Id in @UNIDADES";
 
+                if (parametros.DepartamentoId.HasValue)
+                    fromAndWhere += " and vin.DepartamentoId = @DEPARTAMENTOID ";
+
                 if (!string.IsNullOrEmpty(parametros.Pesquisa))
                 {
                     parametros.Pesquisa = parametros.Pesquisa.ToLower();
@@ -120,7 +123,8 @@ namespace AriD.Servicos.Servicos
                     @UNIDADES = parametros.Unidades,
                     @PESQUISA = parametros.Pesquisa,
                     @LIMIT = parametros.TotalPorPagina,
-                    @OFFSET = (parametros.TotalPorPagina * (parametros.Pagina- 1))
+                    @OFFSET = (parametros.TotalPorPagina * (parametros.Pagina- 1)),
+                    @DEPARTAMENTOID = parametros.DepartamentoId
                 };
 
                 var total = _repositorio.ConsultaDapper<int?>(count, parametrosConsultaDapper).FirstOrDefault() ?? 0;

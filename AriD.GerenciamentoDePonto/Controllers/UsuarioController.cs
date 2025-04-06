@@ -17,13 +17,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
     {
         private readonly IServico<Usuario> _servico;
         private readonly IServico<GrupoDePermissao> _servicoGrupo;
+        private readonly IServico<Departamento> _servicoDepartamentos;
+        private readonly IServico<UnidadeOrganizacional> _servicoUnidadeOrganizacional;
 
         public UsuarioController(
-            IServico<Usuario> funcaoServico, 
-            IServico<GrupoDePermissao> servicoGrupo)
+            IServico<Usuario> funcaoServico,
+            IServico<GrupoDePermissao> servicoGrupo,
+            IServico<Departamento> servicoDepartamentos,
+            IServico<UnidadeOrganizacional> servicoUnidadeOrganizacional)
         {
             _servico = funcaoServico;
             _servicoGrupo = servicoGrupo;
+            _servicoDepartamentos = servicoDepartamentos;
+            _servicoUnidadeOrganizacional = servicoUnidadeOrganizacional;
         }
 
         [HttpGet]
@@ -64,11 +70,23 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             if (usuarioId > 0)
             {
-                ViewBag.Grupos = new SelectList(ObtenhaGrupos(model.PerfilDeAcesso), "Codigo", "Descricao");
+                ViewBag.Grupos = new SelectList(ObtenhaGrupos(model.PerfilDeAcesso), "Codigo", "Descricao", model.GrupoDePermissaoId);
             }
             else
             {
                 ViewBag.Grupos = new SelectList(string.Empty);
+
+                ViewBag.Departamentos = new SelectList(
+                    _servicoDepartamentos.ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativo).OrderBy(c => c.Descricao),
+                    "Id",
+                    "SiglaComDescricao");
+
+                ViewBag.Unidades = new SelectList(
+                        _servicoUnidadeOrganizacional
+                        .ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativa)
+                        .OrderBy(c => c.Nome),
+                    "Id",
+                    "Nome");
             }
 
             var html = await RenderizarComoString("_Modal", model);
@@ -87,8 +105,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
             else
                 usuario.OrganizacaoId = null;
 
-            usuario.PerfilDeAcesso = dadosDaSessao.Perfil;
-
             if (!string.IsNullOrEmpty(usuario.Senha))
                 usuario.Senha = Criptografia.CriptografarSenha(usuario.Senha);
 
@@ -100,7 +116,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 persistido.NomeDaPessoa = usuario.NomeDaPessoa;
                 persistido.UsuarioDeAcesso = usuario.UsuarioDeAcesso;
-                persistido.PerfilDeAcesso = usuario.PerfilDeAcesso;
                 persistido.Ativo = usuario.Ativo;
                 persistido.GrupoDePermissaoId = usuario.GrupoDePermissaoId;
 
@@ -126,6 +141,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 return Json(new { sucesso = false, mensagem = "Ocorreu um erro." });
             }
+        }
+
+        [HttpPost]
+        public ActionResult Remover(int id)
+        {
+            var usuario = _servico.Obtenha(id);
+            _servico.Remover(usuario);
+            return Json(new { sucesso = true, mensagem = "O usuário foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Usuario> listaPaginada)
