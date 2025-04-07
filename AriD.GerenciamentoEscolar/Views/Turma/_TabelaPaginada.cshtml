@@ -8,8 +8,9 @@
 
     var listaDeColunas = new List<WebGridColumn>
     {
-        tabela.Column("Descricao", "Descrição", width: ehRedeDeEnsino ? 25f : 46f),
-        tabela.Column("AnoEscolar", "Ano Escolar", width: ehRedeDeEnsino ? 25f : 46f, format: @<text>@(((eAnoEscolar)item.AnoEscolar).DescricaoDoEnumerador())</text>)
+        tabela.Column("Descricao", "Descrição", width: ehRedeDeEnsino ? 15f : 36f),
+        tabela.Column("AnoEscolar", "Ano Escolar", width: ehRedeDeEnsino ? 25f : 46f, format: @<text>@(((eAnoEscolar)item.AnoEscolar).DescricaoDoEnumerador())</text>),
+        tabela.Column("Turno", "Turno", width: 10f, format: @<text>@(((eTurno)item.Turno).DescricaoDoEnumerador())</text>)
     };
 
     if (ehRedeDeEnsino)

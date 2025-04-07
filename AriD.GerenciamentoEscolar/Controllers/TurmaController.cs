@@ -4,6 +4,7 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoEscolar.Helpers;
 using AriD.GerenciamentoEscolar.WebGrid;
+using AriD.Servicos.Extensao;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,13 +17,19 @@ namespace AriD.GerenciamentoEscolar.Controllers
     {
         private readonly IServico<Turma> _servico;
         private readonly IServico<Escola> _servicoEscola;
+        private readonly IServicoDeAlunos _servicoDeAlunos;
+        private readonly IServico<AlunoTurma> _servicoAlunoTurma;
 
         public TurmaController(
-            IServico<Turma> servico, 
-            IServico<Escola> servicoEscola)
+            IServico<Turma> servico,
+            IServico<Escola> servicoEscola,
+            IServicoDeAlunos servicoDeAlunos,
+            IServico<AlunoTurma> servicoAlunoTurma)
         {
             _servico = servico;
             _servicoEscola = servicoEscola;
+            _servicoDeAlunos = servicoDeAlunos;
+            _servicoAlunoTurma = servicoAlunoTurma;
         }
 
         [HttpGet]
@@ -30,7 +37,13 @@ namespace AriD.GerenciamentoEscolar.Controllers
         {
             try
             {
-                ConfigureDadosDaTabelaPaginada(listaPaginada);
+                var anosLetivosDaRede = _servicoDeAlunos.ObtenhaAnosLetivosDaRede(HttpContext.DadosDaSessao().RedeDeEnsinoId);
+
+                var anoLetivoAtual = DateTime.Today.Year;
+                ViewBag.AnosLetivos = new SelectList(
+                    Enumerable.Range(anosLetivosDaRede.AnoLetivoMaisAntigo, anosLetivosDaRede.AnoLetivoMaisNovo - anosLetivosDaRede.AnoLetivoMaisAntigo + 1).ToList(), anoLetivoAtual);
+
+                ConfigureDadosDaTabelaPaginada(listaPaginada, anoLetivoAtual);
                 return View(listaPaginada);
             }
             catch (Exception ex)
@@ -40,11 +53,11 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpGet]
-        public IActionResult TabelaPaginada(ListaPaginada<Turma> listaPaginada)
+        public IActionResult TabelaPaginada(ListaPaginada<Turma> listaPaginada, int anoLetivo)
         {
             try
             {
-                ConfigureDadosDaTabelaPaginada(listaPaginada);
+                ConfigureDadosDaTabelaPaginada(listaPaginada, anoLetivo);
                 return View("_TabelaPaginada", listaPaginada);
             }
             catch (Exception ex)
@@ -119,7 +132,53 @@ namespace AriD.GerenciamentoEscolar.Controllers
             return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
-        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Turma> listaPaginada)
+        [HttpGet]
+        public async Task<ActionResult> ModalAlocarAlunos(int turmaId)
+        {
+            var alunosParaAlocar = _servicoDeAlunos.ObtenhaListaDeAlunosDisponiveisParaAlocacaoNaTurma(turmaId);
+
+            if (!alunosParaAlocar.Any())
+                throw new ApplicationException("Não existe nenhum aluno disponível para alocar nessa turma.");
+
+            var html = await RenderizarComoString("_ModalAlocarAlunos", alunosParaAlocar);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public ActionResult AlocarAlunos(int turmaId, DateTime entrada, List<int> alunos)
+        {
+            _servicoDeAlunos.AlocarAlunosNaTurma(turmaId, entrada, alunos);
+            return Json(new { sucesso = true, mensagem = alunos.Count > 1 ? "Os alunos foram alocados." : "O aluno foi alocado." });
+        }
+
+        [HttpPost]
+        public ActionResult RemoverVinculoDeAluno(int alunoTurmaId)
+        {
+            _servicoDeAlunos.RemoverVinculoDeAluno(alunoTurmaId);
+            return Json(new { sucesso = true, mensagem = "O vínculo do aluno na turma foi removido." });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ModalAlunoTurma(int alunoTurmaId)
+        {
+            var alunoTurma = _servicoAlunoTurma.Obtenha(alunoTurmaId);
+            var html = await RenderizarComoString("_ModalAlunoTurma", alunoTurma);
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public ActionResult SalvarRegistroAlunoTurma(AlunoTurma alunoTurma)
+        {
+            var alunoTurmaPersistido = _servicoAlunoTurma.Obtenha(alunoTurma.Id);
+            alunoTurmaPersistido.EntradaNaTurma = alunoTurma.EntradaNaTurma;
+            alunoTurmaPersistido.SaidaDaTurma = alunoTurma.SaidaDaTurma;
+            alunoTurmaPersistido.Situacao = alunoTurma.Situacao;
+        }
+
+        private void ConfigureDadosDaTabelaPaginada(
+            ListaPaginada<Turma> listaPaginada, 
+            int anoLetivo)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaescolasOrganizacionais>(listaPaginada.Adicional);
 
@@ -127,7 +186,8 @@ namespace AriD.GerenciamentoEscolar.Controllers
             parametros.RedeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
 
             Expression<Func<Turma, bool>> filtro =
-                c => c.RedeDeEnsinoId == parametros.RedeDeEnsinoId;
+                c => c.RedeDeEnsinoId == parametros.RedeDeEnsinoId &&
+                c.AnoLetivo == anoLetivo;
 
             if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
             {
@@ -138,9 +198,24 @@ namespace AriD.GerenciamentoEscolar.Controllers
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
             {
+                var mapaAnoEscolar = ExtensaoDeEnum.ObterMapaDescricaoEnum<eAnoEscolar>();
+                var mapaTurno = ExtensaoDeEnum.ObterMapaDescricaoEnum<eTurno>();
+
+                var turnosEncontrados = mapaTurno
+                    .Where(kv => kv.Key.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()))
+                    .Select(kv => kv.Value)
+                    .ToList();
+
+                var anosEncontrados = mapaAnoEscolar
+                    .Where(kv => kv.Key.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()))
+                    .Select(kv => kv.Value)
+                    .ToList();
+
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
-                    c => c.Descricao.Contains(listaPaginada.TermoDeBusca, StringComparison.CurrentCultureIgnoreCase));
+                    c => c.Descricao.ToUpper().Contains(listaPaginada.TermoDeBusca.ToUpper()) ||
+                        (anosEncontrados.Any() ? anosEncontrados.Contains(c.AnoEscolar) : true) ||
+                        (turnosEncontrados.Any() ? turnosEncontrados.Contains(c.Turno) : true));
             }
 
             var dados = _servico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);

@@ -1,0 +1,55 @@
+@using AriD.BibliotecaDeClasses.DTO
+@model List<CodigoDescricaoDTO>
+
+<div class="modal" tabindex="-1" id="_ModalAlocarAlunos">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class='bx bxs-user-plus'></i>
+                    Alocar alunos na turma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col col-md-4">
+                        <label class="form-label obrigatorio">Entrada na turma</label>
+                        @Html.TextBox("EntradaNaTurma", string.Empty, new { @class = "form-control data" })
+                    </div>
+                </div>
+                <table class="table table-bordered table-condensed" id="tabela-alocar-alunos">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="background: aliceblue;text-align: center;">
+                                ALUNO
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var aluno in Model.OrderBy(c => c.Descricao))
+                        {
+                            <tr>
+                                <td class="text-center" width="4%">
+                                    <input type="checkbox" class="checkbox-aluno" data-alunoid="@aluno.Codigo" />
+                                </td>
+                                <td>
+                                    @aluno.Descricao.ToUpper()
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

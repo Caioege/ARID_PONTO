@@ -12,7 +12,7 @@ function assineEventoBotaoSalvar() {
         }
 
         RequisicaoAjaxComCarregamento(
-            '/Servidor/Salvar',
+            '/Aluno/Salvar',
             'POST',
             dadosFormulario.dados,
             function (data) {
@@ -48,7 +48,7 @@ function assinechangeArquivoImagem() {
                     MensagemRodape('warning', 'Ocorreu um erro ao tentar salvar a foto.');
                 } else {
                     MensagemRodape('success', data.mensagem);
-                    CarregarPagina('/Servidor/Alterar/' + $('#Id').val());
+                    CarregarPagina('/Aluno/Alterar/' + $('#Id').val());
                 }
             });
         }
@@ -67,14 +67,14 @@ function removerFotoServidor() {
             MensagemRodape('warning', 'Ocorreu um erro ao tentar remover a foto.');
         } else {
             MensagemRodape('success', data.mensagem);
-            CarregarPagina('/Servidor/Alterar/' + $('#Id').val());
+            CarregarPagina('/Aluno/Alterar/' + $('#Id').val());
         }
     });
 }
 
 function abrirModalVinculoDeTrabalho(id) {
     RequisicaoAjaxComCarregamento(
-        '/Servidor/ModalVinculoDeTrabalho',
+        '/Aluno/ModalVinculoDeTrabalho',
         'GET',
         { id },
         function (data) {
@@ -103,14 +103,14 @@ function salvarCadastroDeVinculo() {
         vinculoDeTrabalho.ServidorId = $('#formulario-servidor').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
-            '/Servidor/SalvarVinculoDeTrabalho',
+            '/Aluno/SalvarVinculoDeTrabalho',
             'POST',
             { vinculoDeTrabalho },
             function (data) {
                 if (data.sucesso) {
                     MensagemRodape('success', data.mensagem);
                     $('#_Modal').modal('hide');
-                    CarregarPagina('/Servidor/Alterar/' + vinculoDeTrabalho.ServidorId);
+                    CarregarPagina('/Aluno/Alterar/' + vinculoDeTrabalho.ServidorId);
                 } else {
                     MensagemRodape('warning', data.mensagem);
                 }
@@ -130,7 +130,7 @@ function salvarCadastroDeLotacao() {
         lotacao.VinculoDeTrabalhoId = $('#formulario-vinculo').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
-            '/Servidor/SalvarLotacao',
+            '/Aluno/SalvarLotacao',
             'POST',
             { lotacao },
             function (data) {
@@ -150,7 +150,7 @@ function removerCadastroDeLotacao() {
         let id = $('#formulario-lotacao').find('#Id').val();
 
         RequisicaoAjaxComCarregamento(
-            '/Servidor/RemoverLotacao',
+            '/Aluno/RemoverLotacao',
             'DELETE',
             { id },
             function (data) {
@@ -167,7 +167,7 @@ function removerCadastroDeLotacao() {
 
 function carregarEdicaoDeLotacao(id) {
     RequisicaoAjaxComCarregamento(
-        '/Servidor/DadosEdicaoLotacao',
+        '/Aluno/DadosEdicaoLotacao',
         'GET',
         { id },
         function (data) {
@@ -237,7 +237,7 @@ function cancelarEdicaoLotacao() {
 
 function recarregarListaDeLotacoes() {
     $.ajax({
-        url: '/Servidor/PartialLotacoes',
+        url: '/Aluno/PartialLotacoes',
         type: 'GET',
         data: { vinculoId: $('#formulario-vinculo').find('#Id').val() }
     }).done(function (data) {
@@ -249,7 +249,7 @@ function recarregarListaDeLotacoes() {
 
 function abrirModalAfastamento(id) {
     RequisicaoAjaxComCarregamento(
-        '/Servidor/ModalAfastamento',
+        '/Aluno/ModalAfastamento',
         'GET',
         { id, servidorId: $('#formulario-servidor').find('#Id').val() },
         function (data) {
@@ -276,7 +276,7 @@ function assineSalvarAfastamento() {
         let afastamento = dadosFormulario.dados;
 
         RequisicaoAjaxComCarregamento(
-            '/Servidor/SalvarAfastamento',
+            '/Aluno/SalvarAfastamento',
             'POST',
             { afastamento },
             function (data) {
@@ -293,7 +293,7 @@ function assineSalvarAfastamento() {
 
 function recarregarPartialDeAfastamento() {
     $.ajax({
-        url: '/Servidor/PartialAfastamentos',
+        url: '/Aluno/PartialAfastamentos',
         type: 'GET',
         data: { servidorId: $('#formulario-servidor').find('#Id').val() }
     }).done(function (data) {
@@ -318,7 +318,7 @@ function assineRemoverAfastamento() {
         }).then((result) => {
             if (result.isConfirmed) {
                 RequisicaoAjaxComCarregamento(
-                    '/Servidor/RemoverAfastamento',
+                    '/Aluno/RemoverAfastamento',
                     'DELETE',
                     { afastamentoId: $('#form-afastamento').find('#Id').val() },
                     function (data) {

@@ -1,4 +1,5 @@
 @using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model Turma
 
 <div class="card mb-6">
@@ -14,6 +15,8 @@
         <form id="formulario-turma">
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.RedeDeEnsinoId)
+            @Html.Hidden("SituacaoAnterior", (int)Model.Situacao)
+            @Html.Hidden("SituacaoAtiva", (int)eSituacaoTurma.Ativa)
 
             <div class="row">
                 <section class="col col-md-12">
@@ -70,6 +73,61 @@
             </div>
 
             <br />
+            <div class="row">
+                <section class="col col-md-8 col-sm-12">
+                    <h5>Alunos</h5>
+                </section>
+                @if (Model.Situacao == eSituacaoTurma.Ativa)
+                {
+                    <section class="col col-md-4 col-sm-12" style="float: right">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAlocarAlunos()" style="float: right">
+                            <i class='bx bxs-plus-square'></i>
+                        </button>
+                    </section>
+                }
+            </div>
+            <table class="table table-condensed table-bordered">
+                <tbody>
+                    @if (Model.ListaDeAlunos.Any())
+                    {
+                        foreach (var aluno in Model.ListaDeAlunos.OrderBy(c => c.Aluno.Nome))
+                        {
+                            <tr>
+                                <td width="40%" title="Nome do aluno">
+                                    @aluno.Aluno.Nome.ToUpper()
+                                </td>
+                                <td width="20%" class="text-center" title="Situação do aluno">
+                                    @aluno.Situacao.DescricaoDoEnumerador()
+                                </td>
+                                <td width="15%" class="text-center" title="Entrada do aluno na turma">
+                                    @aluno.EntradaNaTurma.ToString("dd/MM/yyyy")
+                                </td>
+                                <td width="15%" class="text-center" title="Saída do aluno da turma">
+                                    @(aluno.SaidaDaTurma?.ToString("dd/MM/yyyy") ?? "-")
+                                </td>
+                                <td width="10%" class="text-center">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerVinculoDeAlunoTurma(@aluno.Id)" title="Remover aluno da turma">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalDadosAlunoTurma(@aluno.Id)">
+                                        <i class='bx bxs-edit-alt'></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="text-center" width="90%">
+                                Nenhum aluno na turma.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Turma")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
@@ -80,5 +138,5 @@
         </form>
     </div>
 </div>
-
+<div id="div-modal"></div>
 <script src="/Scripts/Paginas/Turma/alterar.js?t=@DateTime.Now.Ticks"></script>

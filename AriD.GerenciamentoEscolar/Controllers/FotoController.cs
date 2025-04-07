@@ -15,7 +15,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpGet]
-        public IActionResult Servidor(int id)
+        public IActionResult Aluno(int id)
         {
             try
             {

@@ -16,6 +16,7 @@ D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.AssemblyInfoInputs.cache
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.AssemblyInfo.cs
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.csproj.CoreCompileInputs.cache
+D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.sourcelink.json
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.dll
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\refint\AriD.BibliotecaDeClasses.dll
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Debug\net8.0\AriD.BibliotecaDeClasses.pdb

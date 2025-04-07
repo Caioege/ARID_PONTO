@@ -59,5 +59,20 @@ namespace AriD.Servicos.Extensao
 
             return string.Empty;
         }
+
+        public static Dictionary<string, TEnum> ObterMapaDescricaoEnum<TEnum>() where TEnum : Enum
+        {
+            return Enum.GetValues(typeof(TEnum))
+                .Cast<TEnum>()
+                .ToDictionary(
+                    val => {
+                        var field = typeof(TEnum).GetField(val.ToString());
+                        var attr = field.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                                        .FirstOrDefault() as DescriptionAttribute;
+                        return attr?.Description.ToLower() ?? val.ToString().ToLower();
+                    },
+                    val => val
+                );
+        }
     }
 }

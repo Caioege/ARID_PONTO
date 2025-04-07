@@ -1,4 +1,5 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,7 +19,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public DateTime EntradaNaTurma { get; set; }
+        public DateTime? SaidaDaTurma { get; set; }
+
         [Required]
-        public DateTime SaidaNaTurma { get; set; }
+        public eSituacaoAlunoNaTurma Situacao { get; set; }
     }
 }

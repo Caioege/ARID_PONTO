@@ -20,6 +20,22 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/Adicionar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cQWRpY2lvbmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/Alterar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cQWx0ZXJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/_TabelaPaginada.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Autenticacao/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0ZW50aWNhY2FvXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -108,22 +124,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNQb3JIb3JhcmlvRGVUcmFiYWxoby5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Adicionar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWRpY2lvbmFyLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Alterar.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcQWx0ZXJhci5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Servidor/_TabelaPaginada.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2Vydmlkb3JcX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -194,6 +194,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/_ModalAlocarAlunos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcX01vZGFsQWxvY2FyQWx1bm9zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/_ModalAlunoTurma.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHVybWFcX01vZGFsQWx1bm9UdXJtYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Turma/_TabelaPaginada.cshtml]

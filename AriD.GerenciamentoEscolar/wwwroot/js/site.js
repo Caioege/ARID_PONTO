@@ -344,8 +344,8 @@ function adicioneItemNoCampoSelecionavel(campoSelecionavel, valor, texto) {
     campoSelecionavel.append(`<option value="${valor}">${texto}</option>`)
 }
 
-function carregarTabelaPaginadaComPesquisa(url = '/TabelaPaginada', grid = 'grid') {
-    $(`#${grid}`).load(`${url}?TermoDeBusca=${$('#TermoDeBusca').val()}&adicional=${$('#Adicional').val() || '{}'}`);
+function carregarTabelaPaginadaComPesquisa(url = '/TabelaPaginada', grid = 'grid', urlAdicional = '') {
+    $(`#${grid}`).load(`${url}?TermoDeBusca=${$('#TermoDeBusca').val()}&adicional=${$('#Adicional').val() || '{}'}&${urlAdicional}`);
 }
 
 function ajusteValidacaoDeCampo(campo, valido) {

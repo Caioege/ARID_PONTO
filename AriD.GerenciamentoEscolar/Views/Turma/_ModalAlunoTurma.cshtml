@@ -1,0 +1,66 @@
+@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@using System.Linq
+
+@model AlunoTurma
+
+<div class="modal" tabindex="-1" id="_ModalAlunoTurma">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class='bx bxs-user-plus'></i>
+                    Vínculo do aluno na turma
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Html.Hidden("AlunoTurmaId", Model.Id)
+                <div class="row">
+                    <div class="col col-md-12">
+                        <label class="form-label">Aluno</label>
+                        @Html.TextBox("NomeAluno", Model.Aluno.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <label class="form-label obrigatorio">Entrada na turma</label>
+                        @Html.TextBox("EntradaNaTurma", Model.EntradaNaTurma.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                    </div>
+
+                    <div class="col col-md-4">
+                        <label class="form-label obrigatorio">Saída da turma</label>
+                        @Html.TextBox("SaidaDaTurma", Model.SaidaDaTurma?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                    </div>
+
+                    <div class="col col-md-4">
+                        <label class="form-label obrigatorio">Situação</label>
+                        @{
+                            var listaDeItens = new List<CodigoDescricaoDTO>();
+                            foreach (eSituacaoAlunoNaTurma item in Enum.GetValues(typeof(eSituacaoAlunoNaTurma)))
+                            {
+                                if (item == eSituacaoAlunoNaTurma.Cursando && Model.Turma.Situacao != eSituacaoTurma.Ativa)
+                                {
+                                    continue;
+                                }
+
+                                listaDeItens.Add(new CodigoDescricaoDTO((int)item, item.DescricaoDoEnumerador()));
+                            }
+                        }
+                        @Html.DropDownList("Situacao", new SelectList(listaDeItens, "Codigo", "Descricao", (int)Model.Situacao), new { @class = "select2" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

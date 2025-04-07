@@ -1,3 +1,4 @@
+@using AriD.Servicos.Extensao
 @model Aluno
 
 <style>
@@ -25,7 +26,7 @@
         <div class="row" style="width: 100%">
             <div class="col col-md-8 col-sm-12">
                 <h5 class="mb-0">
-                    Alterar Servidor
+                    Alterar Aluno
                 </h5>
             </div>
             <div class="col-md-4 col-xs-12">
@@ -36,12 +37,12 @@
         </div>
     </div>
     <div class="card-body">
-        <form id="formulario-servidor">
+        <form id="formulario-aluno">
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.Pessoa.EnderecoId)
             <div style="display: flex">
                 <div style="width: 180px; height: 195px; border: 1px solid black;" >
-                    <img class="img-servidor" src="/Foto/Servidor/@(Model.Id)?t=@DateTime.Now.Ticks" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" />
+                    <img class="img-servidor" src="/Foto/Aluno/@(Model.Id)?t=@DateTime.Now.Ticks" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" />
                     <div style="height: auto !important; text-align: center;" class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
                         <div class="offcanvas-header" style="display: block;">
                             <h4 id="offcanvasBottomLabel" class="offcanvas-title">Gerenciar Foto do Servidor</h4>
@@ -100,6 +101,15 @@
                     <li class="nav-item mb-1 mb-sm-0" role="presentation">
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#s1" aria-controls="s1" aria-selected="true">
                             <span class="d-sm-block">
+                                <i class="tf-icons bx bxs-graduation bx-sm me-1_5 align-text-bottom"></i>
+                                DADOS ESCOLARES
+                            </span>
+                        </button>
+                    </li>
+
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s2" aria-controls="s2" aria-selected="true">
+                            <span class="d-sm-block">
                                 <i class="tf-icons bx bx-home bx-sm me-1_5 align-text-bottom"></i>
                                 ENDEREÇO 
                             </span>
@@ -108,6 +118,79 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="s1" role="tabpanel">
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <label class="form-label">Escola Atual</label>
+                                @Html.TextBox("EscolaAtual", Model.Escola?.Nome ?? "<< Não matriculado em nenhuma unidade >>", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                            </div>
+
+                            <div class="col col-md-12">
+                                <label class="form-label">Turma Atual</label>
+                                @Html.TextBox("Turma", Model.AlunoTurmaAtual?.Turma.DescricaoComTurnoAnoLetivo ?? $"<< Não alocado em nenhuma turma >>", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                            </div>
+                        </div>
+
+                        <br />
+                        <h6>Histórico de Turmas</h6>
+                        <table class="table table-bordered table-condensed table-responsive">
+                            <thead>
+                                <tr style="background: aliceblue;">
+                                    <th class="text-center" style="vertical-align: middle" width="10%">
+                                        Ano Letivo
+                                    </th>
+                                    <th class="text-center" style="vertical-align: middle" width="40%">
+                                        Turma
+                                    </th>
+                                    <th class="text-center" style="vertical-align: middle" width="15%">
+                                        Turno
+                                    </th>
+                                    <th class="text-center" style="vertical-align: middle" width="15%">
+                                        Situação
+                                    </th>
+                                    <th class="text-center" style="vertical-align: middle" width="20%">
+                                        Período
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.ListaDeVinculosDeTurma.Any())
+                                {
+                                    foreach (var alunoTurma in Model.ListaDeVinculosDeTurma.OrderBy(c => c.EntradaNaTurma))
+                                    {
+                                        <tr>
+                                            <td class="text-center" style="vertical-align: middle">
+                                                @alunoTurma.Turma.AnoLetivo
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle">
+                                                @alunoTurma.Turma.Descricao
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle">
+                                                @alunoTurma.Turma.Turno.ToString()
+                                            </td>
+                                            <td class="text-center" style="vertical-align: middle">
+                                                @alunoTurma.Situacao.DescricaoDoEnumerador()
+                                            </td>
+                                            <td style="vertical-align: middle">
+                                                <b>ENT:</b> @alunoTurma.EntradaNaTurma.ToString("dd/MM/yyyy")
+                                                <br />
+                                                <b>SAI:</b> @(alunoTurma.SaidaDaTurma.HasValue ? alunoTurma.SaidaDaTurma.Value.ToString("dd/MM/yyyy") : "-")
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="99" class="text-center">
+                                            Nenhum registro de turma.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade show" id="s2" role="tabpanel">
                         @{
                             ViewBag.PrefixoEndereco = "Pessoa.Endereco.";
                             ViewBag.EnderecoObrigatorio = true;
@@ -118,7 +201,7 @@
             </div>
 
             <br />
-            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Servidor")')">
+            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Aluno")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
@@ -131,4 +214,4 @@
 <input style="display:none;" id="input-file" type="file" accept="image/png, image/jpg" />
 <div id="div-modal"></div>
 
-<script src="/Scripts/Paginas/Servidor/alterar.js?t=@DateTime.Now.Ticks"></script>
+<script src="/Scripts/Paginas/Aluno/alterar.js?t=@DateTime.Now.Ticks"></script>

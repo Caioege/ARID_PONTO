@@ -9,16 +9,29 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-5 col-sm-6 col-xs-12">
+                <label class="form-label">
+                    &nbsp;
+                </label>
                 <div class="input-group">
                     @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Digite para buscar", @style = "background: white" })
-                    <button class="btn btn-primary" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginada")')">
+                    <button class="btn btn-primary" type="button" onclick="onChangeAnoLetivo()">
                         <i class='bx bx-search-alt'></i> Pesquisar
                     </button>
                 </div>
             </div>
 
-            <div class="col-md-7 col-sm-6 col-xs-12">
-                <button type="button" onclick="CarregarPagina('/Turma/Adicionar')" class="btn btn-primary float-end">
+            <div class="col col-md-2 col-sm-3 col-xs-12">
+                <label class="form-label">
+                    Ano Letivo
+                </label>
+                @Html.DropDownList("AnoLetivo", (SelectList)ViewBag.AnosLetivos, new { @class = "form-select", @onchange = "onChangeAnoLetivo()" })
+            </div>
+
+            <div class="col-md-5 col-sm-3 col-xs-12">
+                <label class="form-label">
+                    &nbsp;
+                </label>
+                <button type="button" onclick="CarregarPagina('/Turma/Adicionar')" class="btn btn-primary float-end" style="margin-top: 17px;">
                     <i class="bx bx-plus"></i> Adicionar
                 </button>
             </div>

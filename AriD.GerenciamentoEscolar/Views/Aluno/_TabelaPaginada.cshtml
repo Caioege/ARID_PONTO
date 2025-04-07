@@ -1,0 +1,31 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@model ListaPaginada<Aluno>
+
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+    var perfilEscola = dadosDaSessao.Perfil == ePerfilDeAcesso.Escola;
+
+    var tabela = new WebGrid<Aluno>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Nome", "Nome", width: 45f),
+        tabela.Column("Pessoa.Cpf", "CPF", width: 10f)
+    };
+
+    if (!perfilEscola)
+    {
+        listaDeColunas.Add(tabela.Column("Escola.Nome", "Escola", width: 30f));
+    }
+
+    listaDeColunas.Add(tabela.Column("AlunoTurmaAtual.Turma.DescricaoComTurno", "Turma", width: 20f));
+
+    listaDeColunas.Add(tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Aluno", new { id = item.Id })')">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 3f));
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

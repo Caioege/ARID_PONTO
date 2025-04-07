@@ -1,24 +1,21 @@
 using AriD.BibliotecaDeClasses.Comum;
-using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
-using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoEscolar.Helpers;
 using AriD.GerenciamentoEscolar.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
 using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoEscolar.Controllers
 {
-    public class ServidorController : BaseController
+    public class AlunoController : BaseController
     {
         private readonly IServico<Aluno> _servico;
         private readonly IServico<Escola> _servicoEscola;
 
-        public ServidorController(
+        public AlunoController(
             IServico<Aluno> servico,
             IServico<Escola> servicoEscola)
         {
@@ -59,6 +56,17 @@ namespace AriD.GerenciamentoEscolar.Controllers
         {
             try
             {
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+                {
+                    ViewBag.Escolas = new SelectList(
+                        _servicoEscola
+                        .ObtenhaLista(c => c.RedeDeEnsinoId == dadosDaSessao.RedeDeEnsinoId && c.Ativa)
+                        .OrderBy(c => c.Nome),
+                        "Id",
+                        "Nome");
+                }
+
                 return View(new Aluno() { Pessoa = new() { Endereco = new() } });
             }
             catch (Exception ex)

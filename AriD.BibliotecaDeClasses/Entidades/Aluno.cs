@@ -1,4 +1,5 @@
 using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,9 +13,28 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(PessoaId))]
         public virtual Pessoa Pessoa { get; set; }
 
+        [Required, MaxLength(12)]
+        public string IdEquipamento { get; set; }
+
+        public int? EscolaId { get; set; }
+        [ForeignKey(nameof(EscolaId))]
+        public virtual Escola Escola { get; set; }
+
         [Required]
         public DateTime DataDeCadastro { get; set; }
 
+        [Required]
+        public bool ConcluiuOsEstudos { get; set; }
+
+        [Required]
+        public eAnoEscolar AnoEscolarAtual { get; set; }
+
         public string Nome => Pessoa?.Nome;
+
+        public virtual List<AlunoTurma> ListaDeVinculosDeTurma { get; set; } = new();
+
+        public AlunoTurma AlunoTurmaAtual => 
+            ListaDeVinculosDeTurma
+            .FirstOrDefault(c => c.Situacao == eSituacaoAlunoNaTurma.Cursando);
     }
 }
