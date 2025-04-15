@@ -2,6 +2,12 @@
 @using AriD.Servicos.Extensao
 @model Turma
 
+<style>
+    .tab-content {
+        padding: 0px !important;
+    }
+</style>
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -73,59 +79,77 @@
             </div>
 
             <br />
-            <div class="row">
-                <section class="col col-md-8 col-sm-12">
-                    <h5>Alunos</h5>
-                </section>
-                @if (Model.Situacao == eSituacaoTurma.Ativa)
-                {
-                    <section class="col col-md-4 col-sm-12" style="float: right">
-                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAlocarAlunos()" style="float: right">
-                            <i class='bx bxs-plus-square'></i>
+            <div class="nav-align-top">
+                <ul class="nav nav-pills mb-4 nav-fill" role="tablist">
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#s1" aria-controls="s1" aria-selected="true">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bxs-graduation bx-sm me-1_5 align-text-bottom"></i>
+                                ALUNOS
+                            </span>
                         </button>
-                    </section>
-                }
-            </div>
-            <table class="table table-condensed table-bordered">
-                <tbody>
-                    @if (Model.ListaDeAlunos.Any())
-                    {
-                        foreach (var aluno in Model.ListaDeAlunos.OrderBy(c => c.Aluno.Nome))
+                    </li>
+
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s2" aria-controls="s2" aria-selected="true">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bx-time bx-sm me-1_5 align-text-bottom"></i>
+                                HORÁRIO DE AULA
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="s1" role="tabpanel">
+                        @if (Model.Situacao == eSituacaoTurma.Ativa)
                         {
-                            <tr>
-                                <td width="40%" title="Nome do aluno">
-                                    @aluno.Aluno.Nome.ToUpper()
-                                </td>
-                                <td width="20%" class="text-center" title="Situação do aluno">
-                                    @aluno.Situacao.DescricaoDoEnumerador()
-                                </td>
-                                <td width="15%" class="text-center" title="Entrada do aluno na turma">
-                                    @aluno.EntradaNaTurma.ToString("dd/MM/yyyy")
-                                </td>
-                                <td width="15%" class="text-center" title="Saída do aluno da turma">
-                                    @(aluno.SaidaDaTurma?.ToString("dd/MM/yyyy") ?? "-")
-                                </td>
-                                <td width="10%" class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removerVinculoDeAlunoTurma(@aluno.Id)" title="Remover aluno da turma">
-                                        <i class='bx bx-trash'></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalDadosAlunoTurma(@aluno.Id)">
-                                        <i class='bx bxs-edit-alt'></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAlocarAlunos()" style="float: right; margin-bottom: 10px;">
+                                <i class='bx bxs-plus-square'></i> Adicionar alunos na turma
+                            </button>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td class="text-center" width="90%">
-                                Nenhum aluno na turma.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        <table class="table table-condensed table-bordered">
+                            <tbody>
+                                @if (Model.ListaDeAlunos.Any())
+                                {
+                                    foreach (var aluno in Model.ListaDeAlunos.OrderBy(c => c.Aluno.Nome))
+                                    {
+                                        <tr>
+                                            <td width="40%" title="Nome do aluno">
+                                                @aluno.Aluno.Nome.ToUpper()
+                                            </td>
+                                            <td width="20%" class="text-center" title="Situação do aluno">
+                                                @aluno.Situacao.DescricaoDoEnumerador()
+                                            </td>
+                                            <td width="15%" class="text-center" title="Entrada do aluno na turma">
+                                                @aluno.EntradaNaTurma.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td width="15%" class="text-center" title="Saída do aluno da turma">
+                                                @(aluno.SaidaDaTurma?.ToString("dd/MM/yyyy") ?? "-")
+                                            </td>
+                                            <td width="10%" class="text-center">
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalDadosAlunoTurma(@aluno.Id)">
+                                                    <i class='bx bxs-edit-alt'></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="text-center" width="90%">
+                                            Nenhum aluno na turma.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade show" id="s2" role="tabpanel">
+                    </div>
+                </div>
+            </div>
 
             <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Turma")')">

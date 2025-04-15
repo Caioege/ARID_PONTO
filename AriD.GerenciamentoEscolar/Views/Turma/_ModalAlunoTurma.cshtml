@@ -10,7 +10,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class='bx bxs-user-plus'></i>
                     Vínculo do aluno na turma
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -30,7 +29,7 @@
                     </div>
 
                     <div class="col col-md-4">
-                        <label class="form-label obrigatorio">Saída da turma</label>
+                        <label class="form-label">Saída da turma</label>
                         @Html.TextBox("SaidaDaTurma", Model.SaidaDaTurma?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                     </div>
 
@@ -55,6 +54,10 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-danger" onclick="removerVinculoDeAlunoTurma(@Model.Id)" title="Remover aluno da turma">
+                    <i class='bx bx-trash'></i> Remover
                 </button>
 
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">

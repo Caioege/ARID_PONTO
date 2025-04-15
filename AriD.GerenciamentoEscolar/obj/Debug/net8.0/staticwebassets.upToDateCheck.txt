@@ -55,6 +55,7 @@ wwwroot\img\layouts\layout-without-navbar-light.png
 wwwroot\img\logo.png
 wwwroot\img\logo-livro.png
 wwwroot\img\pessoas\organizacao\1\1.png
+wwwroot\img\pessoas\redeDeEnsino\2\7.png
 wwwroot\img\pessoas\sem-foto.png
 wwwroot\js\bootstrap-clockpicker.min.js
 wwwroot\js\config.js

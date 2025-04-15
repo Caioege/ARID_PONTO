@@ -1,0 +1,150 @@
+@using AriD.BibliotecaDeClasses.Entidades;
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model List<ItemHorarioDeAula>
+
+@{
+    eDiaDaSemana diaDaSemana = ViewBag.DiaDaSemana;
+}
+
+<div class="modal" tabindex="-1" id="_ModalHorarioDeAula">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class='bx bxs-time-five'></i>
+                    Horário de Aula - @diaDaSemana.DescricaoDoEnumerador()
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <button type="button" class="btn btn-primary btn-sm" onclick="adicionarHorario()">
+                    <i class='bx bx-list-plus'></i>
+                    Adicionar linha de horário
+                </button>
+                <table class="table table-bordered text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>Início</th>
+                            <th>Fim</th>
+                            <th>Intervalo</th>
+                            <th>Disciplina</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaHorarios">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var item = Model[i];
+                            <tr>
+                                <td>
+                                    @if (i == 0)
+                                    {
+                                        <input type="time" name="Horarios[@i].InicioAula" class="form-control" value="@item.InicioAula.ToString(@"hh\:mm")" />
+                                    }
+                                    else
+                                    {
+                                        <input type="time" class="form-control" readonly value="@item.InicioAula.ToString(@"hh\:mm")" />
+                                    }
+                                </td>
+                                <td>
+                                    <input type="time" name="Horarios[@i].FimAula" class="form-control" value="@item.FimAula.ToString(@"hh\:mm")" />
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="Horarios[@i].Intervalo" class="form-check-input"
+                                           onchange="toggleDisciplina(this)" @(item.Intervalo ? "checked" : "") />
+                                </td>
+                                <td>
+                                    <input type="text" name="Horarios[@i].Disciplina" class="form-control"
+                                           value="@item.Disciplina"
+                                    @(item.Intervalo ? "disabled" : "") />
+                                </td>
+                                <td>
+                                    @if (i == Model.Count - 1)
+                                    {
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDisciplina(checkbox) {
+        const tr = checkbox.closest('tr');
+        const inputDisciplina = tr.querySelector('input[type="text"]');
+        inputDisciplina.disabled = checkbox.checked;
+    }
+
+    function adicionarHorario() {
+        const tabela = document.getElementById('tabelaHorarios');
+        const linhas = tabela.querySelectorAll('tr');
+        const novoIndex = linhas.length;
+
+        let inicioNovo = "07:00";
+        let fimAnterior = "07:50";
+
+        if (linhas.length > 0) {
+            const ultimaLinha = linhas[linhas.length - 1];
+            const tempos = ultimaLinha.querySelectorAll('input[type="time"]');
+            if (tempos.length >= 2) {
+                inicioNovo = tempos[1].value;
+                fimAnterior = tempos[1].value;
+            }
+        }
+
+        const novaLinha = document.createElement('tr');
+        novaLinha.innerHTML = `
+            <td><input type="time" class="form-control" readonly value="${inicioNovo}" /></td>
+            <td><input type="time" name="Horarios[${novoIndex}].FimAula" class="form-control" value="${fimAnterior}" /></td>
+            <td class="text-center">
+                <input type="checkbox" name="Horarios[${novoIndex}].Intervalo" class="form-check-input" onchange="toggleDisciplina(this)" />
+            </td>
+            <td>
+                <input type="text" name="Horarios[${novoIndex}].Disciplina" class="form-control" />
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">Remover</button>
+            </td>
+        `;
+        tabela.appendChild(novaLinha);
+
+        // Remove botão "Remover" da penúltima linha
+        if (linhas.length > 0) {
+            const penultimaLinha = linhas[linhas.length - 1];
+            const btns = penultimaLinha.querySelectorAll('button');
+            btns.forEach(btn => btn.remove());
+        }
+    }
+
+    function removerHorario(btn) {
+        const linha = btn.closest('tr');
+        linha.remove();
+
+        // Recoloca botão "Remover" no novo último item
+        const tabela = document.getElementById('tabelaHorarios');
+        const linhas = tabela.querySelectorAll('tr');
+        if (linhas.length > 0) {
+            const ultimaLinha = linhas[linhas.length - 1];
+            const tdAcoes = ultimaLinha.lastElementChild;
+            tdAcoes.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">Remover</button>`;
+        }
+    }
+</script>

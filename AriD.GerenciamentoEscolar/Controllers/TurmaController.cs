@@ -118,7 +118,21 @@ namespace AriD.GerenciamentoEscolar.Controllers
             if (turma.Id == 0)
                 id = _servico.Adicionar(turma);
             else
+            {
+                if (turma.Situacao != eSituacaoTurma.Ativa)
+                {
+                    var turmaPersistida = _servico.Obtenha(id);
+                    foreach (var alunoTurma in turmaPersistida.ListaDeAlunos.Where(c => c.Situacao == eSituacaoAlunoNaTurma.Cursando))
+                    {
+                        alunoTurma.SaidaDaTurma = DateTime.Today;
+                        alunoTurma.Situacao = eSituacaoAlunoNaTurma.Concluido;
+
+                        _servicoAlunoTurma.Atualizar(alunoTurma);
+                    }
+                }
+
                 _servico.Atualizar(turma);
+            }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
@@ -174,6 +188,33 @@ namespace AriD.GerenciamentoEscolar.Controllers
             alunoTurmaPersistido.EntradaNaTurma = alunoTurma.EntradaNaTurma;
             alunoTurmaPersistido.SaidaDaTurma = alunoTurma.SaidaDaTurma;
             alunoTurmaPersistido.Situacao = alunoTurma.Situacao;
+
+            if (alunoTurma.Situacao == eSituacaoAlunoNaTurma.Cursando && alunoTurmaPersistido.Turma.Situacao != eSituacaoTurma.Ativa)
+                throw new ApplicationException("Não é possível alterar a situação do aluno para 'Cursando' quando a turma não está ativa.");
+
+            if (alunoTurmaPersistido.SaidaDaTurma < alunoTurmaPersistido.EntradaNaTurma)
+                throw new ApplicationException("A data de saída não pode ser menor que a de entrada.");
+
+            if (!alunoTurmaPersistido.SaidaDaTurma.HasValue && alunoTurmaPersistido.Situacao != eSituacaoAlunoNaTurma.Cursando)
+                throw new ApplicationException("Se o aluno não estiver cursando é obrigatório informar a data de saída.");
+
+            if (alunoTurmaPersistido.SaidaDaTurma.HasValue && alunoTurmaPersistido.Situacao == eSituacaoAlunoNaTurma.Cursando)
+                throw new ApplicationException("Não é possível informar a data de saída quando o aluno está cursando.");
+
+            _servicoAlunoTurma.Atualizar(alunoTurmaPersistido);
+            return Json(new { sucesso = true, mensagem = "Os dados do aluno foram alterados." });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ModalHorarioDeAula(
+            int turmaId, 
+            eDiaDaSemana diaDaSemana)
+        {
+            var turma = _servico.Obtenha(turmaId);
+            ViewBag.DiaDaSemana = diaDaSemana;
+            var html = await RenderizarComoString("_ModalHorarioDeAula", turma.ListaDeHorarioDeAula.Where(c => c.DiaDaSemana == diaDaSemana).ToList());
+
+            return Json(new { sucesso = true, html });
         }
 
         private void ConfigureDadosDaTabelaPaginada(

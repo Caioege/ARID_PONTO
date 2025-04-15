@@ -95,6 +95,7 @@ var removerVinculoDeAlunoTurma = function (alunoTurmaId) {
                 function (data) {
                     if (data.sucesso) {
                         MensagemRodape('success', data.mensagem);
+                        $('#_ModalAlunoTurma').modal('hide');
                         CarregarPagina('/Turma/Alterar/' + $('#formulario-turma #Id').val());
                     } else {
                         MensagemRodape('warning', data.mensagem);
@@ -137,7 +138,60 @@ function abrirModalDadosAlunoTurma(alunoTurmaId) {
             if (data.sucesso) {
                 $('#div-modal').html(data.html);
                 assineMascarasDoComponente($('#_ModalAlunoTurma'));
+                assineSalvarDadosDoAluno();
                 $('#_ModalAlunoTurma').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function assineSalvarDadosDoAluno() {
+    $('#_ModalAlunoTurma #btn-salvar-modal').on('click', function () {
+        let modal = $('#_ModalAlunoTurma');
+        let alunoTurma = {
+            Id: modal.find('#AlunoTurmaId').val(),
+            EntradaNaTurma: modal.find('#EntradaNaTurma').val(),
+            SaidaDaTurma: modal.find('#SaidaDaTurma').val(),
+            Situacao: modal.find('#Situacao').val()
+        };
+
+        if (!alunoTurma.EntradaNaTurma) {
+            MensagemRodape('Informe a data de entrada para prosseguir.');
+            return;
+        }
+
+        if (!alunoTurma.Situacao) {
+            MensagemRodape('Informe a situação para prosseguir.');
+            return;
+        }
+
+        RequisicaoAjaxComCarregamento(
+            '/Turma/SalvarRegistroAlunoTurma',
+            'POST',
+            { alunoTurma },
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    $('#_ModalAlunoTurma').modal('hide');
+                    CarregarPagina('/Turma/Alterar/' + $('#formulario-turma #Id').val());
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    });
+}
+
+function abrirModalHorarioDeAula(diaDaSemana) {
+    RequisicaoAjaxComCarregamento(
+        '/Turma/ModalHorarioDeAula',
+        'GET',
+        { turmaId: $('#formulario-turma #Id').val() , diaDaSemana },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_ModalHorarioDeAula'));
+                $('#_ModalHorarioDeAula').modal('show');
             } else {
                 MensagemRodape('warning', data.mensagem);
             }

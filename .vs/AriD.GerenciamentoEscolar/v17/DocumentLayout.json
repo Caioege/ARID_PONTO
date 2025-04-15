@@ -3,20 +3,40 @@
   "WorkspaceRootPath": "D:\\git\\AriD.GerenciamentoEscolar\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\_modalhorariodeaula.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\_modalhorariodeaula.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\controllers\\turmacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\controllers\\turmacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\_modalalunoturma.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\_modalalunoturma.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.bibliotecadeclasses\\enumeradores\\ediadasemana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|solutionrelative:arid.bibliotecadeclasses\\enumeradores\\ediadasemana.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.bibliotecadeclasses\\entidades\\turma.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|solutionrelative:arid.bibliotecadeclasses\\entidades\\turma.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\wwwroot\\scripts\\paginas\\turma\\alterar.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\wwwroot\\scripts\\paginas\\turma\\alterar.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\_modalalocaralunos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\_modalalocaralunos.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\turma\\_modalalunoturma.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\turma\\_modalalunoturma.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,52 +54,115 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
+              "Title": "eDiaDaSemana.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Enumeradores\\eDiaDaSemana.cs",
+              "RelativeDocumentMoniker": "AriD.BibliotecaDeClasses\\Enumeradores\\eDiaDaSemana.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Enumeradores\\eDiaDaSemana.cs",
+              "RelativeToolTip": "AriD.BibliotecaDeClasses\\Enumeradores\\eDiaDaSemana.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-14T22:18:56.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_ModalHorarioDeAula.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalHorarioDeAula.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalHorarioDeAula.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalHorarioDeAula.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalHorarioDeAula.cshtml",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAAADYAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-14T22:35:01.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MySQLDBContext.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\DBContext\\MySQLDBContext.cs",
+              "RelativeDocumentMoniker": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\DBContext\\MySQLDBContext.cs",
+              "RelativeToolTip": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAgwCcAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-14T22:21:32.092Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Turma.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Entidades\\Turma.cs",
+              "RelativeDocumentMoniker": "AriD.BibliotecaDeClasses\\Entidades\\Turma.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Entidades\\Turma.cs",
+              "RelativeToolTip": "AriD.BibliotecaDeClasses\\Entidades\\Turma.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAwwCIAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-14T22:21:11.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "_ModalAlunoTurma.cshtml",
               "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlunoTurma.cshtml",
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlunoTurma.cshtml",
               "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlunoTurma.cshtml",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlunoTurma.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAACgAAAAAAAAAAAAAADoAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-07T23:14:24.338Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-09T23:38:08.998Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 7,
+              "Title": "_ModalAlocarAlunos.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlocarAlunos.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlocarAlunos.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlocarAlunos.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Turma\\_ModalAlocarAlunos.cshtml",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-09T23:24:19.541Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "alterar.js",
               "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
               "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
-              "ViewState": "AgIAAHMAAAAAAAAAAAAmwIQAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAcwLEAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-04-07T23:04:47.821Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "TurmaController.cs",
               "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\TurmaController.cs",
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Controllers\\TurmaController.cs",
               "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\TurmaController.cs",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\Controllers\\TurmaController.cs",
-              "ViewState": "AgIAAJoAAAAAAAAAAAAUwK4AAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAAIkAAAAAAAAAAIAwwJoAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-07T23:03:21.248Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Alterar.cshtml",
               "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\Alterar.cshtml",
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Turma\\Alterar.cshtml",
               "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Turma\\Alterar.cshtml",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Turma\\Alterar.cshtml",
-              "ViewState": "AgIAAGYAAAAAAAAAAAAAAG8AAAB7AAAAAAAAAA==",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAACUAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-04-07T23:01:51.417Z",
               "EditorCaption": ""

@@ -102,8 +102,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>0xjgmaxj5j</Fingerprint>
-      <Integrity>1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E=</Integrity>
+      <Fingerprint>i9m8asmscb</Fingerprint>
+      <Integrity>trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</OriginalItemSpec>
@@ -1043,6 +1043,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\organizacao\1\1.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\redeDeEnsino\2\7.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoEscolar</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoEscolar</BasePath>
+      <RelativePath>img/pessoas/redeDeEnsino/2/7.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>aas7c080vj</Fingerprint>
+      <Integrity>8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\redeDeEnsino\2\7.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\sem-foto.png'))">
       <SourceType>Package</SourceType>
@@ -2532,8 +2550,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>2pfl90ymnp</Fingerprint>
-      <Integrity>SnRF2cnvx97th+2iyNkiWehB05KFsuJSk7GaIzh3DmE=</Integrity>
+      <Fingerprint>ojyu97u817</Fingerprint>
+      <Integrity>ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))</OriginalItemSpec>

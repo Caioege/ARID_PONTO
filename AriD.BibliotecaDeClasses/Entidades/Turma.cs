@@ -31,7 +31,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public DateTime FimDasAulas { get; set; }
 
+        [Required]
+        public int DiasLetivos { get; set; }
+
         public virtual List<AlunoTurma> ListaDeAlunos { get; set; } = new();
+
+        public virtual List<ItemHorarioDeAula> ListaDeHorarioDeAula { get; set; } = new();
 
         public string DescricaoComTurnoAnoLetivo => $"{Descricao} - {Turno.ToString()} - {AnoLetivo}";
         public string DescricaoComTurno => $"{Descricao} - {Turno.ToString()}";
