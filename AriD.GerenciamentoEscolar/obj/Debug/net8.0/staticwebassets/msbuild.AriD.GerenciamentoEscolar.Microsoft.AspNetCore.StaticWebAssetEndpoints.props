@@ -1695,14 +1695,14 @@
     <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/alterar.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7092"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc=\u0022"},{"Name":"Last-Modified","Value":"Mon, 14 Apr 2025 22:52:23 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-8EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7781"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00228EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk=\u0022"},{"Name":"Last-Modified","Value":"Wed, 16 Apr 2025 00:24:31 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/alterar.ojyu97u817.js">
+    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/alterar.w8h35uahsv.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"ojyu97u817"},{"Name":"integrity","Value":"sha256-ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc="},{"Name":"label","Value":"_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/alterar.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7092"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc=\u0022"},{"Name":"Last-Modified","Value":"Mon, 14 Apr 2025 22:52:23 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"w8h35uahsv"},{"Name":"integrity","Value":"sha256-8EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk="},{"Name":"label","Value":"_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/alterar.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7781"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00228EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk=\u0022"},{"Name":"Last-Modified","Value":"Wed, 16 Apr 2025 00:24:31 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoEscolar/Scripts/Paginas/Turma/index.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\index.js'))</AssetFile>

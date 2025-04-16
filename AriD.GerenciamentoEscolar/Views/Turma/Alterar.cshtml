@@ -98,6 +98,15 @@
                             </span>
                         </button>
                     </li>
+
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s3" aria-controls="s3" aria-selected="true">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bx-calendar bx-sm me-1_5 align-text-bottom"></i>
+                                DIÁRIO DE CLASSE
+                            </span>
+                        </button>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="s1" role="tabpanel">
@@ -147,6 +156,94 @@
                     </div>
 
                     <div class="tab-pane fade show" id="s2" role="tabpanel">
+                        @{
+                            var diasFixos = new[] {
+                                eDiaDaSemana.Segunda, eDiaDaSemana.Terca, eDiaDaSemana.Quarta,
+                                eDiaDaSemana.Quinta, eDiaDaSemana.Sexta,
+                                eDiaDaSemana.Sabado, eDiaDaSemana.Domingo
+                            };
+
+                            var coresPastel = new Dictionary<eDiaDaSemana, string> {
+                                { eDiaDaSemana.Segunda, "#FFF5E1" },
+                                { eDiaDaSemana.Terca, "#E1F7F5" },
+                                { eDiaDaSemana.Quarta, "#F2E8FF" },
+                                { eDiaDaSemana.Quinta, "#FFF3F3" },
+                                { eDiaDaSemana.Sexta, "#F0F4E1" },
+                                { eDiaDaSemana.Sabado, "#E8F0FE" },
+                                { eDiaDaSemana.Domingo, "#FDEFF2" }
+                                };
+
+                            var diasComDados = Model.ListaDeHorarioDeAula
+                                .GroupBy(h => h.DiaDaSemana)
+                                .ToDictionary(g => g.Key, g => g.OrderBy(h => h.InicioAula).ToList());
+                        }
+
+                        <div class="row gy-4">
+                            @foreach (var dia in diasFixos)
+                            {
+                                var lista = diasComDados.ContainsKey(dia) ? diasComDados[dia] : new List<ItemHorarioDeAula>();
+                                var corFundo = coresPastel[dia];
+
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="p-3 rounded shadow-sm h-100" style="background-color:@corFundo; min-height: 100%;">
+                                        <h6 class="fw-bold mb-3">@dia.DescricaoDoEnumerador()</h6>
+
+                                        <table class="table table-bordered table-sm bg-white">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 135px;">Horário</th>
+                                                    <th>Disciplina</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (!lista.Any())
+                                                {
+                                                    <tr>
+                                                        <td colspan="2" class="text-center text-muted">Nenhum horário cadastrado.</td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    @foreach (var item in lista)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.InicioAula.ToString(@"hh\:mm") - @item.FimAula.ToString(@"hh\:mm")</td>
+                                                            <td>
+                                                                @if (item.Intervalo)
+                                                                {
+                                                                    <span class="text-muted">Intervalo</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @item.Disciplina
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                <tr>
+                                                    <td class="text-center" colspan="2">
+                                                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalHorarioDeAula(@((int)dia))">
+                                                            <i class='bx bx-edit-alt'></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show" id="s3" role="tabpanel">
+                        <div class="row">
+                            <section class="col col-md-4 col-sm-12 col-12">
+                                <label class="form-label obrigatorio">Mês</label>
+                                @Html.DropDownList("MesAnoDiario", (List<SelectListItem>)ViewBag.MesesDoAno, string.Empty, new { @class = "select2" })
+                            </section>
+                        </div>
+                        <div id="div-diario-classe"></div>
                     </div>
                 </div>
             </div>

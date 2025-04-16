@@ -71,3 +71,32 @@ CREATE TABLE `arid_escolas`.`itemhorariodeaula` (
 
 ALTER TABLE `arid_escolas`.`turma` 
 ADD COLUMN `DiasLetivos` INT NOT NULL DEFAULT 0;
+
+CREATE TABLE `arid_escolas`.`frequenciaalunoturma` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `RedeDeEnsinoId` INT NOT NULL,
+  `AlunoTurmaId` INT NOT NULL,
+  `DataHora` DATETIME NOT NULL,
+  `EstavaPresente` TINYINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_FrequenciaAlunoTurma_RedeDeEnsino_idx` (`RedeDeEnsinoId` ASC),
+  INDEX `FK_FrequenciaAlunoTurma_AlunoTurma_idx` (`AlunoTurmaId` ASC),
+  CONSTRAINT `FK_FrequenciaAlunoTurma_RedeDeEnsino`
+    FOREIGN KEY (`RedeDeEnsinoId`)
+    REFERENCES `arid_escolas`.`rededeensino` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_FrequenciaAlunoTurma_AlunoTurma`
+    FOREIGN KEY (`AlunoTurmaId`)
+    REFERENCES `arid_escolas`.`alunoturma` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+ALTER TABLE `arid_escolas`.`aluno` 
+ADD COLUMN `NomeMae` VARCHAR(150) NULL AFTER `IdEquipamento`,
+ADD COLUMN `TelefoneMae` VARCHAR(12) NULL AFTER `NomeMae`,
+ADD COLUMN `NomePai` VARCHAR(150) NULL AFTER `TelefoneMae`,
+ADD COLUMN `TelefonePai` VARCHAR(12) NULL AFTER `NomePai`,
+ADD COLUMN `NomeOutroResponsavel` VARCHAR(150) NULL AFTER `TelefonePai`,
+ADD COLUMN `TelefoneOutroResponsavel` VARCHAR(12) NULL AFTER `NomeOutroResponsavel`,
+ADD COLUMN `ParentescoOutroResponsavel` VARCHAR(50) NULL AFTER `TelefoneOutroResponsavel`;

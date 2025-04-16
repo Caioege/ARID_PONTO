@@ -1,0 +1,200 @@
+@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model DiarioClasseDTO
+@{
+    var diasComAula = ObterDiasComAula(Model.DataInicio, Model.DataFim, Model.Horarios);
+}
+
+<style>
+    .tabela-diario-wrapper {
+    overflow-x: auto;
+    position: relative;
+    }
+
+    .tabela-diario {
+    white-space: nowrap;
+    }
+
+    .tabela-diario td:first-child,
+    .tabela-diario th:first-child {
+    position: sticky;
+    left: 0;
+    background: #f8f9fa;
+    z-index: 1;
+    text-align: left;
+    min-width: 200px;
+    }
+
+    .btn-frequencia {
+    background: none;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    }
+
+    .btn-frequencia i {
+    font-size: 1.4rem;
+    }
+
+    .animacao-sucesso {
+        background-color: #d4edda !important;
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<div class="tabela-diario-wrapper">
+    <table class="table table-bordered table-sm text-center align-middle tabela-diario">
+        <thead class="table-light">
+            <tr>
+                <th class="text-start">Aluno(a)</th>
+                @foreach (var dia in diasComAula)
+                {
+                    <th style="min-width: 70px;">
+                        @(((eDiaDaSemana)(int)dia.DayOfWeek).SiglaDaSemanaDoEnumerador())
+                        <br />
+                        @dia.ToString("dd/MM")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aluno in Model.Alunos)
+            {
+                <tr class="tr-aluno" data-alunoturmaid="@aluno.AlunoTurmaId">
+                    <td class="text-start">@aluno.AlunoNome</td>
+                    @foreach (var dia in diasComAula)
+                    {
+                        if (dia > DateTime.Today)
+                        {
+                            <td style="background: #ececec; cursor: help;" title="Data futura.">
+                                <i class='bx bx-calendar-alt'></i>
+                            </td>
+                        }
+                        else
+                        {
+                            if (aluno.EntradaNaTurma <= dia && aluno.SaidaDaTurma >= dia)
+                            {
+                                var frequencia = aluno.Frequencias.ContainsKey(dia) ? aluno.Frequencias[dia] : null;
+                                <td id="td-dia-@aluno.AlunoTurmaId-@dia.ToString("ddMMyyyy")" class="td-data" data-dia="@dia.ToString("dd/MM/yyyy")">
+                                    <button type="button" class="btn-frequencia btn btn-light border-0 p-0 w-100 h-100" data-estado="@(
+        frequencia.HasValue ? (frequencia.Value ? "presente" : "falta") : "")" onclick="alterarFrequencia(this)">
+                                        @if (frequencia.HasValue)
+                                        {
+                                            if (frequencia.Value)
+                                            {
+                                                <i class='bx bxs-check-square text-success'></i>
+                                            }
+                                            else
+                                            {
+                                                <i class='bx bx-x-circle text-danger'></i>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <i class='bx bx-square text-muted'></i>
+                                        }
+                                    </button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="background: #ececec; cursor: help;" title="Aluno não alocado na data.">
+                                    <i class='bx bx-block'></i>
+                                </td>
+                            }
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const estados = ["", "presente", "falta"];
+    const icones = {
+        "": "<i class='bx bx-square text-muted'></i>",
+        "presente": "<i class='bx bxs-check-square text-success'></i>",
+        "falta": "<i class='bx bx-x-circle text-danger'></i>"
+    };
+
+    const pendentes = {};
+
+    function alterarFrequencia(botao) {
+        const estadoAtual = botao.dataset.estado || "";
+        const proximoEstado = estados[(estados.indexOf(estadoAtual) + 1) % estados.length];
+
+        botao.dataset.estado = proximoEstado;
+        botao.innerHTML = icones[proximoEstado];
+
+        const td = botao.closest("td");
+        const tr = td.closest("tr");
+        const alunoTurmaId = tr.dataset.alunoturmaid;
+        const dia = td.dataset.dia;
+
+        const chave = alunoTurmaId + "_" + dia;
+
+        pendentes[chave] = {
+            alunoTurmaId,
+            dia,
+            frequencia: proximoEstado === "presente" ? true :
+                        proximoEstado === "falta" ? false : null
+        };
+
+        clearTimeout(botao._timeout);
+        botao._timeout = setTimeout(() => enviarFrequencia(pendentes[chave]), 1000);
+    }
+
+    function enviarFrequencia(dados) {
+        $.ajax({
+            url: '/Turma/SalvarFrequencia',
+            type: 'POST',
+            data: dados
+        }).done(function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', data.mensagem);
+                const $td = $(`#td-dia-${dados.alunoTurmaId}-${dados.dia.replaceAll('/', '')}`);
+                $td.addClass('animacao-sucesso');
+                setTimeout(() => {
+                    $td.removeClass('animacao-sucesso');
+                }, 500);
+            }
+            else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+
+        const chave = dados.alunoTurmaId + "_" + dados.dia;
+        delete pendentes[chave];
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".btn-frequencia").forEach(btn => {
+            btn.addEventListener("click", () => alterarFrequencia(btn));
+        });
+    });
+</script>
+
+@functions {
+    public static List<DateTime> ObterDiasComAula(DateTime dataInicio, DateTime dataFim, List<ItemHorarioDeAula> horarios)
+    {
+        var diasComAula = new List<DateTime>();
+
+        var diasPermitidos = horarios
+            .Select(h => h.DiaDaSemana)
+            .Distinct()
+            .ToHashSet();
+
+        for (var data = dataInicio.Date; data <= dataFim.Date; data = data.AddDays(1))
+        {
+            var diaSemana = (eDiaDaSemana)(int)data.DayOfWeek;
+            if (diasPermitidos.Contains(diaSemana))
+            {
+                diasComAula.Add(data);
+            }
+        }
+
+        return diasComAula;
+    }
+}

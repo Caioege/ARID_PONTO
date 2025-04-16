@@ -110,6 +110,15 @@
                             </span>
                         </button>
                     </li>
+
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s3" aria-controls="s3" aria-selected="true">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bxs-user-account bx-sm me-1_5 align-text-bottom"></i>
+                                RESPONSÁVEIS
+                            </span>
+                        </button>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="s1" role="tabpanel">
@@ -191,6 +200,56 @@
                             ViewBag.EnderecoObrigatorio = true;
                         }
                         @await Html.PartialAsync("_EnderecoPartial", Model.Pessoa.Endereco)
+                    </div>
+
+                    <div class="tab-pane fade show" id="s3" role="tabpanel">
+                        <b>Mãe</b>
+                        <div class="row">
+                            <section class="col col-md-8 col-sm-12 col-12">
+                                <label class="form-label">Nome</label>
+                                @Html.TextBoxFor(model => model.NomeMae, new { @class = "form-control", @maxlength = 150 })
+                            </section>
+
+                            <section class="col col-md-4 col-sm-12 col-12">
+                                <label class="form-label">Telefone</label>
+                                @Html.TextBoxFor(model => model.TelefoneMae, new { @class = "form-control telefone", @maxlength = 150 })
+                            </section>
+                        </div>
+
+                        <hr />
+                        <b>Pai</b>
+                        <div class="row">
+                            <section class="col col-md-8 col-sm-12 col-12">
+                                <label class="form-label">Nome</label>
+                                @Html.TextBoxFor(model => model.NomePai, new { @class = "form-control", @maxlength = 150 })
+                            </section>
+
+                            <section class="col col-md-4 col-sm-12 col-12">
+                                <label class="form-label">Telefone</label>
+                                @Html.TextBoxFor(model => model.TelefonePai, new { @class = "form-control telefone", @maxlength = 150 })
+                            </section>
+                        </div>
+
+                        <hr />
+                        <b>Outro Responsável</b>
+                        <div class="row">
+                            <section class="col col-md-8 col-sm-12 col-12">
+                                <label class="form-label">Nome</label>
+                                @Html.TextBoxFor(model => model.NomeOutroResponsavel, new { @class = "form-control", @maxlength = 150 })
+                            </section>
+
+                            <section class="col col-md-4 col-sm-12 col-12">
+                                <label class="form-label">Telefone</label>
+                                @Html.TextBoxFor(model => model.TelefoneOutroResponsavel, new { @class = "form-control telefone", @maxlength = 150 })
+                            </section>
+                        </div>
+
+                        <div class="row">
+                            <section class="col col-md-12 col-sm-12 col-12">
+                                <label class="form-label">Parentesco</label>
+                                @Html.TextBoxFor(model => model.ParentescoOutroResponsavel, new { @class = "form-control", @maxlength = 50 })
+                            </section>
+                        </div>
                     </div>
                 </div>
             </div>

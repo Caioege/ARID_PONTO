@@ -140,5 +140,87 @@ namespace AriD.Servicos.Servicos
                 throw;
             }
         }
+
+        public List<AlunoDiarioDTO> ListaDeAlunosParaDiario(
+            int turmaId,
+            DateTime inicio,
+            DateTime fim)
+        {
+            try
+            {
+                var query = @"select
+	                            atu.Id as AlunoTurmaId,
+                                pes.Nome as AlunoNome,
+                                atu.EntradaNaTurma,
+                                atu.SaidaDaTurma
+                            from alunoturma atu
+                            inner join aluno alu
+	                            on alu.ID = atu.AlunoId
+                            inner join pessoa pes
+	                            on pes.Id = alu.PessoaId
+                            where
+	                            atu.TurmaId = @TURMAID
+                                and atu.EntradaNaTurma >= @INICIO
+                            order by pes.Nome";
+
+                var alunos = _repositorio.ConsultaDapper<AlunoDiarioDTO>(query, new
+                {
+                    @TURMAID = turmaId,
+                    @INICIO = inicio
+                }).ToList();
+
+                var frequencias =
+                    _repositorio.ConsultaDapper<(int, DateTime, bool, bool)>(
+                        @"(select
+                            freq.AlunoTurmaId as 'Item1',
+	                        freq.DataHora as 'Item2',
+                            true as 'Item3',
+                            freq.EstavaPresente as 'Item4'
+                        from frequenciaalunoturma freq
+                        where
+	                        freq.AlunoTurmaId in (@LISTADEALUNOS)
+                            and freq.DataHora between @INICIO and @FIM)
+                        union
+                        (select
+                            atu.Id as 'Item1',
+	                        date(reg.DataHoraRegistro) as 'Item2',
+                            false as 'Item3',
+                            true as 'Item4'
+                        from registrodeponto reg
+                        inner join equipamentodefrequencia eq
+	                        on eq.Id = reg.EquipamentoDePontoId
+                        inner join aluno al
+	                        on al.EscolaId = eq.EscolaId and al.IdEquipamento = reg.UsuarioEquipamentoId
+                        inner join alunoturma atu
+	                        on atu.AlunoId = al.Id
+                        where
+	                        reg.DataHoraRegistro between @INICIO and @FIM
+                            and atu.Id in (@LISTADEALUNOS))", new
+                        {
+                            @LISTADEALUNOS = alunos.Select(c => c.AlunoTurmaId),
+                            @INICIO = inicio,
+                            @FIM = fim
+                        });
+
+                foreach (var aluno in alunos)
+                {
+                    aluno.Frequencias = frequencias
+                        .Where(c => c.Item1 == aluno.AlunoTurmaId)
+                        .GroupBy(c => c.Item2.Date)
+                        .Select(c => 
+                            new KeyValuePair<DateTime, bool?>(c.Key, 
+                            c.Any(d => d.Item3) ? 
+                                c.OrderByDescending(d => d.Item3).First().Item4 : 
+                                c.OrderBy(c => c.Item3).FirstOrDefault().Item4))
+                        .ToDictionary(c => c.Key, c => c.Value);
+                }
+
+                return alunos;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

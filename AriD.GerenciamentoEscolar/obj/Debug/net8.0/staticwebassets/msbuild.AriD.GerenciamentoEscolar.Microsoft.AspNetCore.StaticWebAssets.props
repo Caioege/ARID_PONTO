@@ -2550,8 +2550,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ojyu97u817</Fingerprint>
-      <Integrity>ZA96pk3ZziwxeNPno8/Q9gkhGbu1edjMpuEIHyonmrc=</Integrity>
+      <Fingerprint>w8h35uahsv</Fingerprint>
+      <Integrity>8EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))</OriginalItemSpec>

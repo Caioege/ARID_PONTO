@@ -9,5 +9,10 @@ namespace AriD.Servicos.Servicos.Interfaces
         (int AnoLetivoMaisAntigo, int AnoLetivoMaisNovo) ObtenhaAnosLetivosDaRede(int redeDeEnsinoId);
         void AlocarAlunosNaTurma(int turmaId, DateTime entrada, List<int> alunosIds);
         void RemoverVinculoDeAluno(int alunoTurmaId);
+
+        List<AlunoDiarioDTO> ListaDeAlunosParaDiario(
+            int turmaId,
+            DateTime inicio,
+            DateTime fim);
     }
 }

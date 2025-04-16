@@ -29,6 +29,23 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public eAnoEscolar AnoEscolarAtual { get; set; }
 
+        [MaxLength(150)]
+        public string? NomeMae { get; set; }
+        [MaxLength(12)]
+        public string? TelefoneMae { get; set; }
+
+        [MaxLength(150)]
+        public string? NomePai { get; set; }
+        [MaxLength(12)]
+        public string? TelefonePai { get; set; }
+
+        [MaxLength(150)]
+        public string? NomeOutroResponsavel { get; set; }
+        [MaxLength(12)]
+        public string? TelefoneOutroResponsavel { get; set; }
+        [MaxLength(50)]
+        public string? ParentescoOutroResponsavel { get; set; }
+
         public string Nome => Pessoa?.Nome;
 
         public virtual List<AlunoTurma> ListaDeVinculosDeTurma { get; set; } = new();

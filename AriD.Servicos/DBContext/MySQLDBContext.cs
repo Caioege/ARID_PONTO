@@ -38,5 +38,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<ItemDoGrupoDePermissao> ItemDoGrupoDePermissao { get; set; }
         public DbSet<Turma> Turma { get; set; }
         public DbSet<ItemHorarioDeAula> ItemHorarioDeAula { get; set; }
+        public DbSet<FrequenciaAlunoTurma> FrequenciaAlunoTurma { get; set; }
     }
 }

@@ -236,6 +236,24 @@ function assineMascarasDoComponente(componente) {
             }
         }
     });
+
+    $('.telefone').mask('(00) 0000-00009');
+
+    $('.telefone').on('blur', function () {
+        var valor = $(this).val().replace(/\D/g, '');
+        if (valor.length === 11) {
+            $(this).mask('(00) 00000-0000'); // celular
+        } else {
+            $(this).mask('(00) 0000-00009'); // telefone fixo (ou incompleto)
+        }
+
+        const valido = !valor || /^(\d{10}|\d{11})$/.test(valor);
+        if (!valido) {
+            MensagemRodape('warning', 'Insira um telefone válido!')
+            $(this).val('');
+            $(this).focus();
+        }
+    });
 }
 
 function dataValida(dateString) {

@@ -1,4 +1,5 @@
 using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
@@ -19,17 +20,23 @@ namespace AriD.GerenciamentoEscolar.Controllers
         private readonly IServico<Escola> _servicoEscola;
         private readonly IServicoDeAlunos _servicoDeAlunos;
         private readonly IServico<AlunoTurma> _servicoAlunoTurma;
+        private readonly IServico<ItemHorarioDeAula> _servicoHorario;
+        private readonly IServico<FrequenciaAlunoTurma> _servicoFrequencia;
 
         public TurmaController(
             IServico<Turma> servico,
             IServico<Escola> servicoEscola,
             IServicoDeAlunos servicoDeAlunos,
-            IServico<AlunoTurma> servicoAlunoTurma)
+            IServico<AlunoTurma> servicoAlunoTurma,
+            IServico<ItemHorarioDeAula> servicoHorario,
+            IServico<FrequenciaAlunoTurma> servicoFrequencia)
         {
             _servico = servico;
             _servicoEscola = servicoEscola;
             _servicoDeAlunos = servicoDeAlunos;
             _servicoAlunoTurma = servicoAlunoTurma;
+            _servicoHorario = servicoHorario;
+            _servicoFrequencia = servicoFrequencia;
         }
 
         [HttpGet]
@@ -101,6 +108,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
             try
             {
                 var turma = _servico.Obtenha(id);
+                ViewBag.MesesDoAno = ObterMesesNoPeriodo(turma.InicioDasAulas, turma.FimDasAulas);
                 return View(turma);
             }
             catch (Exception ex)
@@ -217,6 +225,125 @@ namespace AriD.GerenciamentoEscolar.Controllers
             return Json(new { sucesso = true, html });
         }
 
+        [HttpPost]
+        public ActionResult SalvarHorarioDeAula(
+            int turmaId, 
+            eDiaDaSemana diaDaSemana, 
+            List<ItemHorarioDeAula> horarios)
+        {
+            var turma = _servico.Obtenha(turmaId);
+
+            var horariosDoDia = turma
+                .ListaDeHorarioDeAula
+                .Where(c => c.DiaDaSemana == diaDaSemana)
+                .ToList();
+
+            if (horarios == null || !horarios.Any())
+            {
+                foreach (var horario in horariosDoDia)
+                    _servicoHorario.Remover(horario, false);
+            }
+            else
+            {
+                foreach (var horario in horariosDoDia)
+                {
+                    var horarioExistente = horarios
+                        .FirstOrDefault(c => c.InicioAula == horario.InicioAula && c.FimAula == horario.FimAula);
+
+                    if (horarioExistente == null)
+                        _servicoHorario.Remover(horario, false);
+                }
+
+                foreach (var horario in horarios)
+                {
+                    horario.RedeDeEnsinoId = turma.RedeDeEnsinoId;
+
+                    if (horario.Id > 0)
+                    {
+                        var horarioExistente = horariosDoDia.First(c => c.Id ==  horario.Id);
+
+                        horarioExistente.InicioAula = horario.InicioAula;
+                        horarioExistente.FimAula = horario.FimAula;
+                        horarioExistente.Intervalo = horario.Intervalo;
+                        horarioExistente.Disciplina = horario.Disciplina;
+
+                        _servicoHorario.Atualizar(horarioExistente, false);
+                    }
+                    else
+                        _servicoHorario.Adicionar(horario, false);
+                }
+            }
+
+            _servicoHorario.Commit();
+
+            return Json(new { sucesso = true, mensagem = "Os horários do dia foram salvos." });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> CarregarDiarioDeClasse(
+            int turmaId,
+            string anoMes)
+        {
+            var split = anoMes.Split('-');
+            var ano = int.Parse(split[0]);
+            var mes = int.Parse(split[1]);
+
+            var turma = _servico.Obtenha(turmaId);
+
+            var inicio = new DateTime(ano, mes, 01);
+            var final = new DateTime(ano, mes, DateTime.DaysInMonth(ano, mes));
+
+            if (turma.InicioDasAulas > inicio)
+                inicio = turma.InicioDasAulas;
+
+            if (turma.FimDasAulas < final)
+                final = turma.FimDasAulas;
+
+            var alunos = _servicoDeAlunos.ListaDeAlunosParaDiario(turmaId, inicio, final);
+            var diarioDTO = new DiarioClasseDTO
+            {
+                Alunos = alunos,
+                DataInicio = inicio,
+                DataFim = final,
+                Horarios = turma.ListaDeHorarioDeAula
+            };
+
+            var html = await RenderizarComoString("_PartialDiarioDeClasse", diarioDTO);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public ActionResult SalvarFrequencia(
+            int alunoTurmaId, 
+            DateTime dia, 
+            bool? frequencia)
+        {
+            var frequenciaPersistida = _servicoFrequencia
+                .Obtenha(c => c.AlunoTurmaId == alunoTurmaId && c.DataHora == dia);
+
+            if (frequenciaPersistida == null && frequencia.HasValue)
+                _servicoFrequencia.Adicionar(new FrequenciaAlunoTurma
+                {
+                    RedeDeEnsinoId = HttpContext.DadosDaSessao().RedeDeEnsinoId,
+                    DataHora = dia,
+                    AlunoTurmaId = alunoTurmaId,
+                    EstavaPresente = frequencia.Value
+                });
+            else if (frequenciaPersistida != null)
+            {
+                if (!frequencia.HasValue)
+                    _servicoFrequencia.Remover(frequenciaPersistida);
+                else
+                {
+                    frequenciaPersistida.EstavaPresente = frequencia.Value;
+                    _servicoFrequencia.Atualizar(frequenciaPersistida);
+                }
+            }
+
+            return Json(new { sucesso = true, mensagem = "Frequência atualizada com sucesso." });
+        }
+
         private void ConfigureDadosDaTabelaPaginada(
             ListaPaginada<Turma> listaPaginada, 
             int anoLetivo)
@@ -262,6 +389,49 @@ namespace AriD.GerenciamentoEscolar.Controllers
             var dados = _servico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
+        }
+
+        public static List<SelectListItem> ObterMesesNoPeriodo(
+            DateTime dataInicio, 
+            DateTime dataFim)
+        {
+            var lista = new List<SelectListItem>();
+
+            var data = new DateTime(dataInicio.Year, dataInicio.Month, 1);
+            var dataLimite = new DateTime(dataFim.Year, dataFim.Month, 1);
+
+            while (data <= dataLimite)
+            {
+                lista.Add(new SelectListItem
+                {
+                    Value = data.ToString("yyyy-MM"),
+                    Text = $"[{data.Year}] {ObterNomeMes(data.Month)}"
+                });
+
+                data = data.AddMonths(1);
+            }
+
+            return lista;
+        }
+
+        private static string ObterNomeMes(int mes)
+        {
+            return mes switch
+            {
+                1 => "Janeiro",
+                2 => "Fevereiro",
+                3 => "Março",
+                4 => "Abril",
+                5 => "Maio",
+                6 => "Junho",
+                7 => "Julho",
+                8 => "Agosto",
+                9 => "Setembro",
+                10 => "Outubro",
+                11 => "Novembro",
+                12 => "Dezembro",
+                _ => ""
+            };
         }
     }
 }

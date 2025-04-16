@@ -1,5 +1,6 @@
 $(document).ready(() => {
     assineEventoBotaoSalvar();
+    assineChangeMesAnoDiario();
     assineChangeSituacaoDaTurma();
 });
 
@@ -196,4 +197,23 @@ function abrirModalHorarioDeAula(diaDaSemana) {
                 MensagemRodape('warning', data.mensagem);
             }
         });
+}
+
+function assineChangeMesAnoDiario() {
+    $('#MesAnoDiario').on('change', function () {
+        $('#div-diario-classe').html('');
+        if ($(this).val()) {
+            RequisicaoAjaxComCarregamento(
+                '/Turma/CarregarDiarioDeClasse',
+                'GET',
+                { turmaId: $('#formulario-turma #Id').val(), anoMes: $(this).val() },
+                function (data) {
+                    if (data.sucesso) {
+                        $('#div-diario-classe').html(data.html);
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
 }

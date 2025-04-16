@@ -18,15 +18,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @Html.Hidden("DiaDaSemana", (int)diaDaSemana)
                 <button type="button" class="btn btn-primary btn-sm" onclick="adicionarHorario()">
                     <i class='bx bx-list-plus'></i>
                     Adicionar linha de horário
                 </button>
+                <br />
+                <br />
                 <table class="table table-bordered text-center align-middle">
                     <thead>
                         <tr>
-                            <th>Início</th>
-                            <th>Fim</th>
+                            <th width="115px">Início</th>
+                            <th width="115px">Fim</th>
                             <th>Intervalo</th>
                             <th>Disciplina</th>
                             <th></th>
@@ -36,26 +39,26 @@
                         @for (int i = 0; i < Model.Count; i++)
                         {
                             var item = Model[i];
-                            <tr>
+                            <tr data-id="@item.Id">
                                 <td>
                                     @if (i == 0)
                                     {
-                                        <input type="time" name="Horarios[@i].InicioAula" class="form-control" value="@item.InicioAula.ToString(@"hh\:mm")" />
+                                        <input type="time" name="Horarios[@i].InicioAula" class="form-control hora" value="@item.InicioAula.ToString(@"hh\:mm")" />
                                     }
                                     else
                                     {
-                                        <input type="time" class="form-control" readonly value="@item.InicioAula.ToString(@"hh\:mm")" />
+                                        <input type="time" class="form-control hora" readonly value="@item.InicioAula.ToString(@"hh\:mm")" />
                                     }
                                 </td>
                                 <td>
-                                    <input type="time" name="Horarios[@i].FimAula" class="form-control" value="@item.FimAula.ToString(@"hh\:mm")" />
+                                    <input type="time" name="Horarios[@i].FimAula" class="form-control hora" value="@item.FimAula.ToString(@"hh\:mm")" />
                                 </td>
                                 <td class="text-center">
                                     <input type="checkbox" name="Horarios[@i].Intervalo" class="form-check-input"
                                            onchange="toggleDisciplina(this)" @(item.Intervalo ? "checked" : "") />
                                 </td>
                                 <td>
-                                    <input type="text" name="Horarios[@i].Disciplina" class="form-control"
+                                    <input type="text" name="Horarios[@i].Disciplina" class="form-control disciplina"
                                            value="@item.Disciplina"
                                     @(item.Intervalo ? "disabled" : "") />
                                 </td>
@@ -78,7 +81,7 @@
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
 
-                <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                <button type="button" class="btn btn-primary" id="btn-salvar-modal" onclick="salvarCadastroDeHorarioDeAula()">
                     <i class='bx bxs-save'></i> Salvar
                 </button>
             </div>
@@ -87,46 +90,56 @@
 </div>
 
 <script>
-    function toggleDisciplina(checkbox) {
-        const tr = checkbox.closest('tr');
-        const inputDisciplina = tr.querySelector('input[type="text"]');
-        inputDisciplina.disabled = checkbox.checked;
-    }
-
     function adicionarHorario() {
         const tabela = document.getElementById('tabelaHorarios');
         const linhas = tabela.querySelectorAll('tr');
         const novoIndex = linhas.length;
 
-        let inicioNovo = "07:00";
-        let fimAnterior = "07:50";
+        let inicioNovo = "";
 
         if (linhas.length > 0) {
             const ultimaLinha = linhas[linhas.length - 1];
-            const tempos = ultimaLinha.querySelectorAll('input[type="time"]');
-            if (tempos.length >= 2) {
-                inicioNovo = tempos[1].value;
-                fimAnterior = tempos[1].value;
+            const inputsTime = ultimaLinha.querySelectorAll('input.hora');
+
+            const inicioPreenchido = inputsTime[0]?.value;
+            const fimPreenchido = inputsTime[1]?.value;
+
+            if (!inicioPreenchido || !fimPreenchido) {
+                MensagemRodape('warning', 'Preencha o horário inicial e final da última aula antes de adicionar uma nova.');
+                return;
             }
+
+            inicioNovo = fimPreenchido;
+
+            inputsTime[0].readOnly = true;  
+            inputsTime[1].readOnly = true;
         }
 
         const novaLinha = document.createElement('tr');
         novaLinha.innerHTML = `
-            <td><input type="time" class="form-control" readonly value="${inicioNovo}" /></td>
-            <td><input type="time" name="Horarios[${novoIndex}].FimAula" class="form-control" value="${fimAnterior}" /></td>
+            <td>
+                <input type="text" name="Horarios[${novoIndex}].InicioAula" class="form-control hora" value="${inicioNovo}" ${(linhas.length == 0 ? '' : 'readonly')} />
+            </td>
+            <td>
+                <input type="text" name="Horarios[${novoIndex}].FimAula" class="form-control hora" />
+            </td>
             <td class="text-center">
                 <input type="checkbox" name="Horarios[${novoIndex}].Intervalo" class="form-check-input" onchange="toggleDisciplina(this)" />
             </td>
             <td>
-                <input type="text" name="Horarios[${novoIndex}].Disciplina" class="form-control" />
+                <input type="text" name="Horarios[${novoIndex}].Disciplina" class="form-control disciplina" />
             </td>
             <td>
-                <button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">Remover</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">
+                    <i class='bx bx-trash'></i>
+                </button>
             </td>
         `;
+
         tabela.appendChild(novaLinha);
 
-        // Remove botão "Remover" da penúltima linha
+        assineMascarasDoComponente($('#_ModalHorarioDeAula table'));
+
         if (linhas.length > 0) {
             const penultimaLinha = linhas[linhas.length - 1];
             const btns = penultimaLinha.querySelectorAll('button');
@@ -136,15 +149,68 @@
 
     function removerHorario(btn) {
         const linha = btn.closest('tr');
-        linha.remove();
-
-        // Recoloca botão "Remover" no novo último item
         const tabela = document.getElementById('tabelaHorarios');
         const linhas = tabela.querySelectorAll('tr');
-        if (linhas.length > 0) {
-            const ultimaLinha = linhas[linhas.length - 1];
-            const tdAcoes = ultimaLinha.lastElementChild;
-            tdAcoes.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)">Remover</button>`;
+
+        linha.remove();
+
+        const novaUltima = tabela.querySelectorAll('tr')[tabela.rows.length - 1];
+        if (novaUltima) {
+            const inputs = novaUltima.querySelectorAll('input[type="time"], input.hora');
+            inputs.forEach(input => input.readOnly = false);
+
+            const tdAcoes = novaUltima.lastElementChild;
+            tdAcoes.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="removerHorario(this)"><i class='bx bx-trash'></i></button>`;
         }
+    }
+
+    function toggleDisciplina(checkbox) {
+        const tr = checkbox.closest('tr');
+        const inputDisciplina = tr.querySelector('input.disciplina');
+        inputDisciplina.disabled = checkbox.checked;
+        inputDisciplina.readOnly = checkbox.checked;
+        inputDisciplina.value = '';
+    }
+
+    function salvarCadastroDeHorarioDeAula() {
+        let dadosPreenchidos = true;
+        let horarios = [];
+        $.each($('#_ModalHorarioDeAula table tbody tr'), function (i, tr) {
+            let _linha = $(tr);
+            var horario = {
+                Id: _linha.data('id'),
+                TurmaId: $('#formulario-turma #Id').val(),
+                DiaDaSemana: $('#_ModalHorarioDeAula #DiaDaSemana').val(),
+                InicioAula: _linha.find('.hora')[0].value,
+                FimAula: _linha.find('.hora')[1].value,
+                Intervalo: _linha.find('.form-check-input').is(':checked'),
+                Disciplina: _linha.find('.disciplina').val()
+            };
+
+            if (!horario.InicioAula || !horario.FimAula || (!horario.Disciplina && !horario.Intervalo)) {
+                dadosPreenchidos = false;
+            }
+
+            horarios.push(horario);
+        });
+
+        if (!dadosPreenchidos) {
+            MensagemRodape('warning', 'Preencha todos os dados para salvar o horário.');
+            return;
+        }
+
+        RequisicaoAjaxComCarregamento(
+            '/Turma/SalvarHorarioDeAula',
+            'POST',
+            { turmaId: $('#formulario-turma #Id').val(), diaDaSemana: $('#_ModalHorarioDeAula #DiaDaSemana').val(), horarios },
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    $('#_ModalHorarioDeAula').modal('hide');
+                    CarregarPagina('/Turma/Alterar/' + $('#formulario-turma #Id').val());
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
     }
 </script>

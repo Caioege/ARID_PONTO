@@ -15,7 +15,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public eDiaDaSemana DiaDaSemana { get; set; }
         [MaxLength(100)]
-        public string Disciplina { get; set; }
+        public string? Disciplina { get; set; }
         [Required]
         public TimeSpan InicioAula { get; set; }
         [Required]
