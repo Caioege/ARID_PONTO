@@ -28,7 +28,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
         {
             try
             {
-                ConfigureDadosDaTabelaPaginada(listaPaginada);
+                ConfigureDadosDaTabelaPaginada(listaPaginada, true);
                 return View(listaPaginada);
             }
             catch (Exception ex)
@@ -38,12 +38,12 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpGet]
-        public IActionResult TabelaPaginada(ListaPaginada<Aluno> listaPaginada)
+        public IActionResult TabelaPaginada(ListaPaginada<Aluno> listaPaginada, bool somenteMatriculados)
         {
             try
             {
-                ConfigureDadosDaTabelaPaginada(listaPaginada);
-                return View("_Tabela", listaPaginada);
+                ConfigureDadosDaTabelaPaginada(listaPaginada, somenteMatriculados);
+                return View("_TabelaPaginada", listaPaginada);
             }
             catch (Exception ex)
             {
@@ -91,32 +91,94 @@ namespace AriD.GerenciamentoEscolar.Controllers
         [HttpPost]
         public IActionResult Salvar(Aluno servidor)
         {
-            try
-            {
-                int id = servidor.Id;
-                servidor.RedeDeEnsinoId = this.HttpContext.DadosDaSessao().RedeDeEnsinoId;
-                servidor.Pessoa.RedeDeEnsinoId = servidor.RedeDeEnsinoId;
+            int id = servidor.Id;
+            servidor.RedeDeEnsinoId = this.HttpContext.DadosDaSessao().RedeDeEnsinoId;
+            servidor.Pessoa.RedeDeEnsinoId = servidor.RedeDeEnsinoId;
 
-                if (servidor.Id == 0)
-                {
-                    servidor.DataDeCadastro = DateTime.Now;
-                    id = _servico.Adicionar(servidor);
-                }
-                else
-                    _servico.Atualizar(servidor);
-
-                return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
-            }
-            catch (Exception ex)
+            if (servidor.Id == 0)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                servidor.DataDeCadastro = DateTime.Now;
+                id = _servico.Adicionar(servidor);
             }
+            else
+                _servico.Atualizar(servidor);
+
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
-        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Aluno> listaPaginada)
+        [HttpPost]
+        public IActionResult Remover(int id)
+        {
+            var aluno = _servico.Obtenha(id);
+            if (aluno.ListaDeVinculosDeTurma.Count > 0)
+                throw new ApplicationException("Não é possível remover o aluno, pois existem dados vinculados a ele.");
+
+            _servico.Remover(aluno);
+
+            return Json(new { sucesso = true, mensagem = "O aluno foi removido." });
+        }
+
+        [HttpPost]
+        public IActionResult MatricularNaEscola(
+            int alunoId, 
+            int? escolaId, 
+            string idEquipamento)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                escolaId = dadosDaSessao.EscolaId;
+
+            if (!escolaId.HasValue)
+                throw new ApplicationException("A escola deve ser informada.");
+
+            var aluno = _servico.Obtenha(alunoId);
+            if (aluno.EscolaId.HasValue)
+                throw new ApplicationException("O aluno já está matriculado em uma escola.");
+
+            if (string.IsNullOrEmpty(idEquipamento))
+                throw new ApplicationException("Informe o id do equipamento.");
+
+            aluno.IdEquipamento = idEquipamento;
+            aluno.EscolaId = escolaId;
+            _servico.Atualizar(aluno);
+
+            return Json(new { sucesso = true, mensagem = "O aluno foi matriculado na escola." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ModalMatricularNaEscola()
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            ViewBag.Escolas = new SelectList(
+                _servicoEscola
+                    .ObtenhaLista(c => c.RedeDeEnsinoId == dadosDaSessao.RedeDeEnsinoId)
+                    .OrderBy(c => c.Nome),
+                "Id",
+                "Nome");
+
+            var html = await RenderizarComoString("_ModalMatricularNaEscola", null);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult Desalocar(int alunoId)
+        {
+            var aluno = _servico.Obtenha(alunoId);
+            if (!aluno.EscolaId.HasValue)
+                throw new ApplicationException("O aluno já está desalocado.");
+
+            aluno.IdEquipamento = null;
+            aluno.EscolaId = null;
+            _servico.Atualizar(aluno);
+
+            return Json(new { sucesso = true, mensagem = "O aluno foi desalocado." });
+        }
+
+        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Aluno> listaPaginada, bool somenteMatriculados)
         {
             var dados = _servico.ObtenhaListaPaginada(
-                CarregueFiltrosDePesquisa(listaPaginada), 
+                CarregueFiltrosDePesquisa(listaPaginada, somenteMatriculados), 
                 listaPaginada.Pagina, 
                 listaPaginada.QuantidadeDeItensPorPagina);
 
@@ -124,7 +186,8 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         private Expression<Func<Aluno, bool>> CarregueFiltrosDePesquisa(
-            ListaPaginada<Aluno> listaPaginada)
+            ListaPaginada<Aluno> listaPaginada,
+            bool somenteMatriculados)
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
 
@@ -143,6 +206,26 @@ namespace AriD.GerenciamentoEscolar.Controllers
                         c.Pessoa.Cpf.Replace(".", "").Replace("-", "").Contains(somenteNumeros)) ||
                         c.Pessoa.Rg.Contains(somenteNumeros) ||
                         c.Pessoa.NomeSocial.ToLower().Contains(pesquisaToLower));
+            }
+
+            if (dadosDaSessao.EscolaId.HasValue)
+            {
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => c.EscolaId == dadosDaSessao.EscolaId || !c.EscolaId.HasValue);
+            }
+
+            if (somenteMatriculados)
+            {
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => c.EscolaId.HasValue);
+            }
+            else
+            {
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => !c.EscolaId.HasValue);
             }
 
             return pesquisa;

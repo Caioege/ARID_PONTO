@@ -1,18 +1,24 @@
 @using AriD.Servicos.Extensao
+@using AriD.BibliotecaDeClasses.Enumeradores
+
 @model Aluno
+
+@{
+    var dadosDeSessao = Context.DadosDaSessao();
+}
 
 <style>
     .tab-content {
-        padding: 0px !important;
+    padding: 0px !important;
     }
 
     .img-servidor {
-        height: 100%;
-        width: 100%
+    height: 100%;
+    width: 100%
     }
 
     .img-servidor:hover {
-        cursor: pointer;
+    cursor: pointer;
     }
 </style>
 
@@ -61,9 +67,14 @@
                 </div>
                 <div style="width: 100%; margin-left: 15px;">
                     <div class="row">
-                        <div class="col col-lg-12col-xs-12">
+                        <div class="col col-lg-9 col-md-8 col-xs-12 col-12">
                             <label class="form-label obrigatorio" for="Pessoa_Nome">Nome</label>
                             @Html.TextBoxFor(model => model.Pessoa.Nome, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+
+                        <div class="col col-lg-3 col-md-4 col-xs-12 col-12">
+                            <label class="form-label obrigatorio" for="IdEquipamento">Id Equipamento</label>
+                            @Html.TextBoxFor(model => model.IdEquipamento, new { @class = "form-control", @maxlength = "5" })
                         </div>
                     </div>
                     <div class="row">
@@ -142,11 +153,10 @@
                                     <th class="text-center" style="vertical-align: middle" width="10%">
                                         Ano Letivo
                                     </th>
-                                    <th class="text-center" style="vertical-align: middle" width="40%">
+                                    <th class="text-center" style="vertical-align: middle" width="55%">
+                                        Escola
+                                        <br />
                                         Turma
-                                    </th>
-                                    <th class="text-center" style="vertical-align: middle" width="15%">
-                                        Turno
                                     </th>
                                     <th class="text-center" style="vertical-align: middle" width="15%">
                                         Situação
@@ -165,11 +175,10 @@
                                             <td class="text-center" style="vertical-align: middle">
                                                 @alunoTurma.Turma.AnoLetivo
                                             </td>
-                                            <td class="text-center" style="vertical-align: middle">
-                                                @alunoTurma.Turma.Descricao
-                                            </td>
-                                            <td class="text-center" style="vertical-align: middle">
-                                                @alunoTurma.Turma.Turno.ToString()
+                                            <td style="vertical-align: middle">
+                                                <b>ESC:</b> @alunoTurma.Turma.Escola.Nome
+                                                <br />
+                                                <b>TUR:</b> @alunoTurma.Turma.Descricao - @alunoTurma.Turma.Turno.DescricaoDoEnumerador()
                                             </td>
                                             <td class="text-center" style="vertical-align: middle">
                                                 @alunoTurma.Situacao.DescricaoDoEnumerador()
@@ -258,6 +267,19 @@
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Aluno")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
+
+            @if (!Model.EscolaId.HasValue)
+            {
+                <button type="button" class="btn btn-info" id="btn-matricular" onclick="matricularNaUnidade()">
+                    <i class='bx bxs-user-check'></i> Matricular na escola
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-info" id="btn-desalocar" onclick="desalocarAlunoDaEscola()">
+                    <i class='bx bxs-user-x'></i> Desalocar aluno
+                </button>
+            }
 
             <button type="button" class="btn btn-primary" id="btn-salvar">
                 <i class='bx bxs-save'></i> Salvar

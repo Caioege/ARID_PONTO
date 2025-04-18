@@ -1,0 +1,53 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bx-align-justify'></i> Equipamentos da Escola
+        </h5>
+    </div>
+    <div class="card-body" id="div-relatorio">
+        <div class="row">
+            <div class="col col-md-12">
+                <label class="form-label">Escola</label>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                {
+                    @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                }
+                else
+                {
+                    @Html.DropDownList("EscolaId", (SelectList)ViewBag.Escolas, "Todas", new { @class = "select2" })
+                }
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-primary" onclick="processarRelatorio()">
+            <i class='bx bxs-report'></i> Processar
+        </button>
+    </div>
+</div>
+
+<script>
+    function processarRelatorio() {
+        let parametros = {
+            escolaId: $('#EscolaId').val(),
+        };
+
+        RequisicaoAjaxComCarregamento(
+            '/Relatorio/ProcessarEquipamentosDaEscola',
+            'POST',
+            parametros,
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', 'O arquivo será baixado...');
+                    downloadBase64File(data.base64, data.fileName, data.mimeType);
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    }
+</script>

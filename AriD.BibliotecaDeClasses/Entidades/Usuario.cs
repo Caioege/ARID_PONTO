@@ -29,5 +29,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public int? GrupoDePermissaoId { get; set; }
         [ForeignKey(nameof(GrupoDePermissaoId))]
         public virtual GrupoDePermissao GrupoDePermissao { get; set; }
+
+        public int? EscolaId { get; set; }
+        [ForeignKey(nameof(EscolaId))]
+        public virtual Escola Escola { get; set; }
     }
 }

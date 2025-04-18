@@ -10,7 +10,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             ePerfilDeAcesso perfil,
             int redeDeEnsinoId,
             string redeDeEnsinoNome,
-            List<int> escolas,
+            int? escolaId,
             List<Enum> permissoes,
             bool usuarioAdministradorAutenticado = false)
         {
@@ -18,7 +18,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             UsuarioNome = usuarioNome;
             Perfil = perfil;
             RedeDeEnsinoId = redeDeEnsinoId;
-            Escolas = escolas;
+            EscolaId = escolaId;
             RedeDeEnsinoNome = redeDeEnsinoNome;
             Permissoes = permissoes;
             UsuarioAdministradorAutenticado = usuarioAdministradorAutenticado;
@@ -34,7 +34,7 @@ namespace AriD.BibliotecaDeClasses.DTO
 
         public bool UsuarioAdministradorAutenticado { get; set; }
 
-        public List<int> Escolas { get; set; } = new();
+        public int? EscolaId { get; set; }
         public List<Enum> Permissoes { get; set; } = new();
     }
 }

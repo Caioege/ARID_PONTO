@@ -21,8 +21,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public eTurno Turno { get; set; }
         [Required]
         public eSituacaoTurma Situacao { get; set; }
-        [Required]
-        public eTipoDeDiario TipoDoDiario { get; set; }
+        
         [Required]
         public eAnoEscolar AnoEscolar { get; set; }
 

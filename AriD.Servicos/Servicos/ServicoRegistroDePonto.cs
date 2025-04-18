@@ -74,26 +74,21 @@ namespace AriD.Servicos.Servicos
 	                            on eq.Id = reg.EquipamentoDeFrequenciaId
                             inner join escola uni
 	                            on uni.Id = eq.EscolaId
-                            left join lotacaoescola lot
-	                            on lot.EscolaId = uni.Id and lot.MatriculaEquipamento = reg.UsuarioEquipamentoId
-                            left join vinculodetrabalho vin
-	                            on vin.Id = lot.VinculoDeTrabalhoId
-                            left join servidor ser
-	                            on ser.Id = vin.ServidorId
+                            left join aluno alu
+	                            on alu.EscolaId = uni.Id and alu.IdEquipamento = reg.UsuarioEquipamentoId
                             left join pessoa pes
-	                            on pes.Id = ser.PessoaId
+	                            on pes.Id = alu.PessoaId
                             where
 	                            reg.RedeDeEnsinoId = @redeDeEnsinoID";
 
-                if (parametros.escolas.Any())
-                    fromAndWhere += " and uni.Id in @escolaS";
+                if (parametros.EscolaId.HasValue)
+                    fromAndWhere += " and uni.Id = @ESCOLAID";
 
                 if (!string.IsNullOrEmpty(parametros.Pesquisa))
                 {
                     parametros.Pesquisa = parametros.Pesquisa.ToLower();
                     fromAndWhere += @" and (lower(pes.Nome) like concat('%', @PESQUISA, '%')
 	                            or reg.UsuarioEquipamentoId like concat('%', @PESQUISA, '%')
-                                or vin.Matricula like concat('%', @PESQUISA, '%')
                                 or lower(uni.Nome) like concat('%', @PESQUISA, '%')
                                 or lower(eq.Descricao) like concat('%', @PESQUISA, '%'))";
                 }
@@ -117,7 +112,7 @@ namespace AriD.Servicos.Servicos
                 var parametrosConsultaDapper = new
                 {
                     @redeDeEnsinoID = parametros.RedeDeEnsinoId,
-                    @escolaS = parametros.escolas,
+                    @ESCOLAID = parametros.EscolaId,
                     @PESQUISA = parametros.Pesquisa,
                     @LIMIT = parametros.TotalPorPagina,
                     @OFFSET = (parametros.TotalPorPagina * (parametros.Pagina- 1))

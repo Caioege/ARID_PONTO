@@ -3,8 +3,36 @@
   "WorkspaceRootPath": "D:\\git\\AriD.GerenciamentoEscolar\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.bibliotecadeclasses\\entidades\\aluno.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FD8332F9-F1C1-4873-A95D-F35D2A20789F}|AriD.BibliotecaDeClasses\\AriD.BibliotecaDeClasses.csproj|solutionrelative:arid.bibliotecadeclasses\\entidades\\aluno.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\controllers\\relatoriocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\controllers\\relatoriocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\relatorio\\frequenciasnadata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\relatorio\\frequenciasnadata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\relatorio\\equipamentosdaescola.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\relatorio\\equipamentosdaescola.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\controllers\\autenticacaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\controllers\\autenticacaocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.servicos\\servicos\\interfaces\\iservicoderelatorios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\servicos\\interfaces\\iservicoderelatorios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.servicos\\servicos\\servicoderelatorios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\servicos\\servicoderelatorios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\relatorio\\alunosdaescola.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\relatorio\\alunosdaescola.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\shared\\sections\\menu\\_verticalmenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\shared\\sections\\menu\\_verticalmenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,15 +50,106 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Aluno.cs",
-              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Entidades\\Aluno.cs",
-              "RelativeDocumentMoniker": "AriD.BibliotecaDeClasses\\Entidades\\Aluno.cs",
-              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.BibliotecaDeClasses\\Entidades\\Aluno.cs",
-              "RelativeToolTip": "AriD.BibliotecaDeClasses\\Entidades\\Aluno.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAIwCsAAAAXAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "AutenticacaoController.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\AutenticacaoController.cs",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Controllers\\AutenticacaoController.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\AutenticacaoController.cs",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Controllers\\AutenticacaoController.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAowC4AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T01:17:18.03Z",
+              "WhenOpened": "2025-04-18T21:50:38.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IServicoDeRelatorios.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\Servicos\\Interfaces\\IServicoDeRelatorios.cs",
+              "RelativeDocumentMoniker": "AriD.Servicos\\Servicos\\Interfaces\\IServicoDeRelatorios.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\Servicos\\Interfaces\\IServicoDeRelatorios.cs",
+              "RelativeToolTip": "AriD.Servicos\\Servicos\\Interfaces\\IServicoDeRelatorios.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T21:47:36.604Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "EquipamentosDaEscola.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\EquipamentosDaEscola.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\EquipamentosDaEscola.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\EquipamentosDaEscola.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\EquipamentosDaEscola.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-18T21:41:43.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FrequenciasNaData.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\FrequenciasNaData.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\FrequenciasNaData.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\FrequenciasNaData.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\FrequenciasNaData.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-18T21:06:59.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ServicoDeRelatorios.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\Servicos\\ServicoDeRelatorios.cs",
+              "RelativeDocumentMoniker": "AriD.Servicos\\Servicos\\ServicoDeRelatorios.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\Servicos\\ServicoDeRelatorios.cs",
+              "RelativeToolTip": "AriD.Servicos\\Servicos\\ServicoDeRelatorios.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAAADwAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T20:53:21.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "_VerticalMenu.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "ViewState": "AgIAAHQAAAAAAAAAAAAYwIgAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-18T20:50:57.197Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AlunosDaEscola.cshtml",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\AlunosDaEscola.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\AlunosDaEscola.cshtml",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Relatorio\\AlunosDaEscola.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Relatorio\\AlunosDaEscola.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-18T20:48:47.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RelatorioController.cs",
+              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\RelatorioController.cs",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Controllers\\RelatorioController.cs",
+              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Controllers\\RelatorioController.cs",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Controllers\\RelatorioController.cs",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAEwJMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-18T20:44:24.023Z",
               "EditorCaption": ""
             }
           ]

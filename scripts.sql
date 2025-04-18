@@ -94,9 +94,35 @@ CREATE TABLE `arid_escolas`.`frequenciaalunoturma` (
     
 ALTER TABLE `arid_escolas`.`aluno` 
 ADD COLUMN `NomeMae` VARCHAR(150) NULL AFTER `IdEquipamento`,
-ADD COLUMN `TelefoneMae` VARCHAR(12) NULL AFTER `NomeMae`,
+ADD COLUMN `TelefoneMae` VARCHAR(15) NULL AFTER `NomeMae`,
 ADD COLUMN `NomePai` VARCHAR(150) NULL AFTER `TelefoneMae`,
-ADD COLUMN `TelefonePai` VARCHAR(12) NULL AFTER `NomePai`,
+ADD COLUMN `TelefonePai` VARCHAR(15) NULL AFTER `NomePai`,
 ADD COLUMN `NomeOutroResponsavel` VARCHAR(150) NULL AFTER `TelefonePai`,
-ADD COLUMN `TelefoneOutroResponsavel` VARCHAR(12) NULL AFTER `NomeOutroResponsavel`,
+ADD COLUMN `TelefoneOutroResponsavel` VARCHAR(15) NULL AFTER `NomeOutroResponsavel`,
 ADD COLUMN `ParentescoOutroResponsavel` VARCHAR(50) NULL AFTER `TelefoneOutroResponsavel`;
+
+ALTER TABLE `arid_escolas`.`aluno` 
+CHANGE COLUMN `IdEquipamento` `IdEquipamento` VARCHAR(12) NULL ;
+
+ALTER TABLE `arid_escolas`.`registrodeponto` 
+DROP FOREIGN KEY `FK_RegistroDePonto_EquipamentoDePonto`;
+ALTER TABLE `arid_escolas`.`registrodeponto` 
+CHANGE COLUMN `EquipamentoDePontoId` `EquipamentoDeFrequenciaId` INT NOT NULL ;
+ALTER TABLE `arid_escolas`.`registrodeponto` 
+ADD CONSTRAINT `FK_RegistroDePonto_EquipamentoDePonto`
+  FOREIGN KEY (`EquipamentoDeFrequenciaId`)
+  REFERENCES `arid_escolas`.`equipamentodefrequencia` (`Id`);
+
+ALTER TABLE `arid_escolas`.`turma` 
+DROP COLUMN `TipoDoDiario`;
+
+ALTER TABLE `arid_escolas`.`usuario` 
+ADD COLUMN `EscolaId` INT NULL AFTER `GrupoDePermissaoId`,
+ADD INDEX `FK_Escola_Usuario_idx` (`EscolaId` ASC);
+
+ALTER TABLE `arid_escolas`.`usuario` 
+ADD CONSTRAINT `FK_Escola_Usuario`
+  FOREIGN KEY (`EscolaId`)
+  REFERENCES `arid_escolas`.`escola` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;

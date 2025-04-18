@@ -1,5 +1,6 @@
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 
@@ -18,57 +19,37 @@ namespace AriD.Servicos.Servicos
         {
         }
 
-        public List<RelatorioAfastamentODTO> ObtenhaAfastamentosParaRelatorio(
+        public List<RelatorioAlunosDaEscolaDTO> ObtenhaAlunosDaEscola(
             int redeDeEnsinoId,
-            int? escolaId,
-            DateTime? inicio,
-            DateTime? fim,
-            int? justificativaId)
+            int? escolaId)
         {
             try
             {
                 var query = @"select
-	                            p.Nome as PessoaNome,
-                                v.Matricula as MatriculaContrato,
-                                concat('[', t.Sigla, '] ', t.Descricao) as TipoContrato,
-                                v.Situacao as SituacaoContrato,
-                                p.Cpf as PessoaCpf,
-                                a.Inicio as InicioAfastamento,
-                                a.Fim as FimAfastamento,
-                                concat('[', j.Sigla, '] ', j.Descricao, ' (', if(j.Abono, 'Abono', 'Sem Abono'), ')') as JustificativaAusencia
-                            from afastamento a
-                            inner join vinculodetrabalho v
-	                            on v.Id = a.VinculoDeTrabalhoId
-                            inner join servidor s
-	                            on s.Id = v.ServidorId
-                            inner join pessoa p
-	                            on p.Id = s.PessoaId
-                            inner join tipodovinculodetrabalho t
-	                            on t.Id = v.TipoDoVinculoDeTrabalhoId
-                            inner join justificativadeausencia j
-	                            on j.Id = a.JustificativaDeAusenciaId
-                            where
-	                            a.RedeDeEnsinoId = @redeDeEnsinoID";
-
-                if (inicio.HasValue)
-                    query += " and a.Inicio >= @INICIO";
-
-                if (fim.HasValue)
-                    query += " and a.Fim <= @FIM";
-
-                if (justificativaId.HasValue)
-                    query += " and j.Id = @JUSTIFICATIVAID";
+	                        e.Id as EscolaId,
+                            e.Nome as EscolaNome,
+                            p.Nome as PessoaNome,
+                            a.IdEquipamento as IdEquipamento,
+                            t.Descricao as Turma,
+                            t.Turno as TurmaTurno
+                        from aluno a
+                        inner join pessoa p on p.Id = a.PessoaId
+                        inner join escola e on e.Id = a.EscolaId
+                        left join alunoturma at on at.AlunoId = a.Id and at.Situacao = @SITUACAOCURSANDO
+                        left join turma t on t.Id = at.TurmaId and t.EscolaId = e.Id
+                        where
+	                        a.RedeDeEnsinoId = @REDEDEENSINOID";
 
                 if (escolaId.HasValue)
-                    query += " and exists (select 1 from lotacaoescola l where l.VinculoDeTrabalhoId = v.Id and l.EscolaId = @escolaID)";
+                    query += " and e.Id = @ESCOLAID ";
 
-                return _repositorio.ConsultaDapper<RelatorioAfastamentODTO>(query, new 
+                query += " order by e.Nome, t.Descricao, p.Nome ";
+
+                return _repositorio.ConsultaDapper<RelatorioAlunosDaEscolaDTO>(query, new 
                 {
-                    @redeDeEnsinoID = redeDeEnsinoId,
-                    @INICIO = inicio,
-                    @FIM = fim,
-                    @JUSTIFICATIVAID = justificativaId,
-                    @escolaID = escolaId
+                    REDEDEENSINOID = redeDeEnsinoId,
+                    @ESCOLAID = escolaId,
+                    @SITUACAOCURSANDO = (int)eSituacaoAlunoNaTurma.Cursando
                 });
             }
             catch (Exception)
@@ -77,43 +58,83 @@ namespace AriD.Servicos.Servicos
             }
         }
 
-        public List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
+        public List<RelatorioFrequenciaNaDataDTO> ObtenhaFrequenciaNaData(
             int redeDeEnsinoId,
-            int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId)
+            int escolaId,
+            DateTime data)
         {
             var query = @"select
-	                        p.Id as PessoaId,
+	                        e.Id as EscolaId,
+                            e.Nome as EscolaNome,
                             p.Nome as PessoaNome,
-                            p.Cpf as PessoaCpf,
-                            v.Matricula as ContratoMatricula,
-                            v.Situacao as ContratoSituacao,
-                            concat('[', t.Sigla, '] ', t.Descricao) as ContratoTipo,
-                            concat('[', h.Sigla, '] ', h.Descricao) as HorarioDeTrabalho
-                        from vinculodetrabalho v
-                        inner join servidor s
-	                        on s.Id = v.ServidorId
-                        inner join pessoa p
-	                        on p.Id = s.PessoaId
-                        inner join horariodetrabalho h
-	                        on h.Id = v.HorarioDeTrabalhoId
-                        inner join tipodovinculodetrabalho t
-	                        on t.Id = v.TipoDoVinculoDeTrabalhoId
+                            a.IdEquipamento as IdEquipamento,
+                            t.Descricao as Turma,
+                            t.Turno as TurmaTurno,
+                            fa.EstavaPresente as PresencaoDiarioDeClasse,
+                            if(r.DataHoraRegistro is not null, true, false) as PresencaEquipamento
+                        from aluno a
+                        inner join pessoa p on p.Id = a.PessoaId
+                        inner join escola e on e.Id = a.EscolaId
+                        inner join alunoturma at on at.AlunoId = a.Id and at.Situacao = @SITUACAOCURSANDO
+                        inner join turma t on t.Id = at.TurmaId and t.EscolaId = e.Id
+                        left join frequenciaalunoturma fa on fa.AlunoTurmaId = a.Id and date(fa.DataHora) = @DATAFILTRO
+                        left join 
+	                        (select
+		                        eq.EscolaId,
+		                        re.DataHoraRegistro,
+		                        re.UsuarioEquipamentoId
+	                        from registrodeponto re
+	                        inner join equipamentodefrequencia eq on eq.Id = re.EquipamentoDeFrequenciaId
+	                        where
+		                        eq.EscolaId = @ESCOLAID
+		                        and date(re.DataHoraRegistro) = @DATAFILTRO) r on r.EscolaId = e.Id and r.UsuarioEquipamentoId = a.IdEquipamento
                         where
-	                        v.RedeDeEnsinoId = @redeDeEnsinoID";
+	                        a.RedeDeEnsinoId = @REDEDEENSINOID
+                            and e.Id = @ESCOLAID
+                            and @DATAFILTRO between date(at.EntradaNaTurma) and coalesce(at.SaidaDaTurma, now())
+                        order by e.Nome, t.Descricao, p.Nome;";
 
-            if (horarioDeTrabalhoId.HasValue)
-                query += " and h.Id = @HORARIODETRABALHOID";
-
-            if (tipoDeVinculoDeTrabalhoId.HasValue)
-                query += " and t.Id = @TIPODEVINCULOID";
-
-            return _repositorio.ConsultaDapper<ItemRelatorioServidorPorHorarioDTO>(query, new
+            return _repositorio.ConsultaDapper<RelatorioFrequenciaNaDataDTO>(query, new
             {
-                @redeDeEnsinoID = redeDeEnsinoId,
-                @HORARIODETRABALHOID = horarioDeTrabalhoId,
-                @TIPODEVINCULOID = tipoDeVinculoDeTrabalhoId
+                @REDEDEENSINOID = redeDeEnsinoId,
+                @ESCOLAID = escolaId,
+                @DATAFILTRO = data.Date
             });
+        }
+
+        public List<RelatorioEquipamentoDaEscolaDTO> ObtenhaEquipamentosDaEscola(
+            int redeDeEnsinoId,
+            int? escolaId)
+        {
+            try
+            {
+                var query = @"select
+	                            e.Id as EscolaId,
+                                e.Nome as EscolaNome,
+                                eq.Descricao as EquipamentoDescricao,
+                                eq.Ativo as EquipamentoAtivo,
+                                eq.NumeroDeSerie as EquipamentoNumeroDeSerie
+                            from equipamentodefrequencia eq
+                            inner join escola e
+	                            on e.Id = eq.EscolaId
+                            where
+	                            eq.RedeDeEnsinoId = @REDEDEENSINOID";
+
+                if (escolaId.HasValue)
+                    query += " and eq.EscolaId = @ESCOLAID ";
+
+                query += " order by e.Nome, eq.Descricao, eq.Ativo desc ";
+
+                return _repositorio.ConsultaDapper<RelatorioEquipamentoDaEscolaDTO>(query, new
+                {
+                    REDEDEENSINOID = redeDeEnsinoId,
+                    @ESCOLAID = escolaId
+                });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

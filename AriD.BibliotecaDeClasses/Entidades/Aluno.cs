@@ -13,8 +13,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(PessoaId))]
         public virtual Pessoa Pessoa { get; set; }
 
-        [Required, MaxLength(12)]
-        public string IdEquipamento { get; set; }
+        [MaxLength(12)]
+        public string? IdEquipamento { get; set; }
 
         public int? EscolaId { get; set; }
         [ForeignKey(nameof(EscolaId))]
@@ -31,17 +31,17 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [MaxLength(150)]
         public string? NomeMae { get; set; }
-        [MaxLength(12)]
+        [MaxLength(15)]
         public string? TelefoneMae { get; set; }
 
         [MaxLength(150)]
         public string? NomePai { get; set; }
-        [MaxLength(12)]
+        [MaxLength(15)]
         public string? TelefonePai { get; set; }
 
         [MaxLength(150)]
         public string? NomeOutroResponsavel { get; set; }
-        [MaxLength(12)]
+        [MaxLength(15)]
         public string? TelefoneOutroResponsavel { get; set; }
         [MaxLength(50)]
         public string? ParentescoOutroResponsavel { get; set; }

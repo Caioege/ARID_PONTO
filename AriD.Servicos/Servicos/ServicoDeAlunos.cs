@@ -188,7 +188,7 @@ namespace AriD.Servicos.Servicos
                             true as 'Item4'
                         from registrodeponto reg
                         inner join equipamentodefrequencia eq
-	                        on eq.Id = reg.EquipamentoDePontoId
+	                        on eq.Id = reg.EquipamentoDeFrequenciaId
                         inner join aluno al
 	                        on al.EscolaId = eq.EscolaId and al.IdEquipamento = reg.UsuarioEquipamentoId
                         inner join alunoturma atu

@@ -1290,8 +1290,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>qmpg0a7uwo</Fingerprint>
-      <Integrity>wj3LqUaZlqkYcnTGw0IVEy8EkIfQZQ7cAMKb2MRmlOU=</Integrity>
+      <Fingerprint>g73ni4uxh7</Fingerprint>
+      <Integrity>BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>
@@ -2424,11 +2424,29 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>a3vrqma4sg</Fingerprint>
-      <Integrity>2hf8IN2bxA2NPT6Y4dtOzd1CdCN6gCRqQUM1AeXzRl8=</Integrity>
+      <Fingerprint>4kmhlu9rq4</Fingerprint>
+      <Integrity>dEmotjyyxO9wN5J8vGYOCLEjx2OkWIZT8advxT1d3Q4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Aluno\alterar.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Aluno\index.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoEscolar</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoEscolar</BasePath>
+      <RelativePath>Scripts/Paginas/Aluno/index.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>iy2gtpvzed</Fingerprint>
+      <Integrity>Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Aluno\index.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Endereco\alterar.js'))">
       <SourceType>Package</SourceType>

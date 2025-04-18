@@ -58,7 +58,7 @@
                     else 
                     {
                         @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
-                        @Html.Hidden("EscolaId", dadosDaSessao.Escolas.First())
+                        @Html.Hidden("EscolaId", dadosDaSessao.EscolaId)
                     }
                 </section>
             </div>

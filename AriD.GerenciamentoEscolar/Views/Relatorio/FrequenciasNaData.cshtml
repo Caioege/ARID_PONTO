@@ -1,0 +1,67 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-calendar-event'></i> Frequências na Data
+        </h5>
+    </div>
+    <div class="card-body" id="div-relatorio">
+        <div class="row">
+             <div class="col col-md-12">
+                 <label class="form-label obrigatorio" for="@(dadosDaSessao.Perfil == ePerfilDeAcesso.Escola ? "EscolaNome" : "EscolaId")">Escola</label>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                {
+                    @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                }
+                else
+                {
+                    @Html.DropDownList("EscolaId", (SelectList)ViewBag.Escolas, "",  new { @class = "select2" })
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-4">
+                <label class="form-label obrigatorio" for="Data">Data</label>
+                @Html.TextBox("Data", DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-primary" onclick="processarRelatorio()">
+            <i class='bx bxs-report'></i> Processar
+        </button>
+    </div>
+</div>
+
+<script>
+    function processarRelatorio() {
+        let dadosFormulario = ObtenhaFormularioSerializado('div-relatorio');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        let parametros = {
+            escolaId: $('#EscolaId').val(),
+            data: $('#Data').val(),
+        };
+
+        RequisicaoAjaxComCarregamento(
+            '/Relatorio/ProcessarFrequenciasNaData',
+            'POST',
+            parametros,
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', 'O arquivo será baixado...');
+                    downloadBase64File(data.base64, data.fileName, data.mimeType);
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    }
+</script>

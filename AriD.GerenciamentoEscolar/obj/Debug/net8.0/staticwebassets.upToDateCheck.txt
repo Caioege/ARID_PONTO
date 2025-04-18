@@ -132,6 +132,7 @@ wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
 wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Aluno\adicionar.js
 wwwroot\Scripts\Paginas\Aluno\alterar.js
+wwwroot\Scripts\Paginas\Aluno\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
 wwwroot\Scripts\Paginas\EquipamentoDeFrequencia\index.js
 wwwroot\Scripts\Paginas\Escola\alterar.js

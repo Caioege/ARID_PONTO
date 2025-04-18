@@ -10,15 +10,35 @@
     var listaDeColunas = new List<WebGridColumn>
     {
         tabela.Column("Nome", "Nome", width: 45f),
-        tabela.Column("Pessoa.Cpf", "CPF", width: 10f)
+        tabela.Column("Pessoa.Cpf", "CPF", width: 15f)
     };
 
     if (!perfilEscola)
     {
-        listaDeColunas.Add(tabela.Column("Escola.Nome", "Escola", width: 30f));
+        listaDeColunas.Add(tabela.Column("Escola.Nome", "Escola", format: 
+            @<text>
+                @if (item.Escola != null)
+                {
+                    <span>@item.Escola.Nome</span>
+                }
+                else
+                {
+                    <span style="font-style: italic">Não matriculado</span>
+                }
+            </text>, width: 25f));
     }
 
-    listaDeColunas.Add(tabela.Column("AlunoTurmaAtual.Turma.DescricaoComTurno", "Turma", width: 20f));
+    listaDeColunas.Add(tabela.Column("AlunoTurmaAtual.Turma.DescricaoComTurno", "Turma", format: 
+            @<text>
+                @if (item.AlunoTurmaAtual == null)
+                {
+                    <span>-</span>
+                }
+                else
+                {
+                    <span>@item.AlunoTurmaAtual.Turma.DescricaoComTurno</span>
+                }
+            </text>, width: 20f));
 
     listaDeColunas.Add(tabela.Column(string.Empty, "Ação", format:
             @<text>

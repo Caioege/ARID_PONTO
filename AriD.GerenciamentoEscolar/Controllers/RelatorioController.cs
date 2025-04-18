@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using iText.IO.Image;
 using iText.Layout.Borders;
+using AriD.Servicos.Extensao;
 
 namespace AriD.GerenciamentoEscolar.Controllers
 {
@@ -31,15 +32,25 @@ namespace AriD.GerenciamentoEscolar.Controllers
         #region Views
 
         [HttpGet]
-        public IActionResult ServidoresComAfastamento()
+        public IActionResult AlunosDaEscola()
         {
             try
             {
-                int redeDeEnsinoId = HttpContext.DadosDaSessao().RedeDeEnsinoId;
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                int redeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
 
-                ViewBag.escolas = new SelectList(
-                    _servicoescola.ObtenhaLista(c => c.RedeDeEnsinoId == redeDeEnsinoId).OrderBy(c => c.Nome),
-                    "Id", "Nome");
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+                {
+                    ViewBag.Escolas = new SelectList(
+                        _servicoescola
+                            .ObtenhaLista(c => c.RedeDeEnsinoId == redeDeEnsinoId)
+                            .OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else
+                {
+                    ViewBag.EscolaNome = _servicoescola.Obtenha(dadosDaSessao.EscolaId.Value).Nome;
+                }
 
                 return View();
             }
@@ -50,21 +61,13 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessarServidoresComAfastamento(
-            int? escolaLotacaoId,
-            DateTime? inicio,
-            DateTime? fim,
-            int? justificativaId)
+        public IActionResult ProcessarRelatorioAlunosDaEscola(
+            int? escolaId)
         {
             try
             {
-                var relatorio = ObtenhaRelatorioServidoresComAfastamento(
-                    escolaLotacaoId, 
-                    inicio, 
-                    fim, 
-                    justificativaId);
-
-                var nomeArquivo = "Servidores com Afastamento.pdf";
+                var relatorio = ObtenhaRelatorioAlunosDaEscola(escolaId);
+                var nomeArquivo = "Alunos da Escola.pdf";
 
                 return Json(new 
                 { 
@@ -81,37 +84,25 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpGet]
-        public IActionResult ServidoresPorEscala()
+        public IActionResult FrequenciasNaData()
         {
             try
             {
-                return View();
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
-        }
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                int redeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
 
-        [HttpGet]
-        public IActionResult ProcessarServidoresPorEscala()
-        {
-            try
-            {
-                return Json(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { sucesso = false, mensagem = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        public IActionResult ServidoresPorHorarioDeTrabalho()
-        {
-            try
-            {
-                var redeDeEnsinoId = HttpContext.DadosDaSessao().RedeDeEnsinoId;
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+                {
+                    ViewBag.Escolas = new SelectList(
+                        _servicoescola
+                            .ObtenhaLista(c => c.RedeDeEnsinoId == redeDeEnsinoId)
+                            .OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else
+                {
+                    ViewBag.EscolaNome = _servicoescola.Obtenha(dadosDaSessao.EscolaId.Value).Nome;
+                }
 
                 return View();
             }
@@ -122,17 +113,76 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpPost]
-        public IActionResult ProcessarServidoresPorHorarioDeTrabalho(
-            int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId)
+        public IActionResult ProcessarFrequenciasNaData(int? escolaId, DateTime? data)
         {
             try
             {
-                var relatorio = RelatorioServidoresPorHorario(
-                    horarioDeTrabalhoId, 
-                    tipoDeVinculoDeTrabalhoId);
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                    escolaId = dadosDaSessao.EscolaId;
 
-                var nomeArquivo = "Servidores por Horário.pdf";
+                if (!escolaId.HasValue)
+                    throw new ApplicationException("A escola deve ser informada.");
+
+                if (!data.HasValue)
+                    throw new ApplicationException("A data deve ser informada.");
+                else if (data > DateTime.Today)
+                    throw new ApplicationException("A data não pode ser maior que a data atual.");
+
+                var relatorio = ObtenhaRelatorioFrequenciasNaData(escolaId, data);
+                var nomeArquivo = "Frequências na Data.pdf";
+
+                return Json(new
+                {
+                    sucesso = true,
+                    fileName = nomeArquivo,
+                    base64 = Convert.ToBase64String(relatorio),
+                    mimeType = GetMimeType(nomeArquivo)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EquipamentosDaEscola()
+        {
+            try
+            {
+                var dadosDaSessao = HttpContext.DadosDaSessao();
+                int redeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
+
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+                {
+                    ViewBag.Escolas = new SelectList(
+                        _servicoescola
+                            .ObtenhaLista(c => c.RedeDeEnsinoId == redeDeEnsinoId)
+                            .OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else
+                {
+                    ViewBag.EscolaNome = _servicoescola.Obtenha(dadosDaSessao.EscolaId.Value).Nome;
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ProcessarEquipamentosDaEscola(
+            int? escolaId)
+        {
+            try
+            {
+                var relatorio = ObtenhaRelatorioEquipamentosDaEscola(escolaId);
+                var nomeArquivo = "Equipamentos da Escola.pdf";
 
                 return Json(new 
                 { 
@@ -152,23 +202,20 @@ namespace AriD.GerenciamentoEscolar.Controllers
 
         #region Relatórios
 
-        private byte[] ObtenhaRelatorioServidoresComAfastamento(
-            int? escolaLotacaoId,
-            DateTime? inicio,
-            DateTime? fim,
-            int? justificativaId)
+        private byte[] ObtenhaRelatorioAlunosDaEscola(
+            int? escolaId)
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
 
-            var afastamentos = _servicoDeRelatorios.ObtenhaAfastamentosParaRelatorio(
-                dadosDaSessao.RedeDeEnsinoId,
-                escolaLotacaoId,
-                inicio,
-                fim,
-                justificativaId);
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                escolaId = dadosDaSessao.EscolaId;
 
-            if (afastamentos.Count == 0)
-                throw new ApplicationException("Nenhum afastamento encontrado para os filtros informados.");
+            var alunos = _servicoDeRelatorios.ObtenhaAlunosDaEscola(
+                dadosDaSessao.RedeDeEnsinoId,
+                escolaId);
+
+            if (alunos.Count == 0)
+                throw new ApplicationException("Nenhum aluno encontrado para os filtros informados.");
 
             var stream = new MemoryStream();
 
@@ -183,7 +230,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
 
             document.SetFontSize(10);
 
-            var grupoJustificativa = afastamentos.GroupBy(c => c.JustificativaAusencia);
+            var grupoAluno = alunos.GroupBy(c => c.EscolaNome);
 
             document.Add(
                 new Div()
@@ -191,88 +238,62 @@ namespace AriD.GerenciamentoEscolar.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Servidores com Afastamento")));
+                    .Add("Alunos da Escola")));
 
-            foreach (var justificativa in grupoJustificativa.OrderBy(c => c.Key))
+            foreach (var escola in grupoAluno.OrderBy(c => c.Key))
             {
                 var table = new Table(UnitValue.CreatePercentArray(new[] 
                 {
-                    35f,
-                    15f,
+                    55f,
                     30f,
-                    10f,
-                    10f
+                    15f,
                 })).UseAllAvailableWidth();
 
                 table
-                    .AddCell(new Cell(1, 5)
+                    .AddCell(new Cell(1, 3)
                     .Add(new Paragraph()
-                            .Add(new Text($"Justificativa: {justificativa.Key}")))
+                            .Add(new Text($"Escola: {escola.Key}")))
                             .SetBold()
                             .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Servidor"))
+                            .Add(new Text("Aluno"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("CPF"))
+                            .Add(new Text("Turma"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Contrato"))
-                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
-                            .SetBold()
-                            .SetTextAlignment(TextAlignment.CENTER)
-                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
-                        .AddCell(new Cell()
-                            .Add(new Paragraph()
-                            .Add(new Text("Início"))
-                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
-                            .SetBold()
-                            .SetTextAlignment(TextAlignment.CENTER)
-                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
-                        .AddCell(new Cell()
-                            .Add(new Paragraph()
-                            .Add(new Text("Fim"))
+                            .Add(new Text("Id Equipamento"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
 
-                foreach (var afastamento in justificativa
-                    .OrderBy(c => c.InicioAfastamento)
+                foreach (var aluno in escola
+                    .OrderBy(c => c.Turma)
                     .ThenBy(d => d.PessoaNome))
                 {
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text(afastamento.PessoaNome))));
+                        .Add(new Text(aluno.PessoaNome))));
 
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text(afastamento.PessoaCpf))));
+                        .Add(new Text(string.IsNullOrEmpty(aluno.Turma) ? "-" : $"{aluno.Turma} - {aluno.TurmaTurno.DescricaoDoEnumerador()}"))));
 
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text($"{afastamento.MatriculaContrato} - {afastamento.TipoContrato}"))));
-
-                    table.AddCell(new Cell()
-                        .Add(new Paragraph()
-                        .SetTextAlignment(TextAlignment.CENTER)
-                        .Add(new Text(afastamento.InicioAfastamento.ToShortDateString()))));
-
-                    table.AddCell(new Cell()
-                        .Add(new Paragraph()
-                        .SetTextAlignment(TextAlignment.CENTER)
-                        .Add(new Text(afastamento.FimAfastamento?.ToShortDateString()))));
+                        .Add(new Text($"{aluno.IdEquipamento}"))));
                 }
 
                 document.Add(new Div().SetMarginBottom(3).Add(table));
@@ -282,18 +303,18 @@ namespace AriD.GerenciamentoEscolar.Controllers
             return stream.ToArray();
         }
 
-        private byte[] RelatorioServidoresPorHorario(
-            int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId)
+        private byte[] ObtenhaRelatorioFrequenciasNaData(
+            int? escolaId, 
+            DateTime? data)
         {
             var dadosDeSessao = HttpContext.DadosDaSessao();
 
-            var horarios = _servicoDeRelatorios.ObtenhaServidoresPorHorario(
+            var frequencias = _servicoDeRelatorios.ObtenhaFrequenciaNaData(
                 dadosDeSessao.RedeDeEnsinoId,
-                horarioDeTrabalhoId,
-                tipoDeVinculoDeTrabalhoId);
+                escolaId.Value,
+                data.Value);
 
-            if (!horarios.Any())
+            if (!frequencias.Any())
                 throw new ApplicationException("Nenhum registro encontrado para os filtros informados.");
 
             var stream = new MemoryStream();
@@ -315,62 +336,192 @@ namespace AriD.GerenciamentoEscolar.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Servidores por Horário de Trabalho")));
+                    .Add("Frequências na Data"))
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add(frequencias.FirstOrDefault().EscolaNome))
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add(data.Value.ToString("dd/MM/yyyy"))));
 
-            var grupoHorario = horarios.GroupBy(c => c.HorarioDeTrabalho).OrderBy(c => c.Key);
+            var grupoTurma = frequencias
+                .GroupBy(c => c.TurmaId)
+                .OrderBy(c => c.First().TurmaDescricao);
 
-            foreach (var horario in grupoHorario)
+            foreach (var turma in grupoTurma)
             {
                 var table = new Table(UnitValue.CreatePercentArray(new[]
                 {
-                    55f,
-                    15f,
-                    30f,
+                    40f,
+                    10f,
+                    25f,
+                    25f,
                 })).UseAllAvailableWidth();
 
                 table
-                    .AddCell(new Cell(1, 5)
+                    .AddCell(new Cell(1, 4)
                     .Add(new Paragraph()
-                            .Add(new Text($"Horário de Trabalho: {horario.Key}")))
+                            .Add(new Text($"Turma: {turma.First().TurmaDescricao} - {turma.First().TurmaTurno.DescricaoDoEnumerador()}")))
                             .SetBold()
                             .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Servidor"))
+                            .Add(new Text("Aluno"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("CPF"))
+                            .Add(new Text("Id Equipamento"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Contrato"))
+                            .Add(new Text("Presença Diário de Classe"))
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                            .SetBold()
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                        .AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text("Registro Equipamento"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
 
-                foreach (var contrato in horario.OrderBy(c => c.PessoaNome))
+                foreach (var aluno in turma.OrderBy(c => c.PessoaNome))
                 {
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text(contrato.PessoaNome))));
+                        .Add(new Text(aluno.PessoaNome))));
 
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text(contrato.PessoaCpf))));
+                        .Add(new Text($"{aluno.IdEquipamento}"))));
+
+                    var descricaoDiario = "-";
+                    if (aluno.PresencaoDiarioDeClasse.HasValue)
+                    {
+                        if (aluno.PresencaoDiarioDeClasse.Value)
+                            descricaoDiario = "SIM";
+                        else
+                            descricaoDiario = "NÃO";
+                    }
+                    table.AddCell(new Cell()
+                        .Add(new Paragraph()
+                        .Add(new Text(descricaoDiario))));
 
                     table.AddCell(new Cell()
                         .Add(new Paragraph()
-                        .Add(new Text($"{contrato.ContratoMatricula} - {contrato.ContratoTipo}"))));
+                        .Add(new Text(aluno.PresencaEquipamento ? "SIM" : "NÃO"))));
+                }
+
+                document.Add(new Div().SetMarginBottom(3).Add(table));
+            }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] ObtenhaRelatorioEquipamentosDaEscola(
+            int? escolaId)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                escolaId = dadosDaSessao.EscolaId;
+
+            var equipamentos = _servicoDeRelatorios.ObtenhaEquipamentosDaEscola(
+                dadosDaSessao.RedeDeEnsinoId,
+                escolaId);
+
+            if (equipamentos.Count == 0)
+                throw new ApplicationException("Nenhum equipamento encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.RedeDeEnsinoId,
+                dadosDaSessao.RedeDeEnsinoNome);
+
+            document.SetFontSize(10);
+
+            var grupoEscola = equipamentos.GroupBy(c => c.EscolaNome);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add("Equipamentos da Escola")));
+
+            foreach (var escola in grupoEscola.OrderBy(c => c.Key))
+            {
+                var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    55f,
+                    30f,
+                    15f,
+                })).UseAllAvailableWidth();
+
+                table
+                    .AddCell(new Cell(1, 3)
+                    .Add(new Paragraph()
+                            .Add(new Text($"Escola: {escola.Key}")))
+                            .SetBold()
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE))
+                        .AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text("Equipamento"))
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                            .SetBold()
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                        .AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text("Número de Série"))
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                            .SetBold()
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                        .AddCell(new Cell()
+                            .Add(new Paragraph()
+                            .Add(new Text("Ativo"))
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                            .SetBold()
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+                foreach (var equipamento in escola
+                    .OrderBy(c => c.EquipamentoDescricao))
+                {
+                    table.AddCell(new Cell()
+                        .Add(new Paragraph()
+                        .Add(new Text(equipamento.EquipamentoDescricao))));
+
+                    table.AddCell(new Cell()
+                        .Add(new Paragraph()
+                        .Add(new Text($"{equipamento.EquipamentoNumeroDeSerie}"))));
+
+                    table.AddCell(new Cell()
+                        .Add(new Paragraph()
+                        .Add(new Text($"{(equipamento.EquipamentoAtivo ? "SIM" : "NÃO")}"))));
                 }
 
                 document.Add(new Div().SetMarginBottom(3).Add(table));

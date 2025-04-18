@@ -67,7 +67,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
                 ConfigureDadosDaTabelaPaginada(listaPaginada, anoLetivo);
                 return View("_TabelaPaginada", listaPaginada);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Content("Ocorreu um erro ao carregar os dados.");
             }
@@ -361,7 +361,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
-                    c => c.EscolaId == dadosDaSessao.Escolas.First());
+                    c => c.EscolaId == dadosDaSessao.EscolaId);
             }
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))

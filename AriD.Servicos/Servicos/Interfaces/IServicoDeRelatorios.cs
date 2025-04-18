@@ -4,16 +4,17 @@ namespace AriD.Servicos.Servicos.Interfaces
 {
     public interface IServicoDeRelatorios : IDisposable
     {
-        List<RelatorioAfastamentODTO> ObtenhaAfastamentosParaRelatorio(
+        List<RelatorioAlunosDaEscolaDTO> ObtenhaAlunosDaEscola(
             int redeDeEnsinoId,
-            int? escolaId,
-            DateTime? inicio,
-            DateTime? fim,
-            int? justificativaId);
+            int? escolaId);
 
-        List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
+        List<RelatorioFrequenciaNaDataDTO> ObtenhaFrequenciaNaData(
             int redeDeEnsinoId,
-            int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId);
+            int escolaId,
+            DateTime data);
+
+        List<RelatorioEquipamentoDaEscolaDTO> ObtenhaEquipamentosDaEscola(
+            int redeDeEnsinoId,
+            int? escolaId);
     }
 }

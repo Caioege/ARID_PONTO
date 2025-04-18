@@ -1,19 +1,26 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
-            <i class='bx bxs-timer'></i> Servidores por Horário de Trabalho
+            <i class='bx bx-list-ul'></i> Alunos da Escola
         </h5>
     </div>
-    <div class="card-body">
+    <div class="card-body" id="div-relatorio">
         <div class="row">
-           <div class="col col-md-6 col-sm-12">
-               <label class="form-label">Horário de Trabalho</label>
-                @Html.DropDownList("HorarioDeTrabalhoId", (SelectList)ViewBag.Horarios, "Todos", new { @class = "select2" })
-           </div>
-
-            <div class="col col-md-6 col-sm-12">
-                <label class="form-label">Tipos de Vínculo de Trabalho</label>
-                @Html.DropDownList("TipoDeVinculoDeTrabalhoId", (SelectList)ViewBag.Tipos, "Todos", new { @class = "select2" })
+            <div class="col col-md-12">
+                <label class="form-label">Escola</label>
+                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                {
+                    @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                }
+                else
+                {
+                    @Html.DropDownList("EscolaId", (SelectList)ViewBag.Escolas, "Todas", new { @class = "select2" })
+                }
             </div>
         </div>
 
@@ -27,12 +34,11 @@
 <script>
     function processarRelatorio() {
         let parametros = {
-            horarioDeTrabalhoId: $('#HorarioDeTrabalhoId').val(),
-            tipoDeVinculoDeTrabalhoId: $('#TipoDeVinculoDeTrabalhoId').val(),
+            escolaId: $('#EscolaId').val(),
         };
 
         RequisicaoAjaxComCarregamento(
-            '/Relatorio/ProcessarServidoresPorHorarioDeTrabalho',
+            '/Relatorio/ProcessarRelatorioAlunosDaEscola',
             'POST',
             parametros,
             function (data) {

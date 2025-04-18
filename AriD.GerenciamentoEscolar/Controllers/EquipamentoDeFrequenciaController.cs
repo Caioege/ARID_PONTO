@@ -145,10 +145,10 @@ namespace AriD.GerenciamentoEscolar.Controllers
                         c.Escola.Nome.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()));
             }
 
-            if (dadosDaSessao.Escolas.Any())
+            if (dadosDaSessao.EscolaId.HasValue)
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(filtro,
-                    c => dadosDaSessao.Escolas.Contains(c.EscolaId));
+                    c => c.EscolaId == dadosDaSessao.EscolaId);
             }
 
             var dados = _equipamentoServico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);

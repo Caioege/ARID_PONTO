@@ -25,7 +25,7 @@
                     @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
                     {
                         @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
-                        @Html.Hidden("EscolaId", dadosDaSessao.Escolas.First())
+                        @Html.Hidden("EscolaId", dadosDaSessao.EscolaId)
                     }
                     else
                     {
@@ -72,11 +72,6 @@
                 <section class="col col-md-4 col-sm-12">
                     <label class="form-label obrigatorio" for="Turno">Turno</label>
                     @Html.EnumDropDownListFor(model => model.Turno, string.Empty, new { @class = "form-select" })
-                </section>
-
-                <section class="col col-md-4 col-sm-12">
-                    <label class="form-label obrigatorio" for="TipoDoDiario">Tipo do Diário</label>
-                    @Html.EnumDropDownListFor(model => model.TipoDoDiario, string.Empty, new { @class = "form-select" })
                 </section>
             </div>
 

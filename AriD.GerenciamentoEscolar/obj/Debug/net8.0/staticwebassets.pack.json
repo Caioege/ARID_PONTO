@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Aluno\\alterar.js"
     },
     {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Aluno\\index.js"
+    },
+    {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Endereco\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },

@@ -52,7 +52,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
 
             var dadosDaSessao = this.HttpContext.DadosDaSessao();
             parametros.RedeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
-            parametros.escolas = dadosDaSessao.Escolas;
+            parametros.EscolaId = dadosDaSessao.EscolaId;
             parametros.Pesquisa = listaPaginada.TermoDeBusca;
             parametros.TotalPorPagina = listaPaginada.QuantidadeDeItensPorPagina;
             parametros.Pagina = listaPaginada.Pagina;

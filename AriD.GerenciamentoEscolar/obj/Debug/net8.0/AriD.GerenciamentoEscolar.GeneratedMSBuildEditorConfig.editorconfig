@@ -32,6 +32,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/_ModalMatricularNaEscola.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cX01vZGFsTWF0cmljdWxhck5hRXNjb2xhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Aluno/_TabelaPaginada.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx1bm9cX1RhYmVsYVBhZ2luYWRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -116,12 +120,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9EZVBvbnRvXF9UYWJlbGFQYWdpbmFkYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/ServidoresComAfastamento.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNDb21BZmFzdGFtZW50by5jc2h0bWw=
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/AlunosDaEscola.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXEFsdW5vc0RhRXNjb2xhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/ServidoresPorHorarioDeTrabalho.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXFNlcnZpZG9yZXNQb3JIb3JhcmlvRGVUcmFiYWxoby5jc2h0bWw=
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/EquipamentosDaEscola.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXEVxdWlwYW1lbnRvc0RhRXNjb2xhLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Relatorio/FrequenciasNaData.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvXEZyZXF1ZW5jaWFzTmFEYXRhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/git/AriD.GerenciamentoEscolar/AriD.GerenciamentoEscolar/Views/Shared/Error.cshtml]

@@ -5,7 +5,7 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
-        let dadosFormulario = ObtenhaFormularioSerializado('formulario-servidor');
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-aluno');
         if (!dadosFormulario.formularioEstaValido) {
             MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
             return;
@@ -16,7 +16,13 @@ function assineEventoBotaoSalvar() {
             'POST',
             dadosFormulario.dados,
             function (data) {
-                MensagemRodape('success', data.mensagem);
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    CarregarPagina('/Aluno/Alterar/' + $('#Id').val());
+                }
+                else {
+                    MensagemRodape('warning', data.mensagem);
+                }
             });
     });
 }
@@ -332,5 +338,72 @@ function assineRemoverAfastamento() {
                     });
             }
         });
+    });
+}
+
+function matricularNaUnidade() {
+    RequisicaoAjaxComCarregamento(
+        '/Aluno/ModalMatricularNaEscola',
+        'GET',
+        {},
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_ModalAlocarNaEscola'));
+                $('#_ModalAlocarNaEscola').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function matricularNaEscolaModal() {
+    let dadosFormulario = ObtenhaFormularioSerializado('_ModalAlocarNaEscola');
+    if (!dadosFormulario.formularioEstaValido) {
+        MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+        return;
+    }
+
+    let alunoId = $('#formulario-aluno #Id').val();
+    RequisicaoAjaxComCarregamento(
+        '/Aluno/MatricularNaEscola',
+        'POST',
+        { alunoId, escolaId: $('#_ModalAlocarNaEscola #EscolaId').val(), idEquipamento: $('#_ModalAlocarNaEscola #IdEquipamento').val() },
+        function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', data.mensagem);
+                $('#_ModalAlocarNaEscola').modal('hide');
+                CarregarPagina('/Aluno/Alterar/' + alunoId);
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function desalocarAlunoDaEscola() {
+    let alunoId = $('#formulario-aluno #Id').val();
+    Swal.fire({
+        text: "Tem certeza que deseja desalocar esse aluno da escola?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Aluno/Desalocar',
+                'POST',
+                { alunoId },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/Aluno/Alterar/' + alunoId);
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
     });
 }

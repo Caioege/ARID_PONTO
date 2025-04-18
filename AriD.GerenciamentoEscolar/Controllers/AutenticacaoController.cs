@@ -46,7 +46,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
                     usuarioAcesso.PerfilDeAcesso, 
                     usuarioAcesso.RedeDeEnsinoId ?? 0, 
                     usuarioAcesso.RedeDeEnsino?.Nome ?? "ADMINISTRAÇÃO DO SISTEMA",
-                    new(),
+                    usuarioAcesso.EscolaId,
                     ObtenhaListaDePermissoes(usuarioAcesso),
                     usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
 
