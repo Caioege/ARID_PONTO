@@ -1,3 +1,6 @@
+@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model GrupoDePermissao
 
 <div class="modal" tabindex="-1" id="_Modal">
@@ -32,7 +35,15 @@
                     <div class="row">
                         <div class="col col-md-12">
                             <label class="form-label obrigatorio" for="PerfilDeAcesso">Perfil de Acesso</label>
-                            @Html.EnumDropDownListFor(model => model.PerfilDeAcesso, new { @class = "select2" })
+                            @{
+                                var listaDePerfis = new List<CodigoDescricaoDTO>()
+                            {
+                            new CodigoDescricaoDTO((int)ePerfilDeAcesso.RedeDeEnsino, ePerfilDeAcesso.RedeDeEnsino.DescricaoDoEnumerador()),
+                            new CodigoDescricaoDTO((int)ePerfilDeAcesso.Escola, ePerfilDeAcesso.Escola.DescricaoDoEnumerador()),
+                            };
+                            }
+
+                            @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })
                         </div>
                     </div>
                 </form>

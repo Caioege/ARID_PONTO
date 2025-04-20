@@ -4,6 +4,7 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.GerenciamentoEscolar.Helpers;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace AriD.GerenciamentoEscolar.Controllers
 {
@@ -65,15 +66,17 @@ namespace AriD.GerenciamentoEscolar.Controllers
             return RedirectToAction("Index");
         }
 
-        private List<Enum> ObtenhaListaDePermissoes(Usuario usuario)
+        private List<KeyValuePair<string, int>> ObtenhaListaDePermissoes(Usuario usuario)
         {
             if (usuario.GrupoDePermissaoId.HasValue)
             {
+                Assembly assembly = Assembly.Load("AriD.BibliotecaDeClasses");
+
                 return usuario
                     .GrupoDePermissao
                     .ListaDePermissao
                     .Where(c => c.PermissaoAtiva)
-                    .Select(c => (Enum)Enum.GetValues(Type.GetType(c.EnumeradorNome)).GetValue(c.ValorDoEnumerador))
+                    .Select(c => new KeyValuePair<string, int>(c.EnumeradorNome, c.ValorDoEnumerador))
                     .ToList();
             }
             else

@@ -133,12 +133,14 @@ wwwroot\lib\sweetalert2\sweetalert2@11.js
 wwwroot\Scripts\Paginas\Aluno\adicionar.js
 wwwroot\Scripts\Paginas\Aluno\alterar.js
 wwwroot\Scripts\Paginas\Aluno\index.js
+wwwroot\Scripts\Paginas\Dashboard\index.js
 wwwroot\Scripts\Paginas\Endereco\alterar.js
 wwwroot\Scripts\Paginas\EquipamentoDeFrequencia\index.js
 wwwroot\Scripts\Paginas\Escola\alterar.js
 wwwroot\Scripts\Paginas\GrupoDePermissao\alterar.js
 wwwroot\Scripts\Paginas\GrupoDePermissao\index.js
 wwwroot\Scripts\Paginas\RedeDeEnsino\alterar.js
+wwwroot\Scripts\Paginas\RegistroDePonto\index.js
 wwwroot\Scripts\Paginas\Turma\alterar.js
 wwwroot\Scripts\Paginas\Turma\index.js
 wwwroot\Scripts\Paginas\Usuario\index.js

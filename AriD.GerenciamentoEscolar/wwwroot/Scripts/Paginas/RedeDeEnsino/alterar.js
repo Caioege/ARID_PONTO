@@ -73,3 +73,18 @@ var assineClickImagem = function () {
         }
     });
 }
+
+function gerarRelatorioListaDeEscolas() {
+    RequisicaoAjaxComCarregamento(
+        '/Relatorio/ProcessarRelatorioListaDeEscolas',
+        'POST',
+        {},
+        function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', 'O arquivo será baixado...');
+                downloadBase64File(data.base64, data.fileName, data.mimeType);
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}

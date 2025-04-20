@@ -2424,8 +2424,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>4kmhlu9rq4</Fingerprint>
-      <Integrity>dEmotjyyxO9wN5J8vGYOCLEjx2OkWIZT8advxT1d3Q4=</Integrity>
+      <Fingerprint>i4o0o3lkxf</Fingerprint>
+      <Integrity>Is5NqL6J7X8DArjiTrZ8PJMYGa1mawR1M79NGefI6Q8=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Aluno\alterar.js'))</OriginalItemSpec>
@@ -2447,6 +2447,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Aluno\index.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Dashboard\index.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoEscolar</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoEscolar</BasePath>
+      <RelativePath>Scripts/Paginas/Dashboard/index.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>63yq2g233p</Fingerprint>
+      <Integrity>7m6fOXjWF9DkWzQnJBD+1ZUmba94X1y4wWAaMT/ayuE=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Dashboard\index.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Endereco\alterar.js'))">
       <SourceType>Package</SourceType>
@@ -2550,11 +2568,29 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>z3iivby7zf</Fingerprint>
-      <Integrity>0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34=</Integrity>
+      <Fingerprint>or6honv8i4</Fingerprint>
+      <Integrity>hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\RedeDeEnsino\alterar.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\RegistroDePonto\index.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoEscolar</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoEscolar</BasePath>
+      <RelativePath>Scripts/Paginas/RegistroDePonto/index.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>bh7lwtzilz</Fingerprint>
+      <Integrity>H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\RegistroDePonto\index.js'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))">
       <SourceType>Package</SourceType>
@@ -2568,8 +2604,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>w8h35uahsv</Fingerprint>
-      <Integrity>8EjtzFlK4yaWAtcCvZt2LpohBTPj3jFdw3PPMf59vVk=</Integrity>
+      <Fingerprint>a4qrnz99wk</Fingerprint>
+      <Integrity>BpDiWNfGvzfRrY0r6aRkoXQ5hLHKFdlNL5+zlBCYBvY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Turma\alterar.js'))</OriginalItemSpec>
@@ -2604,8 +2640,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>eczxtecste</Fingerprint>
-      <Integrity>0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g=</Integrity>
+      <Fingerprint>dwagaz79sb</Fingerprint>
+      <Integrity>0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\Usuario\index.js'))</OriginalItemSpec>

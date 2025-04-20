@@ -11,7 +11,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             int redeDeEnsinoId,
             string redeDeEnsinoNome,
             int? escolaId,
-            List<Enum> permissoes,
+            List<KeyValuePair<string, int>> permissoes,
             bool usuarioAdministradorAutenticado = false)
         {
             UsuarioId = usuarioId;
@@ -35,6 +35,6 @@ namespace AriD.BibliotecaDeClasses.DTO
         public bool UsuarioAdministradorAutenticado { get; set; }
 
         public int? EscolaId { get; set; }
-        public List<Enum> Permissoes { get; set; } = new();
+        public List<KeyValuePair<string, int>> Permissoes { get; set; } = new();
     }
 }

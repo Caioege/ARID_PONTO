@@ -1,0 +1,162 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<style>
+    .card-total {
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .card-com-linha-esquerda {
+        position: relative;
+        border-left: 4px solid var(--linha-cor, #696cff);
+        border-radius: 0.375rem;
+        overflow: hidden;
+    }
+</style>
+
+<div class="card mb-6" id="dashboard-body">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-dashboard'></i> Dashboard
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+        {
+            <div class="row">
+                <div class="col col-md-12 col-12">
+                    <label class="form-label">Escola</label>
+                    @Html.DropDownList("EscolaId", (SelectList)ViewBag.Escolas, "Todas", new { @class = "select2" })
+                </div>
+            </div>
+            <br />
+        }
+        <div class="row">
+            <!-- KPIs -->
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card text-center card-com-linha-esquerda" style="--linha-cor: #FF9F43;">
+                    <div class="card-body card-total">
+                        <span><i class='bx bxs-user-account' style="color: #FF9F43"></i> Alunos Matriculados</span>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-alunos"></div>
+                        <h4 class="mb-0">
+                            <span id="valor-alunos">1250</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card text-center card-com-linha-esquerda" style="--linha-cor: #96d27d;">
+                    <div class="card-body card-total">
+                        <span><i class='bx bxs-calendar-event' style="color: #96d27d;"></i> Registros Hoje</span>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-registros"></div>
+                        <h4 class="mb-0">
+                            <span id="valor-registros">1356</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card text-center card-com-linha-esquerda">
+                    <div class="card-body card-total">
+                        <span><i class='bx bx-mobile-alt' style="color: #696cff;"></i> Equipamentos Ativos</span>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-equipamentos"></div>
+                        <h4 class="mb-0">
+                            <span id="valor-equipamentos">12</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Gráfico Frequência por dia -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Frequência dos Alunos</h5>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-frequencia-grafico"></div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoFrequencia"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico Registros por horário -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Registros por Equipamento</h5>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-equipamento-grafico"></div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoEquipamento"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico Frequência por Escola -->
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">Frequência Geral por Escola</h5>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-escola-grafico"></div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="graficoPorEscola"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listagem de registros -->
+            <div class="col-md-12">
+                <div class="card card-com-linha-esquerda" style="--linha-cor: #8c8c8c;">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class='bx bxs-time' style="color: #8c8c8c"></i>
+                            Registros dos últimos 30 minutos
+                        </h5>
+                        <div class="spinner-border text-primary d-none" role="status" id="loader-tabela"></div>
+                    </div>
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Escola</th>
+                                    <th>Aluno</th>
+                                    <th>IdEquipamento</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-registros">
+                                <tr>
+                                    <td>19/04/2025 07:15</td>
+                                    <td>Escola Modelo</td>
+                                    <td>João Silva</td>
+                                    <td>00321</td>
+                                    <td><i class="bx bx-check text-success"></i> Entrada</td>
+                                </tr>
+                                <tr>
+                                    <td>19/04/2025 12:00</td>
+                                    <td>Escola Modelo</td>
+                                    <td>Maria Souza</td>
+                                    <td>00321</td>
+                                    <td><i class="bx bx-x text-danger"></i> Saída</td>
+                                </tr>
+                                <!-- Mais registros -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/Scripts/Paginas/Dashboard/index.js?t=@DateTime.Now.Ticks"></script>

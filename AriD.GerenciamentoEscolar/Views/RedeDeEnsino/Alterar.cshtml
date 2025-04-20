@@ -101,6 +101,10 @@
                 <button type="button" class="btn btn-primary btn-sm float-end" onclick="CarregarPagina('@Url.Action("Adicionar", "Escola", new { redeDeEnsinoId = Model.Id })')">
                     <i class='bx bx-list-plus'></i>
                 </button>
+
+                <button type="button" class="btn btn-secondary btn-sm float-end" onclick="gerarRelatorioListaDeEscolas()" style="margin-right: 5px;">
+                    <i class='bx bxs-report'></i> Imprimir Listagem
+                </button>
             </div>
         </div>
 

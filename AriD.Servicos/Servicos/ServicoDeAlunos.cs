@@ -222,5 +222,52 @@ namespace AriD.Servicos.Servicos
                 throw;
             }
         }
+
+        public int? ObtenhaEscolaIdDoAluno(int alunoId)
+        {
+            try
+            {
+                var query = @"select EscolaId from aluno where Id = @ALUNOID";
+                return _repositorio.ConsultaDapper<int?>(query, new { @ALUNOID = alunoId }).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public int ObtenhaMatriculaColetor(int escolaId)
+        {
+            try
+            {
+                var query = @"WITH RECURSIVE numeros AS (
+                                    SELECT 1 AS valor
+                                    UNION ALL
+                                    SELECT valor + 1 FROM numeros WHERE valor < 1000
+                                ),
+                                ids_usados AS (
+                                    SELECT DISTINCT IdEquipamento
+                                    FROM aluno
+                                    WHERE EscolaId = @escolaId AND IdEquipamento IS NOT NULL
+                                ),
+                                proximo_disponivel AS (
+                                    SELECT MIN(n.valor) AS ProximoIdEquipamento
+                                    FROM numeros n
+                                    LEFT JOIN ids_usados u ON u.IdEquipamento = n.valor
+                                    WHERE u.IdEquipamento IS NULL
+                                )
+                                SELECT 
+                                    p.ProximoIdEquipamento
+                                FROM aluno a
+                                JOIN proximo_disponivel p ON 1=1
+                                WHERE a.EscolaId = @escolaId";
+
+                return _repositorio.ConsultaDapper<int?>(query, new { @escolaId = escolaId }).FirstOrDefault() ?? 1;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

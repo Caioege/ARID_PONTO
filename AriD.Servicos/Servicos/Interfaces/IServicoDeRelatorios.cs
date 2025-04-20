@@ -16,5 +16,11 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<RelatorioEquipamentoDaEscolaDTO> ObtenhaEquipamentosDaEscola(
             int redeDeEnsinoId,
             int? escolaId);
+
+        List<RegistroDePontoIndexDTO> ObtenhaRegistrosDeFrequencia(
+            int redeDeEnsinoId,
+            int? escolaId,
+            DateTime dataInicio,
+            DateTime dataFim);
     }
 }

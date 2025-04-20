@@ -17,13 +17,16 @@ namespace AriD.GerenciamentoEscolar.Controllers
     {
         private readonly IServico<Usuario> _servico;
         private readonly IServico<GrupoDePermissao> _servicoGrupo;
+        private readonly IServico<Escola> _servicoEscola;
 
         public UsuarioController(
-            IServico<Usuario> funcaoServico, 
-            IServico<GrupoDePermissao> servicoGrupo)
+            IServico<Usuario> funcaoServico,
+            IServico<GrupoDePermissao> servicoGrupo,
+            IServico<Escola> servicoEscola)
         {
             _servico = funcaoServico;
             _servicoGrupo = servicoGrupo;
+            _servicoEscola = servicoEscola;
         }
 
         [HttpGet]
@@ -70,7 +73,15 @@ namespace AriD.GerenciamentoEscolar.Controllers
                 }
                 else
                 {
-                    ViewBag.Grupos = new SelectList(string.Empty);
+                    if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                        ViewBag.Grupos = new SelectList(ObtenhaGrupos(model.PerfilDeAcesso), "Codigo", "Descricao");
+
+                    ViewBag.Escolas = new SelectList(
+                        _servicoEscola
+                            .ObtenhaLista(c => c.RedeDeEnsinoId == dadosDaSessao.RedeDeEnsinoId && c.Ativa)
+                            .OrderBy(c => c.Nome),
+                        "Id",
+                        "Nome");
                 }
 
                 var html = await RenderizarComoString("_Modal", model);

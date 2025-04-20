@@ -1,9 +1,12 @@
 using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoEscolar.Helpers;
 using AriD.GerenciamentoEscolar.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace AriD.GerenciamentoEscolar.Controllers
@@ -11,11 +14,13 @@ namespace AriD.GerenciamentoEscolar.Controllers
     public class RegistroDePontoController : BaseController
     {
         private readonly IServicoRegistroDePonto _servico;
+        private readonly IServico<Escola> _servicoescola;
 
         public RegistroDePontoController(
-            IServicoRegistroDePonto servico)
+            IServicoRegistroDePonto servico, IServico<Escola> servicoescola)
         {
             _servico = servico;
+            _servicoescola = servicoescola;
         }
 
         [HttpGet]
@@ -44,6 +49,29 @@ namespace AriD.GerenciamentoEscolar.Controllers
             {
                 return Content(ex.Message);
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AbrirModalExportarCSV()
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            int redeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
+
+            if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+            {
+                ViewBag.Escolas = new SelectList(
+                    _servicoescola
+                        .ObtenhaLista(c => c.RedeDeEnsinoId == redeDeEnsinoId)
+                        .OrderBy(c => c.Nome),
+                    "Id", "Nome");
+            }
+            else
+            {
+                ViewBag.EscolaNome = _servicoescola.Obtenha(dadosDaSessao.EscolaId.Value).Nome;
+            }
+
+            var html = await RenderizarComoString("_ModalExportarCSV", null);
+            return Json(new { sucesso = true, html });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<RegistroDePontoIndexDTO> listaPaginada)

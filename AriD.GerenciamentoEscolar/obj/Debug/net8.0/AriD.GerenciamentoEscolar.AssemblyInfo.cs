@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AriD.GerenciamentoEscolar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a45a1b1f319ef1b32e2a5525e4c0c0074065006")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf1c54255293d3eb4c5d30548b30487c5ced8180")]
 [assembly: System.Reflection.AssemblyProductAttribute("AriD.GerenciamentoEscolar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AriD.GerenciamentoEscolar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Aluno\\index.js"
     },
     {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\Dashboard\\index.js"
+    },
+    {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Endereco\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
@@ -39,6 +43,10 @@
     {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RegistroDePonto\\index.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\RegistroDePonto\\index.js"
     },
     {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",

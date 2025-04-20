@@ -1,0 +1,58 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+
+@{
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<div class="modal" tabindex="-1" id="_ModalExportarCSV">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Exportar registros para CSV</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-exportar-csv">
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="@(dadosDaSessao.Perfil == ePerfilDeAcesso.Escola ? "EscolaNome" : "EscolaId")">Escola</label>
+                            @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                            {
+                                @Html.TextBox("EscolaNome", (string)ViewBag.EscolaNome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.DropDownList("EscolaId", (SelectList)ViewBag.Escolas, "", new { @class = "select2" })
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-4">
+                            <label class="form-label obrigatorio" for="DataInicio">Data Inicial</label>
+                            @Html.TextBox("DataInicio", string.Empty, new { @class = "form-control data" })
+                        </div>
+
+                        <div class="col col-md-4">
+                            <label class="form-label obrigatorio" for="DataFim">Data Final</label>
+                            @Html.TextBox("DataFim", DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                        </div>
+
+                        <div class="col col-md-4">
+                            <label class="form-label obrigatorio" for="Separador">Separador</label>
+                            @Html.TextBox("Separador", ";", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="processarExportarCSV()">
+                    <i class='bx bxs-report'></i> Processar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

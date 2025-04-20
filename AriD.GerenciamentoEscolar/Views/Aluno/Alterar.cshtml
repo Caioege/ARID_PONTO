@@ -46,7 +46,7 @@
                     <img class="img-servidor" src="/Foto/Aluno/@(Model.Id)?t=@DateTime.Now.Ticks" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" />
                     <div style="height: auto !important; text-align: center;" class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
                         <div class="offcanvas-header" style="display: block;">
-                            <h4 id="offcanvasBottomLabel" class="offcanvas-title">Gerenciar Foto do Servidor</h4>
+                            <h4 id="offcanvasBottomLabel" class="offcanvas-title">Gerenciar Foto do Aluno</h4>
                         </div>
                         <div class="offcanvas-body">
                             <button type="button" class="btn btn-primary me-3" onclick="abrirSelecionarArquivoImagem()">
@@ -91,7 +91,7 @@
 
                         <div class="col col-lg-4 col-md-4 col-sm-12">
                             <label class="form-label obrigatorio" for="Pessoa_DataDeNascimento">Data de Nascimento</label>
-                            @Html.TextBox("Pessoa_DataDeNascimento", Model.Pessoa.DataDeNascimento?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                            @Html.TextBox("Pessoa.DataDeNascimento", Model.Pessoa.DataDeNascimento?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                         </div>
 
                         <div class="col col-lg-4 col-md-4 col-sm-12">

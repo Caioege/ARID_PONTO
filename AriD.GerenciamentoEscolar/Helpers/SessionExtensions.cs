@@ -49,5 +49,21 @@ namespace AriD.GerenciamentoEscolar.Helpers
 
             return JsonConvert.DeserializeObject<SessaoDTO>(dados);
         }
+
+        public static bool PossuiPermissao<T>(this HttpContext httpContext, T permissao)
+           where T : Enum
+        {
+            var sessao = DadosDaSessao(httpContext);
+            return sessao.Permissoes.PossuiPermissao(permissao, sessao.UsuarioAdministradorAutenticado);
+        }
+
+        public static bool PossuiPermissao<T>(
+            this List<KeyValuePair<string, int>> permissoes,
+            T permissao,
+            bool usuarioAdm)
+                where T : Enum
+        {
+            return usuarioAdm || permissoes.Any(d => d.Key == typeof(T).FullName && d.Value == (int)(object)permissao);
+        }
     }
 }

@@ -1,4 +1,5 @@
 @using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores.Permissao
 
 @{
   TempData.Keep();
@@ -10,6 +11,8 @@
     var paginaAtual = TempData[VariaveisDeMenu.MenuPaginaAtual] ?? string.Empty;
 
     var dadosDaSessao = this.Context.DadosDaSessao();
+    var listaDePermissao = dadosDaSessao.Permissoes;
+    var usuarioAdm = dadosDaSessao.UsuarioAdministradorAutenticado;
 }
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -30,6 +33,17 @@
   <div class="menu-inner-shadow"></div>
 
 <ul class="menu-inner py-1">
+     @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+     {
+         <li class='menu-item'>
+            <a onclick="CarregarPagina('@Url.Action("Index", "Dashboard")')" href="javascript:void(0)" class="menu-link">
+                <div>
+                    <i class='bx bxs-dashboard'></i>
+                    Dashboard
+                </div>
+            </a>
+        </li>
+     }
      <li class='menu-item open'>
         <div class="divider" style="margin: 0px 15px 0px 15px;">
             <div class="divider-text">
@@ -51,21 +65,35 @@
           }
           else 
           {
-                <li class='menu-item'>
-                  <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDeFrequencia")')" href="javascript:void(0)" class="menu-link">
-                    <div>
-                        <i class='bx bx-mobile-alt'></i>
-                        Equipamento de Ponto
-                    </div>
-                  </a>
-                </li>
-                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.RedeDeEnsino) 
+              if (listaDePermissao.PossuiPermissao(eItemDePermissao_EquipamentoDeFrequencia.Visualizar, usuarioAdm))
+              {
+                    <li class='menu-item'>
+                      <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDeFrequencia")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bx-mobile-alt'></i>
+                            Equipamento de Frequência
+                        </div>
+                      </a>
+                    </li>
+              }
+                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.RedeDeEnsino && listaDePermissao.PossuiPermissao(eItemDePermissao_RedeDeEnsino.Visualizar, usuarioAdm))
                 {
                     <li class='menu-item'>
                         <a onclick="CarregarPagina('@Url.Action("Alterar", "RedeDeEnsino", new { id = dadosDaSessao.RedeDeEnsinoId })')" href="javascript:void(0)" class="menu-link">
                         <div>
                             <i class='bx bxs-school'></i>
                             Minha Rede de Ensino
+                        </div>
+                        </a>
+                    </li>
+                }
+                    else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola && listaDePermissao.PossuiPermissao(eItemDePermissao_MinhaEscola.Visualizar, usuarioAdm))
+                {
+                    <li class='menu-item'>
+                        <a onclick="CarregarPagina('@Url.Action("Alterar", "Escola", new { id = dadosDaSessao.EscolaId })')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-school'></i>
+                            Minha Escola
                         </div>
                         </a>
                     </li>
@@ -83,30 +111,39 @@
                 </div>
             </div>
             <ul class="menu-sub">
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "Turma")')" href="javascript:void(0)" class="menu-link">
-                        <div>
-                            <i class='bx bxs-notepad' ></i>
-                            Turmas
-                        </div>
-                    </a>
-                </li>
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "Aluno")')" href="javascript:void(0)" class="menu-link">
-                        <div>
-                            <i class='bx bxs-user-detail'></i>
-                            Alunos
-                        </div>
-                    </a>
-                </li>
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
-                        <div>
-                            <i class='bx bx-collection'></i>
-                            Registros de Frequência
-                        </div>
-                    </a>
-                </li>
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Turma.Visualizar, usuarioAdm))
+                {
+                    <li class='menu-item'>
+                        <a onclick="CarregarPagina('@Url.Action("Index", "Turma")')" href="javascript:void(0)" class="menu-link">
+                            <div>
+                                <i class='bx bxs-notepad' ></i>
+                                Turmas
+                            </div>
+                        </a>
+                    </li>
+                }
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Aluno.Visualizar, usuarioAdm))
+                {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("Index", "Aluno")')" href="javascript:void(0)" class="menu-link">
+                                <div>
+                                    <i class='bx bxs-user-detail'></i>
+                                    Alunos
+                                </div>
+                            </a>
+                        </li>
+                }
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RegistrosDePonto.Visualizar, usuarioAdm))
+                {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
+                                <div>
+                                    <i class='bx bx-collection'></i>
+                                    Registros de Frequência
+                                </div>
+                            </a>
+                        </li>
+                }
             </ul>
         </li>
         <li class='menu-item open'>
@@ -117,30 +154,41 @@
                 </div>
             </div>
             <ul class="menu-sub">
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("AlunosDaEscola", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                        <div style="white-space: normal !important;">
-                            <i class='bx bx-list-ul'></i>
-                            Alunos da Escola
-                        </div>
-                    </a>
-                </li>
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("FrequenciasNaData", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                        <div style="white-space: normal !important;">
-                            <i class='bx bxs-calendar-event' ></i>
-                            Frequências na Data
-                        </div>
-                    </a>
-                </li>
-                <li class='menu-item'>
-                    <a onclick="CarregarPagina('@Url.Action("EquipamentosDaEscola", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                        <div style="white-space: normal !important;">
-                            <i class='bx bx-align-justify'></i>
-                            Equipamentos da Escola
-                        </div>
-                    </a>
-                </li>
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAlunosDaEscola.Visualizar, usuarioAdm))
+                {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("AlunosDaEscola", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bx-list-ul'></i>
+                                    Alunos da Escola
+                                </div>
+                            </a>
+                        </li>
+                }
+                
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioFrequenciasNaData.Visualizar, usuarioAdm))
+                {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("FrequenciasNaData", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bxs-calendar-event'></i>
+                                    Frequências na Data
+                                </div>
+                            </a>
+                        </li>
+                }
+
+                @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioEquipamentosDaEscola.Visualizar, usuarioAdm))
+                {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("EquipamentosDaEscola", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bx-align-justify'></i>
+                                    Equipamentos da Escola
+                                </div>
+                            </a>
+                        </li>
+                }
             </ul>
         </li>
     }
@@ -152,15 +200,19 @@
             </div>
         </div>
         <ul class="menu-sub">
-            <li class='menu-item'>
-                <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
-                    <div style="white-space: normal !important;">
-                        <i class='bx bxs-user-account'></i>
-                        Cadastro de Usuários
-                    </div>
-                </a>
-            </li>
-            @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+            @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Usuarios.Visualizar, usuarioAdm))
+            {
+                    <li class='menu-item'>
+                        <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
+                            <div style="white-space: normal !important;">
+                                <i class='bx bxs-user-account'></i>
+                                Cadastro de Usuários
+                            </div>
+                        </a>
+                    </li>
+            }
+            
+            @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && listaDePermissao.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Visualizar, usuarioAdm))
             {
                     <li class='menu-item'>
                         <a onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')" href="javascript:void(0)" class="menu-link">
@@ -175,3 +227,13 @@
     </li>
   </ul>
 </aside>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.menu-item.open').forEach(function (menu) {
+            if (menu.querySelectorAll('li').length === 0) {
+                menu.remove();
+            }
+        });
+    });
+</script>

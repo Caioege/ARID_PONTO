@@ -2,8 +2,8 @@ using System.ComponentModel;
 
 namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
 {
-    public enum eItemDePermissao_FolhaDePonto
+    public enum eItemDePermissao_RelatorioFrequenciasNaData
     {
-        Gerenciar = 0
+        Visualizar = 0
     }
 }

@@ -14,13 +14,16 @@ namespace AriD.GerenciamentoEscolar.Controllers
     {
         private readonly IServico<Aluno> _servico;
         private readonly IServico<Escola> _servicoEscola;
+        private readonly IServicoDeAlunos _servicoDeAlunos;
 
         public AlunoController(
             IServico<Aluno> servico,
-            IServico<Escola> servicoEscola)
+            IServico<Escola> servicoEscola,
+            IServicoDeAlunos servicoDeAlunos)
         {
             _servico = servico;
             _servicoEscola = servicoEscola;
+            _servicoDeAlunos = servicoDeAlunos;
         }
 
         [HttpGet]
@@ -89,19 +92,22 @@ namespace AriD.GerenciamentoEscolar.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar(Aluno servidor)
+        public IActionResult Salvar(Aluno aluno)
         {
-            int id = servidor.Id;
-            servidor.RedeDeEnsinoId = this.HttpContext.DadosDaSessao().RedeDeEnsinoId;
-            servidor.Pessoa.RedeDeEnsinoId = servidor.RedeDeEnsinoId;
+            int id = aluno.Id;
+            aluno.RedeDeEnsinoId = this.HttpContext.DadosDaSessao().RedeDeEnsinoId;
+            aluno.Pessoa.RedeDeEnsinoId = aluno.RedeDeEnsinoId;
 
-            if (servidor.Id == 0)
+            if (aluno.Id == 0)
             {
-                servidor.DataDeCadastro = DateTime.Now;
-                id = _servico.Adicionar(servidor);
+                aluno.DataDeCadastro = DateTime.Now;
+                id = _servico.Adicionar(aluno);
             }
             else
-                _servico.Atualizar(servidor);
+            {
+                aluno.EscolaId = _servicoDeAlunos.ObtenhaEscolaIdDoAluno(aluno.Id);
+                _servico.Atualizar(aluno);
+            }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }

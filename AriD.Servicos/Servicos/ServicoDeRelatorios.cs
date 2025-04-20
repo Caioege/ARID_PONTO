@@ -1,6 +1,7 @@
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
+using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 
@@ -130,6 +131,60 @@ namespace AriD.Servicos.Servicos
                     REDEDEENSINOID = redeDeEnsinoId,
                     @ESCOLAID = escolaId
                 });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<RegistroDePontoIndexDTO> ObtenhaRegistrosDeFrequencia(
+            int redeDeEnsinoId,
+            int? escolaId,
+            DateTime dataInicio,
+            DateTime dataFim)
+        {
+            try
+            {
+                var fromAndWhere = @"
+                            from registrodeponto reg
+                            inner join EquipamentoDeFrequencia eq
+	                            on eq.Id = reg.EquipamentoDeFrequenciaId
+                            inner join escola uni
+	                            on uni.Id = eq.EscolaId
+                            left join aluno alu
+	                            on alu.EscolaId = uni.Id and alu.IdEquipamento = reg.UsuarioEquipamentoId
+                            left join pessoa pes
+	                            on pes.Id = alu.PessoaId
+                            where
+	                            reg.RedeDeEnsinoId = @REDEDEENSINOID
+                                and date(reg.DataHoraRegistro) between @INICIO and @FIM";
+
+                if (escolaId.HasValue)
+                    fromAndWhere += " and uni.Id = @ESCOLAID";
+
+                var select = $@"select
+	                            reg.Id as Id,
+                                eq.Id as EquipamentoId,
+                                eq.Descricao as EquipamentoDescricao,
+                                reg.DataHoraRegistro as DataHoraRegistro,
+                                reg.DataHoraRecebimento as DataHoraRecebimento,
+                                reg.UsuarioEquipamentoId as IdEquipamento,
+                                pes.Nome as PessoaNome,
+                                uni.Id as EscolaId,
+                                uni.Nome as EscolaNome
+                            {fromAndWhere}
+                            order by reg.DataHoraRegistro, reg.DataHoraRecebimento, pes.Nome";
+
+                var itens = _repositorio.ConsultaDapper<RegistroDePontoIndexDTO>(select, new
+                {
+                    @REDEDEENSINOID = redeDeEnsinoId,
+                    @ESCOLAID = escolaId,
+                    @INICIO = dataInicio,
+                    @FIM = dataFim
+                });
+
+                return itens;
             }
             catch (Exception)
             {

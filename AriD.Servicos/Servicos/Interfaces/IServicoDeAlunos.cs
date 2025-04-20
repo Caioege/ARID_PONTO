@@ -14,5 +14,8 @@ namespace AriD.Servicos.Servicos.Interfaces
             int turmaId,
             DateTime inicio,
             DateTime fim);
+
+        int? ObtenhaEscolaIdDoAluno(int alunoId);
+        int ObtenhaMatriculaColetor(int escolaId);
     }
 }

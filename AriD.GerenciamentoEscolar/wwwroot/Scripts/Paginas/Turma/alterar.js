@@ -217,3 +217,28 @@ function assineChangeMesAnoDiario() {
         }
     });
 }
+
+function exportarDiarioDeClasse() {
+    let parametros = {
+        turmaId: $('#formulario-turma #Id').val(),
+        anoMes: $('#MesAnoDiario').val()
+    };
+
+    if (!parametros.anoMes) {
+        MensagemRodape('warning', 'Informe o período para gerar o PDF.');
+        return;
+    }
+
+    RequisicaoAjaxComCarregamento(
+        '/Relatorio/ProcessarExportarDiarioDeClasse',
+        'POST',
+        parametros,
+        function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', 'O arquivo será baixado...');
+                downloadBase64File(data.base64, data.fileName, data.mimeType);
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
