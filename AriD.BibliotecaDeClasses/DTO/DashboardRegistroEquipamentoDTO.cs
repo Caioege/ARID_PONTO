@@ -7,5 +7,6 @@
         public string IdEquipamento { get; set; }
         public string Equipamento { get; set; }
         public DateTime DataHora { get; set; }
+        public string DataHoraString => DataHora.ToString("dd/MM/yyyy HH:mm");
     }
 }

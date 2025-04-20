@@ -68,3 +68,4 @@ D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\obj\Release\net8.0\re
 D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\obj\Release\net8.0\AriD.GerenciamentoEscolar.pdb
 D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\obj\Release\net8.0\AriD.GerenciamentoEscolar.genruntimeconfig.cache
 D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\obj\Release\net8.0\ref\AriD.GerenciamentoEscolar.dll
+D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\obj\Release\net8.0\AriD.GerenciamentoEscolar.sourcelink.json

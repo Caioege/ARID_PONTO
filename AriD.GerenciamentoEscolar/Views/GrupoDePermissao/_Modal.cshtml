@@ -3,6 +3,10 @@
 @using AriD.Servicos.Extensao
 @model GrupoDePermissao
 
+@{
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Excluir);
+}
+
 <div class="modal" tabindex="-1" id="_Modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -52,6 +56,13 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
+
+                @if (Model.Id > 0 && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerGrupoDePermissao(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
 
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">
                     <i class='bx bxs-save'></i> Salvar

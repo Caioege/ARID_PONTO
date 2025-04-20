@@ -43,6 +43,7 @@ builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
 builder.Services.AddScoped(typeof(IServicoDeRelatorios), typeof(ServicoDeRelatorios));
 builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegistroDePonto));
 builder.Services.AddScoped(typeof(IServicoDeAlunos), typeof(ServicoDeAlunos));
+builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboard));
 
 var app = builder.Build();
 

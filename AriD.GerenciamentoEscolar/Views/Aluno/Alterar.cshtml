@@ -5,6 +5,9 @@
 
 @{
     var dadosDeSessao = Context.DadosDaSessao();
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Aluno.CadastrarOuAlterar);
+    var podeMatricular = Context.PossuiPermissao(eItemDePermissao_Aluno.MatricularNaEscola);
+    var podeDesalocar = Context.PossuiPermissao(eItemDePermissao_Aluno.DesalocarDaEscola);
 }
 
 <style>
@@ -268,22 +271,33 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            @if (!Model.EscolaId.HasValue)
+            @if (!Model.EscolaId.HasValue && podeMatricular)
             {
                 <button type="button" class="btn btn-info" id="btn-matricular" onclick="matricularNaUnidade()">
                     <i class='bx bxs-user-check'></i> Matricular na escola
                 </button>
             }
-            else
+            else if (Model.EscolaId.HasValue && podeDesalocar)
             {
                 <button type="button" class="btn btn-info" id="btn-desalocar" onclick="desalocarAlunoDaEscola()">
                     <i class='bx bxs-user-x'></i> Desalocar aluno
                 </button>
             }
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (Context.PossuiPermissao(eItemDePermissao_Aluno.Excluir))
+            {
+                <button type="button" class="btn btn-danger" onclick="removerAluno(@Model.Id)" title="Remover aluno">
+                    <i class='bx bx-trash'></i> Remover
+                </button>
+            }
+
+            @if (podeAlterar)
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
+
         </form>
     </div>
 </div>

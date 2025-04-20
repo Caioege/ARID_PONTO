@@ -3,38 +3,41 @@
 
 @{
     var dadosDaSessao = this.Context.DadosDaSessao();
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_RedeDeEnsino.AlterarDados);
+    var podeAdicionarEscolas = Context.PossuiPermissao(eItemDePermissao_RedeDeEnsino.CadastrarEscolas);
+    var podeImprimirEscolas = Context.PossuiPermissao(eItemDePermissao_RedeDeEnsino.Imprimir);
 }
 
 <style>
     #div-dados-esquerda {
-        position: absolute;
-        float: left;
-        margin-bottom: 10px;
+    position: absolute;
+    float: left;
+    margin-bottom: 10px;
     }
 
     #div-dados-direita {
-        margin-left: 170px;
+    margin-left: 170px;
     }
 
     .img-foto {
-        margin-bottom: 10px;
-        border: 1px solid gray
+    margin-bottom: 10px;
+    border: 1px solid gray
     }
 
-        .img-foto:hover {
-            cursor: pointer;
-        }
+    .img-foto:hover {
+    cursor: pointer;
+    }
 
     @@media (width <= 770px) {
-        #div-dados-direita {
-            margin-left: 0px;
-        }
+    #div-dados-direita {
+    margin-left: 0px;
+    }
 
-        #div-dados-esquerda {
-            position: initial;
-            float: none;
-            margin-bottom: 10px;
-        }
+    #div-dados-esquerda {
+    position: initial;
+    float: none;
+    margin-bottom: 10px;
+    }
     }
 </style>
 
@@ -87,9 +90,12 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (podeAlterar)
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
         </form>
 
         <br />
@@ -98,13 +104,19 @@
                 <h5>Escolas</h5>
             </div>
             <div class="col col-md-4 col-xs-12 float-end">
-                <button type="button" class="btn btn-primary btn-sm float-end" onclick="CarregarPagina('@Url.Action("Adicionar", "Escola", new { redeDeEnsinoId = Model.Id })')">
-                    <i class='bx bx-list-plus'></i>
-                </button>
+                @if (podeAdicionarEscolas)
+                {
+                    <button type="button" class="btn btn-primary btn-sm float-end" onclick="CarregarPagina('@Url.Action("Adicionar", "Escola", new { redeDeEnsinoId = Model.Id })')">
+                        <i class='bx bx-list-plus'></i>
+                    </button>
+                }
 
-                <button type="button" class="btn btn-secondary btn-sm float-end" onclick="gerarRelatorioListaDeEscolas()" style="margin-right: 5px;">
-                    <i class='bx bxs-report'></i> Imprimir Listagem
-                </button>
+                @if (podeImprimirEscolas)
+                {
+                    <button type="button" class="btn btn-secondary btn-sm float-end" onclick="gerarRelatorioListaDeEscolas()" style="margin-right: 5px;">
+                        <i class='bx bxs-report'></i> Imprimir Listagem
+                    </button>
+                }
             </div>
         </div>
 

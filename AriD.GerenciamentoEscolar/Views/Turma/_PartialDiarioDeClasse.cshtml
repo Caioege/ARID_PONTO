@@ -4,6 +4,7 @@
 @model DiarioClasseDTO
 @{
     var diasComAula = ObterDiasComAula(Model.DataInicio, Model.DataFim, Model.Horarios);
+    var podeGerenciarDiario = Context.PossuiPermissao(eItemDePermissao_Turma.GerenciarDiarioDeClasse);
 }
 
 <style>
@@ -78,7 +79,7 @@
                                 var frequencia = aluno.Frequencias.ContainsKey(dia) ? aluno.Frequencias[dia] : null;
                                 <td id="td-dia-@aluno.AlunoTurmaId-@dia.ToString("ddMMyyyy")" class="td-data" data-dia="@dia.ToString("dd/MM/yyyy")">
                                     <button type="button" class="btn-frequencia btn btn-light border-0 p-0 w-100 h-100" data-estado="@(
-        frequencia.HasValue ? (frequencia.Value ? "presente" : "falta") : "")" onclick="alterarFrequencia(this)">
+        frequencia.HasValue ? (frequencia.Value ? "presente" : "falta") : "")" @(podeGerenciarDiario ? "onclick='alterarFrequencia(this)'" : "disabled")>
                                         @if (frequencia.HasValue)
                                         {
                                             if (frequencia.Value)

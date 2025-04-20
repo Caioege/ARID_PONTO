@@ -149,6 +149,11 @@ namespace AriD.GerenciamentoEscolar.Controllers
         public IActionResult Remova(int turmaId)
         {
             var turma = _servico.Obtenha(turmaId);
+            if (turma.ListaDeHorarioDeAula.Any())
+                throw new ApplicationException("Não é possível remover a turma, pois existem horários de aula criados.");
+            if (turma.ListaDeAlunos.Any())
+                throw new ApplicationException("Não é possível remover a turma, pois alunos alocados nela.");
+
             _servico.Remover(turma);
 
             return Json(new { sucesso = true, mensagem = "O registro foi removido." });

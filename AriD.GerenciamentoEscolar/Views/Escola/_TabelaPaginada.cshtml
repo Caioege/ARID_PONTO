@@ -1,6 +1,8 @@
 @model ListaPaginada<Escola>
 
 @{
+    var podeAlterarEscolas = Context.PossuiPermissao(eItemDePermissao_RedeDeEnsino.AlterarEscolas);
+
     var tabela = new WebGrid<Escola>(Model, "grid", null);
 
     var listaDeColunas = new List<WebGridColumn>
@@ -18,13 +20,17 @@
                     <i class="bx bx-checkbox-minus text-danger"></i>
                 }
             </text>, width: 5f),
-        tabela.Column(string.Empty, "Ação", format:
+    };
+
+    if (podeAlterarEscolas)
+    {
+        listaDeColunas.Add(tabela.Column(string.Empty, "Ação", format:
             @<text>
                 <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Escola", new { id = item.Id })')">
                     <i class='bx bxs-edit-alt'></i>
                 </button>
-            </text>, width: 3f)
-    };
+            </text>, width: 3f));
+    }
 }
 
 @(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

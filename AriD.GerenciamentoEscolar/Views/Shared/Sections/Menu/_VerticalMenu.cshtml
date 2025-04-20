@@ -33,7 +33,7 @@
   <div class="menu-inner-shadow"></div>
 
 <ul class="menu-inner py-1">
-     @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+        @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && listaDePermissao.PossuiPermissao(eItemDePermissao_Dashboard.Visualizar, usuarioAdm))
      {
          <li class='menu-item'>
             <a onclick="CarregarPagina('@Url.Action("Index", "Dashboard")')" href="javascript:void(0)" class="menu-link">
@@ -71,7 +71,7 @@
                       <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDeFrequencia")')" href="javascript:void(0)" class="menu-link">
                         <div>
                             <i class='bx bx-mobile-alt'></i>
-                            Equipamento de Frequência
+                            Equipamentos
                         </div>
                       </a>
                     </li>

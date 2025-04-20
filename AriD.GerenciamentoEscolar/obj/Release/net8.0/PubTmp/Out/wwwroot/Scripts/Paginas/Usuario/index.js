@@ -43,7 +43,17 @@ function assineSalvarCadastroModal() {
 function assineChangeGrupoDePermissao() {
     $('#PerfilDeAcesso').on('change', function () {
         let perfil = $(this).val();
-        $('#GrupoDePermissaoId').html('').select2({ data: [{ id: '', text: '' }] });
+
+        if (perfil == '2' || perfil == 'Escola') {
+            $('#_Modal #label-unidade').addClass('obrigatorio');
+            $('#_Modal #div-unidade').show();
+        } else {
+            $('#_Modal #div-unidade').hide();
+            $('#_Modal #label-unidade').removeClass('obrigatorio');
+            $('#_Modal #UnidadeOrganizacionalId').val('').trigger('change');
+        }
+
+        $('#GrupoDePermissaoId').html('');
 
         if (perfil) {
             $.ajax({
@@ -52,16 +62,47 @@ function assineChangeGrupoDePermissao() {
                 data: { perfil }
             }).done(function (data) {
                 if (data.sucesso) {
-                    $.each(data.grupos, function (i, item) {
+                    $("#GrupoDePermissaoId").append("<option value=''></option>");
+                    $.each(data.gruposDePermissao, function (i, item) {
                         $("#GrupoDePermissaoId").append("<option value='" + item.codigo + "'>" + item.descricao + "</option>");
                     });
-
-                    $("#GrupoDePermissaoId").trigger('change');
 
                 } else {
                     MensagemRodape('warning', data.mensagem);
                 }
             });
+        }
+    });
+
+    if ($('#_Modal').find('#Id').val() == '0') {
+        $('#PerfilDeAcesso').trigger('change');
+    }
+}
+
+function removerUsuario(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse usuário?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Usuario/Remover',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        $('#_Modal').modal('hide');
+                        $('#btn-pesquisar').trigger('click');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
         }
     });
 }

@@ -102,12 +102,16 @@ namespace AriD.GerenciamentoEscolar.Controllers
                 int id = usuario.Id;
                 var dadosDaSessao = HttpContext.DadosDaSessao();
 
-                if (usuario.PerfilDeAcesso != ePerfilDeAcesso.AdministradorDeSistema)
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
                     usuario.RedeDeEnsinoId = dadosDaSessao.RedeDeEnsinoId;
                 else
                     usuario.RedeDeEnsinoId = null;
 
-                usuario.PerfilDeAcesso = dadosDaSessao.Perfil;
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Escola)
+                {
+                    usuario.PerfilDeAcesso = ePerfilDeAcesso.Escola;
+                    usuario.EscolaId = dadosDaSessao.EscolaId;
+                }
 
                 if (!string.IsNullOrEmpty(usuario.Senha))
                     usuario.Senha = Criptografia.CriptografarSenha(usuario.Senha);
@@ -120,8 +124,8 @@ namespace AriD.GerenciamentoEscolar.Controllers
 
                     persistido.NomeDaPessoa = usuario.NomeDaPessoa;
                     persistido.UsuarioDeAcesso = usuario.UsuarioDeAcesso;
-                    persistido.PerfilDeAcesso = usuario.PerfilDeAcesso;
                     persistido.Ativo = usuario.Ativo;
+                    persistido.GrupoDePermissaoId = usuario.GrupoDePermissaoId;
 
                     if (!string.IsNullOrEmpty(usuario.Senha))
                         persistido.Senha = usuario.Senha;
@@ -152,6 +156,14 @@ namespace AriD.GerenciamentoEscolar.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult Remover(int id)
+        {
+            var usuario = _servico.Obtenha(id);
+            _servico.Remover(usuario);
+            return Json(new { sucesso = true, mensagem = "O usuário foi removido." });
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Usuario> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaescolasOrganizacionais>(listaPaginada.Adicional);
@@ -177,7 +189,7 @@ namespace AriD.GerenciamentoEscolar.Controllers
             {
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
-                    c => c.PerfilDeAcesso == ePerfilDeAcesso.Escola && c.RedeDeEnsinoId == dadosDaSessao.RedeDeEnsinoId);
+                    c => c.PerfilDeAcesso == ePerfilDeAcesso.Escola && c.RedeDeEnsinoId == dadosDaSessao.RedeDeEnsinoId && c.EscolaId == dadosDaSessao.EscolaId);
             }
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))

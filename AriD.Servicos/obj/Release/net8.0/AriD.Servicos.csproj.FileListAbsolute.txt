@@ -13,3 +13,4 @@ D:\git\AriD.GerenciamentoEscolar\AriD.Servicos\obj\Release\net8.0\AriD.Servicos.
 D:\git\AriD.GerenciamentoEscolar\AriD.Servicos\obj\Release\net8.0\refint\AriD.Servicos.dll
 D:\git\AriD.GerenciamentoEscolar\AriD.Servicos\obj\Release\net8.0\AriD.Servicos.pdb
 D:\git\AriD.GerenciamentoEscolar\AriD.Servicos\obj\Release\net8.0\ref\AriD.Servicos.dll
+D:\git\AriD.GerenciamentoEscolar\AriD.Servicos\obj\Release\net8.0\AriD.Servicos.sourcelink.json

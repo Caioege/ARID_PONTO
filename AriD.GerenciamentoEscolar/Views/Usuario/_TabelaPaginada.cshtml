@@ -3,6 +3,7 @@
 @model ListaPaginada<Usuario>
 
 @{
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Usuarios.CadastrarOuAlterar);
     var tabela = new WebGrid<Usuario>(Model, "grid", null);
 
     var listaDeColunas = new List<WebGridColumn>
@@ -20,14 +21,18 @@
             {
                 <i class="bx bx-checkbox-minus text-danger"></i>
             }
-            </text>, width: 10f),
-        tabela.Column(string.Empty, "Ação", format:
+            </text>, width: 10f)
+    };
+
+    if (podeAlterar)
+    {
+        listaDeColunas.Add(tabela.Column(string.Empty, "Ação", format:
             @<text>
                 <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
                     <i class='bx bxs-edit-alt'></i>
                 </button>
-            </text>, width: 3f)
-    };
+            </text>, width: 3f));
+    }
 }
 
 @(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

@@ -3,6 +3,7 @@
 @model ListaPaginada<Turma>
 
 @{
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Turma.CadastrarOuAlterar);
     var ehRedeDeEnsino = Context.DadosDaSessao().Perfil == ePerfilDeAcesso.RedeDeEnsino;
     var tabela = new WebGrid<Turma>(Model, "grid", null);
 
@@ -23,13 +24,16 @@
         tabela.Column("Situacao", "Situação", format:
             @<text>@(((eSituacaoTurma)item.Situacao).DescricaoDoEnumerador())</text>, width: 5f));
 
-    listaDeColunas.Add(
-        tabela.Column(string.Empty, "Ação", format:
-            @<text>
-                <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('/Turma/Alterar/@item.Id')">
-                    <i class='bx bxs-edit-alt'></i>
-                </button>
-            </text>, width: 3f));
+    @if (podeAlterar)
+    { 
+        listaDeColunas.Add(
+            tabela.Column(string.Empty, "Ação", format:
+                @<text>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('/Turma/Alterar/@item.Id')">
+                        <i class='bx bxs-edit-alt'></i>
+                    </button>
+                </text>, width: 3f));
+    }
 }
 
 @(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

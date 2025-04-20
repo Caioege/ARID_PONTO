@@ -1,5 +1,9 @@
 @model ListaPaginada<Turma>
 
+@{
+    var podeIncluir = Context.PossuiPermissao(eItemDePermissao_Turma.CadastrarOuAlterar);
+}
+
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
@@ -28,12 +32,15 @@
             </div>
 
             <div class="col-md-5 col-sm-3 col-xs-12">
-                <label class="form-label">
-                    &nbsp;
-                </label>
-                <button type="button" onclick="CarregarPagina('/Turma/Adicionar')" class="btn btn-primary float-end" style="margin-top: 17px;">
-                    <i class="bx bx-plus"></i> Adicionar
-                </button>
+                @if (podeIncluir)
+                {
+                    <label class="form-label">
+                        &nbsp;
+                    </label>
+                    <button type="button" onclick="CarregarPagina('/Turma/Adicionar')" class="btn btn-primary float-end" style="margin-top: 17px;">
+                        <i class="bx bx-plus"></i> Adicionar
+                    </button>
+                }
             </div>
         </div>
         <br />

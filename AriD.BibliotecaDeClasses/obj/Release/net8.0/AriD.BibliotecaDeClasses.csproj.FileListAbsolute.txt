@@ -9,3 +9,4 @@ D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Release\net8.0\Ari
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Release\net8.0\refint\AriD.BibliotecaDeClasses.dll
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Release\net8.0\AriD.BibliotecaDeClasses.pdb
 D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Release\net8.0\ref\AriD.BibliotecaDeClasses.dll
+D:\git\AriD.GerenciamentoEscolar\AriD.BibliotecaDeClasses\obj\Release\net8.0\AriD.BibliotecaDeClasses.sourcelink.json

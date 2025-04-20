@@ -2,6 +2,7 @@
 @model ListaPaginada<EquipamentoDeFrequencia>
 
 @{
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_EquipamentoDeFrequencia.CadastrarOuAlterar);
     var ehRedeDeEnsino = Context.DadosDaSessao().Perfil == ePerfilDeAcesso.RedeDeEnsino;
     var tabela = new WebGrid<EquipamentoDeFrequencia>(Model, "grid", null);
 
@@ -30,13 +31,16 @@
             }
             </text>, width: 5f));
 
-    listaDeColunas.Add(
-        tabela.Column(string.Empty, "Ação", format:
-            @<text>
-                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
-                    <i class='bx bxs-edit-alt'></i>
-                </button>
-            </text>, width: 3f));
+    @if (podeAlterar)
+    {
+        listaDeColunas.Add(
+            tabela.Column(string.Empty, "Ação", format:
+                @<text>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                        <i class='bx bxs-edit-alt'></i>
+                    </button>
+                </text>, width: 3f));
+    }
 }
 
 @(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

@@ -4,7 +4,7 @@
 
 <style>
     .tab-content {
-        padding: 0px !important;
+    padding: 0px !important;
     }
 </style>
 
@@ -105,7 +105,7 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="s1" role="tabpanel">
-                        @if (Model.Situacao == eSituacaoTurma.Ativa)
+                        @if (Model.Situacao == eSituacaoTurma.Ativa && Context.PossuiPermissao(eItemDePermissao_Turma.AlocarAlunos))
                         {
                             <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAlocarAlunos()" style="float: right; margin-bottom: 10px;">
                                 <i class='bx bxs-plus-square'></i> Adicionar alunos na turma
@@ -115,6 +115,7 @@
                             <tbody>
                                 @if (Model.ListaDeAlunos.Any())
                                 {
+                                    var podeAlterarDadosAluno = Context.PossuiPermissao(eItemDePermissao_Turma.AlterarDadosAlunoTurma);
                                     foreach (var aluno in Model.ListaDeAlunos.OrderBy(c => c.Aluno.Nome))
                                     {
                                         <tr>
@@ -130,11 +131,14 @@
                                             <td width="15%" class="text-center" title="Saída do aluno da turma">
                                                 @(aluno.SaidaDaTurma?.ToString("dd/MM/yyyy") ?? "-")
                                             </td>
-                                            <td width="10%" class="text-center">
-                                                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalDadosAlunoTurma(@aluno.Id)">
-                                                    <i class='bx bxs-edit-alt'></i>
-                                                </button>
-                                            </td>
+                                            @if (podeAlterarDadosAluno)
+                                            {
+                                                <td width="10%" class="text-center">
+                                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalDadosAlunoTurma(@aluno.Id)">
+                                                        <i class='bx bxs-edit-alt'></i>
+                                                    </button>
+                                                </td>
+                                            }
                                         </tr>
                                     }
                                 }
@@ -216,13 +220,16 @@
                                                         </tr>
                                                     }
                                                 }
-                                                <tr>
-                                                    <td class="text-center" colspan="2">
-                                                        <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalHorarioDeAula(@((int)dia))">
-                                                            <i class='bx bx-edit-alt'></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                                @if (Context.PossuiPermissao(eItemDePermissao_Turma.GerenciarHorarioDeAula))
+                                                {
+                                                    <tr>
+                                                        <td class="text-center" colspan="2">
+                                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalHorarioDeAula(@((int)dia))">
+                                                                <i class='bx bx-edit-alt'></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
                                             </tbody>
                                         </table>
                                     </div>
@@ -238,11 +245,14 @@
                                 @Html.DropDownList("MesAnoDiario", (List<SelectListItem>)ViewBag.MesesDoAno, string.Empty, new { @class = "select2" })
                             </div>
 
-                            <div class="col col-md-8 col-sm-12 col-12 float-end">
-                                <button style="margin-top: 20px;" type="button" class="btn btn-secondary btn-sm float-end" onclick="exportarDiarioDeClasse()">
-                                    <i class='bx bxs-report'></i> Imprimir
-                                </button>
-                            </div>
+                            @if (Context.PossuiPermissao(eItemDePermissao_Turma.ImprimirDiarioDeClasse))
+                            {
+                                <div class="col col-md-8 col-sm-12 col-12 float-end">
+                                    <button style="margin-top: 20px;" type="button" class="btn btn-secondary btn-sm float-end" onclick="exportarDiarioDeClasse()">
+                                        <i class='bx bxs-report'></i> Imprimir
+                                    </button>
+                                </div>
+                            }
                         </div>
                         <div id="div-diario-classe"></div>
                     </div>
@@ -254,9 +264,19 @@
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 
-            <button type="button" class="btn btn-primary" id="btn-salvar">
-                <i class='bx bxs-save'></i> Salvar
-            </button>
+            @if (Context.PossuiPermissao(eItemDePermissao_Turma.Excluir))
+            {
+                <button type="button" class="btn btn-danger" onclick="removerTurma(@Model.Id)" title="Remover turma">
+                    <i class='bx bx-trash'></i> Remover
+                </button>
+            }
+
+            @if (Context.PossuiPermissao(eItemDePermissao_Turma.CadastrarOuAlterar))
+            {
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            }
         </form>
     </div>
 </div>

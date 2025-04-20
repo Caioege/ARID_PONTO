@@ -6,6 +6,8 @@
 @{
     var dadosDaSessao = Context.DadosDaSessao();
     var adicionar = Model.Id == 0;
+
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Usuarios.Excluir);
 }
 
 <div class="modal" tabindex="-1" id="_Modal">
@@ -49,13 +51,21 @@
                             }
                             else 
                             {
-                                var listaDePerfis = new List<CodigoDescricaoDTO>()
+                                if (dadosDaSessao.Perfil == ePerfilDeAcesso.RedeDeEnsino)
                                 {
-                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.RedeDeEnsino, ePerfilDeAcesso.RedeDeEnsino.DescricaoDoEnumerador()),
-                                    new CodigoDescricaoDTO((int)ePerfilDeAcesso.Escola, ePerfilDeAcesso.Escola.DescricaoDoEnumerador()),
-                                };
+                                    var listaDePerfis = new List<CodigoDescricaoDTO>()
+                                    {
+                                        new CodigoDescricaoDTO((int)ePerfilDeAcesso.RedeDeEnsino, ePerfilDeAcesso.RedeDeEnsino.DescricaoDoEnumerador()),
+                                        new CodigoDescricaoDTO((int)ePerfilDeAcesso.Escola, ePerfilDeAcesso.Escola.DescricaoDoEnumerador()),
+                                    };
 
-                                @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })
+                                    @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })
+                                }
+                                else 
+                                {
+                                    @Html.TextBox("PerfilDescricao", ePerfilDeAcesso.Escola.DescricaoDoEnumerador(), new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                                    @Html.Hidden("PerfilDeAcesso", ePerfilDeAcesso.Escola)
+                                }
                             }
                         </div>
                     </div>
@@ -69,24 +79,27 @@
                             </div>
                         </div>
 
-                        @if (Model.Id == 0)
+                        @if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
                         {
-                            <div class="row" id="div-unidade" style="display:none;">
-                                <div class="col col-lg-12">
-                                    <label class="form-label" id="label-unidade" for="EscolaId">Unidade</label>
-                                    @Html.DropDownListFor(model => model.EscolaId, (SelectList)ViewBag.Escolas, string.Empty, new { @class = "select2" })
+                            if (Model.Id == 0)
+                            {
+                                <div class="row" id="div-unidade" style="display:none;">
+                                    <div class="col col-lg-12">
+                                        <label class="form-label" id="label-unidade" for="EscolaId">Escola</label>
+                                        @Html.DropDownListFor(model => model.EscolaId, (SelectList)ViewBag.Escolas, string.Empty, new { @class = "select2" })
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                        else if (Model.PerfilDeAcesso == ePerfilDeAcesso.Escola)
-                        {
-                            <div class="row">
-                                <div class="col col-md-12">
-                                    <label class="form-label obrigatorio" for="EscolaId">Unidade</label>
-                                    @Html.TextBox("UnidadeNome", Model.Escola.Nome, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
-                                    @Html.HiddenFor(model => model.EscolaId)
+                            }
+                            else if (Model.PerfilDeAcesso == ePerfilDeAcesso.Escola)
+                            {
+                                <div class="row">
+                                    <div class="col col-md-12">
+                                        <label class="form-label obrigatorio" for="EscolaId">Escola</label>
+                                        @Html.TextBox("UnidadeNome", Model.Escola.Nome, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
+                                        @Html.HiddenFor(model => model.EscolaId)
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         }
                     }
                 </form>
@@ -95,6 +108,14 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class='bx bx-window-close'></i> Fechar
                 </button>
+
+                @if (Model.Id > 0 && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerUsuario(@Model.Id)">
+                        <i class="bx bx-trash"></i> Remover
+                    </button>
+                }
+
                 <button type="button" class="btn btn-primary" id="btn-salvar-modal">
                     <i class='bx bxs-save'></i> Salvar
                 </button>

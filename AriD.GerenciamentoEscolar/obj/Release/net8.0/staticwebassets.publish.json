@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "5CfOlOZuqZyh6EUajlzao7KyyAPcaqDtmmpUkB6Fvi0=",
+  "Hash": "PhxvkhkvHT5WkWd7UuMZXbT2zSSeYxLspjJEWgzQqA4=",
   "Source": "AriD.GerenciamentoEscolar",
   "BasePath": "_content/AriD.GerenciamentoEscolar",
   "Mode": "Default",
@@ -157,8 +157,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "0xjgmaxj5j",
-      "Integrity": "1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E=",
+      "Fingerprint": "i9m8asmscb",
+      "Integrity": "trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
@@ -1256,6 +1256,27 @@
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\1.png"
     },
     {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\redeDeEnsino\\2\\7.png",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "img/pessoas/redeDeEnsino/2/7#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "aas7c080vj",
+      "Integrity": "8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\pessoas\\redeDeEnsino\\2\\7.png"
+    },
+    {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\sem-foto.png",
       "SourceId": "AriD.GerenciamentoEscolar",
       "SourceType": "Discovered",
@@ -1522,8 +1543,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "0u47dk0sjz",
-      "Integrity": "OBGla4nejfUg/joey4NbWg1LTzSOyEpCibPK7tz0u/E=",
+      "Fingerprint": "g73ni4uxh7",
+      "Integrity": "BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
@@ -2810,6 +2831,90 @@
       "OriginalItemSpec": "wwwroot\\lib\\sweetalert2\\sweetalert2@11.js"
     },
     {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\adicionar.js",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "Scripts/Paginas/Aluno/adicionar#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "s3whzzjkl5",
+      "Integrity": "yFvGav0FuHBe6TSFz4wQ3i5y+FK2+EGjWwicwUCfge8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Aluno\\adicionar.js"
+    },
+    {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\alterar.js",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "Scripts/Paginas/Aluno/alterar#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "wb9915pcl1",
+      "Integrity": "hANu6JsCnHq8YqD1VJG2yf/9Fi1TF31bQ9PdE1e3ShA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Aluno\\alterar.js"
+    },
+    {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\index.js",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "Scripts/Paginas/Aluno/index#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "iy2gtpvzed",
+      "Integrity": "Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Aluno\\index.js"
+    },
+    {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "Scripts/Paginas/Dashboard/index#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xfy0erj8qy",
+      "Integrity": "Xfio41ZPpSBRIFg5Ce9ioibP5lk2Gtk8hP9Km4ttFlU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Dashboard\\index.js"
+    },
+    {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Endereco\\alterar.js",
       "SourceId": "AriD.GerenciamentoEscolar",
       "SourceType": "Discovered",
@@ -2908,8 +3013,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "xyy9ic8ddk",
-      "Integrity": "SdvSSwuPP5YBIJeVhPkdU1yrh28Aw4t7p6aafJMLEdE=",
+      "Fingerprint": "i8pdxyzkvc",
+      "Integrity": "AnpMBaQ6XFAWZtABXfaFp8Z77Nb70DP/4kfyH0iBAXg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js"
@@ -2929,19 +3034,19 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "z3iivby7zf",
-      "Integrity": "0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34=",
+      "Fingerprint": "or6honv8i4",
+      "Integrity": "hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js"
     },
     {
-      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\adicionar.js",
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RegistroDePonto\\index.js",
       "SourceId": "AriD.GerenciamentoEscolar",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
       "BasePath": "_content/AriD.GerenciamentoEscolar",
-      "RelativePath": "Scripts/Paginas/Servidor/adicionar#[.{fingerprint}]?.js",
+      "RelativePath": "Scripts/Paginas/RegistroDePonto/index#[.{fingerprint}]?.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -2950,32 +3055,11 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "5non9xgr9z",
-      "Integrity": "f5ZSk7jhL4eEvobFk+LEldHDhHH6KmI/Y5BkfzDlIyI=",
+      "Fingerprint": "bh7lwtzilz",
+      "Integrity": "H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Servidor\\adicionar.js"
-    },
-    {
-      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
-      "SourceId": "AriD.GerenciamentoEscolar",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
-      "BasePath": "_content/AriD.GerenciamentoEscolar",
-      "RelativePath": "Scripts/Paginas/Servidor/alterar#[.{fingerprint}]?.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "8ceix4do3o",
-      "Integrity": "GDpyyjy6f+c+b1VAmZfZ0dBizkKxXauU8lSv7NdhV0w=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js"
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\RegistroDePonto\\index.js"
     },
     {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
@@ -2992,11 +3076,32 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "mni0alc4jl",
-      "Integrity": "jiMbMepJOvb/yfPxUOIWzVtXi0s3J0zU7yVLZ5q7cQo=",
+      "Fingerprint": "sv5m7zpfwu",
+      "Integrity": "uBVSF3yraUfjFD/XZ2qbe/LREisI4+6hoK9qbunvslU=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Turma\\alterar.js"
+    },
+    {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\index.js",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "Scripts/Paginas/Turma/index#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "pupvy7qlec",
+      "Integrity": "oVJ5zD7+nfo2/aHvuv5/CvD4bil9yrg89tSzWypGP18=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Turma\\index.js"
     },
     {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
@@ -3013,8 +3118,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "eczxtecste",
-      "Integrity": "0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g=",
+      "Fingerprint": "dwagaz79sb",
+      "Integrity": "0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\Usuario\\index.js"
@@ -4039,51 +4144,6 @@
       ]
     },
     {
-      "Route": "css/site.0xjgmaxj5j.css",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\site.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1908"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 25 Jan 2025 23:45:05 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "0xjgmaxj5j"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E="
-        }
-      ]
-    },
-    {
       "Route": "css/site.css",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\site.css",
       "Selectors": [],
@@ -4094,7 +4154,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1908"
+          "Value": "1981"
         },
         {
           "Name": "Content-Type",
@@ -4102,11 +4162,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E=\""
+          "Value": "\"trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 25 Jan 2025 23:45:05 GMT"
+          "Value": "Wed, 09 Apr 2025 23:46:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4116,7 +4176,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-1NZqDaATxwMfpX7He4WRW5encGqRlB9oFCpqSKhdG0E="
+          "Value": "sha256-trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.i9m8asmscb.css",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1981"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 09 Apr 2025 23:46:39 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "i9m8asmscb"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-trySgpvMuAMXCddtHd/uBoEQqJoL1xV8VlshnyB5FFA="
         }
       ]
     },
@@ -8385,6 +8490,88 @@
       ]
     },
     {
+      "Route": "img/pessoas/redeDeEnsino/2/7.aas7c080vj.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\redeDeEnsino\\2\\7.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "71421"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 09 Apr 2025 23:36:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "aas7c080vj"
+        },
+        {
+          "Name": "label",
+          "Value": "img/pessoas/redeDeEnsino/2/7.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY="
+        }
+      ]
+    },
+    {
+      "Route": "img/pessoas/redeDeEnsino/2/7.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\redeDeEnsino\\2\\7.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "71421"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 09 Apr 2025 23:36:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8pZMNdveZEtwxVFRmwnH8mtIxtXJquNduwAhLHjQQbY="
+        }
+      ]
+    },
+    {
       "Route": "img/pessoas/sem-foto.png",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\sem-foto.png",
       "Selectors": [],
@@ -9369,7 +9556,7 @@
       ]
     },
     {
-      "Route": "js/site.0u47dk0sjz.js",
+      "Route": "js/site.g73ni4uxh7.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\js\\site.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -9379,7 +9566,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11936"
+          "Value": "12564"
         },
         {
           "Name": "Content-Type",
@@ -9387,11 +9574,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"OBGla4nejfUg/joey4NbWg1LTzSOyEpCibPK7tz0u/E=\""
+          "Value": "\"BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 14 Mar 2025 00:24:45 GMT"
+          "Value": "Wed, 16 Apr 2025 01:28:02 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9401,7 +9588,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "0u47dk0sjz"
+          "Value": "g73ni4uxh7"
         },
         {
           "Name": "label",
@@ -9409,7 +9596,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-OBGla4nejfUg/joey4NbWg1LTzSOyEpCibPK7tz0u/E="
+          "Value": "sha256-BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0="
         }
       ]
     },
@@ -9424,7 +9611,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11936"
+          "Value": "12564"
         },
         {
           "Name": "Content-Type",
@@ -9432,11 +9619,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"OBGla4nejfUg/joey4NbWg1LTzSOyEpCibPK7tz0u/E=\""
+          "Value": "\"BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 14 Mar 2025 00:24:45 GMT"
+          "Value": "Wed, 16 Apr 2025 01:28:02 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9446,7 +9633,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-OBGla4nejfUg/joey4NbWg1LTzSOyEpCibPK7tz0u/E="
+          "Value": "sha256-BI7gm4r0NNS8b9zPOw2pKXFsYCfgMjOUc3IcfdNiCf0="
         }
       ]
     },
@@ -14453,6 +14640,334 @@
       ]
     },
     {
+      "Route": "Scripts/Paginas/Aluno/adicionar.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\adicionar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "706"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yFvGav0FuHBe6TSFz4wQ3i5y+FK2+EGjWwicwUCfge8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 24 Mar 2025 22:54:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yFvGav0FuHBe6TSFz4wQ3i5y+FK2+EGjWwicwUCfge8="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Aluno/adicionar.s3whzzjkl5.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\adicionar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "706"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yFvGav0FuHBe6TSFz4wQ3i5y+FK2+EGjWwicwUCfge8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 24 Mar 2025 22:54:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "s3whzzjkl5"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Aluno/adicionar.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yFvGav0FuHBe6TSFz4wQ3i5y+FK2+EGjWwicwUCfge8="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Aluno/alterar.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5792"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"hANu6JsCnHq8YqD1VJG2yf/9Fi1TF31bQ9PdE1e3ShA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 20 Apr 2025 17:53:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-hANu6JsCnHq8YqD1VJG2yf/9Fi1TF31bQ9PdE1e3ShA="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Aluno/alterar.wb9915pcl1.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\alterar.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5792"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"hANu6JsCnHq8YqD1VJG2yf/9Fi1TF31bQ9PdE1e3ShA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 20 Apr 2025 17:53:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "wb9915pcl1"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Aluno/alterar.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-hANu6JsCnHq8YqD1VJG2yf/9Fi1TF31bQ9PdE1e3ShA="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Aluno/index.iy2gtpvzed.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "292"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Apr 2025 20:21:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iy2gtpvzed"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Aluno/index.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Aluno/index.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Aluno\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "292"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Apr 2025 20:21:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Bpx7NE1vGq6V0yxxaml5Pg7FxvPJT7jSDOl/mvhXsPY="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Dashboard/index.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2820"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Xfio41ZPpSBRIFg5Ce9ioibP5lk2Gtk8hP9Km4ttFlU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 20 Apr 2025 19:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Xfio41ZPpSBRIFg5Ce9ioibP5lk2Gtk8hP9Km4ttFlU="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Dashboard/index.xfy0erj8qy.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2820"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Xfio41ZPpSBRIFg5Ce9ioibP5lk2Gtk8hP9Km4ttFlU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 20 Apr 2025 19:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xfy0erj8qy"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Dashboard/index.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Xfio41ZPpSBRIFg5Ce9ioibP5lk2Gtk8hP9Km4ttFlU="
+        }
+      ]
+    },
+    {
       "Route": "Scripts/Paginas/Endereco/alterar.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Endereco\\alterar.js",
       "Selectors": [],
@@ -14781,6 +15296,51 @@
       ]
     },
     {
+      "Route": "Scripts/Paginas/GrupoDePermissao/index.i8pdxyzkvc.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2312"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AnpMBaQ6XFAWZtABXfaFp8Z77Nb70DP/4kfyH0iBAXg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 20 Apr 2025 18:01:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "i8pdxyzkvc"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/GrupoDePermissao/index.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AnpMBaQ6XFAWZtABXfaFp8Z77Nb70DP/4kfyH0iBAXg="
+        }
+      ]
+    },
+    {
       "Route": "Scripts/Paginas/GrupoDePermissao/index.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
       "Selectors": [],
@@ -14791,7 +15351,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1329"
+          "Value": "2312"
         },
         {
           "Name": "Content-Type",
@@ -14799,11 +15359,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"SdvSSwuPP5YBIJeVhPkdU1yrh28Aw4t7p6aafJMLEdE=\""
+          "Value": "\"AnpMBaQ6XFAWZtABXfaFp8Z77Nb70DP/4kfyH0iBAXg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 19:04:56 GMT"
+          "Value": "Sun, 20 Apr 2025 18:01:01 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14813,52 +15373,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-SdvSSwuPP5YBIJeVhPkdU1yrh28Aw4t7p6aafJMLEdE="
-        }
-      ]
-    },
-    {
-      "Route": "Scripts/Paginas/GrupoDePermissao/index.xyy9ic8ddk.js",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1329"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"SdvSSwuPP5YBIJeVhPkdU1yrh28Aw4t7p6aafJMLEdE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 19:04:56 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "xyy9ic8ddk"
-        },
-        {
-          "Name": "label",
-          "Value": "Scripts/Paginas/GrupoDePermissao/index.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-SdvSSwuPP5YBIJeVhPkdU1yrh28Aw4t7p6aafJMLEdE="
+          "Value": "sha256-AnpMBaQ6XFAWZtABXfaFp8Z77Nb70DP/4kfyH0iBAXg="
         }
       ]
     },
@@ -14873,7 +15388,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2407"
+          "Value": "2885"
         },
         {
           "Name": "Content-Type",
@@ -14881,11 +15396,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34=\""
+          "Value": "\"hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 13 Mar 2025 22:13:55 GMT"
+          "Value": "Sat, 19 Apr 2025 22:30:59 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14895,12 +15410,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34="
+          "Value": "sha256-hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/RedeDeEnsino/alterar.z3iivby7zf.js",
+      "Route": "Scripts/Paginas/RedeDeEnsino/alterar.or6honv8i4.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RedeDeEnsino\\alterar.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -14910,7 +15425,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2407"
+          "Value": "2885"
         },
         {
           "Name": "Content-Type",
@@ -14918,11 +15433,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34=\""
+          "Value": "\"hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 13 Mar 2025 22:13:55 GMT"
+          "Value": "Sat, 19 Apr 2025 22:30:59 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14932,7 +15447,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "z3iivby7zf"
+          "Value": "or6honv8i4"
         },
         {
           "Name": "label",
@@ -14940,13 +15455,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-0WgA0e2ZCHeOJDiAyD5vO9ct4ZqmCsJ97M2knMxCK34="
+          "Value": "sha256-hADPyg+b4CNxemzI6PZ/OmNclMdsvRACqImv1aIRCqM="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/Servidor/adicionar.5non9xgr9z.js",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\adicionar.js",
+      "Route": "Scripts/Paginas/RegistroDePonto/index.bh7lwtzilz.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RegistroDePonto\\index.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -14955,7 +15470,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "690"
+          "Value": "1478"
         },
         {
           "Name": "Content-Type",
@@ -14963,11 +15478,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"f5ZSk7jhL4eEvobFk+LEldHDhHH6KmI/Y5BkfzDlIyI=\""
+          "Value": "\"H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 26 Jan 2025 00:38:55 GMT"
+          "Value": "Sat, 19 Apr 2025 22:57:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14977,21 +15492,21 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "5non9xgr9z"
+          "Value": "bh7lwtzilz"
         },
         {
           "Name": "label",
-          "Value": "Scripts/Paginas/Servidor/adicionar.js"
+          "Value": "Scripts/Paginas/RegistroDePonto/index.js"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-f5ZSk7jhL4eEvobFk+LEldHDhHH6KmI/Y5BkfzDlIyI="
+          "Value": "sha256-H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/Servidor/adicionar.js",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\adicionar.js",
+      "Route": "Scripts/Paginas/RegistroDePonto/index.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\RegistroDePonto\\index.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -15000,7 +15515,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "690"
+          "Value": "1478"
         },
         {
           "Name": "Content-Type",
@@ -15008,11 +15523,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"f5ZSk7jhL4eEvobFk+LEldHDhHH6KmI/Y5BkfzDlIyI=\""
+          "Value": "\"H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 26 Jan 2025 00:38:55 GMT"
+          "Value": "Sat, 19 Apr 2025 22:57:35 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15022,89 +15537,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-f5ZSk7jhL4eEvobFk+LEldHDhHH6KmI/Y5BkfzDlIyI="
-        }
-      ]
-    },
-    {
-      "Route": "Scripts/Paginas/Servidor/alterar.8ceix4do3o.js",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "11491"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"GDpyyjy6f+c+b1VAmZfZ0dBizkKxXauU8lSv7NdhV0w=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 22:52:30 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "8ceix4do3o"
-        },
-        {
-          "Name": "label",
-          "Value": "Scripts/Paginas/Servidor/alterar.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-GDpyyjy6f+c+b1VAmZfZ0dBizkKxXauU8lSv7NdhV0w="
-        }
-      ]
-    },
-    {
-      "Route": "Scripts/Paginas/Servidor/alterar.js",
-      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "11491"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"GDpyyjy6f+c+b1VAmZfZ0dBizkKxXauU8lSv7NdhV0w=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 22:52:30 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-GDpyyjy6f+c+b1VAmZfZ0dBizkKxXauU8lSv7NdhV0w="
+          "Value": "sha256-H304f1u7I54Lw/0OCaFHe4IW+AfY9oVToEkLJiGPn7U="
         }
       ]
     },
@@ -15119,7 +15552,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "855"
+          "Value": "9368"
         },
         {
           "Name": "Content-Type",
@@ -15127,11 +15560,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"jiMbMepJOvb/yfPxUOIWzVtXi0s3J0zU7yVLZ5q7cQo=\""
+          "Value": "\"uBVSF3yraUfjFD/XZ2qbe/LREisI4+6hoK9qbunvslU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 14 Mar 2025 00:37:51 GMT"
+          "Value": "Sun, 20 Apr 2025 17:45:29 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15141,12 +15574,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-jiMbMepJOvb/yfPxUOIWzVtXi0s3J0zU7yVLZ5q7cQo="
+          "Value": "sha256-uBVSF3yraUfjFD/XZ2qbe/LREisI4+6hoK9qbunvslU="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/Turma/alterar.mni0alc4jl.js",
+      "Route": "Scripts/Paginas/Turma/alterar.sv5m7zpfwu.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15156,7 +15589,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "855"
+          "Value": "9368"
         },
         {
           "Name": "Content-Type",
@@ -15164,11 +15597,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"jiMbMepJOvb/yfPxUOIWzVtXi0s3J0zU7yVLZ5q7cQo=\""
+          "Value": "\"uBVSF3yraUfjFD/XZ2qbe/LREisI4+6hoK9qbunvslU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 14 Mar 2025 00:37:51 GMT"
+          "Value": "Sun, 20 Apr 2025 17:45:29 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15178,7 +15611,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "mni0alc4jl"
+          "Value": "sv5m7zpfwu"
         },
         {
           "Name": "label",
@@ -15186,12 +15619,94 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-jiMbMepJOvb/yfPxUOIWzVtXi0s3J0zU7yVLZ5q7cQo="
+          "Value": "sha256-uBVSF3yraUfjFD/XZ2qbe/LREisI4+6hoK9qbunvslU="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/Usuario/index.eczxtecste.js",
+      "Route": "Scripts/Paginas/Turma/index.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "233"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oVJ5zD7+nfo2/aHvuv5/CvD4bil9yrg89tSzWypGP18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Apr 2025 20:08:13 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-oVJ5zD7+nfo2/aHvuv5/CvD4bil9yrg89tSzWypGP18="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Turma/index.pupvy7qlec.js",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\index.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "233"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oVJ5zD7+nfo2/aHvuv5/CvD4bil9yrg89tSzWypGP18=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 18 Apr 2025 20:08:13 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "pupvy7qlec"
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/Turma/index.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-oVJ5zD7+nfo2/aHvuv5/CvD4bil9yrg89tSzWypGP18="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/Usuario/index.dwagaz79sb.js",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15201,7 +15716,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2266"
+          "Value": "3687"
         },
         {
           "Name": "Content-Type",
@@ -15209,11 +15724,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g=\""
+          "Value": "\"0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 19:35:11 GMT"
+          "Value": "Sun, 20 Apr 2025 17:57:55 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15223,7 +15738,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "eczxtecste"
+          "Value": "dwagaz79sb"
         },
         {
           "Name": "label",
@@ -15231,7 +15746,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g="
+          "Value": "sha256-0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ="
         }
       ]
     },
@@ -15246,7 +15761,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2266"
+          "Value": "3687"
         },
         {
           "Name": "Content-Type",
@@ -15254,11 +15769,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g=\""
+          "Value": "\"0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 23 Feb 2025 19:35:11 GMT"
+          "Value": "Sun, 20 Apr 2025 17:57:55 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15268,7 +15783,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-0tlieSI3umnUQy/cvT2QuBtFcizicwxagOWJ1/8xl7g="
+          "Value": "sha256-0/49d1DlsnSo0DakyOwbJkWeD6/WOqm15xwBYJiIMmQ="
         }
       ]
     },

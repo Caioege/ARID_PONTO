@@ -38,3 +38,31 @@ function assineSalvarCadastroModal() {
         );
     });
 }
+
+function removerGrupoDePermissao(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse grupo de permissão?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/GrupoDePermissao/Remova',
+                'POST',
+                { grupoDePermissaoId: id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        $('#_Modal').modal('hide');
+                        $('#btn-pesquisar').trigger('click');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
+}

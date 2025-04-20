@@ -34,14 +34,17 @@
                 @Html.DropDownList("SomenteMatriculados", listaDeSelecao, new { @class = "form-select", @onchange = "onChangeSomenteMatriculados()" })
             </div>
 
-            <div class="col-md-4 col-sm-2 col-xs-12">
-                <label class="form-label">
-                    &nbsp;
-                </label>
-                <button type="button" onclick="CarregarPagina('@Url.Action("Adicionar")')" class="btn btn-primary float-end">
-                    <i class="bx bx-plus"></i> Adicionar
-                </button>
-            </div>
+            @if (Context.PossuiPermissao(eItemDePermissao_Aluno.CadastrarOuAlterar))
+            {
+                <div class="col-md-4 col-sm-2 col-xs-12">
+                    <label class="form-label">
+                        &nbsp;
+                    </label>
+                    <button type="button" onclick="CarregarPagina('@Url.Action("Adicionar")')" class="btn btn-primary float-end">
+                        <i class="bx bx-plus"></i> Adicionar
+                    </button>
+                </div>
+            }
         </div>
 
         <br />

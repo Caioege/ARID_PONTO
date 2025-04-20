@@ -97,3 +97,8 @@
     border: 1px solid red;
     background-color: #ffe6e6;
 }
+
+.nav-item {
+    border: 1px solid gray;
+    border-radius: 10px;
+}

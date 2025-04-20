@@ -242,3 +242,30 @@ function exportarDiarioDeClasse() {
             }
         });
 }
+
+var removerTurma = function (id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover essa turma?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Turma/Remova',
+                'POST',
+                { turmaId: id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/Turma/Index');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
+    });
+}

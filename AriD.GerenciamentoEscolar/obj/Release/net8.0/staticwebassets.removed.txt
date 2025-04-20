@@ -1,0 +1,2 @@
+D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\wwwroot\Scripts\Paginas\Servidor\adicionar.js
+D:\git\AriD.GerenciamentoEscolar\AriD.GerenciamentoEscolar\wwwroot\Scripts\Paginas\Servidor\alterar.js
