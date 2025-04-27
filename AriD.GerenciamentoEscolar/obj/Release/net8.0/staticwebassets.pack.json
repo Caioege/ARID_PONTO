@@ -169,6 +169,10 @@
       "PackagePath": "staticwebassets\\img\\elements\\7.jpg"
     },
     {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\facial.png",
+      "PackagePath": "staticwebassets\\img\\facial.png"
+    },
+    {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\favicon\\favicon.ico",
       "PackagePath": "staticwebassets\\img\\favicon\\favicon.ico"
     },
@@ -261,6 +265,10 @@
       "PackagePath": "staticwebassets\\img\\illustrations\\page-misc-error-light.png"
     },
     {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\imagem-fundo-login.png",
+      "PackagePath": "staticwebassets\\img\\imagem-fundo-login.png"
+    },
+    {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-container-light.png",
       "PackagePath": "staticwebassets\\img\\layouts\\layout-container-light.png"
     },
@@ -279,6 +287,10 @@
     {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-livro.png",
       "PackagePath": "staticwebassets\\img\\logo-livro.png"
+    },
+    {
+      "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-vertical.png",
+      "PackagePath": "staticwebassets\\img\\logo-vertical.png"
     },
     {
       "Id": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo.png",

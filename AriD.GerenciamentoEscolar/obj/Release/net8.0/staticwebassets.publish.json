@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "PhxvkhkvHT5WkWd7UuMZXbT2zSSeYxLspjJEWgzQqA4=",
+  "Hash": "T2G+ogNb8knamZLkuBfxw/a7X0SjYce9ewl+Gvri3kk=",
   "Source": "AriD.GerenciamentoEscolar",
   "BasePath": "_content/AriD.GerenciamentoEscolar",
   "Mode": "Default",
@@ -626,6 +626,27 @@
       "OriginalItemSpec": "wwwroot\\img\\elements\\7.jpg"
     },
     {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\facial.png",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "img/facial#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "9dhekicaq3",
+      "Integrity": "k1QMXnH/TlyJ+dC+d4wqgCVPHiw6QuDW/wTI1vzeDow=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\facial.png"
+    },
+    {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\favicon\\favicon.ico",
       "SourceId": "AriD.GerenciamentoEscolar",
       "SourceType": "Discovered",
@@ -1109,6 +1130,27 @@
       "OriginalItemSpec": "wwwroot\\img\\illustrations\\page-misc-error-light.png"
     },
     {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\imagem-fundo-login.png",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "img/imagem-fundo-login#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "0gayh3o1c2",
+      "Integrity": "oDk4ki1geIntQz3ohbp75Hn4l8jS9SNCyBC892/7Lso=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\imagem-fundo-login.png"
+    },
+    {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-container-light.png",
       "SourceId": "AriD.GerenciamentoEscolar",
       "SourceType": "Discovered",
@@ -1233,6 +1275,27 @@
       "CopyToOutputDirectory": "PreserveNewest",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\logo-livro.png"
+    },
+    {
+      "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-vertical.png",
+      "SourceId": "AriD.GerenciamentoEscolar",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoEscolar",
+      "RelativePath": "img/logo-vertical#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "5oguujf8rx",
+      "Integrity": "5akzTIZ4pHgiuyDmbV4NHeYJ1etRDWpjSZUUm1V1aYI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\logo-vertical.png"
     },
     {
       "Identity": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\pessoas\\organizacao\\1\\1.png",
@@ -6030,6 +6093,88 @@
       ]
     },
     {
+      "Route": "img/facial.9dhekicaq3.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\facial.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "281887"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k1QMXnH/TlyJ+dC+d4wqgCVPHiw6QuDW/wTI1vzeDow=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:19:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "9dhekicaq3"
+        },
+        {
+          "Name": "label",
+          "Value": "img/facial.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-k1QMXnH/TlyJ+dC+d4wqgCVPHiw6QuDW/wTI1vzeDow="
+        }
+      ]
+    },
+    {
+      "Route": "img/facial.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\facial.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "281887"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k1QMXnH/TlyJ+dC+d4wqgCVPHiw6QuDW/wTI1vzeDow=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:19:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-k1QMXnH/TlyJ+dC+d4wqgCVPHiw6QuDW/wTI1vzeDow="
+        }
+      ]
+    },
+    {
       "Route": "img/favicon/favicon.9jkgs9wba6.ico",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\favicon\\favicon.ico",
       "Selectors": [],
@@ -7916,6 +8061,88 @@
       ]
     },
     {
+      "Route": "img/imagem-fundo-login.0gayh3o1c2.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\imagem-fundo-login.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2420049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oDk4ki1geIntQz3ohbp75Hn4l8jS9SNCyBC892/7Lso=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:16:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "0gayh3o1c2"
+        },
+        {
+          "Name": "label",
+          "Value": "img/imagem-fundo-login.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-oDk4ki1geIntQz3ohbp75Hn4l8jS9SNCyBC892/7Lso="
+        }
+      ]
+    },
+    {
+      "Route": "img/imagem-fundo-login.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\imagem-fundo-login.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2420049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"oDk4ki1geIntQz3ohbp75Hn4l8jS9SNCyBC892/7Lso=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:16:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-oDk4ki1geIntQz3ohbp75Hn4l8jS9SNCyBC892/7Lso="
+        }
+      ]
+    },
+    {
       "Route": "img/layouts/layout-container-light.gyeke12cxn.png",
       "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\layouts\\layout-container-light.png",
       "Selectors": [],
@@ -8404,6 +8631,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-va9JpBgNyFsrTHExD+RyTihPfglIXMHTMA7rkyeN724="
+        }
+      ]
+    },
+    {
+      "Route": "img/logo-vertical.5oguujf8rx.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-vertical.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25157"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5akzTIZ4pHgiuyDmbV4NHeYJ1etRDWpjSZUUm1V1aYI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:04:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "5oguujf8rx"
+        },
+        {
+          "Name": "label",
+          "Value": "img/logo-vertical.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5akzTIZ4pHgiuyDmbV4NHeYJ1etRDWpjSZUUm1V1aYI="
+        }
+      ]
+    },
+    {
+      "Route": "img/logo-vertical.png",
+      "AssetFile": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\wwwroot\\img\\logo-vertical.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25157"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5akzTIZ4pHgiuyDmbV4NHeYJ1etRDWpjSZUUm1V1aYI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 27 Apr 2025 18:04:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5akzTIZ4pHgiuyDmbV4NHeYJ1etRDWpjSZUUm1V1aYI="
         }
       ]
     },

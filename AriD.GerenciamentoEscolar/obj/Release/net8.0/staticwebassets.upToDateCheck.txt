@@ -25,6 +25,7 @@ wwwroot\img\elements\3.jpg
 wwwroot\img\elements\4.jpg
 wwwroot\img\elements\5.jpg
 wwwroot\img\elements\7.jpg
+wwwroot\img\facial.png
 wwwroot\img\favicon\favicon.ico
 wwwroot\img\icons\brands\asana.png
 wwwroot\img\icons\brands\behance.png
@@ -48,12 +49,14 @@ wwwroot\img\icons\unicons\wallet-info.png
 wwwroot\img\illustrations\girl-doing-yoga-light.png
 wwwroot\img\illustrations\man-with-laptop.png
 wwwroot\img\illustrations\page-misc-error-light.png
+wwwroot\img\imagem-fundo-login.png
 wwwroot\img\layouts\layout-container-light.png
 wwwroot\img\layouts\layout-fluid-light.png
 wwwroot\img\layouts\layout-without-menu-light.png
 wwwroot\img\layouts\layout-without-navbar-light.png
 wwwroot\img\logo.png
 wwwroot\img\logo-livro.png
+wwwroot\img\logo-vertical.png
 wwwroot\img\pessoas\organizacao\1\1.png
 wwwroot\img\pessoas\redeDeEnsino\2\7.png
 wwwroot\img\pessoas\sem-foto.png
