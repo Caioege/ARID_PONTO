@@ -1,6 +1,5 @@
 $(document).ready(function () {
     assineSalvar();
-    removerRegistro();
 });
 
 function assineSalvar() {
@@ -47,20 +46,29 @@ function assineSalvar() {
     });
 }
 
-function removerRegistro() {
-    $('#btn-remover').on('click', function () {
-        RequisicaoAjaxComCarregamento(
-            '/GrupoDePermissao/Remova/',
-            'POST',
-            { grupoDePermissaoId: $('#Id').val() },
-            function (data) {
-                if (data.sucesso) {
-                    MensagemRodape('success', data.mensagem);
-                    CarregarPagina('/GrupoDePermissao/Index');
-                } else {
-                    MensagemRodape('warning', data.mensagem);
-                }
-            }
-        );
+function removerGrupo(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse grupo de permissão?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/GrupoDePermissao/Remover',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/GrupoDePermissao/Index')
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
     });
 }

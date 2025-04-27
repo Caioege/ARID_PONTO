@@ -58,7 +58,7 @@
                                     new CodigoDescricaoDTO((int)ePerfilDeAcesso.Departamento, ePerfilDeAcesso.Departamento.DescricaoDoEnumerador())
                                 };
 
-                                @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), new { @class = "select2" })
+                                @Html.DropDownList("PerfilDeAcesso", new SelectList(listaDePerfis, "Codigo", "Descricao", (int)Model.PerfilDeAcesso), string.Empty, new { @class = "select2" })
                             }
                         </div>
                     </div>

@@ -74,7 +74,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
             else
             {
-                ViewBag.Grupos = new SelectList(string.Empty);
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                    ViewBag.Grupos = new SelectList(ObtenhaGrupos(model.PerfilDeAcesso), "Codigo", "Descricao");
 
                 ViewBag.Departamentos = new SelectList(
                     _servicoDepartamentos.ObtenhaLista(c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId && c.Ativo).OrderBy(c => c.Descricao),

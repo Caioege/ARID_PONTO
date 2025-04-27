@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\Endereco\\alterar.js"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\importarAFD.js",
+      "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDePonto\\importarAFD.js"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
       "PackagePath": "staticwebassets\\Scripts\\Paginas\\EquipamentoDePonto\\index.js"
     },
@@ -185,6 +189,10 @@
       "PackagePath": "staticwebassets\\img\\elements\\7.jpg"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\facial.png",
+      "PackagePath": "staticwebassets\\img\\facial.png"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\favicon\\favicon.ico",
       "PackagePath": "staticwebassets\\img\\favicon\\favicon.ico"
     },
@@ -277,6 +285,10 @@
       "PackagePath": "staticwebassets\\img\\illustrations\\page-misc-error-light.png"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\imagem-fundo-login.png",
+      "PackagePath": "staticwebassets\\img\\imagem-fundo-login.png"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\layouts\\layout-container-light.png",
       "PackagePath": "staticwebassets\\img\\layouts\\layout-container-light.png"
     },
@@ -295,6 +307,10 @@
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\logo-relogio.png",
       "PackagePath": "staticwebassets\\img\\logo-relogio.png"
+    },
+    {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\logo-vertical.png",
+      "PackagePath": "staticwebassets\\img\\logo-vertical.png"
     },
     {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\logo.png",

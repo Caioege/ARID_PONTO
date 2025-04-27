@@ -154,19 +154,31 @@ function removerCadastroDeLotacao() {
     $('#_Modal').find('#btn-remover-lotacao').on('click', function () {
         let id = $('#formulario-lotacao').find('#Id').val();
 
-        RequisicaoAjaxComCarregamento(
-            '/Servidor/RemoverLotacao',
-            'POST',
-            { id },
-            function (data) {
-                if (data.sucesso) {
-                    MensagemRodape('success', data.mensagem);
-                    recarregarListaDeLotacoes();
-                    cancelarEdicaoLotacao();
-                } else {
-                    MensagemRodape('warning', data.mensagem);
-                }
-            });
+        Swal.fire({
+            text: "Tem certeza que deseja remover essa lotação?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "SIM",
+            cancelButtonText: 'NÃO'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                RequisicaoAjaxComCarregamento(
+                    '/Servidor/RemoverLotacao',
+                    'POST',
+                    { id },
+                    function (data) {
+                        if (data.sucesso) {
+                            MensagemRodape('success', data.mensagem);
+                            recarregarListaDeLotacoes();
+                            cancelarEdicaoLotacao();
+                        } else {
+                            MensagemRodape('warning', data.mensagem);
+                        }
+                    });
+            }
+        });
     });
 }
 
@@ -337,5 +349,32 @@ function assineRemoverAfastamento() {
                     });
             }
         });
+    });
+}
+
+function removerServidor(id) {
+    Swal.fire({
+        text: "Tem certeza que deseja remover esse servidor?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "SIM",
+        cancelButtonText: 'NÃO'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            RequisicaoAjaxComCarregamento(
+                '/Servidor/Remover',
+                'POST',
+                { id },
+                function (data) {
+                    if (data.sucesso) {
+                        MensagemRodape('success', data.mensagem);
+                        CarregarPagina('/Servidor/Index');
+                    } else {
+                        MensagemRodape('warning', data.mensagem);
+                    }
+                });
+        }
     });
 }

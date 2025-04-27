@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AriD.GerenciamentoDePonto")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d91d7dfc49880d9f578c9a1d70ae632980c269f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a002c2c9b666c6289fef3820320716f218904a1a")]
 [assembly: System.Reflection.AssemblyProductAttribute("AriD.GerenciamentoDePonto")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AriD.GerenciamentoDePonto")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

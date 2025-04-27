@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\AriD.GerenciamentoDePonto.props" />
-</Project>
