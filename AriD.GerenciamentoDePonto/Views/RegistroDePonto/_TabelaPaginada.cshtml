@@ -10,7 +10,7 @@
     {
         tabela.Column("EquipamentoDescricao", "Equipamento", width: 20f),
         tabela.Column("IdEquipamento", "Matrícula Equipamento", width: 10f),
-        tabela.Column("PessoaNome", "Servidor", width: 25f),
+        tabela.Column("PessoaNome", $"{Context.NomenclaturaServidor()}", width: 25f),
         tabela.Column("DataHoraRegistro", "Registro", format: 
             @<text>
                 @(((DateTime)item.DataHoraRegistro).ToString("dd/MM/yyyy HH:mm"))

@@ -6,6 +6,8 @@
 @{
     var podeRemover = Context.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Excluir);
     var podeAlterar = Context.PossuiPermissao(eItemDePermissao_GrupoDePermissao.CadastrarOuAlterar);
+
+    var nomenclaturaServidores = Context.NomenclaturaServidores();
 }
 
 <style>
@@ -66,6 +68,14 @@
                     @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
                 </div>
             </div>
+
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
+            {
+                <br />
+                var modelDashboard =
+                    new Tuple<string, Type, GrupoDePermissao>("Dashboard", typeof(eItemDePermissao_Dashboard), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelDashboard)
+            }
 
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
@@ -141,7 +151,7 @@
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
                 var modelServidor =
-                new Tuple<string, Type, GrupoDePermissao>("Cadastro de Servidores", typeof(eItemDePermissao_Servidor), Model);
+                new Tuple<string, Type, GrupoDePermissao>($"Cadastro de {nomenclaturaServidores}", typeof(eItemDePermissao_Servidor), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelServidor)
 
                 var modelEscala =
@@ -173,19 +183,19 @@
 
             @{
                 var modelRelServidoresComAfastamento =
-                new Tuple<string, Type, GrupoDePermissao>("Servidores com Afastamentos", typeof(eItemDePermissao_RelatorioServidoresComAfastamento), Model);
+                new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} com Afastamentos", typeof(eItemDePermissao_RelatorioServidoresComAfastamento), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresComAfastamento)
 
             @{
                 var modelRelServidoresPorEscala =
-                new Tuple<string, Type, GrupoDePermissao>("Servidores por Escala", typeof(eItemDePermissao_RelatorioServidoresComEscala), Model);
+                new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} por Escala", typeof(eItemDePermissao_RelatorioServidoresComEscala), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorEscala)
 
             @{
                 var modelRelServidoresPorHorario =
-                new Tuple<string, Type, GrupoDePermissao>("Servidores por Horário de Trabalho", typeof(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho), Model);
+                new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} por Horário de Trabalho", typeof(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorHorario)
 

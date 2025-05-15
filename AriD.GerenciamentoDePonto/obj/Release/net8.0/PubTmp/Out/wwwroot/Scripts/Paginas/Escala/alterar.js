@@ -142,11 +142,11 @@ function removerCiclo(id) {
     });
 }
 
-function abrirModalServidorCiclo(id) {
+function abrirModalServidorCiclo(id, escalaId) {
     RequisicaoAjaxComCarregamento(
         '/Escala/ModalServidorCiclo',
         'GET',
-        { id },
+        { id, escalaId },
         function (data) {
             if (data.sucesso) {
                 $('#div-modal').html(data.html);

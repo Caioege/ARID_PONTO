@@ -5,6 +5,9 @@
 @{
     var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Escala.CadastrarOuAlterar);
     var podeRemover = Context.PossuiPermissao(eItemDePermissao_Escala.Excluir);
+
+    var nomenclaturaServidor = @Context.NomenclaturaServidor();
+    var nomenclaturaServidores = @Context.NomenclaturaServidores();
 }
 
 <div class="card mb-6">
@@ -142,12 +145,12 @@
                 </table>
                 <br />
 
-                <h6>Servidores</h6>
+                <h6>@nomenclaturaServidores</h6>
                 <table class="table table-bordered table-condensed">
                     <thead>
                         <tr style="background-color: aliceblue;">
                             <th class="text-center" width="55%">
-                                Servidor
+                                @nomenclaturaServidor
                             </th>
                             <th class="text-center" width="20%">
                                 Inicio 1º Ciclo
@@ -158,7 +161,7 @@
                             <th class="text-center" width="10%">
                                 @if (podeAlterar)
                                 {
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(0)">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(0, @Model.Id)">
                                         <i class='bx bx-list-plus'></i>
                                     </button>
                                 }
@@ -185,7 +188,7 @@
                                     <td>
                                         @if (podeAlterar)
                                         {
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(@servidor.Id)">
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalServidorCiclo(@servidor.Id, @Model.Id)">
                                                 <i class='bx bx-edit-alt'></i>
                                             </button>
                                         }
@@ -197,7 +200,7 @@
                         {
                             <tr>
                                 <td class="text-center" colspan="3">
-                                    Nenhum servidor alocado na escala
+                                    Nenhum @nomenclaturaServidor.ToLower() alocado na escala
                                 </td>
                             </tr>
                         }
@@ -206,12 +209,12 @@
             }
             else if (Model.Tipo == eTipoDeEscala.Mensal) 
             {
-                <h6>Servidores</h6>
+                <h6>@nomenclaturaServidores</h6>
                 <table class="table table-bordered table-condensed">
                     <thead>
                         <tr style="background-color: aliceblue;">
                             <th class="text-center">
-                                Servidor
+                                @nomenclaturaServidor
                             </th>
                             <th class="text-center" width="10%">
                                 Data
@@ -309,7 +312,7 @@
                         {
                             <tr>
                                 <td class="text-center" colspan="99">
-                                    Nenhum servidor na escala
+                                    Nenhum @nomenclaturaServidor.ToLower() na escala
                                 </td>
                             </tr>
                         }

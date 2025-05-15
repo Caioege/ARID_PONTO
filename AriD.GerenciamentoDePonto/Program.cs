@@ -45,6 +45,7 @@ builder.Services.AddScoped(typeof(IServicoDeRelatorios), typeof(ServicoDeRelator
 builder.Services.AddScoped(typeof(IServicoDeEscala), typeof(ServicoDeEscala));
 builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegistroDePonto));
 builder.Services.AddScoped(typeof(IServicoDeArquivoFonteDeDados), typeof(ServicoDeArquivoFonteDeDados));
+builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboard));
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();

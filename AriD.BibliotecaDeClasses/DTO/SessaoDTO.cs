@@ -13,6 +13,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             List<int> unidades,
             int? departamentoId,
             List<KeyValuePair<string, int>> permissoes,
+            eNomenclaturaServidor nomenclaturaServidor,
             bool usuarioAdministradorAutenticado = false)
         {
             UsuarioId = usuarioId;
@@ -23,6 +24,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             OrganizacaoNome = organizacaoNome;
             Permissoes = permissoes;
             DepartamentoId = departamentoId;
+            NomenclaturaServidor = nomenclaturaServidor;
             UsuarioAdministradorAutenticado = usuarioAdministradorAutenticado;
         }
 
@@ -40,5 +42,7 @@ namespace AriD.BibliotecaDeClasses.DTO
 
         public List<int> UnidadeOrganizacionais { get; set; } = new();
         public List<KeyValuePair<string, int>> Permissoes { get; set; } = new();
+
+        public eNomenclaturaServidor NomenclaturaServidor { get; set; }
     }
 }

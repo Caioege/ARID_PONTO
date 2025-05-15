@@ -14,7 +14,6 @@ using iText.IO.Image;
 using iText.Layout.Borders;
 using AriD.Servicos.Extensao;
 using AriD.BibliotecaDeClasses.DTO;
-using System.Diagnostics.Contracts;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -97,7 +96,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     fim,
                     justificativaId);
 
-            var nomeArquivo = "Servidores com Afastamento.pdf";
+            var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} com Afastamento.pdf";
 
             return Json(new
             {
@@ -157,7 +156,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             try
             {
                 var relatorio = RelatorioServidoresPorEscala(escalaId);
-                var nomeArquivo = "Servidores por Escala.pdf";
+                var nomeArquivo = $"{HttpContext.NomenclaturaServidores().ToLower()} por Escala.pdf";
 
                 return Json(new
                 {
@@ -211,7 +210,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     horarioDeTrabalhoId,
                     tipoDeVinculoDeTrabalhoId);
 
-            var nomeArquivo = "Servidores por Horário.pdf";
+            var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} por Horário.pdf";
 
             return Json(new
             {
@@ -267,7 +266,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 horarioDeTrabalhoId,
                 tipoDeVinculoDeTrabalhoId);
 
-            var nomeArquivo = "Lista de Servidores.pdf";
+            var nomeArquivo = $"Lista de {HttpContext.NomenclaturaServidores()}.pdf";
 
             return Json(new
             {
@@ -325,7 +324,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Servidores com Afastamento")));
+                    .Add($"{HttpContext.NomenclaturaServidores()} com Afastamento")));
 
             foreach (var justificativa in grupoJustificativa.OrderBy(c => c.Key))
             {
@@ -348,7 +347,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Servidor"))
+                            .Add(new Text($"{HttpContext.NomenclaturaServidor()}"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
@@ -451,7 +450,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Servidores por Horário de Trabalho")));
+                    .Add($"{HttpContext.NomenclaturaServidores()} por Horário de Trabalho")));
 
             var grupoHorario = horarios.GroupBy(c => c.HorarioDeTrabalho).OrderBy(c => c.Key);
 
@@ -474,7 +473,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text("Servidor"))
+                            .Add(new Text($"{HttpContext.NomenclaturaServidor()}"))
                             .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
@@ -547,7 +546,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Servidores por Horário de Trabalho")));
+                    .Add($"{HttpContext.NomenclaturaServidores()} por Horário de Trabalho")));
 
             var grupoUnidade = servidores
                 .OrderBy(c => c.UnidadeNome)
@@ -586,7 +585,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 .SetVerticalAlignment(VerticalAlignment.MIDDLE))
                             .AddCell(new Cell()
                                 .Add(new Paragraph()
-                                .Add(new Text("Servidor"))
+                                .Add(new Text($"{HttpContext.NomenclaturaServidor()}"))
                                 .SetBackgroundColor(ColorConstants.GRAY, 0.05f)
                                 .SetBold()
                                 .SetTextAlignment(TextAlignment.CENTER)
@@ -646,7 +645,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 dadosDaSessao.DepartamentoId);
 
             if (servidores.Count == 0)
-                throw new ApplicationException("Nenhum servidor encontrado para os filtros informados.");
+                throw new ApplicationException($"Nenhum {HttpContext.NomenclaturaServidor().ToLower()} encontrado para os filtros informados.");
 
             var stream = new MemoryStream();
 
@@ -667,7 +666,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFontSize(15f)
-                    .Add("Lista de Servidores")));
+                    .Add($"Lista de {HttpContext.NomenclaturaServidores()}")));
 
             var table = new Table(UnitValue.CreatePercentArray(new[]
                 {

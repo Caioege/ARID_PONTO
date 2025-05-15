@@ -215,7 +215,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 var duplicateEntryText = "duplicate entry";
                 if (ex.Message.ToLower().Contains(duplicateEntryText) || (ex.InnerException != null && ex.InnerException.Message.ToLower().Contains(duplicateEntryText)))
                 {
-                    return Json(new { sucesso = false, mensagem = "Já existe um outro servidor utilizando esse mesmo ID de equipamento nessa unidade." });
+                    return Json(new { sucesso = false, mensagem = $"Já existe um outro {HttpContext.NomenclaturaServidor().ToLower()} utilizando esse mesmo ID de equipamento nessa unidade." });
                 }
 
                 throw ex;
@@ -304,11 +304,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var servidor = _servico.Obtenha(id);
 
             if (servidor.VinculosDeTrabalho.Count > 0)
-                throw new ApplicationException("Não é possível remover o cadastro do servidor, pois existem vínculos de trabalho cadastrados para ele.");
+                throw new ApplicationException($"Não é possível remover o cadastro do {HttpContext.NomenclaturaServidor().ToLower()}, pois existem vínculos de trabalho cadastrados para ele.");
 
             _servico.Remover(servidor);
 
-            return Json(new { sucesso = true, mensagem = "O servidor foi removido." });
+            return Json(new { sucesso = true, mensagem = $"O {HttpContext.NomenclaturaServidor().ToLower()} foi removido." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
@@ -372,7 +372,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 c.Pessoa.Cpf == cpf &&
                                 c.Id != servidorId) != null)
                 {
-                    throw new ApplicationException("Já existe um outro servidor cadastrado com esse CPF.");
+                    throw new ApplicationException($"Já existe um outro {HttpContext.NomenclaturaServidor().ToLower()} cadastrado com esse CPF.");
                 }
             }
         }

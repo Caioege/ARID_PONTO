@@ -336,7 +336,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .SetTextAlignment(TextAlignment.LEFT)
                     .SetFixedLeading(9f)
                     .SetFontSize(10f)
-                    .Add(new Text("Servidor: ").SetBold())
+                    .Add(new Text($"{HttpContext.NomenclaturaServidor()}: ").SetBold())
                     .Add(new Text(vinculoDeTrabalho.Servidor.Nome)))
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.LEFT)

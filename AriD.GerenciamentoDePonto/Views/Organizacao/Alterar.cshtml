@@ -90,9 +90,22 @@
             <button type="button" class="btn btn-primary" id="btn-salvar">
                 <i class='bx bxs-save'></i> Salvar
             </button>
+
+        <hr />
+        <div class="row">
+            <div class="col col-xs-12">
+                <h5>Nomenclaturas</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-4 col-xs-12">
+                <label class="form-label obrigatorio" for="NomenclaturaServidor">Servidores</label>
+                @Html.EnumDropDownListFor(model => model.NomenclaturaServidor, new { @class = "form-select" })
+            </div>
+        </div>
         </form>
 
-        <br />
+        <hr />
         <div class="row">
             <div class="col col-md-8 col-xs-12">
                 <h5>Unidades Organizacionais</h5>

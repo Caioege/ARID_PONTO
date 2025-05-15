@@ -14,6 +14,6 @@ namespace AriD.Servicos.Servicos.Interfaces
 
         int Adicionar(T entidade);
         void Atualizar(T entidade);
-        void Remover(T entidade);
+        void Remover(T entidade, bool commit = true);
     }
 }

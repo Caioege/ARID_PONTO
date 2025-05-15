@@ -48,6 +48,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional ?[usuarioAcesso.UnidadeOrganizacionalId.Value] : [],
                 usuarioAcesso.DepartamentoId,
                 ObtenhaListaDePermissoes(usuarioAcesso),
+                usuarioAcesso.Organizacao?.NomenclaturaServidor ?? eNomenclaturaServidor.Servidores,
                 usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
 
             return Json(new { sucesso = true, mensagem = "O acesso foi feito com sucesso." });

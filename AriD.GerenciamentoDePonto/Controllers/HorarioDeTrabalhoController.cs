@@ -118,8 +118,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public ActionResult Remover(int id)
         {
             var horario = _servico.Obtenha(id);
-            foreach (var dia in horario.Dias)
-                _servicoDia.Remover(dia);
+            foreach (var dia in new List<HorarioDeTrabalhoDia>(horario.Dias))
+                _servicoDia.Remover(dia, false);
 
             _servico.Remover(horario);
 

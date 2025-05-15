@@ -1,5 +1,7 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
+using AriD.Servicos.Extensao;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -66,5 +68,12 @@ namespace AriD.GerenciamentoDePonto.Helpers
         {
             return usuarioAdm || permissoes.Any(d => d.Key == typeof(T).FullName && d.Value == (int)(object)permissao);
         }
+
+        public static string NomenclaturaServidor(this HttpContext httpContext)
+            => httpContext.DadosDaSessao().NomenclaturaServidor.NomenclaturaSingular();
+
+        public static string NomenclaturaServidores(this HttpContext httpContext)
+            => httpContext.DadosDaSessao().NomenclaturaServidor.NomenclaturaPlural();
+
     }
 }

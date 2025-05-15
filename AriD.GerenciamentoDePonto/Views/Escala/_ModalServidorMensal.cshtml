@@ -3,13 +3,14 @@
 @{
     var adicionar = Model.Id == 0;
     var podeRemover = Context.PossuiPermissao(eItemDePermissao_Escala.Excluir);
+    var nomenclaturaServidor = Context.NomenclaturaServidor();
 }
 
 <div class="modal" tabindex="-1" id="_ModalServidorMensal" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Servidor da Escala Mensal</h5>
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") @nomenclaturaServidor da Escala Mensal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -17,7 +18,7 @@
                     @Html.HiddenFor(model => model.Id)
                     <div class="row">
                         <section class="col col-md-8">
-                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Servidor</label>
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">@nomenclaturaServidor</label>
                             @if (adicionar)
                             {
                                 @Html.DropDownListFor(model => model.VinculoDeTrabalhoId, (SelectList)ViewBag.Servidores, string.Empty, new { @class = "select2" })

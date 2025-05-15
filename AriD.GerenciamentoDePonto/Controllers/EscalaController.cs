@@ -155,20 +155,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             if (id == 0)
             {
+                if (escalaId <= 0)
+                    throw new ApplicationException("A escala não foi informada");
+
                 var escala = _servico.Obtenha(escalaId);
                 var dadosDaSessao = HttpContext.DadosDaSessao();
 
+                if (dadosDaSessao.UnidadeOrganizacionais.Any() && !dadosDaSessao.UnidadeOrganizacionais.Any(d => d == escala.UnidadeOrganizacionalId))
+                {
+                    throw new ApplicationException("Sem permissão.");
+                }
+
                 Expression<Func<VinculoDeTrabalho, bool>> filtro = 
-                    c => c.OrganizacaoId == dadosDaSessao.OrganizacaoId &&
+                    c => 
+                    c.OrganizacaoId == dadosDaSessao.OrganizacaoId &&
+                    c.Lotacoes != null &&
                     c.Lotacoes.Any(d => d.UnidadeOrganizacionalId == escala.UnidadeOrganizacionalId);
 
-                if (dadosDaSessao.UnidadeOrganizacionais.Any())
-                    filtro = ConcatenadorDeExpressao.Concatenar(filtro,
-                        c => c.Lotacoes.Any(d => dadosDaSessao.UnidadeOrganizacionais.Contains(d.UnidadeOrganizacionalId)));
+                var listaDeServidores = _servicoVinculoDeTrabalho.ObtenhaLista(filtro);
+                if (!listaDeServidores.Any())
+                    throw new ApplicationException($"Não existem {HttpContext.NomenclaturaServidores().ToLower()} com lotações na unidade para ser alocados na escala.");
 
                 ViewBag.Servidores = new SelectList(
-                    _servicoVinculoDeTrabalho
-                        .ObtenhaLista(filtro)
+                        listaDeServidores
                         .OrderBy(c => c.Servidor.Nome)
                         .Select(c => new CodigoDescricaoDTO(c.Id, $"[{c.Matricula}] {c.Servidor.Nome}")),
                     "Codigo",
@@ -205,7 +214,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public ActionResult RemoverServidorCiclo(int id)
         {
             _servico.RemoverEscalaServidor(id);
-            return Json(new { sucesso = true, mensagem = "O servidor foi removido." });
+            return Json(new { sucesso = true, mensagem = $"O {HttpContext.NomenclaturaServidor().ToLower()} foi removido." });
         }
 
         [HttpGet]
@@ -259,7 +268,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 var duplicateEntryText = "duplicate entry";
                 if (ex.Message.ToLower().Contains(duplicateEntryText) || (ex.InnerException != null && ex.InnerException.Message.ToLower().Contains(duplicateEntryText)))
                 {
-                    return Json(new { sucesso = false, mensagem = "Já existe um registro para esse servidor nesse dia e nessa escala." });
+                    return Json(new { sucesso = false, mensagem = $"Já existe um registro para esse {HttpContext.NomenclaturaServidor().ToLower()} nesse dia e nessa escala." });
                 }
 
                 throw ex;

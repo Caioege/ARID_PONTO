@@ -86,5 +86,59 @@ namespace AriD.Servicos.Extensao
 
             return string.Empty;
         }
+
+        public static string NomenclaturaSingular(this Enum value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            Type type = value.GetType();
+
+            string name = Enum.GetName(type, value);
+
+            if (name != null)
+            {
+                FieldInfo field = type.GetField(name);
+                if (field != null)
+                {
+                    NomenclaturaSingularAttribute attribute = field.GetCustomAttribute<NomenclaturaSingularAttribute>();
+                    if (attribute != null)
+                    {
+                        return attribute.Descricao;
+                    }
+                }
+            }
+
+            return name ?? string.Empty;
+        }
+
+        public static string NomenclaturaPlural(this Enum value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            Type type = value.GetType();
+
+            string name = Enum.GetName(type, value);
+
+            if (name != null)
+            {
+                FieldInfo field = type.GetField(name);
+                if (field != null)
+                {
+                    NomenclaturaPluralAttribute attribute = field.GetCustomAttribute<NomenclaturaPluralAttribute>();
+                    if (attribute != null)
+                    {
+                        return attribute.Descricao;
+                    }
+                }
+            }
+
+            return name ?? string.Empty;
+        }
     }
 }

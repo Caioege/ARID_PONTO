@@ -57,7 +57,7 @@ namespace AriD.Servicos.Servicos
             );
         }
 
-        public void Remover(T entidade)
+        public void Remover(T entidade, bool commit = true)
         {
             _repositorio.Remover(entidade);
             _repositorio.Commit();

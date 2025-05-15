@@ -79,7 +79,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int id = organizacao.Id;
 
             if (organizacao.Id == 0)
+            {
+                organizacao.NomenclaturaServidor = eNomenclaturaServidor.Servidores;
                 id = _servico.Adicionar(organizacao);
+            }
             else
                 _servico.Atualizar(organizacao);
 
@@ -100,6 +103,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             dadosDaSessao.OrganizacaoId = id;
             dadosDaSessao.OrganizacaoNome = organizacao.Nome;
             dadosDaSessao.Perfil = ePerfilDeAcesso.Organizacao;
+            dadosDaSessao.NomenclaturaServidor = organizacao.NomenclaturaServidor;
             this.Autenticar(dadosDaSessao);
 
             return Json(new { sucesso = true });

@@ -1,4 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Enumeradores;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AriD.BibliotecaDeClasses.Entidades
@@ -13,5 +15,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [ForeignKey(nameof(EnderecoId))]
         public virtual Endereco Endereco { get; set; }
+
+        [Required]
+        public eNomenclaturaServidor NomenclaturaServidor { get; set; }
     }
 }

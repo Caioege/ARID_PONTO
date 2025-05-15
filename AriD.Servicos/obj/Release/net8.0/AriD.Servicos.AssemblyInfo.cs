@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AriD.Servicos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a002c2c9b666c6289fef3820320716f218904a1a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9277ebd0fbe7ab0b11b4c0928a9f2a37e9d632bb")]
 [assembly: System.Reflection.AssemblyProductAttribute("AriD.Servicos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AriD.Servicos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
