@@ -2550,8 +2550,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>yr7m33rmqx</Fingerprint>
-      <Integrity>IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ=</Integrity>
+      <Fingerprint>jg1cjgzkzn</Fingerprint>
+      <Integrity>Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))</OriginalItemSpec>
@@ -2568,8 +2568,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>bbgxc7lxsq</Fingerprint>
-      <Integrity>KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE=</Integrity>
+      <Fingerprint>ymd8ug3u73</Fingerprint>
+      <Integrity>CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</OriginalItemSpec>
@@ -2658,8 +2658,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>jmecey5z7f</Fingerprint>
-      <Integrity>C3vq/OvUsUEM/laHMr6qtuFNNtLNHAZlcTMk/OGYuDo=</Integrity>
+      <Fingerprint>lsxi2cz6qy</Fingerprint>
+      <Integrity>lR03dAPRbjJN4j9bKR/qhxMEj4Qod6rbD65p4CDpDVQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\HorarioDeTrabalho\alterar.js'))</OriginalItemSpec>

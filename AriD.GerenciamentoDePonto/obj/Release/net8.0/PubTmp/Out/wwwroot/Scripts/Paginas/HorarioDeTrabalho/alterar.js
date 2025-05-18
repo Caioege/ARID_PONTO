@@ -63,7 +63,7 @@ function assineEventoBotaoSalvar() {
             formulario,
             function (data) {
                 MensagemRodape('success', data.mensagem);
-                $('#Id').val(data.id);
+                CarregarPagina('/HorarioDeTrabalho/Alterar/' + data.id);
             });
     });
 }

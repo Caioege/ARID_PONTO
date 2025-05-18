@@ -60,5 +60,16 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<CodigoDescricaoDTO> ObtenhaListaDeUnidadesLotadasNoDepartamento(
             int organizacaoId,
             int departamentoId);
+
+        void MovimentarRegistro(
+            int id,
+            string classe,
+            bool avancar);
+
+        void ResetarFolhaDePonto(
+            int organizacaoId,
+            int vinculoDeTrabalhoId,
+            int unidadeLotacaoId,
+            MesAno mesAno);
     }
 }

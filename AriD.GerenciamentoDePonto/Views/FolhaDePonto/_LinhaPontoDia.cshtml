@@ -41,6 +41,8 @@
 
     var eventos = (List<EventoAnual>)ViewBag.Eventos;
     var eventoDoDia = eventos.FirstOrDefault(c => c.Data.Date == Model.Data.Date);
+
+    var podeMoverRegistros = @Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.MoverRegistros);
 }
 
 <tr id="linha-@(Model.VinculoDeTrabalhoId)-@(Model.Data.Ticks)" class="linha-servidor @(exibirNomeServidor ? string.Empty : "linha-dia") @(classeAfastamento) @(classePontoFechado)" data-vinculodetrabalhoid="@Model.VinculoDeTrabalhoId" title="@tituloLinha">
@@ -70,44 +72,44 @@
     else 
     {
         @* PERÍODO 1 *@
-        <td class="text-center @classeInteracao entrada1" data-justificativaid="@Model.JustificativaPeriodo1Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada1')">
+        <td class="text-center @classeInteracao entrada1 @(podeMoverRegistros && Model.PossuiRegistroNaEntrada(1) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada1" data-justificativaid="@Model.JustificativaPeriodo1Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada1')">
             @Model.DescricaoEntrada(1)
         </td>
-        <td class="text-center @classeInteracao saida1" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida1')">
+        <td class="text-center @classeInteracao saida1 @(podeMoverRegistros && Model.PossuiRegistroNaSaida(1) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="saida1" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida1')">
             @Model.DescricaoSaida(1)
         </td>
 
         @* PERÍODO 2 *@
-        <td class="text-center @classeInteracao entrada2" data-justificativaid="@Model.JustificativaPeriodo2Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada2')">
+        <td class="text-center @classeInteracao entrada2 @(podeMoverRegistros && Model.PossuiRegistroNaEntrada(2) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada2" data-justificativaid="@Model.JustificativaPeriodo2Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada2')">
             @Model.DescricaoEntrada(2)
         </td>
-        <td class="text-center @classeInteracao saida2" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida2')">
+        <td class="text-center @classeInteracao saida2 @(podeMoverRegistros && Model.PossuiRegistroNaSaida(2) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="saida2" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida2')">
             @Model.DescricaoSaida(2)
         </td>
 
         @* PERÍODO 3 *@
-        <td class="text-center @classeInteracao entrada3" data-justificativaid="@Model.JustificativaPeriodo3Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada3')">
+        <td class="text-center @classeInteracao entrada3 @(podeMoverRegistros && Model.PossuiRegistroNaEntrada(3) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada3" data-justificativaid="@Model.JustificativaPeriodo3Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada3')">
             @Model.DescricaoEntrada(3)
         </td>
-        <td class="text-center @classeInteracao saida3" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida3')">
+        <td class="text-center @classeInteracao saida3 @(podeMoverRegistros && Model.PossuiRegistroNaSaida(3) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="saida3" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida3')">
             @Model.DescricaoSaida(3)
         </td>
 
         @if (horarioDeTrabalho.UtilizaCincoPeriodos)
         {
             @* PERÍODO 4 *@
-            <td class="text-center @classeInteracao entrada4" data-justificativaid="@Model.JustificativaPeriodo4Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada4')">
+            <td class="text-center @classeInteracao entrada4 @(podeMoverRegistros && Model.PossuiRegistroNaEntrada(4) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada4" data-justificativaid="@Model.JustificativaPeriodo4Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada4')">
                 @Model.DescricaoEntrada(4)
             </td>
-            <td class="text-center @classeInteracao saida4" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida4')">
+            <td class="text-center @classeInteracao saida4 @(podeMoverRegistros && Model.PossuiRegistroNaSaida(4) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="saida4" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida4')">
                 @Model.DescricaoSaida(4)
             </td>
 
             @* PERÍODO 5 *@
-            <td class="text-center @classeInteracao entrada5" data-justificativaid="@Model.JustificativaPeriodo5Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada5')">
+            <td class="text-center @classeInteracao entrada5 @(podeMoverRegistros && Model.PossuiRegistroNaEntrada(5) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada5" data-justificativaid="@Model.JustificativaPeriodo5Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada5')">
                 @Model.DescricaoEntrada(5)
             </td>
-            <td class="text-center @classeInteracao saida5" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida5')">
+            <td class="text-center @classeInteracao saida5 @(podeMoverRegistros && Model.PossuiRegistroNaSaida(5) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="saida5" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'saida5')">
                 @Model.DescricaoSaida(5)
             </td>
         }

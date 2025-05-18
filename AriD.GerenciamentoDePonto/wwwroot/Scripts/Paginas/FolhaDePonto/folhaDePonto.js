@@ -86,6 +86,14 @@ function carregarFolhaDePonto(mensagem) {
 
 				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
 
+				if (!data.exibirAbrir) {
+					$('#btn-resetar').attr("style", "display: inline !important; margin-right: 5px;");
+				} else {
+					$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+				}
+
+				assineEventoAvancarRecuarPonto();
+
 				ajustarExibicaoBotaoFecharPonto(data.exibirAcoes && !data.exibirAbrir);
 				ajustarExibicaoBotaoAbrirPonto(data.exibirAcoes && data.exibirAbrir);
 			} else {
@@ -159,4 +167,35 @@ function imprimirFolhaDePonto() {
 				MensagemRodape('warning', data.mensagem);
 			}
 		});
+}
+
+function resetarFolhaDePonto() {
+	Swal.fire({
+		html: "Tem certeza que deseja restaurar essa folha de ponto?<br><br><b>Todas as alterações manuais e lançamentos serão removidos.</b>",
+		icon: "question",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "SIM",
+		cancelButtonText: 'NÃO'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			let unidadeId = $('#UnidadeOrganizacionalId').val() || '';
+			let vinculoId = $('#VinculoDeTrabalhoId').val() || '';
+			let mesAno = $('#MesDeReferencia').val() || '';
+
+			RequisicaoAjaxComCarregamento(
+				'/FolhaDePonto/ResetarFolha',
+				'POST',
+				{ vinculoDeTrabalhoId: vinculoId, mesDeReferencia: mesAno, unidadeId },
+				function (data) {
+					if (data.sucesso) {
+						MensagemRodape('success', data.mensagem);
+						carregarFolhaDePonto('Recarregando folha.');
+					} else {
+						MensagemRodape('warning', data.mensagem);
+					}
+				});
+		}
+	});
 }

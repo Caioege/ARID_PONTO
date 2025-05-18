@@ -659,6 +659,51 @@
       ]
     },
     {
+      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.e00oa2vcma.js",
+      "AssetFile": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5211"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 18 May 2025 19:41:16 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "e00oa2vcma"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM="
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js"
+        }
+      ]
+    },
+    {
       "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js",
       "AssetFile": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js",
       "Selectors": [],
@@ -673,7 +718,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5080"
+          "Value": "5211"
         },
         {
           "Name": "Content-Type",
@@ -681,107 +726,17 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ=\""
+          "Value": "\"8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
+          "Value": "Sun, 18 May 2025 19:41:16 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ="
-        }
-      ]
-    },
-    {
-      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.yr7m33rmqx.js",
-      "AssetFile": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "5080"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 16:21:44 GMT"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "yr7m33rmqx"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-IjBlN8U/4DDHFyPHzEu3CrnQfaSrw3R+zeCUpO0GifQ="
-        },
-        {
-          "Name": "label",
-          "Value": "Scripts/Paginas/FolhaDePonto/folhaDePonto.js"
-        }
-      ]
-    },
-    {
-      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.bbgxc7lxsq.js",
-      "AssetFile": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "2170"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "bbgxc7lxsq"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE="
-        },
-        {
-          "Name": "label",
-          "Value": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.js"
+          "Value": "sha256-8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM="
         }
       ]
     },
@@ -800,7 +755,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2170"
+          "Value": "4623"
         },
         {
           "Name": "Content-Type",
@@ -808,17 +763,62 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE=\""
+          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 02 Mar 2025 15:25:24 GMT"
+          "Value": "Sun, 18 May 2025 19:25:55 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-KZdDyK5SLk/1nRY+HCZNG1vT8PAo+i2BX6Y3oATZbEE="
+          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+        }
+      ]
+    },
+    {
+      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ymd8ug3u73.js",
+      "AssetFile": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4623"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ymd8ug3u73"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+        },
+        {
+          "Name": "label",
+          "Value": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.js"
         }
       ]
     },

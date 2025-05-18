@@ -83,6 +83,44 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(AfastamentoId))]
         public virtual Afastamento Afastamento { get; set; }
 
+        public bool PossuiRegistroNaEntrada(int periodo)
+        {
+            switch (periodo)
+            {
+                case 1:
+                    return Entrada1.HasValue;
+                case 2:
+                    return Entrada2.HasValue;
+                case 3:
+                    return Entrada3.HasValue;
+                case 4:
+                    return Entrada4.HasValue;
+                case 5:
+                    return Entrada5.HasValue;
+                default:
+                    return false;
+            }
+        }
+
+        public bool PossuiRegistroNaSaida(int periodo)
+        {
+            switch (periodo)
+            {
+                case 1:
+                    return Saida1.HasValue;
+                case 2:
+                    return Saida2.HasValue;
+                case 3:
+                    return Saida3.HasValue;
+                case 4:
+                    return Saida4.HasValue;
+                case 5:
+                    return Saida5.HasValue;
+                default:
+                    return false;
+            }
+        }
+
         public string DescricaoEntrada(int periodo)
         {
             if (!string.IsNullOrEmpty(Afastamento?.JustificativaDeAusencia?.Sigla))

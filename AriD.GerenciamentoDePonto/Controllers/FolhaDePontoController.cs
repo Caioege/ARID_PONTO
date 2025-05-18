@@ -280,6 +280,33 @@ namespace AriD.GerenciamentoDePonto.Controllers
             });
         }
 
+        [HttpPost]
+        public ActionResult MovimentarRegistro(int id, string classe, bool avancar)
+        {
+            _servicoDeFolhaDePonto.MovimentarRegistro(id, classe, avancar);
+            return Json(new { sucesso = true, mensagem = "Registro atualizado." });
+        }
+
+        [HttpPost]
+        public ActionResult ResetarFolha(
+            int vinculoDeTrabalhoId,
+            int unidadeId,
+            string mesDeReferencia)
+        {
+            var mesAno = new MesAno(mesDeReferencia);
+
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            _servicoDeFolhaDePonto.ResetarFolhaDePonto(
+                this.DadosDaSessao().OrganizacaoId,
+                vinculoDeTrabalhoId,
+                unidadeId,
+                mesAno);
+
+            return Json(new { sucesso = true, mensagem = "A folha de ponto foi restaurada para a versão inicial." });
+        }
+
         private void ContextoPontoDoDia()
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();

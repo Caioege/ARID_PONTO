@@ -67,3 +67,80 @@ function converterData(data) {
 	const [dia, mes, ano] = data.split("/");
 	return `${ano}-${mes}-${dia}`;
 }
+
+function assineEventoAvancarRecuarPonto() {
+	const popup = document.getElementById("popup");
+	let hideTimeout = null;
+
+	document.querySelectorAll("td.executa-movimentacao").forEach(td => {
+		td.addEventListener("mouseenter", () => {
+			if (hideTimeout) clearTimeout(hideTimeout);
+
+			let jTD = $(td);
+
+			popup.innerHTML = "";
+
+			const isEntrada1 = td.classList.contains("entrada1");
+			const isSaida5 = td.classList.contains("saida5");
+
+			const titulo = document.createElement("div");
+			titulo.style.fontWeight = "bold";
+			titulo.style.marginBottom = "6px";
+			titulo.textContent = td.textContent;
+			popup.appendChild(titulo);
+
+			if (!isSaida5) {
+				const btnAvancar = document.createElement("button");
+				btnAvancar.classList = 'btn btn-primary';
+				btnAvancar.innerHTML = "<i class='bx bx-right-arrow-alt'></i> Avançar";
+				btnAvancar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), true);
+				popup.appendChild(btnAvancar);
+			}
+
+			if (!isEntrada1) {
+				const btnRecuar = document.createElement("button");
+				btnRecuar.classList = 'btn btn-primary';
+				btnRecuar.innerHTML = "<i class='bx bx-left-arrow-alt'></i> Recuar";
+				btnRecuar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), false);
+				popup.appendChild(btnRecuar);
+			}
+
+			popup.classList.remove("oculto");
+
+			const rect = td.getBoundingClientRect();
+			const popupHeight = popup.offsetHeight;
+			const popupWidth = popup.offsetWidth;
+			const verticalOffset = 0;
+
+			popup.style.top = (rect.top + window.scrollY - popupHeight - verticalOffset) + "px";
+			popup.style.left = (rect.left + window.scrollX + rect.width / 2 - popupWidth / 2) + "px";
+		});
+
+		td.addEventListener("mouseleave", () => {
+			hideTimeout = setTimeout(() => {
+				popup.classList.add("oculto");
+			}, 200);
+		});
+	});
+
+	popup.addEventListener("mouseenter", () => {
+		if (hideTimeout) clearTimeout(hideTimeout);
+	});
+
+	popup.addEventListener("mouseleave", () => {
+		popup.classList.add("oculto");
+	});
+}
+
+function executaMovimentacaoRegistro(id, classe, avancar) {
+	RequisicaoAjaxComCarregamento('/FolhaDePonto/MovimentarRegistro',
+		'POST',
+		{ id, classe, avancar },
+		function (data) {
+			if (data.sucesso) {
+				carregarFolhaDePonto('O registro foi atualizado... Recarregando folha.');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
+}

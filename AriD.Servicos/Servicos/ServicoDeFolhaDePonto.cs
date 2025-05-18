@@ -456,51 +456,15 @@ namespace AriD.Servicos.Servicos
         {
             try
             {
-                var vinculoDeTrabalho = _repositorioVinculo.Obtenha(vinculoDeTrabalhoId);
-
-                if (vinculoDeTrabalho.Fim.HasValue && vinculoDeTrabalho.Fim < mesAno.Inicio)
-                    throw new ApplicationException("A data final do vínculo de trabalho é menor que o início do período selecionado.");
-
-                if (!vinculoDeTrabalho.Lotacoes.Any(d => d.UnidadeOrganizacionalId == unidadeLotacaoId && (!d.Saida.HasValue || d.Saida > mesAno.Inicio)))
-                    throw new ApplicationException("A data final da lotação é menor que o início do período selecionado.");
-
-                DateTime inicio = mesAno.Inicio;
-                DateTime fim = mesAno.Fim;
-
-                if (vinculoDeTrabalho.Inicio > inicio)
-                    inicio = vinculoDeTrabalho.Inicio;
-
-                if (vinculoDeTrabalho.Fim.HasValue && vinculoDeTrabalho.Fim < fim)
-                    fim = vinculoDeTrabalho.Fim.Value;
-
-                var ultimaLotacao = vinculoDeTrabalho
-                    .Lotacoes
-                    .OrderBy(c => c.Entrada)
-                    .Last(c => c.UnidadeOrganizacionalId == unidadeLotacaoId);
-
-                if (ultimaLotacao.Entrada > inicio)
-                    inicio = ultimaLotacao.Entrada;
-
-                if (ultimaLotacao.Saida.HasValue && ultimaLotacao.Saida < fim)
-                    fim = ultimaLotacao.Saida.Value;
-
-                var query = @"select	
-	                            *
-                            from pontododia
-                            where
-	                            OrganizacaoId = @ORGANIZACAOID
-	                            and VinculoDeTrabalhoId = @VINCULOID
-	                            and date(Data) >= date(@INICIO)
-                                and date(Data) <= date(@FIM)
-                            order by Data";
-
-                var pontosDoPeriodo = _repositorio.ConsultaDapper<PontoDoDia>(query, new
-                {
-                    @ORGANIZACAOID = organizacaoId,
-                    @VINCULOID = vinculoDeTrabalhoId,
-                    @INICIO = inicio,
-                    @FIM = fim
-                });
+                ObtenhaRegistrosDePonto(
+                    organizacaoId, 
+                    vinculoDeTrabalhoId, 
+                    unidadeLotacaoId, 
+                    mesAno, 
+                    out var vinculoDeTrabalho, 
+                    out var inicio, 
+                    out var  fim, 
+                    out var pontosDoPeriodo);
 
                 List<RegistroDePonto> registrosDePonto = ObtenhaRegistrosDePontoDoPeriodo(vinculoDeTrabalhoId, unidadeLotacaoId, inicio, fim);
                 List<EscalaDoServidor> escalasDoPeriodo = ObtenhaEscalasDoServidorNoPeriodo(vinculoDeTrabalhoId, inicio, fim);
@@ -580,8 +544,8 @@ namespace AriD.Servicos.Servicos
 
                     if (pontoDoDia == null)
                     {
-                        pontoDoDia = new() 
-                            { Data = dataAuxiliar, VinculoDeTrabalhoId = vinculoDeTrabalhoId, OrganizacaoId = organizacaoId };
+                        pontoDoDia = new()
+                        { Data = dataAuxiliar, VinculoDeTrabalhoId = vinculoDeTrabalhoId, OrganizacaoId = organizacaoId };
                         pontosDoPeriodo.Add(pontoDoDia);
                     }
 
@@ -660,6 +624,85 @@ namespace AriD.Servicos.Servicos
             {
                 throw;
             }
+        }
+
+        public void ResetarFolhaDePonto(
+            int organizacaoId,
+            int vinculoDeTrabalhoId,
+            int unidadeLotacaoId,
+            MesAno mesAno)
+        {
+            try
+            {
+                ObtenhaRegistrosDePonto(
+                    organizacaoId,
+                    vinculoDeTrabalhoId,
+                    unidadeLotacaoId,
+                    mesAno,
+                    out var vinculoDeTrabalho,
+                    out var inicio,
+                    out var fim,
+                    out var pontosDoPeriodo);
+
+                foreach (var dia in pontosDoPeriodo)
+                {
+                    var registroPersistido = _repositorio.Obtenha(dia.Id);
+                    _repositorio.Remover(registroPersistido);
+                }
+
+                _repositorio.Commit();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void ObtenhaRegistrosDePonto(int organizacaoId, int vinculoDeTrabalhoId, int unidadeLotacaoId, MesAno mesAno, out VinculoDeTrabalho vinculoDeTrabalho, out DateTime inicio, out DateTime fim, out List<PontoDoDia> pontosDoPeriodo)
+        {
+            vinculoDeTrabalho = _repositorioVinculo.Obtenha(vinculoDeTrabalhoId);
+            if (vinculoDeTrabalho.Fim.HasValue && vinculoDeTrabalho.Fim < mesAno.Inicio)
+                throw new ApplicationException("A data final do vínculo de trabalho é menor que o início do período selecionado.");
+
+            if (!vinculoDeTrabalho.Lotacoes.Any(d => d.UnidadeOrganizacionalId == unidadeLotacaoId && (!d.Saida.HasValue || d.Saida > mesAno.Inicio)))
+                throw new ApplicationException("A data final da lotação é menor que o início do período selecionado.");
+
+            inicio = mesAno.Inicio;
+            fim = mesAno.Fim;
+            if (vinculoDeTrabalho.Inicio > inicio)
+                inicio = vinculoDeTrabalho.Inicio;
+
+            if (vinculoDeTrabalho.Fim.HasValue && vinculoDeTrabalho.Fim < fim)
+                fim = vinculoDeTrabalho.Fim.Value;
+
+            var ultimaLotacao = vinculoDeTrabalho
+                .Lotacoes
+                .OrderBy(c => c.Entrada)
+                .Last(c => c.UnidadeOrganizacionalId == unidadeLotacaoId);
+
+            if (ultimaLotacao.Entrada > inicio)
+                inicio = ultimaLotacao.Entrada;
+
+            if (ultimaLotacao.Saida.HasValue && ultimaLotacao.Saida < fim)
+                fim = ultimaLotacao.Saida.Value;
+
+            var query = @"select	
+	                            *
+                            from pontododia
+                            where
+	                            OrganizacaoId = @ORGANIZACAOID
+	                            and VinculoDeTrabalhoId = @VINCULOID
+	                            and date(Data) >= date(@INICIO)
+                                and date(Data) <= date(@FIM)
+                            order by Data";
+
+            pontosDoPeriodo = _repositorio.ConsultaDapper<PontoDoDia>(query, new
+            {
+                @ORGANIZACAOID = organizacaoId,
+                @VINCULOID = vinculoDeTrabalhoId,
+                @INICIO = inicio,
+                @FIM = fim
+            });
         }
 
         public List<EventoAnual> EventosDaFolhaDePonto(
@@ -1085,6 +1128,148 @@ namespace AriD.Servicos.Servicos
                 @INICIO = inicio,
                 @FIM = fim
             });
+        }
+
+        public void MovimentarRegistro(
+            int id, 
+            string classe,
+            bool avancar)
+        {
+            try
+            {
+                var pontoDia = _repositorio.Obtenha(id);
+                if (pontoDia == null)
+                    throw new Exception("Ponto dia não encontrado.");
+
+                if (string.IsNullOrEmpty(classe))
+                    throw new Exception("Classe não informada.");
+
+                var entrada1 = pontoDia.Entrada1;
+                var saida1 = pontoDia.Saida1;
+
+                var entrada2 = pontoDia.Entrada2;
+                var saida2 = pontoDia.Saida2;
+
+                var entrada3 = pontoDia.Entrada3;
+                var saida3 = pontoDia.Saida3;
+
+                var entrada4 = pontoDia.Entrada4;
+                var saida4 = pontoDia.Saida4;
+
+                var entrada5 = pontoDia.Entrada5;
+                var saida5 = pontoDia.Saida5;
+
+                switch (classe)
+                {
+                    case "entrada1":
+                        pontoDia.Entrada1 = saida1;
+                        pontoDia.Saida1 = entrada1;
+                        break;
+
+                    case "saida1":
+                        if (avancar)
+                        {
+                            pontoDia.Entrada2 = saida1;
+                            pontoDia.Saida1 = entrada2;
+                        }
+                        else
+                        {
+                            pontoDia.Entrada1 = saida1;
+                            pontoDia.Saida1 = entrada1;
+                        }
+                        break;
+
+                    case "entrada2":
+                        if (avancar)
+                        {
+                            pontoDia.Saida2 = entrada2;
+                            pontoDia.Entrada2 = saida2;
+                        }
+                        else
+                        {
+                            pontoDia.Saida1 = entrada2;
+                            pontoDia.Entrada2 = saida1;
+                        }
+                        break;
+
+                    case "saida2":
+                        if (avancar)
+                        {
+                            pontoDia.Entrada3 = saida2;
+                            pontoDia.Saida2 = entrada3;
+                        }
+                        else
+                        {
+                            pontoDia.Saida2 = entrada2;
+                            pontoDia.Entrada2 = saida2;
+                        }
+                        break;
+
+                    case "entrada3":
+                        if (avancar)
+                        {
+                            pontoDia.Saida3 = entrada3;
+                            pontoDia.Entrada3 = saida3;
+                        }
+                        else
+                        {
+                            pontoDia.Saida2 = entrada3;
+                            pontoDia.Entrada3 = saida2;
+                        }
+                        break;
+
+                    case "entrada4":
+                        if (avancar)
+                        {
+                            pontoDia.Entrada4 = saida4;
+                            pontoDia.Saida4 = entrada4;
+                        }
+                        else
+                        {
+                            pontoDia.Saida3 = entrada4;
+                            pontoDia.Entrada4 = saida3;
+                        }
+                        break;
+
+                    case "saida4":
+                        if (avancar)
+                        {
+                            pontoDia.Entrada5 = saida4;
+                            pontoDia.Saida4 = entrada5;
+                        }
+                        else
+                        {
+                            pontoDia.Entrada4 = saida4;
+                            pontoDia.Saida4 = entrada4;
+                        }
+                        break;
+
+                    case "entrada5":
+                        if (avancar)
+                        {
+                            pontoDia.Saida5 = entrada5;
+                            pontoDia.Entrada5 = saida5;
+                        }
+                        else
+                        {
+                            pontoDia.Saida4 = entrada5;
+                            pontoDia.Entrada5 = saida4;
+                        }
+                        break;
+
+                    case "saida5":
+                        pontoDia.Entrada5 = saida5;
+                        pontoDia.Saida5 = entrada5;
+                        break;
+                }
+
+                _repositorio.Atualizar(pontoDia);
+                _repositorio.Commit();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
