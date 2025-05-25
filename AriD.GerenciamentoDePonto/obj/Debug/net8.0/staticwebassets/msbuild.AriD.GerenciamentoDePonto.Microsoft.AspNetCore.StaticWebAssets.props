@@ -2550,8 +2550,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>e00oa2vcma</Fingerprint>
-      <Integrity>8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=</Integrity>
+      <Fingerprint>jg1cjgzkzn</Fingerprint>
+      <Integrity>Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))</OriginalItemSpec>

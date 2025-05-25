@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "K+bDSozqOzPJCV/v+ZIncjpGQqqjJzMZ8SnpoJxISZ4=",
+  "Hash": "GChkSmhSB3u/Ei5pThyL86R0SM2FZrZm9MbFKHZDVjQ=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -3013,8 +3013,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "e00oa2vcma",
-      "Integrity": "8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=",
+      "Fingerprint": "jg1cjgzkzn",
+      "Integrity": "Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js"
@@ -3842,7 +3842,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 10 May 2025 20:59:18 GMT"
+          "Value": "Mon, 19 May 2025 23:48:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3887,7 +3887,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 10 May 2025 20:59:18 GMT"
+          "Value": "Mon, 19 May 2025 23:48:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3932,7 +3932,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 10 May 2025 20:59:18 GMT"
+          "Value": "Mon, 19 May 2025 23:48:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3969,7 +3969,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 10 May 2025 20:59:18 GMT"
+          "Value": "Mon, 19 May 2025 23:48:20 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15464,7 +15464,7 @@
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.e00oa2vcma.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.jg1cjgzkzn.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15474,7 +15474,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5211"
+          "Value": "6346"
         },
         {
           "Name": "Content-Type",
@@ -15482,11 +15482,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=\""
+          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:41:16 GMT"
+          "Value": "Sun, 18 May 2025 19:48:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15496,7 +15496,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "e00oa2vcma"
+          "Value": "jg1cjgzkzn"
         },
         {
           "Name": "label",
@@ -15504,7 +15504,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM="
+          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
         }
       ]
     },
@@ -15519,7 +15519,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5211"
+          "Value": "6346"
         },
         {
           "Name": "Content-Type",
@@ -15527,11 +15527,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM=\""
+          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:41:16 GMT"
+          "Value": "Sun, 18 May 2025 19:48:39 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15541,7 +15541,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-8mf9PdnGoJu8Q5YeiVMyj3nYDeXiijkP0LqqwjMvAkM="
+          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
         }
       ]
     },

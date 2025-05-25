@@ -554,6 +554,33 @@ namespace AriD.Servicos.Servicos
                         .OrderBy(r => r.DataHoraRegistro)
                     .ToList();
 
+                    TimeSpan TruncarSegundos(TimeSpan horario) => new(horario.Hours, horario.Minutes, 0);
+
+                    var registrosJaUtilizados = new List<TimeSpan>();
+                    if (pontoDoDia.Entrada1.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Entrada1.Value));
+                    if (pontoDoDia.Entrada2.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Entrada2.Value));
+                    if (pontoDoDia.Entrada3.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Entrada3.Value));
+                    if (pontoDoDia.Entrada4.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Entrada4.Value));
+                    if (pontoDoDia.Entrada5.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Entrada5.Value));
+                    if (pontoDoDia.Saida1.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Saida1.Value));
+                    if (pontoDoDia.Saida2.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Saida2.Value));
+                    if (pontoDoDia.Saida3.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Saida3.Value));
+                    if (pontoDoDia.Saida4.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Saida4.Value));
+                    if (pontoDoDia.Saida5.HasValue)
+                        registrosJaUtilizados.Add(TruncarSegundos(pontoDoDia.Saida5.Value));
+
+                    if (registrosJaUtilizados.Any())
+                        registrosNoDia.RemoveAll(c => registrosJaUtilizados.Contains(TruncarSegundos(c.DataHoraRegistro.TimeOfDay)));
+
                     pontoDoDia.VinculoDeTrabalhoId = vinculoDeTrabalhoId;
                     pontoDoDia.VinculoDeTrabalho = vinculoDeTrabalho;
 
@@ -572,7 +599,6 @@ namespace AriD.Servicos.Servicos
                     if (pontoDoDia.JustificativaPeriodo5Id.HasValue)
                         pontoDoDia.JustificativaPeriodo5 = _repositorioJustificativa.Obtenha(pontoDoDia.JustificativaPeriodo5Id.Value);
 
-                    /* TODO: Carregar registros de frequência do servidor */
                     if (!pontoDoDia.PontoFechado && !pontoDoDia.DataFutura)
                     {
                         if (afastamento != null)
@@ -581,16 +607,73 @@ namespace AriD.Servicos.Servicos
                         {
                             pontoDoDia.AfastamentoId = null;
 
-                            if (registrosNoDia.Count > 0) pontoDoDia.Entrada1 = registrosNoDia.ElementAtOrDefault(0)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 1) pontoDoDia.Saida1 = registrosNoDia.ElementAtOrDefault(1)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 2) pontoDoDia.Entrada2 = registrosNoDia.ElementAtOrDefault(2)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 3) pontoDoDia.Saida2 = registrosNoDia.ElementAtOrDefault(3)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 4) pontoDoDia.Entrada3 = registrosNoDia.ElementAtOrDefault(4)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 5) pontoDoDia.Saida3 = registrosNoDia.ElementAtOrDefault(5)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 6) pontoDoDia.Entrada4 = registrosNoDia.ElementAtOrDefault(6)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 7) pontoDoDia.Saida4 = registrosNoDia.ElementAtOrDefault(7)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 8) pontoDoDia.Entrada5 = registrosNoDia.ElementAtOrDefault(8)?.DataHoraRegistro.TimeOfDay;
-                            if (registrosNoDia.Count > 9) pontoDoDia.Saida5 = registrosNoDia.ElementAtOrDefault(9)?.DataHoraRegistro.TimeOfDay;
+                            int indexRegistro = 0;
+                            while (registrosNoDia.ElementAtOrDefault(indexRegistro) != null)
+                            {
+                                var registroNaPosicao = registrosNoDia.ElementAt(indexRegistro);
+
+                                indexRegistro++;
+
+                                if (!pontoDoDia.Entrada1.HasValue && !pontoDoDia.JustificativaPeriodo1Id.HasValue)
+                                {
+                                    pontoDoDia.Entrada1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Saida1.HasValue && !pontoDoDia.JustificativaPeriodo1Id.HasValue)
+                                {
+                                    pontoDoDia.Saida1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Entrada2.HasValue && !pontoDoDia.JustificativaPeriodo2Id.HasValue)
+                                {
+                                    pontoDoDia.Entrada2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Saida2.HasValue && !pontoDoDia.JustificativaPeriodo2Id.HasValue)
+                                {
+                                    pontoDoDia.Saida2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Entrada3.HasValue && !pontoDoDia.JustificativaPeriodo3Id.HasValue)
+                                {
+                                    pontoDoDia.Entrada3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Saida3.HasValue && !pontoDoDia.JustificativaPeriodo3Id.HasValue)
+                                {
+                                    pontoDoDia.Saida3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Entrada4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
+                                {
+                                    pontoDoDia.Entrada4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Saida4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
+                                {
+                                    pontoDoDia.Saida4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Entrada4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
+                                {
+                                    pontoDoDia.Entrada4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+
+                                if (!pontoDoDia.Saida5.HasValue && !pontoDoDia.JustificativaPeriodo5Id.HasValue)
+                                {
+                                    pontoDoDia.Saida5 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    continue;
+                                }
+                            }
                         }
 
                         CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);

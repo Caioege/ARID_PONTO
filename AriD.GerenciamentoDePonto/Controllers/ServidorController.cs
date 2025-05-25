@@ -70,7 +70,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             try
             {
                 ConfigureDadosDaTabelaPaginada(listaPaginada);
-                return View("_Tabela", listaPaginada);
+                return View("_TabelaPaginada", listaPaginada);
             }
             catch (Exception ex)
             {
