@@ -1,5 +1,111 @@
 [
   {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "Autentique",
+    "RelativePath": "api/App/autentique",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "credenciais",
+        "Type": "AriD.BibliotecaDeClasses.DTO.CredenciaisDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaEventos",
+    "RelativePath": "api/App/eventos/{organizacaoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "organizacaoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "FolhaDePonto",
+    "RelativePath": "api/App/folha-ponto/{vinculoId}/{unidadeId}/{mesDeReferencia}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vinculoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "unidadeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "mesDeReferencia",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaHorariosDeTrabalho",
+    "RelativePath": "api/App/horarios-trabalho/{servidorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "servidorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaUnidades",
+    "RelativePath": "api/App/unidade/{vinculoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vinculoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaVinculos",
+    "RelativePath": "api/App/vinculos/{servidorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "servidorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AriD.GerenciamentoDePonto.Controllers.BaseController",
     "Method": "RenderizarComoString",
     "RelativePath": "api/registro",

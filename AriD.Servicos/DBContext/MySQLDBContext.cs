@@ -44,5 +44,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<RegistroDePonto> RegistroDePonto { get; set; }
         public DbSet<GrupoDePermissao> GrupoDePermissao { get; set; }
         public DbSet<ItemDoGrupoDePermissao> ItemDoGrupoDePermissao { get; set; }
+        public DbSet<RegistroAplicativo> RegistroAplicativo { get; set; }
     }
 }

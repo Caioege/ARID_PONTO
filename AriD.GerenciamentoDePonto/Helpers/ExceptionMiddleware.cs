@@ -28,16 +28,46 @@ public class ExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
 
+        var controllerName = context.GetRouteData()?.Values["controller"]?.ToString()?.ToLower();
+
+        var isAppController = controllerName == "app";
+
+        int statusCode;
+        string mensagem;
+
+        if (isAppController)
+        {
+            if (exception is ApplicationException)
+            {
+                statusCode = (int)HttpStatusCode.BadRequest;
+                mensagem = exception.Message;
+            }
+            else
+            {
+                statusCode = (int)HttpStatusCode.InternalServerError;
+                mensagem = "Ocorreu um erro inesperado. Tente novamente mais tarde.";
+            }
+        }
+        else
+        {
+            statusCode = (int)HttpStatusCode.OK;
+            mensagem = exception is ApplicationException
+                ? exception.Message
+                : exception.Message.ToLower().Contains("cannot delete or update a parent row") ||
+                  (exception.InnerException != null && exception.InnerException.Message.ToLower().Contains("cannot delete or update a parent row"))
+                    ? "Esse item não pode ser alterado/removido pois possui vínculo com outro item."
+                    : "Ocorreu um erro inesperado. Tente novamente mais tarde.";
+        }
+
+        context.Response.StatusCode = statusCode;
+
         var response = new
         {
             sucesso = false,
-            mensagem = exception is ApplicationException
-                ? exception.Message
-                : exception.Message.ToLower().Contains("cannot delete or update a parent row") || (exception.InnerException != null && exception.InnerException.Message.ToLower().Contains("cannot delete or update a parent row")) ? "Esse item não pode ser alterado/removido pois possui vínculo com outro item." : "Ocorreu um erro inesperado. Tente novamente mais tarde."
+            mensagem
         };
-
-        context.Response.StatusCode = (int)HttpStatusCode.OK;
 
         return context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
+
 }

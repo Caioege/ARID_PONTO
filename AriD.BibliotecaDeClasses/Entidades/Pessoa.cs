@@ -18,7 +18,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [MaxLength(10)]
         public string? Rg { get; set; }
 
-        public DateTime? DataDeNascimento { get; set; }
+        [Required]
+        public DateTime DataDeNascimento { get; set; }
 
         [Required]
         public int EnderecoId { get; set; }

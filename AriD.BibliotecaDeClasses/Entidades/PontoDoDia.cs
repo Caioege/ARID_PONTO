@@ -21,28 +21,63 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public TimeSpan? Entrada1 { get; set; }
         public eTipoDeRegistroDePeriodo TipoEntrada1 { get; set; }
+        public int? RegistroDePontoEntrada1Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoEntrada1Id))]
+        public virtual RegistroDePonto RegistroDePontoEntrada1 { get; set; }
+
         public TimeSpan? Saida1 { get; set; }
         public eTipoDeRegistroDePeriodo TipoSaida1 { get; set; }
+        public int? RegistroDePontoSaida1Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoSaida1Id))]
+        public virtual RegistroDePonto RegistroDePontoSaida1 { get; set; }
 
         public TimeSpan? Entrada2 { get; set; }
         public eTipoDeRegistroDePeriodo TipoEntrada2 { get; set; }
+        public int? RegistroDePontoEntrada2Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoEntrada2Id))]
+        public virtual RegistroDePonto RegistroDePontoEntrada2 { get; set; }
+
         public TimeSpan? Saida2 { get; set; }
         public eTipoDeRegistroDePeriodo TipoSaida2 { get; set; }
+        public int? RegistroDePontoSaida2Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoSaida2Id))]
+        public virtual RegistroDePonto RegistroDePontoSaida2 { get; set; }
 
         public TimeSpan? Entrada3 { get; set; }
         public eTipoDeRegistroDePeriodo TipoEntrada3 { get; set; }
+        public int? RegistroDePontoEntrada3Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoEntrada3Id))]
+        public virtual RegistroDePonto RegistroDePontoEntrada3 { get; set; }
+
         public TimeSpan? Saida3 { get; set; }
         public eTipoDeRegistroDePeriodo TipoSaida3 { get; set; }
+        public int? RegistroDePontoSaida3Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoSaida3Id))]
+        public virtual RegistroDePonto RegistroDePontoSaida3 { get; set; }
 
         public TimeSpan? Entrada4 { get; set; }
         public eTipoDeRegistroDePeriodo TipoEntrada4 { get; set; }
+        public int? RegistroDePontoEntrada4Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoEntrada4Id))]
+        public virtual RegistroDePonto RegistroDePontoEntrada4 { get; set; }
+
         public TimeSpan? Saida4 { get; set; }
         public eTipoDeRegistroDePeriodo TipoSaida4 { get; set; }
+        public int? RegistroDePontoSaida4Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoSaida4Id))]
+        public virtual RegistroDePonto RegistroDePontoSaida4 { get; set; }
 
         public TimeSpan? Entrada5 { get; set; }
         public eTipoDeRegistroDePeriodo TipoEntrada5 { get; set; }
+        public int? RegistroDePontoEntrada5Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoEntrada5Id))]
+        public virtual RegistroDePonto RegistroDePontoEntrada5 { get; set; }
+
         public TimeSpan? Saida5 { get; set; }
         public eTipoDeRegistroDePeriodo TipoSaida5 { get; set; }
+        public int? RegistroDePontoSaida5Id { get; set; }
+        [ForeignKey(nameof(RegistroDePontoSaida5Id))]
+        public virtual RegistroDePonto RegistroDePontoSaida5 { get; set; }
 
         public TimeSpan? Abono { get; set; }
 

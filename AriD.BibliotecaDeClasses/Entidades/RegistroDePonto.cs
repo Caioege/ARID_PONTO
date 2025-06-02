@@ -29,5 +29,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public virtual Usuario UsuarioImportacao { get; set; }
 
         public DateTime? DataImportacao { get; set; }
+
+        public int? RegistroAplicativoId { get; set; }
+        [ForeignKey(nameof(RegistroAplicativoId))]
+        public virtual RegistroAplicativo RegistroAplicativo { get; set; }
     }
 }

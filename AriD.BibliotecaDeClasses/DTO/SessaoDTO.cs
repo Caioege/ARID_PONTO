@@ -4,6 +4,8 @@ namespace AriD.BibliotecaDeClasses.DTO
 {
     public class SessaoDTO
     {
+        public SessaoDTO() { }
+
         public SessaoDTO(
             int usuarioId,
             string usuarioNome,

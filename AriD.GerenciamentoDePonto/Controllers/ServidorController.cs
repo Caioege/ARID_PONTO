@@ -96,7 +96,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
-                return View(_servico.Obtenha(id));
+                var servidor = _servico.Obtenha(id);
+                return View(servidor);
             }
             catch (Exception ex)
             {

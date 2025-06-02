@@ -11,6 +11,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AppCorsPolicy", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(typeof(RequestAuthenticationFilter));
@@ -46,8 +57,12 @@ builder.Services.AddScoped(typeof(IServicoDeEscala), typeof(ServicoDeEscala));
 builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegistroDePonto));
 builder.Services.AddScoped(typeof(IServicoDeArquivoFonteDeDados), typeof(ServicoDeArquivoFonteDeDados));
 builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboard));
+builder.Services.AddScoped(typeof(IServicoDeAplicativo), typeof(ServicoDeAplicativo));
 
 var app = builder.Build();
+
+app.UseCors("AppCorsPolicy");
+
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsDevelopment())

@@ -1074,8 +1074,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>i0nd551m60</Fingerprint>
-      <Integrity>PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY=</Integrity>
+      <Fingerprint>4k7tl4w8u3</Fingerprint>
+      <Integrity>hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\organizacao\1\1.png'))</OriginalItemSpec>

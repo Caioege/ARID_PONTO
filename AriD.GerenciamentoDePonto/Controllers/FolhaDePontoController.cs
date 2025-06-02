@@ -264,6 +264,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 
             var relatorio = RelatorioFolhaDePonto(
+                HttpContext.DadosDaSessao(),
                 vinculoDeTrabalho,
                 mesAno,
                 eventos,
@@ -328,14 +329,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
-        private byte[] RelatorioFolhaDePonto(
+        public static byte[] RelatorioFolhaDePonto(
+            SessaoDTO dadosDaSessao,
             VinculoDeTrabalho vinculoDeTrabalho,
             MesAno mesAno,
             List<EventoAnual> eventos,
             List<PontoDoDia> listaDePonto)
         {
-            var dadosDaSessao = HttpContext.DadosDaSessao();
-
             var stream = new MemoryStream();
 
             var writer = new PdfWriter(stream);
@@ -363,7 +363,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .SetTextAlignment(TextAlignment.LEFT)
                     .SetFixedLeading(9f)
                     .SetFontSize(10f)
-                    .Add(new Text($"{HttpContext.NomenclaturaServidor()}: ").SetBold())
+                    .Add(new Text($"{dadosDaSessao.NomenclaturaServidor.NomenclaturaSingular()}: ").SetBold())
                     .Add(new Text(vinculoDeTrabalho.Servidor.Nome)))
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.LEFT)
@@ -682,7 +682,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return contentType;
         }
 
-        private void AdicioneCabecalho(
+        private static void AdicioneCabecalho(
             Document document,
             int organizacaoId,
             string organizacaoNome)

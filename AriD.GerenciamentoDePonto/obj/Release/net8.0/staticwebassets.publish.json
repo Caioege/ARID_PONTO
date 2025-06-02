@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "E/NNM6uyyFf84K09Q23iubgtIL68moTexkFiGEmvJUE=",
+  "Hash": "2gyudYIbd8lEzlodFU+tDoOM1GhNSiNCnHa01kudY3o=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -1291,8 +1291,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "i0nd551m60",
-      "Integrity": "PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY=",
+      "Fingerprint": "4k7tl4w8u3",
+      "Integrity": "hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\1.png"
@@ -8740,7 +8740,7 @@
       ]
     },
     {
-      "Route": "img/pessoas/organizacao/1/1.i0nd551m60.png",
+      "Route": "img/pessoas/organizacao/1/1.4k7tl4w8u3.png",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\1.png",
       "Selectors": [],
       "ResponseHeaders": [
@@ -8750,7 +8750,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "17103"
+          "Value": "16320"
         },
         {
           "Name": "Content-Type",
@@ -8758,11 +8758,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY=\""
+          "Value": "\"hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 20:56:21 GMT"
+          "Value": "Sun, 01 Jun 2025 23:12:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -8772,7 +8772,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "i0nd551m60"
+          "Value": "4k7tl4w8u3"
         },
         {
           "Name": "label",
@@ -8780,7 +8780,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY="
+          "Value": "sha256-hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU="
         }
       ]
     },
@@ -8795,7 +8795,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "17103"
+          "Value": "16320"
         },
         {
           "Name": "Content-Type",
@@ -8803,11 +8803,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY=\""
+          "Value": "\"hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 31 Dec 2024 20:56:21 GMT"
+          "Value": "Sun, 01 Jun 2025 23:12:03 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -8817,7 +8817,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-PmFiXTrl6V60lckvrhxgKggeIw5kgzL7DGfoMViOTXY="
+          "Value": "sha256-hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU="
         }
       ]
     },

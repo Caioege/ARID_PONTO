@@ -17,6 +17,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public virtual List<VinculoDeTrabalho> VinculosDeTrabalho { get; set; }
 
+        public bool AcessoAoAplicativo { get; set; }
+        public bool RegistroDePontoNoAplicativo { get; set; }
+        public bool RegistroManualNoAplicativo { get; set; }
+        public bool RegistroDeAtestadoNoAplicativo { get; set; }
+
         public string Nome => Pessoa?.Nome;
     }
 }

@@ -33,7 +33,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
                     context.Result = new JsonResult(new { message = "Sem permissão" });
                 }
             }
-            else
+            else if (controller.ToLower() != "app")
             {
                 var autenticado = context.HttpContext.EstaAutenticado();
                 if (autenticado && controller == "autenticacao" && action == "index")
