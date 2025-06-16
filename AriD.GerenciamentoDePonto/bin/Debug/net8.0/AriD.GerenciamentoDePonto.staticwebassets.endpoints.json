@@ -755,7 +755,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "5136"
         },
         {
           "Name": "Content-Type",
@@ -763,22 +763,22 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ymd8ug3u73.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ledbhp9vkz.js",
       "AssetFile": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -792,7 +792,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "5136"
         },
         {
           "Name": "Content-Type",
@@ -800,21 +800,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ymd8ug3u73"
+          "Value": "ledbhp9vkz"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
         },
         {
           "Name": "label",
@@ -6723,6 +6723,88 @@
         {
           "Name": "label",
           "Value": "img/pessoas/sem-foto.png"
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/3android.jpg",
+      "AssetFile": "img/registrosapp/3android.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1048533"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/3android.ucyrcrt2yz.jpg",
+      "AssetFile": "img/registrosapp/3android.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1048533"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucyrcrt2yz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
+        },
+        {
+          "Name": "label",
+          "Value": "img/registrosapp/3android.jpg"
         }
       ]
     },

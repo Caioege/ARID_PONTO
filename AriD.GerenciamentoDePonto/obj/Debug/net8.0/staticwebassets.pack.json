@@ -329,6 +329,10 @@
       "PackagePath": "staticwebassets\\img\\pessoas\\sem-foto.png"
     },
     {
+      "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "PackagePath": "staticwebassets\\img\\registrosapp\\3android.jpg"
+    },
+    {
       "Id": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\bootstrap-clockpicker.min.js",
       "PackagePath": "staticwebassets\\js\\bootstrap-clockpicker.min.js"
     },

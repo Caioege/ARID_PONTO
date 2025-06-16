@@ -285,5 +285,53 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
             return retorno;
         }
+
+        public bool RegistroEntradaApp(int periodo)
+        {
+            switch (periodo)
+            {
+                case 1:
+                    return RegistroDePontoEntrada1?.RegistroAplicativoId.HasValue ?? false;
+
+                case 2:
+                    return RegistroDePontoEntrada2?.RegistroAplicativoId.HasValue ?? false;
+
+                case 3:
+                    return RegistroDePontoEntrada3?.RegistroAplicativoId.HasValue ?? false;
+
+                case 4:
+                    return RegistroDePontoEntrada4?.RegistroAplicativoId.HasValue ?? false;
+
+                case 5:
+                    return RegistroDePontoEntrada5?.RegistroAplicativoId.HasValue ?? false;
+
+                default:
+                    return false;
+            }
+        }
+
+        public bool RegistroSaidaApp(int periodo)
+        {
+            switch (periodo)
+            {
+                case 1:
+                    return RegistroDePontoSaida1?.RegistroAplicativoId.HasValue ?? false;
+
+                case 2:
+                    return RegistroDePontoSaida2?.RegistroAplicativoId.HasValue ?? false;
+
+                case 3:
+                    return RegistroDePontoSaida3?.RegistroAplicativoId.HasValue ?? false;
+
+                case 4:
+                    return RegistroDePontoSaida4?.RegistroAplicativoId.HasValue ?? false;
+
+                case 5:
+                    return RegistroDePontoSaida5?.RegistroAplicativoId.HasValue ?? false;
+
+                default:
+                    return false;
+            }
+        }
     }
 }

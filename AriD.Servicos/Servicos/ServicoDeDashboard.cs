@@ -96,7 +96,7 @@ namespace AriD.Servicos.Servicos
                     where
 	                    r.OrganizacaoId = @ORGANIZACAOID
                         {(unidadeId.HasValue ? "and es.Id = @UNIDADEID" : string.Empty)}
-                        and r.DataHoraRegistro between @PERIODOINICIO and @PERIODOFIM
+                        and r.DataHoraRegistro between @PERIODOFIM and @PERIODOINICIO
                     order by r.DataHoraRegistro desc";
 
                 dto.UltimosRegistrosRecebidos = _repositorio.ConsultaDapper<DashboardRegistroEquipamentoDTO>(query, new

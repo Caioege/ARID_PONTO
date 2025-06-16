@@ -1228,37 +1228,53 @@ namespace AriD.Servicos.Servicos
                     throw new Exception("Classe não informada.");
 
                 var entrada1 = pontoDia.Entrada1;
+                var registroAppEntrada1 = pontoDia.RegistroDePontoEntrada1Id;
                 var saida1 = pontoDia.Saida1;
+                var registroAppSaida1 = pontoDia.RegistroDePontoSaida1Id;
 
                 var entrada2 = pontoDia.Entrada2;
+                var registroAppEntrada2 = pontoDia.RegistroDePontoEntrada2Id;
                 var saida2 = pontoDia.Saida2;
+                var registroAppSaida2 = pontoDia.RegistroDePontoSaida2Id;
 
                 var entrada3 = pontoDia.Entrada3;
+                var registroAppEntrada3 = pontoDia.RegistroDePontoEntrada3Id;
                 var saida3 = pontoDia.Saida3;
+                var registroAppSaida3 = pontoDia.RegistroDePontoSaida3Id;
 
                 var entrada4 = pontoDia.Entrada4;
+                var registroAppEntrada4 = pontoDia.RegistroDePontoEntrada4Id;
                 var saida4 = pontoDia.Saida4;
+                var registroAppSaida4 = pontoDia.RegistroDePontoSaida4Id;
 
                 var entrada5 = pontoDia.Entrada5;
+                var registroAppEntrada5 = pontoDia.RegistroDePontoEntrada5Id;
                 var saida5 = pontoDia.Saida5;
+                var registroAppSaida5 = pontoDia.RegistroDePontoSaida5Id;
 
                 switch (classe)
                 {
                     case "entrada1":
                         pontoDia.Entrada1 = saida1;
                         pontoDia.Saida1 = entrada1;
+                        pontoDia.RegistroDePontoEntrada1Id = registroAppSaida1;
+                        pontoDia.RegistroDePontoSaida1Id = registroAppEntrada1;
                         break;
 
                     case "saida1":
                         if (avancar)
                         {
                             pontoDia.Entrada2 = saida1;
+                            pontoDia.RegistroDePontoEntrada2Id = registroAppSaida1;
                             pontoDia.Saida1 = entrada2;
+                            pontoDia.RegistroDePontoSaida1Id = registroAppEntrada2;
                         }
                         else
                         {
                             pontoDia.Entrada1 = saida1;
+                            pontoDia.RegistroDePontoEntrada1Id = registroAppSaida1;
                             pontoDia.Saida1 = entrada1;
+                            pontoDia.RegistroDePontoSaida1Id = registroAppEntrada1;
                         }
                         break;
 
@@ -1266,12 +1282,16 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Saida2 = entrada2;
+                            pontoDia.RegistroDePontoSaida2Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida2;
+                            pontoDia.RegistroDePontoEntrada2Id = registroAppSaida2;
                         }
                         else
                         {
                             pontoDia.Saida1 = entrada2;
+                            pontoDia.RegistroDePontoSaida1Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida1;
+                            pontoDia.RegistroDePontoEntrada2Id = registroAppSaida1;
                         }
                         break;
 
@@ -1279,12 +1299,16 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Entrada3 = saida2;
+                            pontoDia.RegistroDePontoEntrada3Id = registroAppSaida2;
                             pontoDia.Saida2 = entrada3;
+                            pontoDia.RegistroDePontoSaida2Id = registroAppEntrada3;
                         }
                         else
                         {
                             pontoDia.Saida2 = entrada2;
+                            pontoDia.RegistroDePontoSaida2Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida2;
+                            pontoDia.RegistroDePontoEntrada2Id = registroAppSaida2;
                         }
                         break;
 
@@ -1292,12 +1316,16 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Saida3 = entrada3;
+                            pontoDia.RegistroDePontoSaida3Id = registroAppEntrada3;
                             pontoDia.Entrada3 = saida3;
+                            pontoDia.RegistroDePontoEntrada3Id = registroAppSaida3;
                         }
                         else
                         {
                             pontoDia.Saida2 = entrada3;
+                            pontoDia.RegistroDePontoSaida2Id = registroAppEntrada3;
                             pontoDia.Entrada3 = saida2;
+                            pontoDia.RegistroDePontoEntrada3Id = registroAppSaida2;
                         }
                         break;
 
@@ -1305,12 +1333,16 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Entrada4 = saida4;
+                            pontoDia.RegistroDePontoEntrada4Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada4;
+                            pontoDia.RegistroDePontoSaida4Id = registroAppEntrada4;
                         }
                         else
                         {
                             pontoDia.Saida3 = entrada4;
+                            pontoDia.RegistroDePontoSaida3Id = registroAppEntrada4;
                             pontoDia.Entrada4 = saida3;
+                            pontoDia.RegistroDePontoEntrada4Id = registroAppSaida3;
                         }
                         break;
 
@@ -1318,12 +1350,16 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Entrada5 = saida4;
+                            pontoDia.RegistroDePontoEntrada5Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada5;
+                            pontoDia.RegistroDePontoSaida4Id = registroAppEntrada5;
                         }
                         else
                         {
                             pontoDia.Entrada4 = saida4;
+                            pontoDia.RegistroDePontoEntrada4Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada4;
+                            pontoDia.RegistroDePontoSaida4Id = registroAppEntrada4;
                         }
                         break;
 
@@ -1331,20 +1367,27 @@ namespace AriD.Servicos.Servicos
                         if (avancar)
                         {
                             pontoDia.Saida5 = entrada5;
+                            pontoDia.RegistroDePontoSaida5Id = registroAppEntrada5;
                             pontoDia.Entrada5 = saida5;
+                            pontoDia.RegistroDePontoEntrada5Id = registroAppSaida5;
                         }
                         else
                         {
                             pontoDia.Saida4 = entrada5;
+                            pontoDia.RegistroDePontoSaida4Id = registroAppEntrada5;
                             pontoDia.Entrada5 = saida4;
+                            pontoDia.RegistroDePontoEntrada5Id = registroAppSaida4;
                         }
                         break;
 
                     case "saida5":
                         pontoDia.Entrada5 = saida5;
+                        pontoDia.RegistroDePontoEntrada5Id = registroAppSaida5;
                         pontoDia.Saida5 = entrada5;
+                        pontoDia.RegistroDePontoSaida5Id = registroAppEntrada5;
                         break;
                 }
+
 
                 _repositorio.Atualizar(pontoDia);
                 _repositorio.Commit();

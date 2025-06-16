@@ -12,7 +12,7 @@ namespace AriD.Servicos.DBContext
             {
                 var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
-                optionsBuilder.UseMySql(connStringProd, ServerVersion.AutoDetect(connStringProd))   
+                optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))  
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();

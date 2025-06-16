@@ -5,6 +5,7 @@
         Biometria = 1,
         Senha = 2,
         Cartao = 3,
-        Face = 8
+        Face = 8,
+        Aplicativo = 999
     }
 }

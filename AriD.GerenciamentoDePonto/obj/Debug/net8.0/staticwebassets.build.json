@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Wv10OjWVSQBHpRVEJhkP9UEiiZEmMsMXwtITlzkeZ+M=",
+  "Hash": "muPcshO5EUdB4+G9NNzH3dfjLnzZQD1m2W3z5yRnLg4=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -1317,6 +1317,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\sem-foto.png"
+    },
+    {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "img/registrosapp/3android#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ucyrcrt2yz",
+      "Integrity": "rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\registrosapp\\3android.jpg"
     },
     {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\bootstrap-clockpicker.min.js",
@@ -3034,8 +3055,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ymd8ug3u73",
-      "Integrity": "CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=",
+      "Fingerprint": "ledbhp9vkz",
+      "Integrity": "nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js"
@@ -8900,6 +8921,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-QIi4o1IGAsqveJQhUWFltErIABSsK7spidW2IP9dYYM="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/3android.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1048533"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/3android.ucyrcrt2yz.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1048533"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ucyrcrt2yz"
+        },
+        {
+          "Name": "label",
+          "Value": "img/registrosapp/3android.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
         }
       ]
     },
@@ -15556,7 +15659,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "5136"
         },
         {
           "Name": "Content-Type",
@@ -15564,11 +15667,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15578,12 +15681,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ymd8ug3u73.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ledbhp9vkz.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15593,7 +15696,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "5136"
         },
         {
           "Name": "Content-Type",
@@ -15601,11 +15704,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15615,7 +15718,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ymd8ug3u73"
+          "Value": "ledbhp9vkz"
         },
         {
           "Name": "label",
@@ -15623,7 +15726,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
         }
       ]
     },

@@ -334,7 +334,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             VinculoDeTrabalho vinculoDeTrabalho,
             MesAno mesAno,
             List<EventoAnual> eventos,
-            List<PontoDoDia> listaDePonto)
+            List<PontoDoDia> listaDePonto,
+            bool impressaoDoServidor = false)
         {
             var stream = new MemoryStream();
 
@@ -640,32 +641,35 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             document.Add(new Div().Add(table));
 
-            Table tabela = new Table(2);
-            tabela.SetWidth(UnitValue.CreatePercentValue(100));
+            if (impressaoDoServidor)
+            {
+                Table tabela = new Table(2);
+                tabela.SetWidth(UnitValue.CreatePercentValue(100));
 
-            Cell assinatura1 = new Cell().Add(new Paragraph("__________________________________"));
-            assinatura1.SetTextAlignment(TextAlignment.CENTER);
-            assinatura1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+                Cell assinatura1 = new Cell().Add(new Paragraph("__________________________________"));
+                assinatura1.SetTextAlignment(TextAlignment.CENTER);
+                assinatura1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
-            Cell assinatura2 = new Cell().Add(new Paragraph("__________________________________"));
-            assinatura2.SetTextAlignment(TextAlignment.CENTER);
-            assinatura2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+                Cell assinatura2 = new Cell().Add(new Paragraph("__________________________________"));
+                assinatura2.SetTextAlignment(TextAlignment.CENTER);
+                assinatura2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
-            tabela.AddCell(assinatura1);
-            tabela.AddCell(assinatura2);
+                tabela.AddCell(assinatura1);
+                tabela.AddCell(assinatura2);
 
-            Cell nome1 = new Cell().Add(new Paragraph("Organização"));
-            nome1.SetTextAlignment(TextAlignment.CENTER);
-            nome1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+                Cell nome1 = new Cell().Add(new Paragraph("Organização"));
+                nome1.SetTextAlignment(TextAlignment.CENTER);
+                nome1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
-            Cell nome2 = new Cell().Add(new Paragraph(vinculoDeTrabalho.Servidor.Nome));
-            nome2.SetTextAlignment(TextAlignment.CENTER);
-            nome2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+                Cell nome2 = new Cell().Add(new Paragraph(vinculoDeTrabalho.Servidor.Nome));
+                nome2.SetTextAlignment(TextAlignment.CENTER);
+                nome2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
-            tabela.AddCell(nome1);
-            tabela.AddCell(nome2);
+                tabela.AddCell(nome1);
+                tabela.AddCell(nome2);
 
-            document.Add(new Div().SetMarginTop(30f).Add(tabela));
+                document.Add(new Div().SetMarginTop(30f).Add(tabela));
+            }
 
             document.Close();
 

@@ -70,14 +70,16 @@ namespace AriD.Servicos.Servicos
             {
                 var fromAndWhere = @"
                             from registrodeponto reg
-                            inner join equipamentodeponto eq
+                            left join equipamentodeponto eq
 	                            on eq.Id = reg.EquipamentoDePontoId
-                            inner join unidadeorganizacional uni
+                            left join unidadeorganizacional uni
 	                            on uni.Id = eq.UnidadeOrganizacionalId
                             left join lotacaounidadeorganizacional lot
 	                            on lot.UnidadeOrganizacionalId = uni.Id and lot.MatriculaEquipamento = reg.UsuarioEquipamentoId
+                            left join registroaplicativo regap
+                                on regap.Id = reg.RegistroAplicativoId
                             left join vinculodetrabalho vin
-	                            on vin.Id = lot.VinculoDeTrabalhoId
+	                            on vin.Id = coalesce(regap.VinculoDeTrabalhoId, lot.VinculoDeTrabalhoId)
                             left join servidor ser
 	                            on ser.Id = vin.ServidorId
                             left join pessoa pes
@@ -86,7 +88,7 @@ namespace AriD.Servicos.Servicos
 	                            reg.OrganizacaoId = @ORGANIZACAOID";
 
                 if (parametros.Unidades.Any())
-                    fromAndWhere += " and uni.Id in @UNIDADES";
+                    fromAndWhere += " and uni.Id in @UNIDADES or exists (select 1 from lotacaounidadeorganizacional lotvin where lotvin.VinculoDeTrabalhoId = vin.Id and lot.UnidadeOrganizacionalId in @UNIDADES) ";
 
                 if (parametros.DepartamentoId.HasValue)
                     fromAndWhere += " and vin.DepartamentoId = @DEPARTAMENTOID ";
@@ -111,7 +113,8 @@ namespace AriD.Servicos.Servicos
                                 reg.UsuarioEquipamentoId as IdEquipamento,
                                 pes.Nome as PessoaNome,
                                 uni.Id as UnidadeOrganizacionalId,
-                                uni.Nome as UnidadeOrganizacionalNome
+                                uni.Nome as UnidadeOrganizacionalNome,
+                                if (reg.RegistroAplicativoId is not null, 'Aplicativo', 'Equipamento de Ponto') as Origem
                             {fromAndWhere}
                             order by reg.DataHoraRegistro, reg.DataHoraRecebimento, pes.Nome
                         limit @LIMIT

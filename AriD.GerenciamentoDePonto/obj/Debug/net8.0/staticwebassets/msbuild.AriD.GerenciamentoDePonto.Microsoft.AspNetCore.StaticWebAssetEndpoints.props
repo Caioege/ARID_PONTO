@@ -732,6 +732,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"sd95lpwq3a"},{"Name":"integrity","Value":"sha256-QIi4o1IGAsqveJQhUWFltErIABSsK7spidW2IP9dYYM="},{"Name":"label","Value":"_content/AriD.GerenciamentoDePonto/img/pessoas/sem-foto.png"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"10948"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022QIi4o1IGAsqveJQhUWFltErIABSsK7spidW2IP9dYYM=\u0022"},{"Name":"Last-Modified","Value":"Tue, 31 Dec 2024 15:44:28 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/img/registrosapp/3android.jpg">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\registrosapp\3android.jpg'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0\u002B80="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"1048533"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0\u002B80=\u0022"},{"Name":"Last-Modified","Value":"Wed, 03 Jul 2024 18:24:59 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/img/registrosapp/3android.ucyrcrt2yz.jpg">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\registrosapp\3android.jpg'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"ucyrcrt2yz"},{"Name":"integrity","Value":"sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0\u002B80="},{"Name":"label","Value":"_content/AriD.GerenciamentoDePonto/img/registrosapp/3android.jpg"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1048533"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0\u002B80=\u0022"},{"Name":"Last-Modified","Value":"Wed, 03 Jul 2024 18:24:59 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/js/bootstrap-clockpicker.min.12omn1o13s.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\bootstrap-clockpicker.min.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -1707,14 +1719,14 @@
     <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-CsV8EPB725A\u002BhG15cC4M1AFtYrhAUTH3pxezmiLnhIA="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"4623"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022CsV8EPB725A\u002BhG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\u0022"},{"Name":"Last-Modified","Value":"Sun, 18 May 2025 19:25:55 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-nR03pMPshKodG/crrH\u002BpfE/q1/fEUkBT/Bo053q40vM="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"5136"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022nR03pMPshKodG/crrH\u002BpfE/q1/fEUkBT/Bo053q40vM=\u0022"},{"Name":"Last-Modified","Value":"Sun, 15 Jun 2025 22:54:01 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/funcoesDePonto.ymd8ug3u73.js">
+    <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/funcoesDePonto.ledbhp9vkz.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"ymd8ug3u73"},{"Name":"integrity","Value":"sha256-CsV8EPB725A\u002BhG15cC4M1AFtYrhAUTH3pxezmiLnhIA="},{"Name":"label","Value":"_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"4623"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022CsV8EPB725A\u002BhG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\u0022"},{"Name":"Last-Modified","Value":"Sun, 18 May 2025 19:25:55 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"ledbhp9vkz"},{"Name":"integrity","Value":"sha256-nR03pMPshKodG/crrH\u002BpfE/q1/fEUkBT/Bo053q40vM="},{"Name":"label","Value":"_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"5136"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022nR03pMPshKodG/crrH\u002BpfE/q1/fEUkBT/Bo053q40vM=\u0022"},{"Name":"Last-Modified","Value":"Sun, 15 Jun 2025 22:54:01 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/AriD.GerenciamentoDePonto/Scripts/Paginas/FolhaDePonto/pontoDoDia.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\pontoDoDia.js'))</AssetFile>

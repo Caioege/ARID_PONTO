@@ -58,6 +58,7 @@ wwwroot\img\logo-relogio.png
 wwwroot\img\logo-vertical.png
 wwwroot\img\pessoas\organizacao\1\1.png
 wwwroot\img\pessoas\sem-foto.png
+wwwroot\img\registrosapp\3android.jpg
 wwwroot\js\bootstrap-clockpicker.min.js
 wwwroot\js\config.js
 wwwroot\js\dashboards-analytics.js

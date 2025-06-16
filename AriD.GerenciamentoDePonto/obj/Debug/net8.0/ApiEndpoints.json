@@ -75,6 +75,22 @@
   },
   {
     "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ReceptarRegistro",
+    "RelativePath": "api/App/receptar-ponto",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registro",
+        "Type": "AriD.BibliotecaDeClasses.Entidades.RegistroAplicativo",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
     "Method": "ObtenhaUnidades",
     "RelativePath": "api/App/unidade/{vinculoId}",
     "HttpMethod": "GET",

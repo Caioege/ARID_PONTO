@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
 
 namespace AriD.Servicos.Servicos.Interfaces
 {
@@ -10,5 +11,6 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<EventoAppDTO> ObtenhaListaDeEventos(int organizacaoId);
         List<CodigoDescricaoDTO> ObtenhaListaDeVinculos(int servidorId);
         List<CodigoDescricaoDTO> ObtenhaListaDeLotacoes(int vinculoId);
+        void ReceptarRegistro(RegistroAplicativo registro);
     }
 }

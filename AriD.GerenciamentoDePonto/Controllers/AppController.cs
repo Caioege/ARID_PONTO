@@ -133,9 +133,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 vinculoDeTrabalho,
                 mesAno,
                 eventos,
-                listaDePonto);
+                listaDePonto,
+                true);
 
-            return Ok(relatorio);
+            return File(relatorio, "application/pdf");
+        }
+
+        [HttpPost("receptar-ponto")]
+        public IActionResult ReceptarRegistro([FromBody] RegistroAplicativo registro)
+        {
+            _servicoDeAplicativo.ReceptarRegistro(registro);
+            return Ok();
         }
 
         private byte[] ObterBytesDeFileStream(FileStream fileStream)

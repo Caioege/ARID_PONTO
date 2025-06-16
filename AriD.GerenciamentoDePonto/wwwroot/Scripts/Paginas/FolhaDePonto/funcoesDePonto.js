@@ -144,3 +144,19 @@ function executaMovimentacaoRegistro(id, classe, avancar) {
 			}
 		});
 }
+
+function expandirImagem(caminho) {
+	document.getElementById('imagemExpandidaSrc').src = caminho;
+	document.getElementById('imagemExpandida').classList.remove('d-none');
+}
+
+function fecharImagemExpandida() {
+	document.getElementById('imagemExpandida').classList.add('d-none');
+	document.getElementById('imagemExpandidaSrc').src = '';
+}
+
+document.getElementById('imagemExpandida').addEventListener('click', function (e) {
+	if (e.target.id === 'imagemExpandida') {
+		fecharImagemExpandida();
+	}
+});

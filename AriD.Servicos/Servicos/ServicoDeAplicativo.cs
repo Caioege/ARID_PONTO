@@ -11,11 +11,20 @@ namespace AriD.Servicos.Servicos
     public class ServicoDeAplicativo : IServicoDeAplicativo
     {
         private readonly IRepositorio<Servidor> _repositorioServidor;
+        private readonly IRepositorio<RegistroAplicativo> _repositorioRegistroApp;
+        private readonly IRepositorio<RegistroDePonto> _repositorioRegistroDePonto;
+        private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
 
         public ServicoDeAplicativo(
-            IRepositorio<Servidor> repositorioServidor)
+            IRepositorio<Servidor> repositorioServidor,
+            IRepositorio<RegistroAplicativo> repositorioRegistroApp,
+            IRepositorio<RegistroDePonto> repositorioRegistroDePonto,
+            IRepositorio<VinculoDeTrabalho> repositorioVinculo)
         {
             _repositorioServidor = repositorioServidor;
+            _repositorioRegistroApp = repositorioRegistroApp;
+            _repositorioRegistroDePonto = repositorioRegistroDePonto;
+            _repositorioVinculo = repositorioVinculo;
         }
 
         public AutenticacaoAppDTO AutenticarUsuario(CredenciaisDTO credenciais)
@@ -80,7 +89,7 @@ namespace AriD.Servicos.Servicos
 	                            *
                             from horariodetrabalhodia h
                             where
-	                            h.Id = @HORARIOID
+	                            h.HorarioDeTrabalhoId = @HORARIOID
                             order by h.DiaDaSemana", new { @HORARIOID = horario.HorarioId });
 
                     foreach (eDiaDaSemana diaDaSemana in Enum.GetValues(typeof(eDiaDaSemana)))
@@ -185,6 +194,40 @@ namespace AriD.Servicos.Servicos
                 {
                     @VINCULOID = vinculoId
                 });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ReceptarRegistro(RegistroAplicativo registro)
+        {
+            try
+            {
+                var vinculo = _repositorioVinculo.Obtenha(registro.VinculoDeTrabalhoId);
+
+                registro.OrganizacaoId = vinculo.OrganizacaoId;
+                registro.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                registro.Manual = false;
+
+                if (registro.DataHora > DateTime.Now)
+                    registro.DataHora = DateTime.Now;
+
+                //TODO: Validar registro nos ultimos 5 minutos
+                _repositorioRegistroApp.Add(registro);
+
+                var registroDePonto = new RegistroDePonto
+                {
+                    OrganizacaoId = registro.OrganizacaoId,
+                    DataHoraRegistro = registro.DataHora,
+                    DataHoraRecebimento = DateTime.Now,
+                    TipoRegistro = eTipoDeRegistroEquipamento.Aplicativo,
+                    RegistroAplicativoId = registro.Id
+                };
+                _repositorioRegistroDePonto.Add(registroDePonto);
+
+                _repositorioRegistroApp.Commit();
             }
             catch (Exception)
             {

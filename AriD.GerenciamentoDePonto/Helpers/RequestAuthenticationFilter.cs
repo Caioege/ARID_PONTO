@@ -24,16 +24,18 @@ namespace AriD.GerenciamentoDePonto.Helpers
             bool ajaxRequest = headerValue == "XMLHttpRequest";
 
             context.HttpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent);
-
+            if (controller == "app")
+                return;
+            
             if (!string.IsNullOrEmpty(userAgent) && userAgent.Equals("AIFaceEVO.API-ARID.TECNOLOGIA"))
             {
-                if (controller != "registroapi" && action != "registro-equipamento")
+                if (action != "registro-equipamento" && action != "receberregistro")
                 {
                     context.HttpContext.Response.StatusCode = 403;
                     context.Result = new JsonResult(new { message = "Sem permissão" });
                 }
             }
-            else if (controller.ToLower() != "app")
+            else
             {
                 var autenticado = context.HttpContext.EstaAutenticado();
                 if (autenticado && controller == "autenticacao" && action == "index")

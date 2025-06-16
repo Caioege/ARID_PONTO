@@ -8,9 +8,12 @@
 
     var listaDeColunas = new List<WebGridColumn>
     {
-        tabela.Column("EquipamentoDescricao", "Equipamento", width: 20f),
-        tabela.Column("IdEquipamento", "Matrícula Equipamento", width: 10f),
-        tabela.Column("PessoaNome", $"{Context.NomenclaturaServidor()}", width: 25f),
+        tabela.Column("EquipamentoDescricao", "Equipamento", width: 15f, format:
+            @<text><span>@(item.EquipamentoDescricao ?? "-")</span></text>),
+        tabela.Column("IdEquipamento", "Matrícula Equipamento", width: 10f, format:
+            @<text><span>@(item.IdEquipamento ?? "-")</span></text>),
+        tabela.Column("PessoaNome", $"{Context.NomenclaturaServidor()}", width: 20f),
+        tabela.Column("Origem", "Origem", width: 10f),
         tabela.Column("DataHoraRegistro", "Registro", format: 
             @<text>
                 @(((DateTime)item.DataHoraRegistro).ToString("dd/MM/yyyy HH:mm"))
@@ -23,7 +26,8 @@
 
     if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao) 
     {
-        listaDeColunas.Add(tabela.Column("UnidadeOrganizacionalNome", "Unidade"));
+        listaDeColunas.Add(tabela.Column("UnidadeOrganizacionalNome", "Unidade", format:
+            @<text><span>@(item.UnidadeOrganizacionalNome ?? "-")</span></text>));
     }
 }
 

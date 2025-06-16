@@ -1098,6 +1098,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\pessoas\sem-foto.png'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\registrosapp\3android.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>AriD.GerenciamentoDePonto</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/AriD.GerenciamentoDePonto</BasePath>
+      <RelativePath>img/registrosapp/3android.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>ucyrcrt2yz</Fingerprint>
+      <Integrity>rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\img\registrosapp\3android.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\bootstrap-clockpicker.min.js'))">
       <SourceType>Package</SourceType>
       <SourceId>AriD.GerenciamentoDePonto</SourceId>
@@ -2568,8 +2586,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ymd8ug3u73</Fingerprint>
-      <Integrity>CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=</Integrity>
+      <Fingerprint>ledbhp9vkz</Fingerprint>
+      <Integrity>nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</OriginalItemSpec>

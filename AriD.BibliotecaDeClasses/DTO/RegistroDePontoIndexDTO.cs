@@ -11,5 +11,6 @@
         public string PessoaNome { get; set; }
         public int UnidadeOrganizacionalId { get; set; }
         public string UnidadeOrganizacionalNome { get; set; }
+        public string Origem { get; set; }
     }
 }
