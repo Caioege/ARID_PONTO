@@ -5,6 +5,7 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Extensao;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AriD.Servicos.Servicos
 {
@@ -201,31 +202,71 @@ namespace AriD.Servicos.Servicos
             }
         }
 
-        public void ReceptarRegistro(RegistroAplicativo registro)
+        public void ReceptarRegistro(PostRegistroDePontoDTO registro)
         {
             try
             {
+                var dataAgora = DateTime.Now;
                 var vinculo = _repositorioVinculo.Obtenha(registro.VinculoDeTrabalhoId);
 
-                registro.OrganizacaoId = vinculo.OrganizacaoId;
-                registro.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
-                registro.Manual = false;
-
-                if (registro.DataHora > DateTime.Now)
-                    registro.DataHora = DateTime.Now;
-
-                //TODO: Validar registro nos ultimos 5 minutos
-                _repositorioRegistroApp.Add(registro);
-
-                var registroDePonto = new RegistroDePonto
+                string anexoPontoNome = null;
+                if (registro.Imagem != null)
                 {
-                    OrganizacaoId = registro.OrganizacaoId,
-                    DataHoraRegistro = registro.DataHora,
-                    DataHoraRecebimento = DateTime.Now,
-                    TipoRegistro = eTipoDeRegistroEquipamento.Aplicativo,
-                    RegistroAplicativoId = registro.Id
+                    if (!registro.Imagem.ContentType.Contains("image"))
+                        throw new ApplicationException("O comprovante enviado não é uma imagem.");
+
+                    var extensaoArquivo = Path.GetExtension(registro.Imagem.FileName);
+
+                    using (var ms = new MemoryStream())
+                    {
+                        registro.Imagem.CopyTo(ms);
+                        var arquivo = ms.ToArray();
+
+                        var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "registrosapp", $"{vinculo.OrganizacaoId}");
+
+                        if (!Path.Exists(pastaBase))
+                            Directory.CreateDirectory(pastaBase);
+
+                        anexoPontoNome = $"{vinculo.Id}_{dataAgora.Ticks}_{Guid.NewGuid()}.{extensaoArquivo}";
+                        var caminho = Path.Combine(pastaBase, anexoPontoNome);
+
+                        using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
+                            fs.Write(arquivo, 0, arquivo.Length);
+                    }
+                }
+
+                var registroAplicativo = new RegistroAplicativo
+                {
+                    OrganizacaoId = vinculo.OrganizacaoId,
+                    Situacao = registro.Manual ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
+                    Manual = registro.Manual,
+                    Observacao = registro.Observacao,
+                    DataHora = registro.Manual ? registro.DataHora.Value : dataAgora,
+                    VinculoDeTrabalhoId = registro.VinculoDeTrabalhoId,
+                    Latitude = registro.Latitude,
+                    Longitude = registro.Longitude,
+                    AnexoPonto = anexoPontoNome
                 };
-                _repositorioRegistroDePonto.Add(registroDePonto);
+
+                if (registro.DataHora > dataAgora)
+                    throw new ApplicationException("O registro não pode ser para uma hora futura.");
+
+                _repositorioRegistroApp.Add(registroAplicativo);
+
+                if (!registro.Manual)
+                {
+                    /* Se for manual vai para a avaliação do administrador. */
+                    var registroDePonto = new RegistroDePonto
+                    {
+                        OrganizacaoId = registroAplicativo.OrganizacaoId,
+                        DataHoraRegistro = registroAplicativo.DataHora,
+                        DataHoraRecebimento = DateTime.Now,
+                        TipoRegistro = eTipoDeRegistroEquipamento.Aplicativo,
+                        RegistroAplicativoId = registroAplicativo.Id
+                    };
+
+                    _repositorioRegistroDePonto.Add(registroDePonto);
+                }
 
                 _repositorioRegistroApp.Commit();
             }

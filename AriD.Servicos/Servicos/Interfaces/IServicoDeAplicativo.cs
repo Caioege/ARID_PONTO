@@ -11,6 +11,6 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<EventoAppDTO> ObtenhaListaDeEventos(int organizacaoId);
         List<CodigoDescricaoDTO> ObtenhaListaDeVinculos(int servidorId);
         List<CodigoDescricaoDTO> ObtenhaListaDeLotacoes(int vinculoId);
-        void ReceptarRegistro(RegistroAplicativo registro);
+        void ReceptarRegistro(PostRegistroDePontoDTO registro);
     }
 }

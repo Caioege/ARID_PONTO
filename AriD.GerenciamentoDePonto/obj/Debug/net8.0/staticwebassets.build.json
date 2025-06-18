@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "muPcshO5EUdB4+G9NNzH3dfjLnzZQD1m2W3z5yRnLg4=",
+  "Hash": "Gr0ugd0wAin2bTqK+sH6zqlolS7He7V1/G1DW0I/iEI=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -1319,12 +1319,12 @@
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\sem-foto.png"
     },
     {
-      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
       "SourceId": "AriD.GerenciamentoDePonto",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
       "BasePath": "_content/AriD.GerenciamentoDePonto",
-      "RelativePath": "img/registrosapp/3android#[.{fingerprint}]?.jpg",
+      "RelativePath": "img/registrosapp/1/ticks#[.{fingerprint}]?.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1333,11 +1333,11 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ucyrcrt2yz",
-      "Integrity": "rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=",
+      "Fingerprint": "82ut9289r7",
+      "Integrity": "cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\img\\registrosapp\\3android.jpg"
+      "OriginalItemSpec": "wwwroot\\img\\registrosapp\\1\\ticks.jpg"
     },
     {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\bootstrap-clockpicker.min.js",
@@ -8925,8 +8925,8 @@
       ]
     },
     {
-      "Route": "img/registrosapp/3android.jpg",
-      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
+      "Route": "img/registrosapp/1/ticks.82ut9289r7.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -8935,7 +8935,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1048533"
+          "Value": "299345"
         },
         {
           "Name": "Content-Type",
@@ -8943,48 +8943,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
+          "Value": "\"cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
-        }
-      ]
-    },
-    {
-      "Route": "img/registrosapp/3android.ucyrcrt2yz.jpg",
-      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\3android.jpg",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1048533"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/jpeg"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 03 Jul 2024 18:24:59 GMT"
+          "Value": "Sun, 15 Sep 2024 00:47:15 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -8994,15 +8957,52 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ucyrcrt2yz"
+          "Value": "82ut9289r7"
         },
         {
           "Name": "label",
-          "Value": "img/registrosapp/3android.jpg"
+          "Value": "img/registrosapp/1/ticks.jpg"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-rg7WE3NkZUAPIC/nCwEoPJ5LDDV0y0CqoGtTujW0+80="
+          "Value": "sha256-cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/1/ticks.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "299345"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 15 Sep 2024 00:47:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw="
         }
       ]
     },

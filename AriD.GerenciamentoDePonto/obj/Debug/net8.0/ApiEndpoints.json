@@ -83,7 +83,7 @@
     "Parameters": [
       {
         "Name": "registro",
-        "Type": "AriD.BibliotecaDeClasses.Entidades.RegistroAplicativo",
+        "Type": "AriD.BibliotecaDeClasses.DTO.Aplicativo.PostRegistroDePontoDTO",
         "IsRequired": true
       }
     ],

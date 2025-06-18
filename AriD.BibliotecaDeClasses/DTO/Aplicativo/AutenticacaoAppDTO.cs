@@ -13,5 +13,7 @@
         public string FotoBase64 { get; set; }
 
         public bool RegistroDePontoNoAplicativo { get; set; }
+        public bool RegistroManualNoAplicativo { get; set; }
+        public bool RegistroDeAtestadoNoAplicativo { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -140,10 +141,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost("receptar-ponto")]
-        public IActionResult ReceptarRegistro([FromBody] RegistroAplicativo registro)
+        public IActionResult ReceptarRegistro([FromBody] PostRegistroDePontoDTO registro)
         {
-            _servicoDeAplicativo.ReceptarRegistro(registro);
-            return Ok();
+            try
+            {
+                _servicoDeAplicativo.ReceptarRegistro(registro);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                if (ex is ApplicationException)
+                    return BadRequest(ex.Message);
+
+                return StatusCode(500, ex.Message);
+            }
         }
 
         private byte[] ObterBytesDeFileStream(FileStream fileStream)

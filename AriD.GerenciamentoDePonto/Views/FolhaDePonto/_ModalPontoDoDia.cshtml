@@ -137,7 +137,7 @@
 
                                             @if (!string.IsNullOrEmpty(registroAplicativo.AnexoPonto))
                                             {
-                                                var caminhoImagem = Url.Content($"~/img/registrosapp/{registroAplicativo.AnexoPonto}");
+                                                var caminhoImagem = Url.Content($"~/img/registrosapp/{Context.DadosDaSessao().OrganizacaoId}/{registroAplicativo.AnexoPonto}");
                                                 <div class="col-12 text-center mt-3">
                                                     <img src="@caminhoImagem"
                                                          alt="Registro Fotográfico"
