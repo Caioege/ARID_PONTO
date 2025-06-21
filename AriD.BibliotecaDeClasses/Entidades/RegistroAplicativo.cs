@@ -25,5 +25,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public bool Manual { get; set; }
         public string? Observacao { get; set; }
+
+        public int? JustificativaDeAusenciaId { get; set; }
+        [ForeignKey(nameof(JustificativaDeAusenciaId))]
+        public virtual JustificativaDeAusencia JustificativaDeAusencia { get; set; }
+        public DateTime? DataInicialAtestado { get; set; }
+        public DateTime? DataFinalAtestado { get; set; }
     }
 }

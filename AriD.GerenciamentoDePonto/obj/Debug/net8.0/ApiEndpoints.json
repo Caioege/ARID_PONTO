@@ -75,6 +75,22 @@
   },
   {
     "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaJustificativas",
+    "RelativePath": "api/App/justificativas/{organizacaoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "organizacaoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
     "Method": "ReceptarRegistro",
     "RelativePath": "api/App/receptar-ponto",
     "HttpMethod": "POST",
@@ -84,6 +100,22 @@
       {
         "Name": "registro",
         "Type": "AriD.BibliotecaDeClasses.DTO.Aplicativo.PostRegistroDePontoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AriD.GerenciamentoDePonto.Controllers.AppController",
+    "Method": "ObtenhaUltimosRegistrosDoServidor",
+    "RelativePath": "api/App/ultimos-registros-servidor/{servidorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "servidorId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

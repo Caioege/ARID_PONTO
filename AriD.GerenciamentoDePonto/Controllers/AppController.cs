@@ -105,6 +105,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpGet("justificativas/{organizacaoId}")]
+        public IActionResult ObtenhaJustificativas([FromRoute] int organizacaoId)
+        {
+            try
+            {
+                return Ok(_servicoDeAplicativo.ObtenhaListaDeJustificativas(organizacaoId));
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("folha-ponto/{vinculoId}/{unidadeId}/{mesDeReferencia}")]
         public IActionResult FolhaDePonto(
             int vinculoId, 
@@ -138,6 +151,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 true);
 
             return File(relatorio, "application/pdf");
+        }
+
+        [HttpGet("ultimos-registros-servidor/{servidorId}")]
+        public IActionResult ObtenhaUltimosRegistrosDoServidor([FromRoute] int servidorId)
+        {
+            try
+            {
+                return Ok(_servicoDeAplicativo.ObtenhaUltimosRegistrosDoServidor(servidorId));
+            }
+            catch (Exception ex)
+            {
+                if (ex is ApplicationException)
+                    return BadRequest(ex.Message);
+
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("receptar-ponto")]

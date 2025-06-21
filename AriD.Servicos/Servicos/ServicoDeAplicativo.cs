@@ -202,6 +202,76 @@ namespace AriD.Servicos.Servicos
             }
         }
 
+        public List<KeyValuePair<DateTime, string>> ObtenhaUltimosRegistrosDoServidor(int servidorId)
+        {
+            try
+            {
+                var query =
+                    @"select
+	                        itens.*
+                        from
+                        ((select
+	                        app.DataHora as 'Key',
+                            if(app.Manual = true, 'Manual', 'Aplicativo') as 'Value'
+                        from registroaplicativo app
+                        inner join vinculodetrabalho vin
+	                        on vin.Id = app.VinculoDeTrabalhoId
+                        where
+	                        vin.ServidorId = @SERVIDORID
+                            and app.JustificativaDeAusenciaId is null
+                        order by app.DataHora desc
+                        limit 5) union 
+                        (select
+	                        reg.DataHoraRegistro as 'Key',
+                            'Equipamento de Ponto' as 'Value'
+                        from registrodeponto reg
+                        inner join equipamentodeponto eq
+	                        on eq.Id = reg.EquipamentoDePontoId
+                        inner join lotacaounidadeorganizacional lot
+	                        on lot.MatriculaEquipamento = reg.UsuarioEquipamentoId
+                            and lot.UnidadeOrganizacionalId = eq.UnidadeOrganizacionalId
+                        inner join vinculodetrabalho vin
+	                        on vin.Id = lot.VinculoDeTrabalhoId
+                        where
+	                        vin.ServidorId = @SERVIDORID
+                            and reg.RegistroAplicativoId is null
+                        order by reg.DataHoraRegistro desc
+                        limit 5)) as itens
+                        order by itens.Key desc
+                        limit 5";
+
+                return _repositorioServidor.ConsultaDapper<KeyValuePair<DateTime, string>>(query, new { @SERVIDORID = servidorId });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<CodigoDescricaoDTO> ObtenhaListaDeJustificativas(int organizacaoId)
+        {
+            try
+            {
+                var query =
+                    @"select
+	                    Id as 'Codigo',
+                        Descricao as 'Descricao'
+                    from justificativadeausencia
+                    where
+	                    OrganizacaoId = @ORGANIZACAOID
+                        and Ativa = true
+                        and LocalDeUso <> @SOMENTEAFASTAMENTO
+                    order by 2";
+
+                return _repositorioServidor.ConsultaDapper<CodigoDescricaoDTO>(query, 
+                    new { @ORGANIZACAOID = organizacaoId, @SOMENTEAFASTAMENTO = eLocalDeUsoDeJustificativaDeAusencia.Afastamento });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public void ReceptarRegistro(PostRegistroDePontoDTO registro)
         {
             try
@@ -241,11 +311,14 @@ namespace AriD.Servicos.Servicos
                     Situacao = registro.Manual ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
                     Manual = registro.Manual,
                     Observacao = registro.Observacao,
-                    DataHora = registro.Manual ? registro.DataHora.Value : dataAgora,
+                    DataHora = registro.Manual && registro.DataHora.HasValue ? registro.DataHora.Value : dataAgora,
                     VinculoDeTrabalhoId = registro.VinculoDeTrabalhoId,
                     Latitude = registro.Latitude,
                     Longitude = registro.Longitude,
-                    AnexoPonto = anexoPontoNome
+                    AnexoPonto = anexoPontoNome,
+                    DataInicialAtestado = registro.DataInicialAtestado,
+                    DataFinalAtestado = registro.DataFinalAtestado,
+                    JustificativaDeAusenciaId = registro.JustificativaDeAusenciaId
                 };
 
                 if (registro.DataHora > dataAgora)

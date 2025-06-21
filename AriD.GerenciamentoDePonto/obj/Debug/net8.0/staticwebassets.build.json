@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Gr0ugd0wAin2bTqK+sH6zqlolS7He7V1/G1DW0I/iEI=",
+  "Hash": "zR3KPW8avQ7v9V7W/fp5zFKvvOJ8CePfSkWFY4Y8+x4=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -1296,6 +1296,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\1.png"
+    },
+    {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "img/pessoas/organizacao/1/2#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "qjpu1an267",
+      "Integrity": "Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\2.png"
     },
     {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\sem-foto.png",
@@ -8839,6 +8860,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-hJBnbmfDjHF0kxL9/qntB1pMrfdHwaEmcENiw3ppUpU="
+        }
+      ]
+    },
+    {
+      "Route": "img/pessoas/organizacao/1/2.png",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "49406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Jun 2025 14:10:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w="
+        }
+      ]
+    },
+    {
+      "Route": "img/pessoas/organizacao/1/2.qjpu1an267.png",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "49406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Jun 2025 14:10:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qjpu1an267"
+        },
+        {
+          "Name": "label",
+          "Value": "img/pessoas/organizacao/1/2.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w="
         }
       ]
     },
