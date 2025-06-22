@@ -308,6 +308,42 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Json(new { sucesso = true, mensagem = "A folha de ponto foi restaurada para a versão inicial." });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ModalSolicitacoesApp(int vinculoDeTrabalhoId, string mesDeReferencia)
+        {
+            var mesAno = new MesAno(mesDeReferencia);
+
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            var registros = _servicoDeFolhaDePonto.ObtenhaRegistrosDeAplicativo(vinculoDeTrabalhoId, mesAno);
+            if (registros.Count() == 0)
+                throw new ApplicationException("Nenhum registro encontrado.");
+
+            var html = await RenderizarComoString("_ModalSolicitacoesApp", registros);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult AprovarRegistroAplicativo(int id, int unidadeId, string mesDeReferencia)
+        {
+            var mesAno = new MesAno(mesDeReferencia);
+
+            if (mesAno.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            _servicoDeFolhaDePonto.AprovarRegistroAplicativo(id, unidadeId, mesAno);
+            return Json(new { sucesso = true, mensagem = "Item aprovado." });
+        }
+
+        [HttpPost]
+        public IActionResult ReprovarRegistroAplicativo(int id)
+        {
+            _servicoDeFolhaDePonto.ReprovarRegistroAplicativo(id);
+            return Json(new { sucesso = true, mensagem = "Item reprovado." });
+        }
+
         private void ContextoPontoDoDia()
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
@@ -641,7 +677,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             document.Add(new Div().Add(table));
 
-            if (impressaoDoServidor)
+            if (!impressaoDoServidor)
             {
                 Table tabela = new Table(2);
                 tabela.SetWidth(UnitValue.CreatePercentValue(100));

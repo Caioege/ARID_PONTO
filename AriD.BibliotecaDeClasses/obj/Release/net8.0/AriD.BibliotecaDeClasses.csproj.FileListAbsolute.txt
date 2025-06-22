@@ -10,3 +10,4 @@ C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.BibliotecaDeClasses\o
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.BibliotecaDeClasses\obj\Release\net8.0\refint\AriD.BibliotecaDeClasses.dll
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.BibliotecaDeClasses\obj\Release\net8.0\AriD.BibliotecaDeClasses.pdb
 C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.BibliotecaDeClasses\obj\Release\net8.0\ref\AriD.BibliotecaDeClasses.dll
+C:\Users\55629\source\repos\AriD.GerenciamentoDePonto\AriD.BibliotecaDeClasses\obj\Release\net8.0\AriD.BibliotecaDeClasses.csproj.AssemblyReference.cache

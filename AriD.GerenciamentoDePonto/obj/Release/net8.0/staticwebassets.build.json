@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "fEgBfdzuFOQcP33g9IVhl9ESKVedrbYABcbhBDrbtXE=",
+  "Hash": "u+9eLtam3PR+wGeBy3lKy4O9yFMDr8UGPF8jpkI6Sr8=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -1298,6 +1298,27 @@
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\1.png"
     },
     {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "img/pessoas/organizacao/1/2#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "qjpu1an267",
+      "Integrity": "Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\pessoas\\organizacao\\1\\2.png"
+    },
+    {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\sem-foto.png",
       "SourceId": "AriD.GerenciamentoDePonto",
       "SourceType": "Discovered",
@@ -1317,6 +1338,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\img\\pessoas\\sem-foto.png"
+    },
+    {
+      "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
+      "SourceId": "AriD.GerenciamentoDePonto",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\",
+      "BasePath": "_content/AriD.GerenciamentoDePonto",
+      "RelativePath": "img/registrosapp/1/ticks#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "82ut9289r7",
+      "Integrity": "cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\img\\registrosapp\\1\\ticks.jpg"
     },
     {
       "Identity": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\js\\bootstrap-clockpicker.min.js",
@@ -3013,8 +3055,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "jg1cjgzkzn",
-      "Integrity": "Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=",
+      "Fingerprint": "4rqus19tl9",
+      "Integrity": "EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js"
@@ -3034,8 +3076,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ymd8ug3u73",
-      "Integrity": "CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=",
+      "Fingerprint": "v3xnexenik",
+      "Integrity": "pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js"
@@ -8822,6 +8864,88 @@
       ]
     },
     {
+      "Route": "img/pessoas/organizacao/1/2.png",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "49406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Jun 2025 14:10:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w="
+        }
+      ]
+    },
+    {
+      "Route": "img/pessoas/organizacao/1/2.qjpu1an267.png",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\organizacao\\1\\2.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "49406"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Jun 2025 14:10:37 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qjpu1an267"
+        },
+        {
+          "Name": "label",
+          "Value": "img/pessoas/organizacao/1/2.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Kipd6LuvL2rXmxM9GBUSCMpSqQ78nFXoBAIvfsaRs1w="
+        }
+      ]
+    },
+    {
       "Route": "img/pessoas/sem-foto.png",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\pessoas\\sem-foto.png",
       "Selectors": [],
@@ -8900,6 +9024,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-QIi4o1IGAsqveJQhUWFltErIABSsK7spidW2IP9dYYM="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/1/ticks.82ut9289r7.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "299345"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 15 Sep 2024 00:47:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "82ut9289r7"
+        },
+        {
+          "Name": "label",
+          "Value": "img/registrosapp/1/ticks.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw="
+        }
+      ]
+    },
+    {
+      "Route": "img/registrosapp/1/ticks.jpg",
+      "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\img\\registrosapp\\1\\ticks.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "299345"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 15 Sep 2024 00:47:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-cO7gborKOG5XNB4rgenRjHWT/cW5uOpcP0f2ZKKkjWw="
         }
       ]
     },
@@ -15464,7 +15670,7 @@
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.jg1cjgzkzn.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.4rqus19tl9.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15474,7 +15680,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6346"
+          "Value": "7212"
         },
         {
           "Name": "Content-Type",
@@ -15482,11 +15688,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
+          "Value": "\"EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:48:39 GMT"
+          "Value": "Sun, 22 Jun 2025 20:10:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15496,7 +15702,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "jg1cjgzkzn"
+          "Value": "4rqus19tl9"
         },
         {
           "Name": "label",
@@ -15504,7 +15710,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
+          "Value": "sha256-EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw="
         }
       ]
     },
@@ -15519,7 +15725,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6346"
+          "Value": "7212"
         },
         {
           "Name": "Content-Type",
@@ -15527,11 +15733,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
+          "Value": "\"EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:48:39 GMT"
+          "Value": "Sun, 22 Jun 2025 20:10:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15541,7 +15747,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
+          "Value": "sha256-EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw="
         }
       ]
     },
@@ -15556,7 +15762,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "7552"
         },
         {
           "Name": "Content-Type",
@@ -15564,11 +15770,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 22 Jun 2025 21:58:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15578,12 +15784,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ymd8ug3u73.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.v3xnexenik.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15593,7 +15799,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4623"
+          "Value": "7552"
         },
         {
           "Name": "Content-Type",
@@ -15601,11 +15807,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA=\""
+          "Value": "\"pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:25:55 GMT"
+          "Value": "Sun, 22 Jun 2025 21:58:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15615,7 +15821,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ymd8ug3u73"
+          "Value": "v3xnexenik"
         },
         {
           "Name": "label",
@@ -15623,7 +15829,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-CsV8EPB725A+hG15cC4M1AFtYrhAUTH3pxezmiLnhIA="
+          "Value": "sha256-pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI="
         }
       ]
     },

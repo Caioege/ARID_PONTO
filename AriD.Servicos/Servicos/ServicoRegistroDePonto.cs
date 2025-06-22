@@ -85,7 +85,8 @@ namespace AriD.Servicos.Servicos
                             left join pessoa pes
 	                            on pes.Id = ser.PessoaId
                             where
-	                            reg.OrganizacaoId = @ORGANIZACAOID";
+	                            reg.OrganizacaoId = @ORGANIZACAOID
+                                and (regap.Id is null or regap.Manual = false)";
 
                 if (parametros.Unidades.Any())
                     fromAndWhere += " and uni.Id in @UNIDADES or exists (select 1 from lotacaounidadeorganizacional lotvin where lotvin.VinculoDeTrabalhoId = vin.Id and lot.UnidadeOrganizacionalId in @UNIDADES) ";

@@ -10,6 +10,9 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         MoverRegistros = 1,
 
         [Description("Resetar folha")]
-        Resetar = 2
+        Resetar = 2,
+
+        [Description("Gerenciar registros do aplicativo")]
+        GerenciarRegistrosDoAplicativo = 3
     }
 }

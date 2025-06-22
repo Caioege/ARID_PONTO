@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zR3KPW8avQ7v9V7W/fp5zFKvvOJ8CePfSkWFY4Y8+x4=",
+  "Hash": "Ht9IwE8Z82sUaLpPpACPmTDmLYKaeKullELZD65PSxM=",
   "Source": "AriD.GerenciamentoDePonto",
   "BasePath": "_content/AriD.GerenciamentoDePonto",
   "Mode": "Default",
@@ -3055,8 +3055,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "jg1cjgzkzn",
-      "Integrity": "Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=",
+      "Fingerprint": "4rqus19tl9",
+      "Integrity": "EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js"
@@ -3076,8 +3076,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ledbhp9vkz",
-      "Integrity": "nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=",
+      "Fingerprint": "v3xnexenik",
+      "Integrity": "pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js"
@@ -3884,7 +3884,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 19 May 2025 23:48:20 GMT"
+          "Value": "Sun, 22 Jun 2025 22:18:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3929,7 +3929,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 19 May 2025 23:48:20 GMT"
+          "Value": "Sun, 22 Jun 2025 22:18:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -3974,7 +3974,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 19 May 2025 23:48:20 GMT"
+          "Value": "Sun, 22 Jun 2025 22:18:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4011,7 +4011,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 19 May 2025 23:48:20 GMT"
+          "Value": "Sun, 22 Jun 2025 22:18:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15670,7 +15670,7 @@
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.jg1cjgzkzn.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/folhaDePonto.4rqus19tl9.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\folhaDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15680,7 +15680,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6346"
+          "Value": "7212"
         },
         {
           "Name": "Content-Type",
@@ -15688,11 +15688,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
+          "Value": "\"EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:48:39 GMT"
+          "Value": "Sun, 22 Jun 2025 20:10:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15702,7 +15702,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "jg1cjgzkzn"
+          "Value": "4rqus19tl9"
         },
         {
           "Name": "label",
@@ -15710,7 +15710,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
+          "Value": "sha256-EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw="
         }
       ]
     },
@@ -15725,7 +15725,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "6346"
+          "Value": "7212"
         },
         {
           "Name": "Content-Type",
@@ -15733,11 +15733,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=\""
+          "Value": "\"EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 18 May 2025 19:48:39 GMT"
+          "Value": "Sun, 22 Jun 2025 20:10:23 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15747,7 +15747,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g="
+          "Value": "sha256-EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw="
         }
       ]
     },
@@ -15762,7 +15762,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5136"
+          "Value": "7552"
         },
         {
           "Name": "Content-Type",
@@ -15770,11 +15770,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
+          "Value": "\"pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
+          "Value": "Sun, 22 Jun 2025 21:58:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15784,12 +15784,12 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
+          "Value": "sha256-pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI="
         }
       ]
     },
     {
-      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.ledbhp9vkz.js",
+      "Route": "Scripts/Paginas/FolhaDePonto/funcoesDePonto.v3xnexenik.js",
       "AssetFile": "C:\\Users\\55629\\source\\repos\\AriD.GerenciamentoDePonto\\AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\FolhaDePonto\\funcoesDePonto.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -15799,7 +15799,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5136"
+          "Value": "7552"
         },
         {
           "Name": "Content-Type",
@@ -15807,11 +15807,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=\""
+          "Value": "\"pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 15 Jun 2025 22:54:01 GMT"
+          "Value": "Sun, 22 Jun 2025 21:58:36 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -15821,7 +15821,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ledbhp9vkz"
+          "Value": "v3xnexenik"
         },
         {
           "Name": "label",
@@ -15829,7 +15829,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM="
+          "Value": "sha256-pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI="
         }
       ]
     },

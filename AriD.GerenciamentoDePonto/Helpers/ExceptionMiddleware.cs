@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using AriD.GerenciamentoDePonto.Helpers;
+using System.Net;
 using System.Text.Json;
 
 public class ExceptionMiddleware
@@ -57,6 +58,17 @@ public class ExceptionMiddleware
                   (exception.InnerException != null && exception.InnerException.Message.ToLower().Contains("cannot delete or update a parent row"))
                     ? "Esse item não pode ser alterado/removido pois possui vínculo com outro item."
                     : "Ocorreu um erro inesperado. Tente novamente mais tarde.";
+        }
+
+        if (!(exception is ApplicationException))
+        {
+            try
+            {
+                Logger.Write(exception);
+            }
+            catch
+            {
+            }
         }
 
         context.Response.StatusCode = statusCode;

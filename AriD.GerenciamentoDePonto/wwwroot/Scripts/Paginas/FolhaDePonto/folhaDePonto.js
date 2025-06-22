@@ -85,6 +85,7 @@ function carregarFolhaDePonto(mensagem) {
 				$('#div-ponto').html(data.html);
 
 				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
+				$('#btn-gerenciar-app').attr("style", "display: inline !important; margin-right: 5px;");
 
 				if (!data.exibirAbrir) {
 					$('#btn-resetar').attr("style", "display: inline !important; margin-right: 5px;");
@@ -198,4 +199,31 @@ function resetarFolhaDePonto() {
 				});
 		}
 	});
+}
+
+function abrirModalGerenciarRegistrosApp() {
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/ModalSolicitacoesApp',
+		'GET',
+		{
+			vinculoDeTrabalhoId: $('#VinculoDeTrabalhoId').val(),
+			mesDeReferencia: $('#MesDeReferencia').val()
+		},
+		function (data) {
+			if (data.sucesso) {
+				$('#div-modal').html(data.html);
+				assineMascarasDoComponente($('#_ModalSolicitacoesApp'));
+
+				$('#_ModalSolicitacoesApp').on('hidden.bs.modal', function () {
+					var deveRecarregar = ($('#RecarregarFolhaDePontoAoFechar').val() || '').toLowerCase();
+					if (deveRecarregar === 'true') {
+						carregarFolhaDePonto();
+					}
+				});
+
+				$('#_ModalSolicitacoesApp').modal('show');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
 }

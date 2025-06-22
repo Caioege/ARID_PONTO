@@ -89,6 +89,24 @@ function assineEventoAvancarRecuarPonto() {
 			titulo.textContent = td.textContent;
 			popup.appendChild(titulo);
 
+			if (jTD.hasClass('registro-app')) {
+
+				const registroAppTitulo = document.createElement("div");
+				registroAppTitulo.style.fontStyle = 'italic';
+				registroAppTitulo.style.marginBottom = "6px";
+				registroAppTitulo.textContent = 'Registro via aplicativo';
+				popup.appendChild(registroAppTitulo);
+
+			} else if (jTD.hasClass('registromanualapp')) {
+
+				const registroManualAppTitulo = document.createElement("div");
+				registroManualAppTitulo.style.fontStyle = 'italic';
+				registroManualAppTitulo.style.marginBottom = "6px";
+				registroManualAppTitulo.textContent = 'Registro manual';
+				popup.appendChild(registroManualAppTitulo);
+
+			}
+
 			if (!isSaida5) {
 				const btnAvancar = document.createElement("button");
 				btnAvancar.classList = 'btn btn-primary';
@@ -160,3 +178,58 @@ document.getElementById('imagemExpandida').addEventListener('click', function (e
 		fecharImagemExpandida();
 	}
 });
+
+function aprovaRegistro(registroId) {
+	Swal.fire({
+		html: "Tem certeza que deseja <b>aprovar</b> esse item?<br /><br />Uma vez aprovado, só é possível estornar sua situação ao <b>resetar a folha de ponto</b>.",
+		icon: "question",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "SIM",
+		cancelButtonText: 'NÃO'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			RequisicaoAjaxComCarregamento(
+				'/FolhaDePonto/AprovarRegistroAplicativo',
+				'POST',
+				{ id: registroId, mesDeReferencia: $('#MesDeReferencia').val(), unidadeId: $('#UnidadeOrganizacionalId').val() },
+				function (data) {
+					if (data.sucesso) {
+						MensagemRodape('success', data.mensagem);
+						$(`#linha-registro-app-${registroId}`).remove();
+						$('#RecarregarFolhaDePontoAoFechar').val(true);
+					} else {
+						MensagemRodape('warning', data.mensagem);
+					}
+				});
+		}
+	});
+}
+
+function reprovaRegistro(registroId) {
+	Swal.fire({
+		html: "Tem certeza que deseja <b>reprovar</b> esse item?<br /><br />Uma vez reprovado, é impossível estornar sua situação.",
+		icon: "question",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "SIM",
+		cancelButtonText: 'NÃO'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			RequisicaoAjaxComCarregamento(
+				'/FolhaDePonto/ReprovarRegistroAplicativo',
+				'POST',
+				{ id: registroId },
+				function (data) {
+					if (data.sucesso) {
+						$(`#linha-registro-app-${registroId}`).remove();
+						MensagemRodape('success', data.mensagem);
+					} else {
+						MensagemRodape('warning', data.mensagem);
+					}
+				});
+		}
+	});
+}

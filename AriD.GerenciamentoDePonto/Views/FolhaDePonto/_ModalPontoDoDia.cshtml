@@ -105,7 +105,7 @@
                                 <div class="col-12">
                                     <div class="border rounded p-3 shadow-sm bg-light">
                                         <div class="align-items-center mb-3" style="width: 100%; text-align: center">
-                                            <h5 class="mb-0 text-dark"><i class='bx bx-mobile-alt fs-4 text-dark'></i> Registro via aplicativo</h5>
+                                            <h5 class="mb-0 text-dark"><i class='bx bx-mobile-alt fs-4 text-dark'></i> Registro@(registroAplicativo.Manual ? " manual" : string.Empty) via aplicativo</h5>
                                         </div>
 
                                         <div class="row g-3">
@@ -131,7 +131,7 @@
                                             {
                                                 <div class="col-12 d-flex align-items-start">
                                                     <i class='bx bx-comment-dots text-info fs-5 me-2'></i>
-                                                    <span class="text-muted">@registroAplicativo.Observacao</span>
+                                                    <span style="text-align: justify">@registroAplicativo.Observacao</span>
                                                 </div>
                                             }
 
@@ -190,7 +190,7 @@
                                     <div class="tab-pane fade @(justificativaId.HasValue ? "active show" : string.Empty)" id="navs-pills-justificativa" role="tabpanel">
                                         <div class="row">
                                             <div class="col col-md-12">
-                                                @Html.DropDownList("JustificativaId", new SelectList(ViewBag.Justificativas, "Codigo", "Descricao", justificativaId), string.Empty, new { @class = "select2" })
+                                                @Html.DropDownList("JustificativaId", new SelectList(ViewBag.Justificativas, "Codigo", "Descricao", justificativaId), "<<Sem justificativa>>", new { @class = "select2" })
                                                 <br />
                                                 <div class="note">
                                                     Quando informada, serão desconsiderados os registros de entrada e saída para o período. Eles serão substituídos pela justificativa informada aqui.

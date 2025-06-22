@@ -2586,8 +2586,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>jg1cjgzkzn</Fingerprint>
-      <Integrity>Y/WE20JmYIA/QL/iKDydRPunMH9TKgzldwjTsqkDa1g=</Integrity>
+      <Fingerprint>4rqus19tl9</Fingerprint>
+      <Integrity>EA0UXljuf/vphPEzsGesS3jHaJlKkQuX/TU9XUsQGAw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\folhaDePonto.js'))</OriginalItemSpec>
@@ -2604,8 +2604,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ledbhp9vkz</Fingerprint>
-      <Integrity>nR03pMPshKodG/crrH+pfE/q1/fEUkBT/Bo053q40vM=</Integrity>
+      <Fingerprint>v3xnexenik</Fingerprint>
+      <Integrity>pWacNQU/4ZepT4o9Ulb2pGzx2vViPPqj1BzjZi8+XdI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\Scripts\Paginas\FolhaDePonto\funcoesDePonto.js'))</OriginalItemSpec>

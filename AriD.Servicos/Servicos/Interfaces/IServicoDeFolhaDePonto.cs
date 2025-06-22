@@ -71,5 +71,10 @@ namespace AriD.Servicos.Servicos.Interfaces
             int vinculoDeTrabalhoId,
             int unidadeLotacaoId,
             MesAno mesAno);
+
+        List<RegistroAplicativo> ObtenhaRegistrosDeAplicativo(int vinculoId, MesAno periodo);
+
+        public void AprovarRegistroAplicativo(int registroId, int unidadeLotacaoId, MesAno mesAno);
+        void ReprovarRegistroAplicativo(int registroId);
     }
 }

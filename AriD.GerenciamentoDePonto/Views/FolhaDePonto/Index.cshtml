@@ -59,19 +59,19 @@
         </div>
 
         <div class="row">
-            <div class="col col-md-6 col-sm-12">
+            <div class="col col-md-6 col-sm-12 col-12">
                 <label class="form-label obrigatorio" for="ServidorId">@Context.NomenclaturaServidor()</label>
                 @Html.DropDownList("ServidorId", new SelectList(string.Empty), new { @class = "select2" })
             </div>
 
-            <div class="col col-md-6 col-sm-12">
+            <div class="col col-md-6 col-sm-12 col-12">
                 <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo de Trabalho</label>
                 @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(string.Empty), new { @class = "select2" })
             </div>
         </div>
 
         <div class="row">
-            <div class="col col-md-4 col-sm-12">
+            <div class="col col-md-4 col-sm-12 col-12">
                 <label class="form-label obrigatorio" for="MesDeReferencia">Período</label>
                 <div class="input-group">
                     <input id="MesDeReferencia" type="month" class="form-control" />
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <div class="col col-md-8 col-sm-12 float-end">
+            <div class="col col-md-8 col-sm-12 col-12 float-end">
                 <button id="btn-fechar-ponto" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="fecharPeriodoPonto()">
                     <i class='bx bxs-lock-alt'></i> Fechar Ponto
                 </button>
@@ -100,6 +100,13 @@
                 <button id="btn-imprimir" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="imprimirFolhaDePonto()" style="display:none; margin-right: 5px;">
                     <i class='bx bx-printer' ></i> Imprimir
                 </button>
+
+                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.GerenciarRegistrosDoAplicativo)) 
+                {
+                    <button id="btn-gerenciar-app" type="button" class="btn btn-secondary btn-acao-ponto float-end" onclick="abrirModalGerenciarRegistrosApp()" style="display:none; margin-right: 5px;">
+                        <i class='bx bx-mobile-alt' ></i> Solicitações App
+                    </button>
+                }
             </div>
         </div>
 

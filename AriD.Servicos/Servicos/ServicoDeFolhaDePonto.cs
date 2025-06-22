@@ -17,6 +17,8 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
         private readonly IRepositorio<Afastamento> _repositorioAfastamento;
         private readonly IRepositorio<EscalaDoServidor> _repositorioEscala;
+        private readonly IRepositorio<RegistroAplicativo> _repositorioRegistroAplicativo;
+        private readonly IRepositorio<RegistroDePonto> _repositorioRegistroDePonto;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
@@ -25,7 +27,9 @@ namespace AriD.Servicos.Servicos
             IRepositorio<JustificativaDeAusencia> repositorioJustificativa,
             IRepositorio<VinculoDeTrabalho> repositorioVinculo,
             IRepositorio<Afastamento> repositorioAfastamento,
-            IRepositorio<EscalaDoServidor> repositorioEscala)
+            IRepositorio<EscalaDoServidor> repositorioEscala,
+            IRepositorio<RegistroAplicativo> repositorioRegistroAplicativo,
+            IRepositorio<RegistroDePonto> repositorioRegistroDePonto)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -35,6 +39,8 @@ namespace AriD.Servicos.Servicos
             _repositorioVinculo = repositorioVinculo;
             _repositorioAfastamento = repositorioAfastamento;
             _repositorioEscala = repositorioEscala;
+            _repositorioRegistroAplicativo = repositorioRegistroAplicativo;
+            _repositorioRegistroDePonto = repositorioRegistroDePonto;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -472,10 +478,9 @@ namespace AriD.Servicos.Servicos
                 List<EventoAnual> eventosDoPeriodo = EventosDaFolhaDePonto(organizacaoId, inicio, fim);
                 Tuple<TimeSpan?, TimeSpan?> bancoDeHoras = ObtenhaCreditoDebitoDoPeriodoAnterior(vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras, vinculoDeTrabalhoId, inicio) ?? new(null, null);
 
-                // Aplicar tolerância de 5 minutos para remover registros duplicados
                 registrosDePonto = registrosDePonto
                     .OrderBy(r => r.DataHoraRegistro)
-                    .GroupBy(r => r.DataHoraRegistro.Date) // Agrupar por dia
+                    .GroupBy(r => r.DataHoraRegistro.Date)
                     .SelectMany(g =>
                         g.Aggregate(new List<RegistroDePonto>(), (acc, atual) =>
                         {
@@ -617,60 +622,70 @@ namespace AriD.Servicos.Servicos
                                 if (!pontoDoDia.Entrada1.HasValue && !pontoDoDia.JustificativaPeriodo1Id.HasValue)
                                 {
                                     pontoDoDia.Entrada1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoEntrada1Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Saida1.HasValue && !pontoDoDia.JustificativaPeriodo1Id.HasValue)
                                 {
                                     pontoDoDia.Saida1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoSaida1Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Entrada2.HasValue && !pontoDoDia.JustificativaPeriodo2Id.HasValue)
                                 {
                                     pontoDoDia.Entrada2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoEntrada2Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Saida2.HasValue && !pontoDoDia.JustificativaPeriodo2Id.HasValue)
                                 {
                                     pontoDoDia.Saida2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoSaida2Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Entrada3.HasValue && !pontoDoDia.JustificativaPeriodo3Id.HasValue)
                                 {
                                     pontoDoDia.Entrada3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoEntrada3Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Saida3.HasValue && !pontoDoDia.JustificativaPeriodo3Id.HasValue)
                                 {
                                     pontoDoDia.Saida3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoSaida3Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Entrada4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
                                 {
                                     pontoDoDia.Entrada4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoEntrada4Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Saida4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
                                 {
                                     pontoDoDia.Saida4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoSaida4Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
-                                if (!pontoDoDia.Entrada4.HasValue && !pontoDoDia.JustificativaPeriodo4Id.HasValue)
+                                if (!pontoDoDia.Entrada5.HasValue && !pontoDoDia.JustificativaPeriodo5Id.HasValue)
                                 {
-                                    pontoDoDia.Entrada4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.Entrada5 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoEntrada5Id = registroNaPosicao.Id;
                                     continue;
                                 }
 
                                 if (!pontoDoDia.Saida5.HasValue && !pontoDoDia.JustificativaPeriodo5Id.HasValue)
                                 {
                                     pontoDoDia.Saida5 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
+                                    pontoDoDia.RegistroDePontoSaida5Id = registroNaPosicao.Id;
                                     continue;
                                 }
                             }
@@ -730,6 +745,127 @@ namespace AriD.Servicos.Servicos
                 foreach (var dia in pontosDoPeriodo)
                 {
                     var registroPersistido = _repositorio.Obtenha(dia.Id);
+
+                    if (registroPersistido.RegistroDePontoEntrada1Id.HasValue && 
+                        registroPersistido.RegistroDePontoEntrada1.RegistroAplicativoId.HasValue && 
+                        registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Manual && 
+                        registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoEntrada1);
+                        registroPersistido.RegistroDePontoEntrada1Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoEntrada2Id.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada2.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoEntrada2);
+                        registroPersistido.RegistroDePontoEntrada2Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoEntrada3Id.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada3.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoEntrada3);
+                        registroPersistido.RegistroDePontoEntrada3Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoEntrada4Id.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada4.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoEntrada4);
+                        registroPersistido.RegistroDePontoEntrada4Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoEntrada5Id.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada5.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoEntrada5);
+                        registroPersistido.RegistroDePontoEntrada5Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoSaida1Id.HasValue &&
+                        registroPersistido.RegistroDePontoSaida1.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoSaida1.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoSaida1);
+                        registroPersistido.RegistroDePontoSaida1Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoSaida2Id.HasValue &&
+                        registroPersistido.RegistroDePontoSaida2.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoSaida2.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoSaida2);
+                        registroPersistido.RegistroDePontoSaida2Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoSaida3Id.HasValue &&
+                        registroPersistido.RegistroDePontoSaida3.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoSaida3.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoSaida3);
+                        registroPersistido.RegistroDePontoSaida3Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoSaida4Id.HasValue &&
+                        registroPersistido.RegistroDePontoSaida4.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoSaida4.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoSaida4);
+                        registroPersistido.RegistroDePontoSaida4Id = null;
+                    }
+
+                    if (registroPersistido.RegistroDePontoSaida5Id.HasValue &&
+                        registroPersistido.RegistroDePontoSaida5.RegistroAplicativoId.HasValue &&
+                        registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Manual &&
+                        registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
+                    {
+                        registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
+                        _repositorioRegistroAplicativo.Atualizar(registroPersistido.RegistroDePontoSaida5.RegistroAplicativo);
+
+                        _repositorioRegistroDePonto.Remover(registroPersistido.RegistroDePontoSaida5);
+                        registroPersistido.RegistroDePontoSaida5Id = null;
+                    }
+
                     _repositorio.Remover(registroPersistido);
                 }
 
@@ -786,6 +922,34 @@ namespace AriD.Servicos.Servicos
                 @INICIO = inicio,
                 @FIM = fim
             });
+
+            Func<int, RegistroDePonto> CarregueRegistroDePonto = new Func<int, RegistroDePonto>((registroId) 
+                => _repositorio.ConsultaDapper<RegistroDePonto>("select * from registrodeponto where Id = @REGISTROID", new { @REGISTROID = registroId }).FirstOrDefault());
+
+            foreach (var pontoDia in pontosDoPeriodo)
+            {
+                if (pontoDia.RegistroDePontoEntrada1Id.HasValue)
+                    pontoDia.RegistroDePontoEntrada1 = CarregueRegistroDePonto(pontoDia.RegistroDePontoEntrada1Id.Value);
+                if (pontoDia.RegistroDePontoEntrada2Id.HasValue)
+                    pontoDia.RegistroDePontoEntrada2 = CarregueRegistroDePonto(pontoDia.RegistroDePontoEntrada2Id.Value);
+                if (pontoDia.RegistroDePontoEntrada3Id.HasValue)
+                    pontoDia.RegistroDePontoEntrada3 = CarregueRegistroDePonto(pontoDia.RegistroDePontoEntrada3Id.Value);
+                if (pontoDia.RegistroDePontoEntrada4Id.HasValue)
+                    pontoDia.RegistroDePontoEntrada4 = CarregueRegistroDePonto(pontoDia.RegistroDePontoEntrada4Id.Value);
+                if (pontoDia.RegistroDePontoEntrada5Id.HasValue)
+                    pontoDia.RegistroDePontoEntrada5 = CarregueRegistroDePonto(pontoDia.RegistroDePontoEntrada5Id.Value);
+
+                if (pontoDia.RegistroDePontoSaida1Id.HasValue)
+                    pontoDia.RegistroDePontoSaida1 = CarregueRegistroDePonto(pontoDia.RegistroDePontoSaida1Id.Value);
+                if (pontoDia.RegistroDePontoSaida2Id.HasValue)
+                    pontoDia.RegistroDePontoSaida2 = CarregueRegistroDePonto(pontoDia.RegistroDePontoSaida2Id.Value);
+                if (pontoDia.RegistroDePontoSaida3Id.HasValue)
+                    pontoDia.RegistroDePontoSaida3 = CarregueRegistroDePonto(pontoDia.RegistroDePontoSaida3Id.Value);
+                if (pontoDia.RegistroDePontoSaida4Id.HasValue)
+                    pontoDia.RegistroDePontoSaida4 = CarregueRegistroDePonto(pontoDia.RegistroDePontoSaida4Id.Value);
+                if (pontoDia.RegistroDePontoSaida5Id.HasValue)
+                    pontoDia.RegistroDePontoSaida5 = CarregueRegistroDePonto(pontoDia.RegistroDePontoSaida5Id.Value);
+            }
         }
 
         public List<EventoAnual> EventosDaFolhaDePonto(
@@ -909,6 +1073,95 @@ namespace AriD.Servicos.Servicos
                     @ORGANIZACAOID = organizacaoId,
                     @DEPARTAMENTOID = departamentoId
                 });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<RegistroAplicativo> ObtenhaRegistrosDeAplicativo(int vinculoId, MesAno periodo)
+        {
+            try
+            {
+                return _repositorioRegistroAplicativo.ObtenhaLista(c =>
+                    c.VinculoDeTrabalhoId == vinculoId &&
+                    c.Situacao == eSituacaoRegistroAplicativo.AguardandoAvaliacao &&
+                    ((c.JustificativaDeAusenciaId.HasValue && (c.DataFinalAtestado >= periodo.Inicio && c.DataInicialAtestado <= periodo.Fim)) ||
+                    (!c.JustificativaDeAusenciaId.HasValue && periodo.Inicio <= c.DataHora && periodo.Fim >= c.DataHora)));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void AprovarRegistroAplicativo(int registroId, int unidadeLotacaoId, MesAno mesAno)
+        {
+            try
+            {
+                var registroAplicativo = _repositorioRegistroAplicativo.Obtenha(registroId);
+                if (registroAplicativo.Situacao != eSituacaoRegistroAplicativo.AguardandoAvaliacao)
+                    throw new ApplicationException("Esse registro não pode ter sua situação alterada.");
+
+                registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Aprovado;
+                _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
+
+                if (!registroAplicativo.JustificativaDeAusenciaId.HasValue)
+                {
+                    _repositorioRegistroDePonto.Add(new RegistroDePonto
+                    {
+                        OrganizacaoId = registroAplicativo.OrganizacaoId,
+                        DataHoraRegistro = registroAplicativo.DataHora,
+                        DataHoraRecebimento = DateTime.Now,
+                        RegistroAplicativoId = registroAplicativo.Id,
+                        TipoRegistro = eTipoDeRegistroEquipamento.Aplicativo
+                    });
+                }
+                else if (registroAplicativo.DataInicialAtestado.HasValue && registroAplicativo.DataFinalAtestado.HasValue)
+                {
+                    CarregueFolhaDePonto(registroAplicativo.OrganizacaoId, registroAplicativo.VinculoDeTrabalhoId, unidadeLotacaoId, mesAno);
+
+                    var pontosDoPeriodo = _repositorio.ObtenhaLista(c => 
+                        c.VinculoDeTrabalhoId == registroAplicativo.VinculoDeTrabalhoId && c.Data >= registroAplicativo.DataInicialAtestado 
+                        && c.Data <= registroAplicativo.DataFinalAtestado);
+
+                    var utiliza5Registros = registroAplicativo.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos;
+                    foreach (var pontoDia in pontosDoPeriodo)
+                    {
+                        pontoDia.JustificativaPeriodo1Id = registroAplicativo.JustificativaDeAusenciaId;
+                        pontoDia.JustificativaPeriodo2Id = registroAplicativo.JustificativaDeAusenciaId;
+                        pontoDia.JustificativaPeriodo3Id = registroAplicativo.JustificativaDeAusenciaId;
+
+                        if (utiliza5Registros)
+                        {
+                            pontoDia.JustificativaPeriodo4Id = registroAplicativo.JustificativaDeAusenciaId;
+                            pontoDia.JustificativaPeriodo5Id = registroAplicativo.JustificativaDeAusenciaId;
+                        }
+
+                        _repositorio.Atualizar(pontoDia);
+                    }
+                }
+
+                _repositorioRegistroAplicativo.Commit();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ReprovarRegistroAplicativo(int registroId)
+        {
+            try
+            {
+                var registroAplicativo = _repositorioRegistroAplicativo.Obtenha(registroId);
+                if (registroAplicativo.Situacao != eSituacaoRegistroAplicativo.AguardandoAvaliacao)
+                    throw new ApplicationException("Esse registro não pode ter sua situação alterada.");
+
+                registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Reprovado;
+                _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
+                _repositorioRegistroAplicativo.Commit();
             }
             catch (Exception)
             {
@@ -1186,9 +1439,9 @@ namespace AriD.Servicos.Servicos
             DateTime inicio,
             DateTime fim)
         {
-            var query = 
-                    @"select
-	                    *
+            var query =
+                    @"(select
+	                    r.*
                     from registrodeponto r
                     inner join equipamentodeponto e
 	                    on e.Id = r.EquipamentoDePontoId
@@ -1202,7 +1455,17 @@ namespace AriD.Servicos.Servicos
 		                    lotacaounidadeorganizacional l
 	                    WHERE
 		                    l.VinculoDeTrabalhoId = @VINCULOID
-		                    and l.UnidadeOrganizacionalId = @UNIDADEID);";
+                            and r.RegistroAplicativoId is null
+		                    and l.UnidadeOrganizacionalId = @UNIDADEID))
+                    union
+                    (select
+	                    r.*
+                    from registrodeponto r
+                    inner join registroaplicativo a
+	                    on a.Id = r.RegistroAplicativoId
+                    where
+	                    a.VinculoDeTrabalhoId = @VINCULOID
+                        and date(a.DataHora) between date(@INICIO) and date(@FIM))";
 
             return _repositorio.ConsultaDapper<RegistroDePonto>(query, new
             {
