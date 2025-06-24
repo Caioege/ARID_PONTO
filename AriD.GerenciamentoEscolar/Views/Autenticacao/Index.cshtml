@@ -343,6 +343,17 @@
     <script src="~/js/jquery.loading.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector(".form-content");
+
+            form.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    entrar();
+                }
+            });
+        });
+            
         const inputs = document.querySelectorAll(".form-input");
 
         function addfocus() {
@@ -371,7 +382,9 @@
                 onStop: function (loading) {
                     loading.overlay.slideUp(250);
                 }
+                
             });
+            
 
             setTimeout(function () {
                 $.ajax({

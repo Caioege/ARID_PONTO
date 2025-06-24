@@ -1,0 +1,132 @@
+﻿@{
+    Layout = null;
+
+    // Lista fictícia de conteúdos aplicados
+    var listaFicticia = new[]
+    {
+        new { Id = 1, Disciplina = "Matemática", Data = "10/06/2025", Professor = "Fred", Descricao = "Introdução às frações e operações básicas." },
+        new { Id = 2, Disciplina = "Ciências", Data = "12/06/2025", Professor = "Caio", Descricao = "Processo de fotossíntese em plantas." },
+        new { Id = 3, Disciplina = "História", Data = "15/06/2025", Professor = "Astolfo", Descricao = "Contexto da colonização portuguesa no Brasil." },
+        new { Id = 4, Disciplina = "Inglês", Data = "18/06/2025", Professor = "Astolfo", Descricao = "Do you speak english?" },
+        new { Id = 5, Disciplina = "Inglês", Data = "18/06/2025", Professor = "Astolfo", Descricao = "Do you speak english?" },
+        new { Id = 6, Disciplina = "Inglês", Data = "18/06/2025", Professor = "Astolfo", Descricao = "Do you speak english?" }
+    };
+
+    int paginaAtual = 1;
+    int itensPorPagina = 5;
+    int totalItens = listaFicticia.Length;
+    int totalPaginas = (int)Math.Ceiling(totalItens / (double)itensPorPagina);
+
+    var itensPaginados = listaFicticia
+        .Skip((paginaAtual - 1) * itensPorPagina)
+        .Take(itensPorPagina);
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bx bxs-book-content"></i> Conteúdo Aplicado
+        </h5>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 col-sm-6 col-xs-12">
+                <label class="form-label">&nbsp;</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Digite para buscar" style="background: white" />
+                    <button class="btn btn-primary" type="button" onclick="buscarConteudo()">
+                        <i class="bx bx-search-alt"></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-xs-12">
+                <label class="form-label">Disciplina</label>
+                <select class="form-select" onchange="buscarConteudo()">
+                    <option value="">Todas</option>
+                    <option value="Matemática">Matemática</option>
+                    <option value="Ciências">Ciências</option>
+                    <option value="História">História</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-sm-2 col-xs-12">
+                <label class="form-label">&nbsp;</label>
+                <button type="button" onclick="CarregarPagina('@Url.Action("Adicionar")')" class="btn btn-primary float-end">
+                    <i class="bx bx-plus"></i> Adicionar
+                </button>
+            </div>
+        </div>
+
+        <br />
+
+        <!-- Lista com collapse -->
+        <div class="accordion" id="accordionConteudos">
+            @foreach (var item in itensPaginados)
+            {
+                <div class="accordion-item mb-2">
+                    <h2 class="accordion-header" id="heading-@item.Id">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@item.Id">
+                            <strong>@item.Disciplina</strong> — <span class="text-muted ms-2">@item.Data</span>
+                        </button>
+                    </h2>
+                    <div id="collapse-@item.Id" class="accordion-collapse collapse" aria-labelledby="heading-@item.Id" data-bs-parent="#accordionConteudos">
+                        <div class="accordion-body">
+                            <p><strong>Usuário:</strong> @item.Professor</p>
+                            <p><strong>Descrição:</strong> @item.Descricao</p>
+
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="CarregarPagina('@Url.Action("Adicionar", "Conteudo", new { id = item.Id })')">
+                                    <i class="bx bxs-edit-alt"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="bx bx-show-alt"></i> Visualizar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Paginação -->
+        <div class="dt-toolbar-footer mt-4">
+            <div class="row">
+                <div class="col-sm-6 col-xs-12 hidden-xs">
+                    <div class="dataTables_info" role="status" aria-live="polite">
+                        Mostrando <span class="txt-color-darken">@(((paginaAtual - 1) * itensPorPagina) + 1)</span>
+                        até <span class="txt-color-darken">@(Math.Min(paginaAtual * itensPorPagina, totalItens))</span>
+                        de <span class="text-primary">@totalItens</span> registros
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <ul class="pagination pagination-sm justify-content-end">
+                            <li class="paginate_button previous @(paginaAtual == 1 ? "disabled" : "")">
+                                <a href="javascript:;">Anterior</a>
+                            </li>
+                            @for (int i = 1; i <= totalPaginas; i++)
+                            {
+                                <li class="paginate_button @(i == paginaAtual ? "active" : "")">
+                                    <a href="javascript:;">@i</a>
+                                </li>
+                            }
+                            <li class="paginate_button next @(paginaAtual == totalPaginas ? "disabled" : "")">
+                                <a href="javascript:;">Próxima</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    function buscarConteudo() {
+        alert("Função de busca ainda não implementada.");
+    }
+</script>

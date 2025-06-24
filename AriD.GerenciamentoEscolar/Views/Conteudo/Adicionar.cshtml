@@ -1,0 +1,99 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@model Aluno
+
+@{
+	var dadosDaSessao = Context.DadosDaSessao();
+}
+
+
+<div class="card mb-6">
+	<div class="card-header d-flex justify-content-between align-items-center">
+		<h5 class="mb-0">
+			Adicionar Conteúdo Aplicado
+		</h5>
+		<small class="text-muted float-end">
+			Campos com <span style="color: red">*</span> são obrigatórios.
+		</small>
+	</div>
+	<div class="card-body">
+		<form id="formulario-aluno">
+			<div class="row">
+				<section class="col col-md4-">
+					<label class="form-label obrigatorio" for="AnoLetivoId">Ano Letivo</label>
+					@if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+					{
+						@Html.DropDownList("AnoLetivoId", new List<SelectListItem>
+					{
+					new SelectListItem { Value = "1", Text = "2025", Selected = true },
+					new SelectListItem { Value = "2", Text = "2024" },
+					}, new { @class = "select2" })
+					}
+				</section>
+				<section class="col col-md-8">
+					<label class="form-label obrigatorio" for="EscolaId">Escola</label>
+
+					@if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+					{
+						@Html.DropDownList("EscolaId", new List<SelectListItem>
+					{
+					new SelectListItem { Value = "1", Text = "Escola Municipal Primavera" },
+					new SelectListItem { Value = "2", Text = "Colégio Estadual Centro-Oeste" },
+					new SelectListItem { Value = "3", Text = "Instituto Federal de Goiás" }
+					}, "-- Selecione --", new { @class = "select2" })
+					}
+					else
+					{
+						@Html.TextBox("EscolaNome", "Instituto Federal de Goiás", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+						@Html.Hidden("EscolaId", dadosDaSessao.EscolaId)
+					}
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-lg-4 col-md-4 col-sm-12">
+					<label class="form-label obrigatorio">Data</label>
+					<input type="date" name="Data" class="form-control">
+				</section>
+				<section class="col col-lg-8 col-md-8 col-sm-12">
+					<label class="form-label obrigatorio">Turma</label>
+					@if (dadosDaSessao.Perfil != ePerfilDeAcesso.Escola)
+					{
+						@Html.DropDownList("TurmaId", new List<SelectListItem>
+					{
+					new SelectListItem { Value = "", Text = "" },
+					new SelectListItem { Value = "1", Text = "1° ano A" },
+					new SelectListItem { Value = "2", Text = "2° ano B" },
+					new SelectListItem { Value = "3", Text = "3° ano C" }
+					}, new { @class = "select2" })
+					}
+					else
+					{
+						@Html.TextBox("EscolaNome", "Instituto Federal de Goiás", new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+						@Html.Hidden("EscolaId", dadosDaSessao.EscolaId)
+					}
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-md-4">
+					<label class="form-label obrigatorio">Disciplina</label>
+					<select class="form-select" onchange="buscarConteudo()">
+						<option value="">Todas</option>
+						<option value="Matemática">Matemática</option>
+						<option value="Ciências">Ciências</option>
+						<option value="História">História</option>
+					</select>
+				</section>
+			</div>
+
+			<br />
+			<button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Conteudo")')">
+				<i class='bx bxs-left-arrow-circle'></i> Voltar
+			</button>
+
+			<button type="button" class="btn btn-primary" id="btn-salvar">
+				<i class='bx bxs-save'></i> Salvar
+			</button>
+		</form>
+	</div>
+</div>
+
+

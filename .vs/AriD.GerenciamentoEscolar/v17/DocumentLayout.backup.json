@@ -1,14 +1,42 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\git\\AriD.GerenciamentoEscolar\\",
+  "WorkspaceRootPath": "C:\\New-Git\\ARID_ESCOLAS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\shared\\sections\\menu\\_verticalmenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\shared\\sections\\menu\\_verticalmenu.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|d:\\git\\arid.gerenciamentoescolar\\arid.gerenciamentoescolar\\views\\autenticacao\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\autenticacao\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\conteudo\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\conteudo\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\aluno\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\aluno\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\controllers\\conteudocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\controllers\\conteudocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\configuracoes\\conteudoaplicado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\configuracoes\\conteudoaplicado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\controllers\\configuracoescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\controllers\\configuracoescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\wwwroot\\scripts\\paginas\\turma\\alterar.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\wwwroot\\scripts\\paginas\\turma\\alterar.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\conteudo\\adicionar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\conteudo\\adicionar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\views\\grupodepermissao\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\grupodepermissao\\alterar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,28 +54,119 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Autenticacao\\Index.cshtml",
-              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Autenticacao\\Index.cshtml",
-              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar\\Views\\Autenticacao\\Index.cshtml",
-              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Autenticacao\\Index.cshtml",
-              "ViewState": "AgIAAEgBAAAAAAAAAAAAAFoBAAAAAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "alterar.js",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\wwwroot\\Scripts\\Paginas\\Turma\\alterar.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-06-22T19:42:15.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ConfiguracoesController.cs",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Controllers\\ConfiguracoesController.cs",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Controllers\\ConfiguracoesController.cs",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Controllers\\ConfiguracoesController.cs",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Controllers\\ConfiguracoesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-22T18:43:01.348Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ConteudoAplicado.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAswI0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T17:58:42.806Z",
+              "WhenOpened": "2025-06-22T17:18:56.994Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MySQLDBContext.cs",
-              "DocumentMoniker": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\DBContext\\MySQLDBContext.cs",
-              "RelativeDocumentMoniker": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
-              "ToolTip": "D:\\git\\AriD.GerenciamentoEscolar\\AriD.Servicos\\DBContext\\MySQLDBContext.cs",
-              "RelativeToolTip": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABYAAAAAAAAAA==",
+              "Title": "_VerticalMenu.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Shared\\Sections\\Menu\\_VerticalMenu.cshtml",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAvwKgAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-22T17:12:37.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Alterar.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\GrupoDePermissao\\Alterar.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\GrupoDePermissao\\Alterar.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\GrupoDePermissao\\Alterar.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\GrupoDePermissao\\Alterar.cshtml",
+              "ViewState": "AgIAAH8AAAAAAAAAAAAAAJUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-22T16:53:45.126Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ConteudoController.cs",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Controllers\\ConteudoController.cs",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Controllers\\ConteudoController.cs",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Controllers\\ConteudoController.cs",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Controllers\\ConteudoController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-27T17:48:34.199Z",
+              "WhenOpened": "2025-06-22T15:06:14.15Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Aluno\\Index.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Aluno\\Index.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Aluno\\Index.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Aluno\\Index.cshtml",
+              "ViewState": "AgIAABoAAAAAAAAAAAAAACkAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-21T20:58:40.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Adicionar.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Conteudo\\Adicionar.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Conteudo\\Adicionar.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Conteudo\\Adicionar.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Conteudo\\Adicionar.cshtml",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAAAGEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-21T14:34:17.218Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Conteudo\\Index.cshtml",
+              "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Conteudo\\Index.cshtml",
+              "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Conteudo\\Index.cshtml",
+              "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Conteudo\\Index.cshtml",
+              "ViewState": "AgIAABcAAAAAAAAAAAAUwHUAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-21T13:45:14.576Z",
               "EditorCaption": ""
             }
           ]
