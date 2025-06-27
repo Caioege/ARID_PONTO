@@ -98,9 +98,54 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "registro",
-        "Type": "AriD.BibliotecaDeClasses.DTO.Aplicativo.PostRegistroDePontoDTO",
-        "IsRequired": true
+        "Name": "VinculoDeTrabalhoId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Imagem",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      },
+      {
+        "Name": "Latitude",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Longitude",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Manual",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      },
+      {
+        "Name": "DataHora",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Observacao",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "JustificativaDeAusenciaId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DataInicialAtestado",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DataFinalAtestado",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

@@ -107,20 +107,23 @@ function assineEventoAvancarRecuarPonto() {
 
 			}
 
-			if (!isSaida5) {
-				const btnAvancar = document.createElement("button");
-				btnAvancar.classList = 'btn btn-primary';
-				btnAvancar.innerHTML = "<i class='bx bx-right-arrow-alt'></i> Avançar";
-				btnAvancar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), true);
-				popup.appendChild(btnAvancar);
-			}
+			let exibirMovementarRegistros = $('#PodeMovimentarRegistros').val() == 'true';
+			if (exibirMovementarRegistros) {
+				if (!isSaida5) {
+					const btnAvancar = document.createElement("button");
+					btnAvancar.classList = 'btn btn-primary';
+					btnAvancar.innerHTML = "<i class='bx bx-right-arrow-alt'></i> Avançar";
+					btnAvancar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), true);
+					popup.appendChild(btnAvancar);
+				}
 
-			if (!isEntrada1) {
-				const btnRecuar = document.createElement("button");
-				btnRecuar.classList = 'btn btn-primary';
-				btnRecuar.innerHTML = "<i class='bx bx-left-arrow-alt'></i> Recuar";
-				btnRecuar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), false);
-				popup.appendChild(btnRecuar);
+				if (!isEntrada1) {
+					const btnRecuar = document.createElement("button");
+					btnRecuar.classList = 'btn btn-primary';
+					btnRecuar.innerHTML = "<i class='bx bx-left-arrow-alt'></i> Recuar";
+					btnRecuar.onclick = () => executaMovimentacaoRegistro(jTD.data('id'), jTD.data('acao'), false);
+					popup.appendChild(btnRecuar);
+				}
 			}
 
 			popup.classList.remove("oculto");

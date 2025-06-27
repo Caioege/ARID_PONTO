@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AriD.BibliotecaDeClasses")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6f836117eea9e1cd631a5dbd306410f36076c1b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d27aedb97d286b86f9dcb6972189e863e5e8fb1b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AriD.BibliotecaDeClasses")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AriD.BibliotecaDeClasses")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -36,11 +36,11 @@ function atualizarDashboard(dados) {
     $.each(dados.ultimosRegistrosRecebidos, function (i, registro) {
         htmlTabela += '<tr>';
 
-        html += `<td>${registro.dataHoraString}</td>`;
-        html += `<td>${registro.escolaNome}</td>`;
-        html += `<td>${registro.pessoaNome}</td>`;
-        html += `<td>${registro.idEquipamento}</td>`;
-        html += `<td>${registro.equipamento}</td>`;
+        htmlTabela += `<td>${registro.dataHoraString || ''}</td>`;
+        htmlTabela += `<td>${registro.escolaNome || ''}</td>`;
+        htmlTabela += `<td>${registro.pessoaNome || ''}</td>`;
+        htmlTabela += `<td>${registro.idEquipamento || ''}</td>`;
+        htmlTabela += `<td>${registro.equipamento || ''}</td>`;
 
         htmlTabela += '</tr>';
     });
@@ -67,7 +67,7 @@ function assineGraficos(dados) {
         }
     });
 
-    if (dados.registrosPorEquipamento) {
+    if (dados.registrosPorEquipamento && $('#UnidadeId').val()) {
         if (Chart.getChart('graficoEquipamento')) {
             Chart.getChart('graficoEquipamento').destroy();
         }

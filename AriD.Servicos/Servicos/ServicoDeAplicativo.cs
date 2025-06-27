@@ -324,8 +324,6 @@ namespace AriD.Servicos.Servicos
                 if (registro.DataHora > dataAgora)
                     throw new ApplicationException("O registro não pode ser para uma hora futura.");
 
-                _repositorioRegistroApp.Add(registroAplicativo);
-
                 if (!registro.Manual)
                 {
                     /* Se for manual vai para a avaliação do administrador. */
@@ -335,10 +333,14 @@ namespace AriD.Servicos.Servicos
                         DataHoraRegistro = registroAplicativo.DataHora,
                         DataHoraRecebimento = DateTime.Now,
                         TipoRegistro = eTipoDeRegistroEquipamento.Aplicativo,
-                        RegistroAplicativoId = registroAplicativo.Id
+                        RegistroAplicativo = registroAplicativo
                     };
 
                     _repositorioRegistroDePonto.Add(registroDePonto);
+                }
+                else
+                {
+                    _repositorioRegistroApp.Add(registroAplicativo);
                 }
 
                 _repositorioRegistroApp.Commit();

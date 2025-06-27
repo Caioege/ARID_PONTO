@@ -59,6 +59,8 @@ wwwroot\img\logo-vertical.png
 wwwroot\img\pessoas\organizacao\1\1.png
 wwwroot\img\pessoas\organizacao\1\2.png
 wwwroot\img\pessoas\sem-foto.png
+wwwroot\img\registrosapp\1\3_638862199548416085_4a173a94-f845-4c6a-af3f-4ac7a77c0fc8..png
+wwwroot\img\registrosapp\1\3_638862200588950883_cb387274-f4aa-4bd3-b95f-d05127e731a4..png
 wwwroot\img\registrosapp\1\ticks.jpg
 wwwroot\js\bootstrap-clockpicker.min.js
 wwwroot\js\config.js

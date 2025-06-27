@@ -590,7 +590,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (dia.DataFutura) 
                 {
                     table.AddCell(new Cell(1, totalDeColunas - 1)
-                        .SetBackgroundColor(ColorConstants.GRAY, 0.15f)
+                        .SetBackgroundColor(ColorConstants.GRAY, 0.10f)
                         .Add(new Paragraph()
                         .SetTextAlignment(TextAlignment.CENTER)
                         .Add(new Text("Data Futura"))));
@@ -675,6 +675,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
             }
 
+            var horasTrabalhadas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks)));
+            var cargaHoraria = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks)));
+            var horasPositivas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas?? TimeSpan.Zero).Ticks)));
+            var horasNegativas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks)));
+
+            var paragrafoTotal = new Paragraph()
+                .Add(new Text("HOR TRA:").SetBold()).Add(new Text($" {horasTrabalhadas}\t\t"))
+                .Add(new Text("CAR HOR:").SetBold()).Add(new Text($" {cargaHoraria}\t\t"))
+                .Add(new Text("HOR POS:").SetBold()).Add(new Text($" {horasPositivas}\t\t"))
+                .Add(new Text("HOR NEG:").SetBold()).Add(new Text($" {horasNegativas}\t\t"));
+
+            if (listaDePonto.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+            {
+                var ultimoRegistroBanco = listaDePonto.OrderBy(c => c.Data).LastOrDefault(c => !c.DataFutura);
+                paragrafoTotal.Add(new Text("\t\tBH SALDO:").SetBold()).Add(new Text($" {FormatarBancoDeHoras(ultimoRegistroBanco)}"));
+            }
+
+            table.AddCell(
+                new Cell(1, totalDeColunas)
+                .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                .SetTextAlignment(TextAlignment.CENTER)
+                .Add(paragrafoTotal));
+
             document.Add(new Div().Add(table));
 
             if (!impressaoDoServidor)
@@ -710,6 +733,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
             document.Close();
 
             return stream.ToArray();
+        }
+
+        static string FormatarTimeSpan(TimeSpan valor)
+        {
+            valor = valor.Duration();
+
+            var horas = (int)valor.TotalHours;
+            var minutos = valor.Minutes.ToString().PadLeft(2, '0');
+
+            return $"{horas:D2}:{minutos}";
+        }
+
+        static string FormatarBancoDeHoras(PontoDoDia ultimoRegistroBanco)
+        {
+            if ((ultimoRegistroBanco.BancoDeHorasCredito ?? TimeSpan.Zero) > TimeSpan.Zero)
+            {
+                return "+" + (ultimoRegistroBanco.BancoDeHorasCredito.Value.TotalHours >= 1
+                ? $"{(int)ultimoRegistroBanco.BancoDeHorasCredito.Value.TotalHours}:{ultimoRegistroBanco.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                : $"00:{ultimoRegistroBanco.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}");
+            }
+            else if ((ultimoRegistroBanco.BancoDeHorasDebito ?? TimeSpan.Zero) > TimeSpan.Zero)
+            {
+                return "-" + (ultimoRegistroBanco.BancoDeHorasDebito.Value.TotalHours >= 1
+                ? $"{(int)ultimoRegistroBanco.BancoDeHorasDebito.Value.TotalHours}:{ultimoRegistroBanco.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                : $"00:{ultimoRegistroBanco.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}");
+            }
+
+            return string.Empty;
         }
 
         private string GetMimeType(string fileName)

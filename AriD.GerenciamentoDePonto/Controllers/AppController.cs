@@ -165,12 +165,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (ex is ApplicationException)
                     return BadRequest(ex.Message);
 
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Ocorreu um erro inesperado. Tente novamente mais tarde.");
             }
         }
 
         [HttpPost("receptar-ponto")]
-        public IActionResult ReceptarRegistro([FromBody] PostRegistroDePontoDTO registro)
+        [Consumes("multipart/form-data")]
+        public IActionResult ReceptarRegistro([FromForm] PostRegistroDePontoDTO registro)
         {
             try
             {
@@ -182,7 +183,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (ex is ApplicationException)
                     return BadRequest(ex.Message);
 
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Ocorreu um erro inesperado. Tente novamente mais tarde.");
             }
         }
 

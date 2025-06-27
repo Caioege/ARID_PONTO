@@ -74,6 +74,13 @@ namespace AriD.Servicos.Servicos
 
                 query =
                     $@"select
+                        dados.EscolaNome,
+                        dados.PessoaNome,
+                        dados.IdEquipamento,
+                        dados.Equipamento,
+                        dados.DataHoraRegistro as DataHora
+                    from 
+                    ((select
 	                    es.Nome as EscolaNome,
                         p.Nome as PessoaNome,
                         r.UsuarioEquipamentoId as IdEquipamento,
@@ -95,9 +102,30 @@ namespace AriD.Servicos.Servicos
 	                    on p.Id = s.PessoaId
                     where
 	                    r.OrganizacaoId = @ORGANIZACAOID
+                        and r.RegistroAplicativoId is null
                         {(unidadeId.HasValue ? "and es.Id = @UNIDADEID" : string.Empty)}
+                        and r.DataHoraRegistro between @PERIODOFIM and @PERIODOINICIO)
+                    union
+                    (select
+                        '' as EscolaNome,
+                        p.Nome as PessoaNome,
+                        '' as IdEquipamento,
+                        'Aplicativo' as Equipamento,
+                        r.DataHoraRegistro
+                    from registrodeponto r
+                    inner join registroaplicativo ra
+	                    on ra.Id = r.RegistroAplicativoId
+                    inner join vinculodetrabalho v
+	                    on v.Id = ra.VinculoDeTrabalhoId
+                    inner join servidor s
+	                    on s.Id = v.ServidorId
+                    inner join  pessoa p
+	                    on p.Id = s.PessoaId
+                    where
+	                    r.OrganizacaoId = @ORGANIZACAOID
                         and r.DataHoraRegistro between @PERIODOFIM and @PERIODOINICIO
-                    order by r.DataHoraRegistro desc";
+                        {(unidadeId.HasValue ? "and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = ra.VinculoDeTrabalhoId and l.UnidadeOrganizacionalId = @UNIDADEID)" : string.Empty)})) as dados
+                    order by dados.DataHoraRegistro desc";
 
                 dto.UltimosRegistrosRecebidos = _repositorio.ConsultaDapper<DashboardRegistroEquipamentoDTO>(query, new
                 {

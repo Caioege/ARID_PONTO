@@ -39,6 +39,9 @@
             </div>
             <br />
         }
+        else {
+            @Html.Hidden("UnidadeId", Context.DadosDaSessao().UnidadeOrganizacionais.First())
+        }
         <div class="row">
             <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card text-center card-com-linha-esquerda" style="--linha-cor: #FF9F43;">
