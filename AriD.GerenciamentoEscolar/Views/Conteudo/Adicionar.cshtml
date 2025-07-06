@@ -83,6 +83,20 @@
 					</select>
 				</section>
 			</div>
+			@if (ViewBag.CamposConfigurados != null)
+			{
+				foreach (var campo in ViewBag.CamposConfigurados as List<dynamic>)
+				{
+					<section class="col col-md-6 mb-3">
+						<label class="form-label">@campo.Nome <span style="color: red">*</span></label>
+						<input type="text"
+							   class="form-control"
+							   name="campo_@campo.Id"
+							   maxlength="@campo.MaxCaracteres"
+							   placeholder="Digite @campo.Nome" />
+					</section>
+				}
+			}
 
 			<br />
 			<button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Conteudo")')">
