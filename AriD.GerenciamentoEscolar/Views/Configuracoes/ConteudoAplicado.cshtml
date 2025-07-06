@@ -3,6 +3,11 @@
 }
 
 <style>
+    .nav-item
+    {
+        border: none !important;        
+    }
+
     .campo-configurado-card {
         border: 1px solid #ccc;
         padding: 12px;
@@ -188,8 +193,8 @@
         const botoesOrdem = ativo
             ? `<div class="ordem-container">
                     <label class="form-label">Ordem: <strong>${card.dataset.ordem}</strong></label>
-                    <div class="d-flex flex-column">
-                        <button class="btn btn-sm btn-light mb-1" type="button" title="Subir" onclick="moverCampo(this, -1)">🔼</button>
+                    <div class="d-flex flex-row">
+                        <button class="btn btn-sm btn-light me-1" type="button" title="Subir" onclick="moverCampo(this, -1)">🔼</button>
                         <button class="btn btn-sm btn-light" type="button" title="Descer" onclick="moverCampo(this, 1)">🔽</button>
                     </div>
                </div>`
