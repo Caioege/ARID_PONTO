@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\AriD.GerenciamentoDePonto.props" />
-</Project>
