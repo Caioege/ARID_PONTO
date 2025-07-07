@@ -1,1 +1,64 @@
 /.vs
+
+## Build results
+bin/
+obj/
+out/
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build logs
+*.log
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## NuGet Packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+
+## Dotnet CLI
+.project
+.project.json
+*.lock.json
+
+## Others
+*.dll
+*.exe
+*.pdb
+*.cache
+*.mdb
+
+# Publish folders
+publish/
+artifacts/
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+
+# Temporary files
+~$*
+*.tmp
+*.bak
+
+# Logs
+*.log
+
+# node (caso use em algum front-end no projeto)
+node_modules/
+dist/
