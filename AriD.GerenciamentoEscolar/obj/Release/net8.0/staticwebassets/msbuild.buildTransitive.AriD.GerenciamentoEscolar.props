@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\AriD.GerenciamentoEscolar.props" />
-</Project>

@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\views\\configuracoes\\conteudoaplicado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|c:\\new-git\\arid_escolas\\arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\models\\conteudoaplicadoconfiguracao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|solutionrelative:arid.gerenciamentoescolar\\models\\conteudoaplicadoconfiguracao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|c:\\new-git\\arid_escolas\\arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{280B79DD-02D0-4128-9E23-69AF91441F28}|AriD.Servicos\\AriD.Servicos.csproj|solutionrelative:arid.servicos\\dbcontext\\mysqldbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1ADD2F5D-CAF5-447B-AEEF-F0B3DE9B4355}|AriD.GerenciamentoEscolar\\AriD.GerenciamentoEscolar.csproj|c:\\new-git\\arid_escolas\\arid.gerenciamentoescolar\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -66,7 +66,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MySQLDBContext.cs",
               "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.Servicos\\DBContext\\MySQLDBContext.cs",
               "RelativeDocumentMoniker": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
@@ -74,8 +74,7 @@
               "RelativeToolTip": "AriD.Servicos\\DBContext\\MySQLDBContext.cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAgwAUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T18:30:42.652Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-06T18:30:42.652Z"
             },
             {
               "$type": "Document",
@@ -91,15 +90,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "ConteudoAplicadoConfiguracao.cs",
               "DocumentMoniker": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Models\\ConteudoAplicadoConfiguracao.cs",
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Models\\ConteudoAplicadoConfiguracao.cs",
               "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Models\\ConteudoAplicadoConfiguracao.cs",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\Models\\ConteudoAplicadoConfiguracao.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-06T18:27:33.063Z"
+              "WhenOpened": "2025-07-06T18:27:33.063Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -133,7 +133,7 @@
               "RelativeDocumentMoniker": "AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
               "ToolTip": "C:\\New-Git\\ARID_ESCOLAS\\AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
               "RelativeToolTip": "AriD.GerenciamentoEscolar\\Views\\Configuracoes\\ConteudoAplicado.cshtml",
-              "ViewState": "AgIAAN8AAAAAAAAAAAAmwPAAAABJAAAAAAAAAA==",
+              "ViewState": "AgIAALkAAAAAAAAAAAAtwMoAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-06-22T17:18:56.994Z",
               "EditorCaption": ""

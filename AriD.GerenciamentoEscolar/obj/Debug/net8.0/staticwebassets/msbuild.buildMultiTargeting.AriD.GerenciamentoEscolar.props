@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\AriD.GerenciamentoEscolar.props" />
-</Project>
