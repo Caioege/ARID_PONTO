@@ -120,13 +120,16 @@
             @(Model.CargaHoraria?.ToString(@"hh\:mm"))
         </td>
 
-        <td class="text-center">
-            @(Model.HorasPositivas?.ToString(@"hh\:mm"))
-        </td>
+        @if (horarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+        {
+            <td class="text-center">
+                @(Model.HorasPositivas?.ToString(@"hh\:mm"))
+            </td>
 
-        <td class="text-center">
-            @(Model.HorasNegativas?.ToString(@"hh\:mm"))
-        </td>
+            <td class="text-center">
+                @(Model.HorasNegativas?.ToString(@"hh\:mm"))
+            </td>
+        }
 
         @if (horarioDeTrabalho.UtilizaBancoDeHoras)
         {

@@ -1,4 +1,5 @@
 ﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model HorarioDeTrabalho
 
 <style>
@@ -42,6 +43,23 @@
 
             <div class="row">
                 <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio" for="TipoCargaHoraria">Tipo da Carga Horária</label>
+                    @Html.EnumDropDownListFor(model => model.TipoCargaHoraria, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-3 col-md-12 col-sm-12">
+                    <label id="label-chmensal-fixa" class="form-label" for="CargaHorariaMensalFixa">Carga Horária Mensal</label>
+                    @if (Model.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+                    {
+                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control hora", @maxlength = "5" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control hora", @maxlength = "5", @disabled = "disabled", @readonly = "readonly" })
+                    }
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12" id="div-utiliza-5" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                     <label class="form-label obrigatorio" for="UtilizaCincoPeriodos">Utilizar Cinco Períodos</label>
                     @Html.CheckboxDropDownListFor(model => model.UtilizaCincoPeriodos, new { @class = "form-select" })
                 </div>
@@ -59,16 +77,16 @@
 
             <br />
             <div class="table-responsive text-nowrap">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="tabela-horario">
                     <thead>
                         <tr>
-                            <th class="text-center"><i class='bx bxs-calendar'></i></th>
-                            <th width="7.5%"><b>Ent. 1</b></th>
-                            <th width="7.5%"><b>Sai. 1</b></th>
-                            <th width="7.5%"><b>Ent. 2</b></th>
-                            <th width="7.5%"><b>Sai. 2</b></th>
-                            <th width="7.5%"><b>Ent. 3</b></th>
-                            <th width="7.5%"><b>Sai. 3</b></th>
+                            <th class="text-center"><b>Dia da semana</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Ent. 1</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Sai. 1</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Ent. 2</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Sai. 2</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Ent. 3</b></th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)"><b>Sai. 3</b></th>
                             <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 4</b></th>
                             <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Sai. 4</b></th>
                             <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 5</b></th>
@@ -79,28 +97,28 @@
                     <tbody>
                         @foreach (var diaDaSemana in Model.Dias) 
                         {
-                            <tr class="linha" data-diadasemana="@((int)diaDaSemana.DiaDaSemana)">
-                                <td class="text-center">
-                                    <b>@(diaDaSemana.DiaDaSemana.ToString())</b>
+                            <tr class="linha" data-diadasemana="@((int)diaDaSemana.DiaDaSemana)" data-id="@diaDaSemana.Id">
+                                <td>
+                                    <b>@(diaDaSemana.DiaDaSemana.DescricaoDoEnumerador())</b>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent1", diaDaSemana.Entrada1, new { @class = "form-control hora entrada1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai1", diaDaSemana.Saida1, new { @class = "form-control hora saida1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
 
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent2", diaDaSemana.Entrada2, new { @class = "form-control hora entrada2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai2", diaDaSemana.Saida2, new { @class = "form-control hora saida2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
 
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent3", diaDaSemana.Entrada3, new { @class = "form-control hora entrada3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai3", diaDaSemana.Saida3, new { @class = "form-control hora saida3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
 
@@ -118,8 +136,12 @@
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai5", diaDaSemana.Saida5, new { @class = "form-control hora saida5", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
 
-                                <td class="text-center carga-horaria">
+                                <td class="text-center carga-horaria colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none": string.Empty)">
                                     @(diaDaSemana.CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                </td>
+
+                                <td class="text-center colunas-horario-fixo" style="@(Model.CargaHorariaFixa ? string.Empty : "display: none")">
+                                    @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_CargaHorariaFixa", diaDaSemana.CargaHorariaFixa, new { @class = "form-control hora chfixa", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
                             </tr>
                         }

@@ -1180,6 +1180,9 @@ namespace AriD.Servicos.Servicos
             if (horarioDia == null || (afastamento != null && afastamento.JustificativaDeAusencia.Abono))
                 return;
 
+            if (horarioDia.HorarioDeTrabalho != null && horarioDia.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+                return;
+
             pontoDoDia.CargaHoraria = horarioDia.CalculeCargaHorariaTotal(eventoNoDia != null);
         }
 

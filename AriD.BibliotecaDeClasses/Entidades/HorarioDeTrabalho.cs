@@ -1,11 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {
@@ -24,11 +19,17 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public bool UtilizaBancoDeHoras { get; set; }
         public DateTime? InicioBancoDeHoras { get; set; }
 
+        public eTipoCargaHoraria TipoCargaHoraria { get; set; }
+
+        public bool CargaHorariaFixa => TipoCargaHoraria != eTipoCargaHoraria.EntradaSaida;
+
+        public int? CargaHorariaMensalFixa { get; set; }
+
         public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }
 
         public TimeSpan? ObtenhaCargaHorariaDoDia(eDiaDaSemana dia, bool diaFeriadoOuFacultativo)
-            => diaFeriadoOuFacultativo ? null : Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
+            => diaFeriadoOuFacultativo || TipoCargaHoraria == eTipoCargaHoraria.MensalFixa ? null : Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
     }
 }

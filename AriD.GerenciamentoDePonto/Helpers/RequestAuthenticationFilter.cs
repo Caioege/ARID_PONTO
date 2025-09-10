@@ -20,6 +20,8 @@ namespace AriD.GerenciamentoDePonto.Helpers
             var controller = context.ActionDescriptor.RouteValues["controller"]?.ToLower();
             var action = context.ActionDescriptor.RouteValues["action"]?.ToLower();
 
+            if (controller == "politicadeprivacidade") return;
+
             context.HttpContext.Request.Headers.TryGetValue("X-Requested-With", out var headerValue);
             bool ajaxRequest = headerValue == "XMLHttpRequest";
 

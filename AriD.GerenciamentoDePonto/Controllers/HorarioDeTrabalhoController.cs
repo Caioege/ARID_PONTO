@@ -106,6 +106,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             horarioDeTrabalho.Dias.ForEach(c => c.OrganizacaoId = horarioDeTrabalho.OrganizacaoId);
 
+            if (horarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa && horarioDeTrabalho.UtilizaBancoDeHoras)
+                throw new ApplicationException("Carga Horária Mensal Fixa não pode ter Banco de Horas habilitado.");
+
             if (horarioDeTrabalho.Id == 0)
                 id = _servico.Adicionar(horarioDeTrabalho);
             else

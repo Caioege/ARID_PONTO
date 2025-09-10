@@ -204,6 +204,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 unidadeId,
                 mesAno);
 
+            ViewBag.HorarioDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId).HorarioDeTrabalho;
             ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
@@ -421,7 +422,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .Add(new Text("Horário de Trabalho: ").SetBold())
                     .Add(new Text(vinculoDeTrabalho.HorarioDeTrabalho.SiglaComDescricao))));
 
-            var totalDeColunas = 11;
+            var totalDeColunas = 9;
+
+            if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+                totalDeColunas += 2;
 
             if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras)
                 totalDeColunas++;
@@ -542,7 +546,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .Add(new Text("CAR HOR"))
                     .SetBold()
                     .SetTextAlignment(TextAlignment.CENTER)
-                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+            {
+                table
                 .AddCell(new Cell()
                     .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
                     .SetWidth(larguraColunas)
@@ -559,6 +567,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .SetBold()
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+            }
 
             if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras)
                 table
@@ -640,13 +649,18 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             .Add(new Text(dia.HorasTrabalhadas?.ToString(@"hh\:mm") ?? string.Empty))))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
-                            .Add(new Text(dia.CargaHoraria?.ToString(@"hh\:mm") ?? string.Empty))))
+                            .Add(new Text(dia.CargaHoraria?.ToString(@"hh\:mm") ?? string.Empty))));
+
+                    if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+                    {
+                        table
                         .AddCell(new Cell()
                             .Add(new Paragraph()
                             .Add(new Text(dia.HorasPositivas?.ToString(@"hh\:mm") ?? string.Empty))))
                         .AddCell(new Cell()
                             .Add(new Paragraph()
                             .Add(new Text(dia.HorasNegativas?.ToString(@"hh\:mm") ?? string.Empty))));
+                    }
 
                     if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras)
                     {
@@ -675,18 +689,32 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
             }
 
-            var horasTrabalhadas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks)));
-            var cargaHoraria = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks)));
-            var horasPositivas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas?? TimeSpan.Zero).Ticks)));
-            var horasNegativas = FormatarTimeSpan(TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks)));
+            var cargaHorariaMensalFixa = vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
+
+            var horasTrabalhadas = TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
+
+            var cargaHoraria = TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
+            if (cargaHorariaMensalFixa)
+            {
+                cargaHoraria = TimeSpan.FromHours(vinculoDeTrabalho.HorarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+            }
+
+            var horasPositivas = cargaHorariaMensalFixa ?
+                (horasTrabalhadas > cargaHoraria ? horasTrabalhadas - cargaHoraria : TimeSpan.Zero) : 
+                TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas ?? TimeSpan.Zero).Ticks));
+
+            var horasNegativas = cargaHorariaMensalFixa ?
+                (cargaHoraria > horasTrabalhadas ? cargaHoraria - horasTrabalhadas : TimeSpan.Zero) :
+                TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks));
 
             var paragrafoTotal = new Paragraph()
-                .Add(new Text("HOR TRA:").SetBold()).Add(new Text($" {horasTrabalhadas}\t\t"))
-                .Add(new Text("CAR HOR:").SetBold()).Add(new Text($" {cargaHoraria}\t\t"))
-                .Add(new Text("HOR POS:").SetBold()).Add(new Text($" {horasPositivas}\t\t"))
-                .Add(new Text("HOR NEG:").SetBold()).Add(new Text($" {horasNegativas}\t\t"));
+                .Add(new Text("HOR TRA:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasTrabalhadas)}\t\t"))
+                .Add(new Text("CAR HOR:").SetBold()).Add(new Text($" {FormatarTimeSpan(cargaHoraria)}\t\t"))
+                .Add(new Text("HOR POS:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasPositivas)}\t\t"))
+                .Add(new Text("HOR NEG:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasNegativas)}\t\t"))
+                .Add(new Text("MÊS SALDO:").SetBold()).Add(new Text($" {FormatarSaldoMes(horasPositivas, horasNegativas)}"));
 
-            if (listaDePonto.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras)
             {
                 var ultimoRegistroBanco = listaDePonto.OrderBy(c => c.Data).LastOrDefault(c => !c.DataFutura);
                 paragrafoTotal.Add(new Text("\t\tBH SALDO:").SetBold()).Add(new Text($" {FormatarBancoDeHoras(ultimoRegistroBanco)}"));
@@ -758,6 +786,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 return "-" + (ultimoRegistroBanco.BancoDeHorasDebito.Value.TotalHours >= 1
                 ? $"{(int)ultimoRegistroBanco.BancoDeHorasDebito.Value.TotalHours}:{ultimoRegistroBanco.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}"
                 : $"00:{ultimoRegistroBanco.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}");
+            }
+
+            return string.Empty;
+        }
+
+        static string FormatarSaldoMes(TimeSpan? horasPositivas, TimeSpan? horasNegativas)
+        {
+            if ((horasPositivas ?? TimeSpan.Zero) > TimeSpan.Zero || (horasNegativas ?? TimeSpan.Zero) > TimeSpan.Zero)
+            {
+                if (horasPositivas == horasNegativas)
+                {
+                    return "00:00";
+                }
+
+                if (horasPositivas > horasNegativas)
+                {
+                    var diferencahoras = horasPositivas - horasNegativas;
+                    return "+" + (diferencahoras.Value.TotalHours >= 1
+                        ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                        : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                }
+                else
+                {
+                    var diferencahoras = horasNegativas - horasPositivas;
+                    return "-" + (diferencahoras.Value.TotalHours >= 1
+                        ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                        : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                }
             }
 
             return string.Empty;

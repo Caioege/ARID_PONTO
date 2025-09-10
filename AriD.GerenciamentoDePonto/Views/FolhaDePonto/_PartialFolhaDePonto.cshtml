@@ -3,6 +3,7 @@
 @{
     const int larguraPeriodo = 60;
     ViewBag.ExibirNomeServidor = false;
+    var horarioDeTrabalho = (HorarioDeTrabalho)ViewBag.HorarioDeTrabalho;
 }
 
 <style>
@@ -75,7 +76,7 @@
             <th class="text-center" width="@(larguraPeriodo)px">
                 SAI<br />3
             </th>
-            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)) 
+            @if (horarioDeTrabalho.UtilizaCincoPeriodos)
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
                     ENT<br />4
@@ -100,15 +101,18 @@
                 CAR<br />HOR
             </th>
 
-            <th class="text-center" width="@(larguraPeriodo)px">
-                HOR<br />POS
-            </th>
+            @if (horarioDeTrabalho.TipoCargaHoraria != AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa)
+            {
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    HOR<br />POS
+                </th>
 
-            <th class="text-center" width="@(larguraPeriodo)px">
-                HOR<br />NEG
-            </th>
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    HOR<br />NEG
+                </th>
+            }
 
-            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+            @if (horarioDeTrabalho.UtilizaBancoDeHoras)
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
                     BH<br />SALDO
@@ -136,10 +140,62 @@
                 }
             }
             <td colspan="99" style="background-color: aliceblue; text-align: center">
-                <b>HOR TRA:</b> @FormatarTimeSpan(TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks)))&nbsp;&nbsp;&nbsp;&nbsp;
-                <b>CAR HOR:</b> @FormatarTimeSpan(TimeSpan.FromTicks(Model.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks)))&nbsp;&nbsp;&nbsp;&nbsp;
-                <b>HOR POS:</b> @FormatarTimeSpan(TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas ?? TimeSpan.Zero).Ticks)))&nbsp;&nbsp;&nbsp;&nbsp;
-                <b>HOR NEG:</b> @FormatarTimeSpan(TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas?? TimeSpan.Zero).Ticks)))&nbsp;&nbsp;&nbsp;&nbsp;
+                @{
+                    var horasTrabalhadas = TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
+                }
+                <b>HOR TRA:</b> @FormatarTimeSpan(horasTrabalhadas)&nbsp;&nbsp;&nbsp;&nbsp;
+                @{
+                    var cargaHorariaMensalFixa = horarioDeTrabalho.TipoCargaHoraria == AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa;
+                    var cargaHoraria = TimeSpan.FromTicks(Model.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
+
+                    if (cargaHorariaMensalFixa)
+                    {
+                        cargaHoraria = TimeSpan.FromHours(horarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+                    }
+                }
+                <b>CAR HOR:</b> @FormatarTimeSpan(cargaHoraria)&nbsp;&nbsp;&nbsp;&nbsp;
+                @{ 
+                    var horasPositivasMes = cargaHorariaMensalFixa ?
+                        (horasTrabalhadas > cargaHoraria ? horasTrabalhadas - cargaHoraria : TimeSpan.Zero) :
+                        TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas ?? TimeSpan.Zero).Ticks)); 
+                }
+                <b>HOR POS:</b> @FormatarTimeSpan(horasPositivasMes)&nbsp;&nbsp;&nbsp;&nbsp;
+                @{
+                    var horasNegativasMes = cargaHorariaMensalFixa ?
+                        (cargaHoraria > horasTrabalhadas ? cargaHoraria - horasTrabalhadas : TimeSpan.Zero) :
+                        TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks));
+                }
+                <b>HOR NEG:</b> @FormatarTimeSpan(horasNegativasMes)&nbsp;&nbsp;&nbsp;&nbsp;
+                @{
+                    string FormatarSaldoMes(TimeSpan? horasPositivas, TimeSpan? horasNegativas)
+                    {
+                        if ((horasPositivas ?? TimeSpan.Zero) > TimeSpan.Zero || (horasNegativas ?? TimeSpan.Zero) > TimeSpan.Zero) 
+                        {
+                            if (horasPositivas == horasNegativas)
+                            {
+                                return "00:00";
+                            }
+
+                            if (horasPositivas > horasNegativas)
+                            {
+                                var diferencahoras = horasPositivas - horasNegativas;
+                                return "+" + (diferencahoras.Value.TotalHours >= 1
+                                    ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                                    : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                            }
+                            else
+                            {
+                                var diferencahoras = horasNegativas - horasPositivas;
+                                return "-" + (diferencahoras.Value.TotalHours >= 1
+                                    ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                                    : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                            }
+                        }
+
+                        return string.Empty;
+                    }
+                }
+                <b>MÊS SALDO:</b> @(FormatarSaldoMes(horasPositivasMes, horasNegativasMes))@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
                 @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
                 {
                     var ultimoRegistroBanco = Model.OrderBy(c => c.Data).LastOrDefault(c => !c.DataFutura);

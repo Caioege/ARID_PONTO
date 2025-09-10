@@ -31,31 +31,48 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public TimeSpan? Entrada5 { get; set; }
         public TimeSpan? Saida5 { get; set; }
 
+        public TimeSpan? CargaHorariaFixa { get; set; }
+
         public TimeSpan? CargaHorariaPeriodo(int periodo)
         {
             switch (periodo)
             {
                 case 1:
+                    if (CargaHorariaFixa.HasValue)
+                        return CargaHorariaFixa;
+
                     return Entrada1.HasValue && Saida1.HasValue ?
                         Saida1.Value.Subtract(Entrada1.Value) :
                         null;
 
                 case 2:
+                    if (CargaHorariaFixa.HasValue)
+                        return null;
+
                     return Entrada2.HasValue && Saida2.HasValue ?
                         Saida2.Value.Subtract(Entrada2.Value) :
                         null;
 
                 case 3:
+                    if (CargaHorariaFixa.HasValue)
+                        return null;
+
                     return Entrada3.HasValue && Saida3.HasValue ?
                         Saida3.Value.Subtract(Entrada3.Value) :
                         null;
 
                 case 4:
+                    if (CargaHorariaFixa.HasValue)
+                        return null;
+
                     return Entrada4.HasValue && Saida4.HasValue ?
                         Saida4.Value.Subtract(Entrada4.Value) :
                         null;
 
                 case 5:
+                    if (CargaHorariaFixa.HasValue)
+                        return null;
+
                     return Entrada5.HasValue && Saida5.HasValue ?
                         Saida5.Value.Subtract(Entrada5.Value) :
                         null;
@@ -69,6 +86,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
         {
             if (diaFeriadoOuFacultativo)
                 return null;
+
+            if (CargaHorariaFixa.HasValue)
+                return CargaHorariaFixa;
 
             TimeSpan? chPeriodo_1 = Entrada1.HasValue && Saida1.HasValue ?
                 Saida1.Value.Subtract(Entrada1.Value) :

@@ -36,6 +36,30 @@ $(document).ready(() => {
         });
     });
 
+    $('#TipoCargaHoraria').on('change', function () {
+        if ($(this).val() == '1') {
+            $('#UtilizaCincoPeriodos').val('false').trigger('change');
+            $('.colunas-horario-nao-fixo').hide();
+            $('#div-utiliza-5').hide();
+            $('.colunas-horario-fixo').show();
+        } else {
+            $('.colunas-horario-fixo').hide();
+            $('.colunas-horario-nao-fixo').show();
+            $('#div-utiliza-5').show();
+        }
+
+        if ($(this).val() == '2') {
+            $('#label-chmensal-fixa').addClass('obrigatorio');
+            $('#CargaHorariaMensalFixa').prop('disabled', false).prop('readonly', false).trigger('change');
+            $('#tabela-horario .hora').prop('disabled', true).prop('readonly', true).trigger('change');
+        } else {
+            $('#label-chmensal-fixa').removeClass('obrigatorio');
+            $('#CargaHorariaMensalFixa').prop('disabled', true).prop('readonly', true).trigger('change');
+            $('#tabela-horario .hora').prop('disabled', false).prop('readonly', false).trigger('change');
+        }
+    });
+    $('#TipoCargaHoraria').trigger('change');
+
     assineEventoBotaoSalvar();
 });
 
@@ -62,24 +86,29 @@ function assineEventoBotaoSalvar() {
             'POST',
             formulario,
             function (data) {
-                MensagemRodape('success', data.mensagem);
-                CarregarPagina('/HorarioDeTrabalho/Alterar/' + data.id);
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    CarregarPagina('/HorarioDeTrabalho/Alterar/' + data.id);
+                }
+                else {
+                    MensagemRodape('warning', data.mensagem);
+                }
             });
     });
 }
 
 function obtenhaHorarioDia(linha) {
     return {
-        Entrada1: linha.find('.entrada1').val(),
-        Saida1: linha.find('.saida1').val(),
-        Entrada2: linha.find('.entrada2').val(),
-        Saida2: linha.find('.saida2').val(),
-        Entrada3: linha.find('.entrada3').val(),
-        Saida3: linha.find('.saida3').val(),
-        Entrada4: linha.find('.entrada4').val(),
-        Saida4: linha.find('.saida4').val(),
-        Entrada5: linha.find('.entrada5').val(),
-        Saida5: linha.find('.saida5').val(),
+        Entrada1: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada1').val(),
+        Saida1: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada2').val(),
+        Saida2: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida2').val(),
+        Entrada3: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada3').val(),
+        Saida3: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida3').val(),
+        Entrada4: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada4').val(),
+        Saida4: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida4').val(),
+        Entrada5: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada5').val(),
+        Saida5: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida5').val(),
+        CargaHorariaFixa: $('#TipoCargaHoraria').val() == '1' ? linha.find('.chfixa').val() : null
     };
 }
 
