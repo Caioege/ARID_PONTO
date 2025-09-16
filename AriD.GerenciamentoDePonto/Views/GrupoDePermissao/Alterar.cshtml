@@ -182,6 +182,12 @@
             </table>
 
             @{
+                var modelRelListaDeServidores =
+                new Tuple<string, Type, GrupoDePermissao>($"Lista de {nomenclaturaServidores}", typeof(eItemDePermissao_RelatorioListaDeServidores), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelListaDeServidores)
+
+            @{
                 var modelRelServidoresComAfastamento =
                 new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} com Afastamentos", typeof(eItemDePermissao_RelatorioServidoresComAfastamento), Model);
             }
@@ -198,6 +204,13 @@
                 new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} por Horário de Trabalho", typeof(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorHorario)
+            
+            @{
+                var modelRelHorasPorServidor =
+                new Tuple<string, Type, GrupoDePermissao>($"Horas Positivas/Negativas por {nomenclaturaServidores}", typeof(eItemDePermissao_RelatorioHorasPorServidor), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelHorasPorServidor)
+
 
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {

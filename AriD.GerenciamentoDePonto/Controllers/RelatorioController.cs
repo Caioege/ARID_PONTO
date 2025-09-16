@@ -14,6 +14,7 @@ using iText.IO.Image;
 using iText.Layout.Borders;
 using AriD.Servicos.Extensao;
 using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Comum;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -267,6 +268,72 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 tipoDeVinculoDeTrabalhoId);
 
             var nomeArquivo = $"Lista de {HttpContext.NomenclaturaServidores()}.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult HorasPorServidor()
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            var organizacaoId = dadosDaSessao.OrganizacaoId;
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                    "Id", "Nome");
+            }
+            else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                    "Id", "Nome");
+            }
+
+            ViewBag.Horarios = new SelectList(_servicoHorario
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            ViewBag.Tipos = new SelectList(_servicoTipo
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarHorasPorServidor(
+            string mesAno,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            if (string.IsNullOrEmpty(mesAno))
+                throw new ApplicationException("O período deve ser informado.");
+
+            var periodo = new MesAno(mesAno);
+
+            if (periodo.Inicio.Date > DateTime.Today)
+                throw new ApplicationException("O início do período é maior que a data atual.");
+
+            var relatorio = RelatorioHorasPorServidor(
+                periodo,
+                unidadeId,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId);
+
+            var nomeArquivo = $"Horas Positivas e Negativas por {HttpContext.NomenclaturaServidor()}.pdf";
 
             return Json(new
             {
@@ -719,6 +786,154 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return stream.ToArray();
         }
 
+        private byte[] RelatorioHorasPorServidor(
+            MesAno mesAno,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = dadosDaSessao.UnidadeOrganizacionais.First();
+            else if (!unidadeId.HasValue)
+                throw new ApplicationException("A unidade deve ser informada.");
+
+            var listaDeVinculos = _servicoDeRelatorios
+                .ObtenhaListaDeVinculos(
+                    dadosDaSessao.OrganizacaoId,
+                    unidadeId.Value,
+                    horarioDeTrabalhoId,
+                    tipoDeVinculoDeTrabalhoId,
+                    null)
+                .OrderBy(c => c.Servidor.Nome);
+
+            if (listaDeVinculos.Count() == 0)
+                throw new ApplicationException($"Nenhum {HttpContext.NomenclaturaServidor().ToLower()} encontrado para os filtros informados.");
+
+            Dictionary<int, (TimeSpan?, TimeSpan?)> dicionarioHorasDoServidor = new();
+
+            foreach (var vinculo in listaDeVinculos)
+            {
+                if (vinculo.Fim.HasValue && vinculo.Fim < mesAno.Inicio)
+                    continue;
+
+                if (!vinculo.Lotacoes.Any(d => d.UnidadeOrganizacionalId == unidadeId.Value && (!d.Saida.HasValue || d.Saida > mesAno.Inicio)))
+                    continue;
+
+                List<PontoDoDia> listaDePonto = _servicoDeFolhaDePonto.CarregueFolhaDePonto(dadosDaSessao.OrganizacaoId, vinculo.Id, unidadeId.Value, mesAno);
+
+                if (listaDePonto.Count() == 0)
+                    continue;
+
+                var cargaHorariaMensalFixa = vinculo.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
+
+                var horasTrabalhadas = TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
+
+                var cargaHoraria = TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
+                if (cargaHorariaMensalFixa)
+                {
+                    cargaHoraria = TimeSpan.FromHours(vinculo.HorarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+                }
+
+                var horasPositivas = cargaHorariaMensalFixa ?
+                    (horasTrabalhadas > cargaHoraria ? horasTrabalhadas - cargaHoraria : TimeSpan.Zero) :
+                    TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas ?? TimeSpan.Zero).Ticks));
+
+                var horasNegativas = cargaHorariaMensalFixa ?
+                    (cargaHoraria > horasTrabalhadas ? cargaHoraria - horasTrabalhadas : TimeSpan.Zero) :
+                    TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks));
+
+                dicionarioHorasDoServidor.Add(vinculo.Id, (horasPositivas, horasNegativas));
+            }
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(10);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add($"Horas Positivas e Negativas por {HttpContext.NomenclaturaServidor()}\n{mesAno.ToString()}")));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    35f,
+                    35f,
+                    10f,
+                    10f,
+                })).UseAllAvailableWidth();
+
+            table
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Nome"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Vínculo de Trabalho"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Horas\nPositivas"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Horas\nNegativas"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            foreach (var servidor in dicionarioHorasDoServidor)
+            {
+                var vinculo = listaDeVinculos.First(c => c.Id == servidor.Key);
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .Add(new Text(vinculo.Servidor.Nome))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .Add(new Text($"{vinculo.ToString()}"))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{FormatarTimeSpan(dicionarioHorasDoServidor[vinculo.Id].Item1)}"))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{FormatarTimeSpan(dicionarioHorasDoServidor[vinculo.Id].Item2)}"))));
+            }
+
+            document.Add(new Div().Add(table));
+
+            document.Close();
+            return stream.ToArray();
+        }
+
         #endregion
 
         private string GetMimeType(string fileName)
@@ -779,6 +994,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             tableCabecalho.AddCell(celulaNome);
 
             document.Add(new Div().Add(tableCabecalho));
+        }
+
+        static string FormatarTimeSpan(TimeSpan? valor)
+        {
+            if (!valor.HasValue)
+                return string.Empty;
+
+            valor = valor.Value.Duration();
+
+            var horas = (int)valor.Value.TotalHours;
+            var minutos = valor.Value.Minutes.ToString().PadLeft(2, '0');
+
+            return $"{horas:D2}:{minutos}";
         }
     }
 }

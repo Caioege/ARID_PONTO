@@ -1,4 +1,5 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
 
 namespace AriD.Servicos.Servicos.Interfaces
 {
@@ -27,6 +28,13 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<RelatorioItemListaServidorDTO> ObtenhaListaDeServidores(
             int organizacaoId,
             int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId);
+
+        List<VinculoDeTrabalho> ObtenhaListaDeVinculos(
+            int organizacaoId,
+            int unidadeId,
             int? horarioDeTrabalhoId,
             int? tipoDeVinculoDeTrabalhoId,
             int? departamentoId);

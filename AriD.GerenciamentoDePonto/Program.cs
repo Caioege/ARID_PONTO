@@ -65,12 +65,6 @@ app.UseCors("AppCorsPolicy");
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
 var supportedCultures = new[] { new CultureInfo("pt-BR") };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {

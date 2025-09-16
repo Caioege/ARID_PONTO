@@ -278,6 +278,17 @@
                             </a>
                         </li>
                     }
+                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioHorasPorServidor.Visualizar, usuarioAdm))
+                    {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("HorasPorServidor", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bxs-user-account'></i>
+                                    Horas Positivas/Negativas por @nomenclaturaServidor
+                                </div>
+                            </a>
+                        </li>
+                    }
                 </ul>
             </li>
         }

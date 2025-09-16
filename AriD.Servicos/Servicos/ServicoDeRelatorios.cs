@@ -8,10 +8,12 @@ namespace AriD.Servicos.Servicos
     public class ServicoDeRelatorios : IServicoDeRelatorios
     {
         private readonly IRepositorio<Servidor> _repositorio;
+        private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
 
-        public ServicoDeRelatorios(IRepositorio<Servidor> repositorio)
+        public ServicoDeRelatorios(IRepositorio<Servidor> repositorio, IRepositorio<VinculoDeTrabalho> repositorioVinculo)
         {
             _repositorio = repositorio;
+            _repositorioVinculo = repositorioVinculo;
         }
 
         public void Dispose()
@@ -195,6 +197,7 @@ namespace AriD.Servicos.Servicos
             {
                 var query =
                     @"select
+                        s.Id as ServidorId,
                         p.Nome as PessoaNome,
                         p.Cpf as PessoaCpf,
                         p.DataDeNascimento as DataDeNascimento
@@ -256,6 +259,45 @@ namespace AriD.Servicos.Servicos
                     @DEPARTAMENTOID = departamentoId,
                     @UNIDADEID = unidadeId
                 });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<VinculoDeTrabalho> ObtenhaListaDeVinculos(
+            int organizacaoId,
+            int unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId)
+        {
+            try
+            {
+                var query = $@"select
+	                            v.Id
+                            from vinculodetrabalho v
+                            where
+	                             v.OrganizacaoId = @ORGANIZACAOID
+                                {(horarioDeTrabalhoId.HasValue ? "and v.HorarioDeTrabalhoId = @HORARIOID" : string.Empty)}
+                                {(departamentoId.HasValue ? "and v.DepartamentoId = @DEPARTAMENTOID" : string.Empty)}
+                                {(tipoDeVinculoDeTrabalhoId.HasValue ? "and v.TipoDoVinculoDeTrabalhoId = @TIPOID" : string.Empty)}
+                                and exists (select 1 from lotacaounidadeorganizacional lt where lt.VinculoDeTrabalhoId = v.Id and lt.UnidadeOrganizacionalId = @UNIDADEID)";
+
+                var lista = _repositorio.ConsultaDapper<int>(query, new
+                {
+                    @ORGANIZACAOID = organizacaoId,
+                    @HORARIOID = horarioDeTrabalhoId,
+                    @DEPARTAMENTOID = departamentoId,
+                    @TIPOID = tipoDeVinculoDeTrabalhoId,
+                    @UNIDADEID = unidadeId
+                });
+
+                if (!lista.Any())
+                    return new List<VinculoDeTrabalho>();
+
+                return _repositorioVinculo.ObtenhaLista(c => lista.Contains(c.Id));
             }
             catch (Exception)
             {

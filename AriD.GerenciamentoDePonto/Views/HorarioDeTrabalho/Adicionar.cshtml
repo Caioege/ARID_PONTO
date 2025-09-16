@@ -51,11 +51,11 @@
                     <label id="label-chmensal-fixa" class="form-label" for="CargaHorariaMensalFixa">Carga Horária Mensal</label>
                     @if (Model.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
                     {
-                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control hora", @maxlength = "5" })
+                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control numeroAte999", @maxlength = "3" })
                     }
                     else
                     {
-                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control hora", @maxlength = "5", @disabled = "disabled", @readonly = "readonly" })
+                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control numeroAte999", @maxlength = "3", @disabled = "disabled", @readonly = "readonly" })
                     }
                 </div>
 
@@ -95,7 +95,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var diaDaSemana in Model.Dias) 
+                        @foreach (var diaDaSemana in Model.Dias)
                         {
                             <tr class="linha" data-diadasemana="@((int)diaDaSemana.DiaDaSemana)" data-id="@diaDaSemana.Id">
                                 <td>

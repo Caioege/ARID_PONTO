@@ -100,7 +100,8 @@ function assineEventoBotaoSalvar() {
 function obtenhaHorarioDia(linha) {
     return {
         Entrada1: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada1').val(),
-        Saida1: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada2').val(),
+        Saida1: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida1').val(),
+        Entrada2: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada2').val(),
         Saida2: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida2').val(),
         Entrada3: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.entrada3').val(),
         Saida3: $('#TipoCargaHoraria').val() != '0' ? null : linha.find('.saida3').val(),
