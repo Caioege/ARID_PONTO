@@ -127,6 +127,44 @@
     </button>
 </div>
 
+<div class="modal fade" id="modalAjusteBH" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajuste Manual de Banco de Horas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdnPontoIdAjuste" />
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Tipo de Ajuste</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="rdTipoAjuste" id="rdCreditar" value="C" checked>
+                        <label class="btn btn-outline-success" for="rdCreditar">
+                            <i class='bx bx-plus-circle'></i> Creditar
+                        </label>
+
+                        <input type="radio" class="btn-check" name="rdTipoAjuste" id="rdDebitar" value="D">
+                        <label class="btn btn-outline-danger" for="rdDebitar">
+                            <i class='bx bx-minus-circle'></i> Debitar
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Quantidade de Horas</label>
+                    <input type="text" id="txtValorAjuste" class="form-control hora-3" placeholder="000:00" maxlength="5" autocomplete="off" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarAjusteBH()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div id="div-modal"></div>
 <script src="/Scripts/Paginas/FolhaDePonto/funcoesDePonto.js?t=@DateTime.Now.Ticks"></script>

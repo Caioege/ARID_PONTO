@@ -208,6 +208,11 @@ namespace AriD.Servicos.Servicos
                 if (pontoDoDia.Id == 0)
                     pontoDoDia.VinculoDeTrabalho = _repositorioVinculo.Obtenha(vinculoDeTrabalhoId);
 
+                if (justificativaId.HasValue)
+                {
+                    ValideLimiteDeUso(pontoDoDia, justificativaId.Value, acao);
+                }
+
                 Func<int?, JustificativaDeAusencia> CarregueJustificativa = new Func<int?, JustificativaDeAusencia>((id) =>
                 {
                     return id.HasValue ?
@@ -218,10 +223,6 @@ namespace AriD.Servicos.Servicos
                 switch (acao.ToLower())
                 {
                     case "entrada1":
-                        pontoDoDia.Entrada1 = valorHora;
-                        pontoDoDia.JustificativaPeriodo1Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
-
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada1 != valorHora)))
                         {
                             pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.RegistroManual;
@@ -229,118 +230,131 @@ namespace AriD.Servicos.Servicos
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        break;
-                    case "saida1":
-                        pontoDoDia.Saida1 = valorHora;
+                        pontoDoDia.Entrada1 = valorHora;
                         pontoDoDia.JustificativaPeriodo1Id = justificativaId;
                         pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
 
+                        break;
+                    case "saida1":
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida1 != valorHora)))
                         {
                             pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                        pontoDoDia.Saida1 = valorHora;
+                        pontoDoDia.JustificativaPeriodo1Id = justificativaId;
+                        pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
+
                         break;
 
                     case "entrada2":
-                        pontoDoDia.Entrada2 = valorHora;
-                        pontoDoDia.JustificativaPeriodo2Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
-
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada2 != valorHora)))
                         {
                             pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.SemRegistro;
-                        break;
-                    case "saida2":
-                        pontoDoDia.Saida2 = valorHora;
+
+                        pontoDoDia.Entrada2 = valorHora;
                         pontoDoDia.JustificativaPeriodo2Id = justificativaId;
                         pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
 
+                        break;
+                    case "saida2":
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida2 != valorHora)))
                         {
                             pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                        pontoDoDia.Saida2 = valorHora;
+                        pontoDoDia.JustificativaPeriodo2Id = justificativaId;
+                        pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
+
                         break;
 
                     case "entrada3":
-                        pontoDoDia.Entrada3 = valorHora;
-                        pontoDoDia.JustificativaPeriodo3Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
-
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada3 != valorHora)))
                         {
                             pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.SemRegistro;
-                        break;
-                    case "saida3":
-                        pontoDoDia.Saida3 = valorHora;
+
+                        pontoDoDia.Entrada3 = valorHora;
                         pontoDoDia.JustificativaPeriodo3Id = justificativaId;
                         pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
 
+                        break;
+                    case "saida3":
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida3 != valorHora)))
                         {
                             pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                        pontoDoDia.Saida3 = valorHora;
+                        pontoDoDia.JustificativaPeriodo3Id = justificativaId;
+                        pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
+
                         break;
 
                     case "entrada4":
-                        pontoDoDia.Entrada4 = valorHora;
-                        pontoDoDia.JustificativaPeriodo4Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
-
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada4 != valorHora)))
                         {
                             pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.SemRegistro;
-                        break;
-                    case "saida4":
-                        pontoDoDia.Saida4 = valorHora;
+
+                        pontoDoDia.Entrada4 = valorHora;
                         pontoDoDia.JustificativaPeriodo4Id = justificativaId;
                         pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
 
+                        break;
+                    case "saida4":
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida4 != valorHora)))
                         {
                             pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                        pontoDoDia.Saida4 = valorHora;
+                        pontoDoDia.JustificativaPeriodo4Id = justificativaId;
+                        pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
+
                         break;
 
                     case "entrada5":
-                        pontoDoDia.Entrada5 = valorHora;
-                        pontoDoDia.JustificativaPeriodo5Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
-
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada5 != valorHora)))
                         {
                             pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.SemRegistro;
-                        break;
-                    case "saida5":
-                        pontoDoDia.Saida5 = valorHora;
+
+                        pontoDoDia.Entrada5 = valorHora;
                         pontoDoDia.JustificativaPeriodo5Id = justificativaId;
                         pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
 
+                        break;
+                    case "saida5":
                         if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida5 != valorHora)))
                         {
                             pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.RegistroManual;
                         }
                         else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                        pontoDoDia.Saida5 = valorHora;
+                        pontoDoDia.JustificativaPeriodo5Id = justificativaId;
+                        pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
+
                         break;
 
                     case "abono":
@@ -689,13 +703,30 @@ namespace AriD.Servicos.Servicos
                                     continue;
                                 }
                             }
+
+                            if (horarioDoDia != null && afastamento == null)
+                            {
+                                if (pontoDoDia.Id == 0)
+                                {
+                                    var configIntervalo = vinculoDeTrabalho.HorarioDeTrabalho.IntervaloAutomatico;
+                                    ProcessarIntervalosAutomaticos(pontoDoDia, horarioDoDia, configIntervalo);
+                                }
+                            }
                         }
 
                         CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
                         CalculeHorasTrabalhadas(ref pontoDoDia);
                         CalculeHorasTrabalhadasConsiderandoAbono(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
+
                         CalculeHorasPositivas(ref pontoDoDia, afastamento);
                         CalculeHorasNegativas(ref pontoDoDia, afastamento);
+
+                        int tolerancia = vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos > 0
+                            ? vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos
+                            : 0;
+
+                        ApliqueToleranciaNoSaldo(ref pontoDoDia, tolerancia);
+
                         CalculeBancoDeHoras(ref pontoDoDia, vinculoDeTrabalho, bancoDeHoras);
                     }
 
@@ -1390,27 +1421,30 @@ namespace AriD.Servicos.Servicos
 
             if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.InicioBancoDeHoras <= pontoDoDia.Data)
             {
-                pontoDoDia.BancoDeHorasCredito = (bancoDeHorasDiaAnterior.Item1 ?? TimeSpan.Zero) + (pontoDoDia.HorasPositivas ?? TimeSpan.Zero);
-                pontoDoDia.BancoDeHorasDebito = (bancoDeHorasDiaAnterior.Item2 ?? TimeSpan.Zero) + (pontoDoDia.HorasNegativas ?? TimeSpan.Zero);
+                var saldoAnterior = (bancoDeHorasDiaAnterior.Item1 ?? TimeSpan.Zero)
+                                  - (bancoDeHorasDiaAnterior.Item2 ?? TimeSpan.Zero);
 
-                if ((pontoDoDia.BancoDeHorasCredito ?? TimeSpan.Zero) > TimeSpan.Zero &&
-                    (pontoDoDia.BancoDeHorasDebito ?? TimeSpan.Zero) > TimeSpan.Zero)
+                var saldoDia = (pontoDoDia.HorasPositivas ?? TimeSpan.Zero)
+                             - (pontoDoDia.HorasNegativas ?? TimeSpan.Zero);
+
+                var ajusteManual = pontoDoDia.BancoDeHorasAjuste ?? TimeSpan.Zero;
+
+                var saldoFinal = saldoAnterior + saldoDia + ajusteManual;
+
+                if (saldoFinal > TimeSpan.Zero)
                 {
-                    if (pontoDoDia.BancoDeHorasCredito > pontoDoDia.BancoDeHorasDebito)
-                    {
-                        pontoDoDia.BancoDeHorasCredito = pontoDoDia.BancoDeHorasCredito.Value.Subtract(pontoDoDia.BancoDeHorasDebito.Value);
-                        pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
-                    }
-                    else if (pontoDoDia.BancoDeHorasCredito == pontoDoDia.BancoDeHorasDebito)
-                    {
-                        pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
-                        pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
-                    }
-                    else if (pontoDoDia.BancoDeHorasCredito < pontoDoDia.BancoDeHorasDebito)
-                    {
-                        pontoDoDia.BancoDeHorasDebito = pontoDoDia.BancoDeHorasDebito.Value.Subtract(pontoDoDia.BancoDeHorasCredito.Value);
-                        pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
-                    }
+                    pontoDoDia.BancoDeHorasCredito = saldoFinal;
+                    pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
+                }
+                else if (saldoFinal < TimeSpan.Zero)
+                {
+                    pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
+                    pontoDoDia.BancoDeHorasDebito = saldoFinal.Duration();
+                }
+                else
+                {
+                    pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
+                    pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
                 }
             }
         }
@@ -1495,28 +1529,43 @@ namespace AriD.Servicos.Servicos
 
                 var entrada1 = pontoDia.Entrada1;
                 var registroAppEntrada1 = pontoDia.RegistroDePontoEntrada1Id;
+                var tipoEntrada1 = pontoDia.TipoEntrada1;
+
                 var saida1 = pontoDia.Saida1;
                 var registroAppSaida1 = pontoDia.RegistroDePontoSaida1Id;
+                var tipoSaida1 = pontoDia.TipoSaida1;
 
                 var entrada2 = pontoDia.Entrada2;
                 var registroAppEntrada2 = pontoDia.RegistroDePontoEntrada2Id;
+                var tipoEntrada2 = pontoDia.TipoEntrada2;
+
                 var saida2 = pontoDia.Saida2;
                 var registroAppSaida2 = pontoDia.RegistroDePontoSaida2Id;
+                var tipoSaida2 = pontoDia.TipoSaida2;
 
                 var entrada3 = pontoDia.Entrada3;
                 var registroAppEntrada3 = pontoDia.RegistroDePontoEntrada3Id;
+                var tipoEntrada3 = pontoDia.TipoEntrada3;
+
                 var saida3 = pontoDia.Saida3;
                 var registroAppSaida3 = pontoDia.RegistroDePontoSaida3Id;
+                var tipoSaida3 = pontoDia.TipoSaida3;
 
                 var entrada4 = pontoDia.Entrada4;
                 var registroAppEntrada4 = pontoDia.RegistroDePontoEntrada4Id;
+                var tipoEntrada4 = pontoDia.TipoEntrada4;
+
                 var saida4 = pontoDia.Saida4;
                 var registroAppSaida4 = pontoDia.RegistroDePontoSaida4Id;
+                var tipoSaida4 = pontoDia.TipoSaida4;
 
                 var entrada5 = pontoDia.Entrada5;
                 var registroAppEntrada5 = pontoDia.RegistroDePontoEntrada5Id;
+                var tipoEntrada5 = pontoDia.TipoEntrada5;
+
                 var saida5 = pontoDia.Saida5;
                 var registroAppSaida5 = pontoDia.RegistroDePontoSaida5Id;
+                var tipoSaida5 = pontoDia.TipoSaida5;
 
                 switch (classe)
                 {
@@ -1525,6 +1574,8 @@ namespace AriD.Servicos.Servicos
                         pontoDia.Saida1 = entrada1;
                         pontoDia.RegistroDePontoEntrada1Id = registroAppSaida1;
                         pontoDia.RegistroDePontoSaida1Id = registroAppEntrada1;
+                        pontoDia.TipoEntrada1 = tipoSaida1;
+                        pontoDia.TipoSaida1 = tipoEntrada1;
                         break;
 
                     case "saida1":
@@ -1534,6 +1585,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada2Id = registroAppSaida1;
                             pontoDia.Saida1 = entrada2;
                             pontoDia.RegistroDePontoSaida1Id = registroAppEntrada2;
+                            pontoDia.TipoEntrada2 = tipoSaida1;
+                            pontoDia.TipoSaida1 = tipoEntrada2;
                         }
                         else
                         {
@@ -1541,6 +1594,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada1Id = registroAppSaida1;
                             pontoDia.Saida1 = entrada1;
                             pontoDia.RegistroDePontoSaida1Id = registroAppEntrada1;
+                            pontoDia.TipoEntrada1 = tipoSaida1;
+                            pontoDia.TipoSaida1 = tipoEntrada1;
                         }
                         break;
 
@@ -1551,6 +1606,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida2Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida2;
                             pontoDia.RegistroDePontoEntrada2Id = registroAppSaida2;
+                            pontoDia.TipoSaida2 = tipoEntrada2;
+                            pontoDia.TipoEntrada2 = tipoSaida2;
                         }
                         else
                         {
@@ -1558,6 +1615,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida1Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida1;
                             pontoDia.RegistroDePontoEntrada2Id = registroAppSaida1;
+                            pontoDia.TipoSaida1 = tipoEntrada2;
+                            pontoDia.TipoEntrada2 = tipoSaida1;
                         }
                         break;
 
@@ -1568,6 +1627,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada3Id = registroAppSaida2;
                             pontoDia.Saida2 = entrada3;
                             pontoDia.RegistroDePontoSaida2Id = registroAppEntrada3;
+                            pontoDia.TipoEntrada3 = tipoSaida2;
+                            pontoDia.TipoSaida2 = tipoEntrada3;
                         }
                         else
                         {
@@ -1575,6 +1636,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida2Id = registroAppEntrada2;
                             pontoDia.Entrada2 = saida2;
                             pontoDia.RegistroDePontoEntrada2Id = registroAppSaida2;
+                            pontoDia.TipoSaida2 = tipoEntrada2;
+                            pontoDia.TipoEntrada2 = tipoSaida2;
                         }
                         break;
 
@@ -1585,6 +1648,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida3Id = registroAppEntrada3;
                             pontoDia.Entrada3 = saida3;
                             pontoDia.RegistroDePontoEntrada3Id = registroAppSaida3;
+                            pontoDia.TipoSaida3 = tipoEntrada3;
+                            pontoDia.TipoEntrada3 = tipoSaida3;
                         }
                         else
                         {
@@ -1592,6 +1657,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida2Id = registroAppEntrada3;
                             pontoDia.Entrada3 = saida2;
                             pontoDia.RegistroDePontoEntrada3Id = registroAppSaida2;
+                            pontoDia.TipoSaida2 = tipoEntrada3;
+                            pontoDia.TipoEntrada3 = tipoSaida2;
                         }
                         break;
 
@@ -1602,6 +1669,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada4Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada4;
                             pontoDia.RegistroDePontoSaida4Id = registroAppEntrada4;
+                            pontoDia.TipoEntrada4 = tipoSaida4;
+                            pontoDia.TipoSaida4 = tipoEntrada4;
                         }
                         else
                         {
@@ -1609,6 +1678,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida3Id = registroAppEntrada4;
                             pontoDia.Entrada4 = saida3;
                             pontoDia.RegistroDePontoEntrada4Id = registroAppSaida3;
+                            pontoDia.TipoSaida3 = tipoEntrada4;
+                            pontoDia.TipoEntrada4 = tipoSaida3;
                         }
                         break;
 
@@ -1619,6 +1690,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada5Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada5;
                             pontoDia.RegistroDePontoSaida4Id = registroAppEntrada5;
+                            pontoDia.TipoEntrada5 = tipoSaida4;
+                            pontoDia.TipoSaida4 = tipoEntrada5;
                         }
                         else
                         {
@@ -1626,6 +1699,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoEntrada4Id = registroAppSaida4;
                             pontoDia.Saida4 = entrada4;
                             pontoDia.RegistroDePontoSaida4Id = registroAppEntrada4;
+                            pontoDia.TipoEntrada4 = tipoSaida4;
+                            pontoDia.TipoSaida4 = tipoEntrada4;
                         }
                         break;
 
@@ -1636,6 +1711,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida5Id = registroAppEntrada5;
                             pontoDia.Entrada5 = saida5;
                             pontoDia.RegistroDePontoEntrada5Id = registroAppSaida5;
+                            pontoDia.TipoSaida5 = tipoEntrada5;
+                            pontoDia.TipoEntrada5 = tipoSaida5;
                         }
                         else
                         {
@@ -1643,6 +1720,8 @@ namespace AriD.Servicos.Servicos
                             pontoDia.RegistroDePontoSaida4Id = registroAppEntrada5;
                             pontoDia.Entrada5 = saida4;
                             pontoDia.RegistroDePontoEntrada5Id = registroAppSaida4;
+                            pontoDia.TipoSaida4 = tipoEntrada5;
+                            pontoDia.TipoEntrada5 = tipoSaida4;
                         }
                         break;
 
@@ -1651,6 +1730,9 @@ namespace AriD.Servicos.Servicos
                         pontoDia.RegistroDePontoEntrada5Id = registroAppSaida5;
                         pontoDia.Saida5 = entrada5;
                         pontoDia.RegistroDePontoSaida5Id = registroAppEntrada5;
+                        pontoDia.TipoEntrada5 = tipoSaida5;
+                        pontoDia.TipoSaida5 = tipoEntrada5;
+
                         break;
                 }
 
@@ -1661,6 +1743,138 @@ namespace AriD.Servicos.Servicos
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        private void ValideLimiteDeUso(PontoDoDia ponto, int justificativaId, string acao)
+        {
+            var justificativa = _repositorioJustificativa.Obtenha(justificativaId);
+
+            if (justificativa == null || !justificativa.TotalDeUsos.HasValue || justificativa.TipoDeLimite == eTipoDeLimiteDeJustificativa.NaoUtiliza)
+                return;
+
+            DateTime dataReferencia = ponto.Data;
+            DateTime dataInicio = dataReferencia;
+            DateTime dataFim = dataReferencia;
+
+            if (justificativa.TipoDeLimite == eTipoDeLimiteDeJustificativa.Semanal)
+            {
+                dataInicio = dataReferencia.AddDays(-(int)dataReferencia.DayOfWeek);
+                dataFim = dataInicio.AddDays(6);
+            }
+            else if (justificativa.TipoDeLimite == eTipoDeLimiteDeJustificativa.Mensal)
+            {
+                dataInicio = new DateTime(dataReferencia.Year, dataReferencia.Month, 1);
+                dataFim = dataInicio.AddMonths(1).AddDays(-1);
+            }
+
+            var query = _repositorio.ObtenhaLista(p =>
+                p.VinculoDeTrabalhoId == ponto.VinculoDeTrabalhoId &&
+                p.Id != ponto.Id &&
+                p.Data >= dataInicio &&
+                p.Data <= dataFim
+            );
+
+            var outrosRegistros = query.Select(p => new {
+                p.JustificativaPeriodo1Id,
+                p.JustificativaPeriodo2Id,
+                p.JustificativaPeriodo3Id,
+                p.JustificativaPeriodo4Id,
+                p.JustificativaPeriodo5Id
+            }).ToList();
+
+            int usosNoBanco = 0;
+            foreach (var r in outrosRegistros)
+            {
+                if (r.JustificativaPeriodo1Id == justificativaId) usosNoBanco++;
+                if (r.JustificativaPeriodo2Id == justificativaId) usosNoBanco++;
+                if (r.JustificativaPeriodo3Id == justificativaId) usosNoBanco++;
+                if (r.JustificativaPeriodo4Id == justificativaId) usosNoBanco++;
+                if (r.JustificativaPeriodo5Id == justificativaId) usosNoBanco++;
+            }
+
+            int usosNesteDia = 0;
+
+            int slotSendoEditado = int.Parse(acao.Substring(acao.Length - 1));
+
+            if (slotSendoEditado != 1 && ponto.JustificativaPeriodo1Id == justificativaId) usosNesteDia++;
+            if (slotSendoEditado != 2 && ponto.JustificativaPeriodo2Id == justificativaId) usosNesteDia++;
+            if (slotSendoEditado != 3 && ponto.JustificativaPeriodo3Id == justificativaId) usosNesteDia++;
+            if (slotSendoEditado != 4 && ponto.JustificativaPeriodo4Id == justificativaId) usosNesteDia++;
+            if (slotSendoEditado != 5 && ponto.JustificativaPeriodo5Id == justificativaId) usosNesteDia++;
+
+            int totalGeral = usosNoBanco + usosNesteDia + 1;
+
+            if (totalGeral > justificativa.TotalDeUsos.Value)
+            {
+                throw new ApplicationException($"O limite de {justificativa.TotalDeUsos.Value} usos para a justificativa '{justificativa.Descricao}' foi excedido.");
+            }
+        }
+
+        private void ProcessarIntervalosAutomaticos(
+            PontoDoDia ponto,
+            HorarioDeTrabalhoDia horario,
+            eIntervaloAutomatico tipoIntervalo)
+        {
+            if (tipoIntervalo == eIntervaloAutomatico.NaoUtiliza)
+                return;
+
+            (TimeSpan? Valor, eTipoDeRegistroDePeriodo Tipo) ObterValorAutomatico(
+                TimeSpan? horarioEsperado,
+                TimeSpan? valorAtual,
+                eTipoDeRegistroDePeriodo tipoAtual)
+            {
+                if (!horarioEsperado.HasValue)
+                    return (valorAtual, tipoAtual);
+
+                if (valorAtual.HasValue)
+                    return (valorAtual, tipoAtual);
+
+                var novoHorario = new TimeSpan(horarioEsperado.Value.Hours, horarioEsperado.Value.Minutes, 0);
+                return (novoHorario, eTipoDeRegistroDePeriodo.Automatico);
+            }
+
+            switch (tipoIntervalo)
+            {
+                case eIntervaloAutomatico.Saida1_Entrada2:
+                    (ponto.Saida1, ponto.TipoSaida1) = ObterValorAutomatico(horario.Saida1, ponto.Saida1, ponto.TipoSaida1);
+                    (ponto.Entrada2, ponto.TipoEntrada2) = ObterValorAutomatico(horario.Entrada2, ponto.Entrada2, ponto.TipoEntrada2);
+                    break;
+
+                case eIntervaloAutomatico.Saida2_Entrada3:
+                    (ponto.Saida2, ponto.TipoSaida2) = ObterValorAutomatico(horario.Saida2, ponto.Saida2, ponto.TipoSaida2);
+                    (ponto.Entrada3, ponto.TipoEntrada3) = ObterValorAutomatico(horario.Entrada3, ponto.Entrada3, ponto.TipoEntrada3);
+                    break;
+
+                case eIntervaloAutomatico.Saida3_Entrada4:
+                    (ponto.Saida3, ponto.TipoSaida3) = ObterValorAutomatico(horario.Saida3, ponto.Saida3, ponto.TipoSaida3);
+                    (ponto.Entrada4, ponto.TipoEntrada4) = ObterValorAutomatico(horario.Entrada4, ponto.Entrada4, ponto.TipoEntrada4);
+                    break;
+
+                case eIntervaloAutomatico.Saida4_Entrada5:
+                    (ponto.Saida4, ponto.TipoSaida4) = ObterValorAutomatico(horario.Saida4, ponto.Saida4, ponto.TipoSaida4);
+                    (ponto.Entrada5, ponto.TipoEntrada5) = ObterValorAutomatico(horario.Entrada5, ponto.Entrada5, ponto.TipoEntrada5);
+                    break;
+            }
+        }
+
+        private void ApliqueToleranciaNoSaldo(ref PontoDoDia ponto, int toleranciaMinutos)
+        {
+            if (toleranciaMinutos == 0)
+                return;
+
+            if (!ponto.HorasPositivas.HasValue && !ponto.HorasNegativas.HasValue)
+                return;
+
+            var extras = ponto.HorasPositivas ?? TimeSpan.Zero;
+            var faltas = ponto.HorasNegativas ?? TimeSpan.Zero;
+
+            double totalMinutosVariacao = Math.Abs(extras.Subtract(faltas).TotalMinutes);
+
+            if (totalMinutosVariacao <= toleranciaMinutos)
+            {
+                ponto.HorasPositivas = null;
+                ponto.HorasNegativas = null;
             }
         }
     }

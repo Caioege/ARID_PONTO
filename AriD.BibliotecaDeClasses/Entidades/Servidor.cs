@@ -16,11 +16,18 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public DateTime DataDeCadastro { get; set; }
 
         public virtual List<VinculoDeTrabalho> VinculosDeTrabalho { get; set; }
+        public virtual List<AnexoServidor> ListaDeAnexos { get; set; }
 
         public bool AcessoAoAplicativo { get; set; }
         public bool RegistroDePontoNoAplicativo { get; set; }
         public bool RegistroManualNoAplicativo { get; set; }
         public bool RegistroDeAtestadoNoAplicativo { get; set; }
+
+        [MaxLength(15)]
+        public string? TelefoneDeContato { get; set; }
+
+        [MaxLength(120)]
+        public string? Email { get; set; }
 
         public string Nome => Pessoa?.Nome;
     }

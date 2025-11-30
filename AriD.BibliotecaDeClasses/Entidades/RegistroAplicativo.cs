@@ -31,5 +31,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public virtual JustificativaDeAusencia JustificativaDeAusencia { get; set; }
         public DateTime? DataInicialAtestado { get; set; }
         public DateTime? DataFinalAtestado { get; set; }
+
+        public bool ForaDaCerca { get; set; }
     }
 }

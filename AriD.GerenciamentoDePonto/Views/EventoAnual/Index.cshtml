@@ -17,14 +17,25 @@
                 </div>
             </div>
 
-            @if (Context.PossuiPermissao(eItemDePermissao_EventoAnual.CadastrarOuAlterar))
-            {
-                <div class="col-md-7 col-sm-6 col-xs-12">
+            @{
+                var podeAdicionar = Context.PossuiPermissao(eItemDePermissao_EventoAnual.CadastrarOuAlterar);
+                var podeExportar = Context.PossuiPermissao(eItemDePermissao_EventoAnual.Exportar);
+            }
+            <div class="col-md-7 col-sm-6 col-xs-12">
+                @if (podeAdicionar)
+                {
                     <button type="button" onclick="AbrirModal(0)" class="btn btn-primary float-end">
                         <i class="bx bx-plus"></i> Adicionar
                     </button>
-                </div>
-            }
+                }
+
+                @if (podeExportar)
+                {
+                    <button type="button" onclick="exportarListagem(0)" class="btn btn-secondary float-end" style="margin-right: 5px;">
+                        <i class="bx bx-download"></i> Exportar
+                    </button>
+                }
+            </div>
         </div>
         <br />
 

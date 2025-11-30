@@ -54,6 +54,7 @@ $(document).ready(() => {
             $('#tabela-horario .hora').prop('disabled', true).prop('readonly', true).trigger('change');
         } else {
             $('#label-chmensal-fixa').removeClass('obrigatorio');
+            $('#CargaHorariaMensalFixa').val('');
             $('#CargaHorariaMensalFixa').prop('disabled', true).prop('readonly', true).trigger('change');
             $('#tabela-horario .hora').prop('disabled', false).prop('readonly', false).trigger('change');
         }
@@ -65,6 +66,8 @@ $(document).ready(() => {
 
 function assineEventoBotaoSalvar() {
     $('#btn-salvar').on('click', function () {
+        atualizarValorEnumColunas();
+
         let dadosFormulario = ObtenhaFormularioSerializado('formulario-horario-trabalho');
         if (!dadosFormulario.formularioEstaValido) {
             MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
@@ -138,4 +141,14 @@ function removerHorario(id) {
                 });
         }
     });
+}
+
+function atualizarValorEnumColunas() {
+    var somaTotal = 0;
+
+    $('.check-coluna:checked').each(function () {
+        somaTotal += parseInt($(this).val());
+    });
+
+    $('#ColunasVisiveis').val(somaTotal);
 }

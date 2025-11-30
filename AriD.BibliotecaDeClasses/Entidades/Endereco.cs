@@ -18,13 +18,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [MaxLength(10)]
         public string? Numero { get; set; }
 
-        [Required, MaxLength(100)]
+        [MaxLength(100)]
         public string? Bairro { get; set; }
 
-        [Required, MaxLength(100)]
+        [MaxLength(100)]
         public string? Cidade { get; set; }
 
-        [Required]
         public eEstadosDoBrasil? UF { get; set; }
 
         public override string ToString()

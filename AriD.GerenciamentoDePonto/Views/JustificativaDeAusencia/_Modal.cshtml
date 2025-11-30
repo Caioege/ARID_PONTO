@@ -1,4 +1,6 @@
-﻿@model JustificativaDeAusencia
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model JustificativaDeAusencia
 
 @{
     var adicionar = Model.Id == 0;
@@ -44,6 +46,19 @@
                         <div class="col col-md-12 col-sm-12">
                             <label class="form-label obrigatorio" for="LocalDeUso">Local de Uso</label>
                             @Html.EnumDropDownListFor(model => model.LocalDeUso, new { @class = "select2" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-8 col-sm-12">
+                            <label class="form-label obrigatorio" for="TipoDeLimite">Limite de Uso por @Context.DadosDaSessao().NomenclaturaServidor.NomenclaturaSingular()</label>
+                            @Html.EnumDropDownListFor(model => model.TipoDeLimite, new { @class = "form-select", @onchange = "onChangeTipoDeLimite()" })
+                        </div>
+
+                        <div class="col col-md-4 col-sm-12" 
+                            style="@(Model.TipoDeLimite == eTipoDeLimiteDeJustificativa.NaoUtiliza ? "display:none" : string.Empty)">
+                            <label class="form-label @(Model.TipoDeLimite != eTipoDeLimiteDeJustificativa.NaoUtiliza ? "obrigatorio" : string.Empty)" id="LabelTotalDeUsos" for="TotalDeUsos">Limite no Período</label>
+                            @Html.TextBoxFor(model => model.TotalDeUsos, new { @class = "form-control numeroAte999", @maxlength = "3" })
                         </div>
                     </div>
                 </form>

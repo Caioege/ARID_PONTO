@@ -4,20 +4,24 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace AriD.Servicos.Servicos
 {
     public class ServicoRegistroDePonto : Servico<RegistroDePonto>, IServicoRegistroDePonto
     {
         private readonly IRepositorio<RegistroDePonto> _repositorio;
+        private readonly IWhatsappService _whatsappService;
+        private readonly IEmailService _emailService;
 
         public ServicoRegistroDePonto(
-            IRepositorio<RegistroDePonto> repositorio)
+            IRepositorio<RegistroDePonto> repositorio,
+            IWhatsappService whatsappService,
+            IEmailService emailService)
             : base(repositorio)
         {
             _repositorio = repositorio;
+            _whatsappService = whatsappService;
+            _emailService = emailService;
         }
 
         public async Task ReceberRegistroDeEquipamento(
@@ -55,6 +59,27 @@ namespace AriD.Servicos.Servicos
 
                     _repositorio.Add(registroDePonto);
                     _repositorio.Commit();
+
+                    var envioComprovante = ObtenhaDadosEnvioDeComprovante(dadosEquipamento.Value.Value, dados.UsuarioId);
+                    if (envioComprovante != null && envioComprovante.EnvioDeMensagemWhatsAppExperimental)
+                    {
+                        try
+                        {
+                            var servidor = new Servidor
+                            {
+                                OrganizacaoId = envioComprovante.OrganizacaoId,
+                                Organizacao = new() { Nome = envioComprovante.OrganizacaoNome, EnvioDeMensagemWhatsAppExperimental = envioComprovante.EnvioDeMensagemWhatsAppExperimental },
+
+                                TelefoneDeContato = envioComprovante.TelefoneDeContato,
+
+                                Pessoa = new() { Nome = envioComprovante.ServidorNome, Cpf = envioComprovante.ServidorCpf }
+                            };
+
+                            await _whatsappService.EnviarComprovantePontoAsync(servidor, registroDePonto.Id, dados.DataHora);
+                            await _emailService.EnviarComprovantePontoAsync(servidor, registroDePonto.Id, dados.DataHora);
+                        }
+                        catch { }
+                    }
                 }
             }
             catch (Exception)
@@ -142,6 +167,40 @@ namespace AriD.Servicos.Servicos
             {
                 throw;
             }
+        }
+
+        private EnvioDeComprovanteDTO ObtenhaDadosEnvioDeComprovante(int equipamentoId, string matriculaEquipamento)
+        {
+            var query =
+                @"select
+	                o.Id as OrganizacaoId,
+                    o.Nome as OrganizacaoNome,
+                    o.EnvioDeMensagemWhatsAppExperimental,
+                    s.Id as ServidorId,
+                    p.Nome as ServidorNome,
+                    p.Cpf  as ServidorCpf,
+                    s.TelefoneDeContato
+                from equipamentodeponto e
+                inner join lotacaounidadeorganizacional l
+	                on l.UnidadeOrganizacionalId = e.UnidadeOrganizacionalId
+                inner join vinculodetrabalho v
+	                on v.Id = l.VinculoDeTrabalhoId
+                inner join servidor s
+	                on s.Id = v.ServidorId
+                inner join pessoa p
+	                on p.Id = s.PessoaId
+                inner join organizacao o
+	                on o.Id = e.OrganizacaoId
+                where
+	                e.Id = @EQUIPAMENTOID
+                    and l.MatriculaEquipamento = @MATRICULAEQUIPAMENTO
+                limit 1";
+
+            return _repositorio.ConsultaDapper<EnvioDeComprovanteDTO>(query, new
+            {
+                @EQUIPAMENTOID = equipamentoId,
+                @MATRICULAEQUIPAMENTO = matriculaEquipamento
+            }).FirstOrDefault();
         }
     }
 }

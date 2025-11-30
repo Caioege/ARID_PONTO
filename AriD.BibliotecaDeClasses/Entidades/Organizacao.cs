@@ -18,5 +18,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [Required]
         public eNomenclaturaServidor NomenclaturaServidor { get; set; }
+
+        [Required]
+        public bool EnvioDeMensagemWhatsAppExperimental { get; set; }
     }
 }

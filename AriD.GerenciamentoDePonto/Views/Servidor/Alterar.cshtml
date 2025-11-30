@@ -3,6 +3,7 @@
 @{
     var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Servidor.CadastrarOuAlterar);
     var podeRemover = Context.PossuiPermissao(eItemDePermissao_Servidor.Excluir);
+    var podeGerirAnexos = Context.PossuiPermissao(eItemDePermissao_Servidor.GerenciarAnexos);
 }
 
 <style>
@@ -127,7 +128,7 @@
                         <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#s1" aria-controls="s1" aria-selected="true">
                             <span class="d-sm-block">
                                 <i class="tf-icons bx bx-home bx-sm me-1_5 align-text-bottom"></i>
-                                ENDEREÇO 
+                                CONTATO/ENDEREÇO 
                             </span>
                         </button>
                     </li>
@@ -147,9 +148,30 @@
                             </span>
                         </button>
                     </li>
+                    <li class="nav-item mb-1 mb-sm-0" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s4" aria-controls="s4" aria-selected="false" tabindex="-1">
+                            <span class="d-sm-block">
+                                <i class="tf-icons bx bx-file bx-sm me-1_5 align-text-bottom"></i>
+                                ANEXOS
+                            </span>
+                        </button>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="s1" role="tabpanel">
+                        <div class="row">
+                            <section class="col col-md-3 col-sm-6">
+                                <label class="form-label">Telefone/WhatsApp</label>
+                                @Html.TextBoxFor(model => model.TelefoneDeContato, new { @class = "form-control celular" })
+                            </section>
+
+                            <section class="col col-md-9 col-sm-6">
+                                <label class="form-label">E-mail</label>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @maxlength = "120" })
+                            </section>
+                        </div>
+                        <br />
+
                         @{
                             ViewBag.PrefixoEndereco = "Pessoa.Endereco.";
                             ViewBag.EnderecoObrigatorio = true;
@@ -161,6 +183,9 @@
                     </div>
                     <div class="tab-pane fade" id="s3" role="tabpanel">
                         @await Html.PartialAsync("_Afastamentos", Model)
+                    </div>
+                    <div class="tab-pane fade" id="s4" role="tabpanel">
+                        @await Html.PartialAsync("_Anexos", Model)
                     </div>
                 </div>
             </div>

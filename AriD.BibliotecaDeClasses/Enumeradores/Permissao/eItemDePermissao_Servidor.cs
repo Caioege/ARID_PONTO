@@ -11,6 +11,8 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         [Description("Gerenciar Lotações")]
         GerenciarLotacoes = 3,
         [Description("Gerenciar Afastamentos")]
-        GerenciarAfastamentos = 4
+        GerenciarAfastamentos = 4,
+        [Description("Gerenciar Anexos")]
+        GerenciarAnexos = 5
     }
 }

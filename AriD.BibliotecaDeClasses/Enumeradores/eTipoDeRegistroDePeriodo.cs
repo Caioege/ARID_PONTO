@@ -16,7 +16,11 @@ namespace AriD.BibliotecaDeClasses.Enumeradores
         RegistroEquipamento,
 
         [Description("Registro do Aplicativo de Ponto")]
-        [DescricaoTipoRegistroDePonto("a")]
-        RegistroAplicativo
+        [DescricaoTipoRegistroDePonto("ª")]
+        RegistroAplicativo,
+
+        [Description("Automático")]
+        [DescricaoTipoRegistroDePonto("^")]
+        Automatico,
     }
 }

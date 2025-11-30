@@ -84,7 +84,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 id = _servico.Adicionar(organizacao);
             }
             else
-                _servico.Atualizar(organizacao);
+            {
+                var persistido = _servico.Obtenha(organizacao.Id);
+                
+                persistido.NomenclaturaServidor = organizacao.NomenclaturaServidor;
+                persistido.Nome = organizacao.Nome;
+                persistido.Endereco = organizacao.Endereco;
+
+                if (this.HttpContext.DadosDaSessao().Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                {
+                    persistido.EnvioDeMensagemWhatsAppExperimental = organizacao.EnvioDeMensagemWhatsAppExperimental;
+                    persistido.Ativa = organizacao.Ativa;
+                }
+                _servico.Atualizar(persistido);
+            }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }

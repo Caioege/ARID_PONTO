@@ -7,6 +7,7 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         Visualizar = 0,
         [Description("Cadastrar/Alterar")]
         CadastrarOuAlterar = 1,
-        Excluir = 2
+        Excluir = 2,
+        Exportar = 3
     }
 }

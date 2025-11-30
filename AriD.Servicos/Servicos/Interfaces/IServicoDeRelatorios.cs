@@ -38,5 +38,7 @@ namespace AriD.Servicos.Servicos.Interfaces
             int? horarioDeTrabalhoId,
             int? tipoDeVinculoDeTrabalhoId,
             int? departamentoId);
+
+        List<EventoAnual> ObtenhaListaDeEventosDaOrganizacao(int organizacaoId);
     }
 }

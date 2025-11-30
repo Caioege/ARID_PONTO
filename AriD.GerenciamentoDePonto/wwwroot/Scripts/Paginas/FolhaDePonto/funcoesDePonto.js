@@ -236,3 +236,52 @@ function reprovaRegistro(registroId) {
 		}
 	});
 }
+
+function abrirModalAjuste(id, valorAtual) {
+	$('#hdnPontoIdAjuste').val(id);
+
+	$('#txtValorAjuste').val('');
+	$('#rdCreditar').prop('checked', true);
+
+	if (valorAtual) {
+		if (valorAtual.startsWith('-')) {
+			$('#rdDebitar').prop('checked', true);
+			$('#txtValorAjuste').val(valorAtual.replace('-', ''));
+		} else {
+			$('#rdCreditar').prop('checked', true);
+			$('#txtValorAjuste').val(valorAtual);
+		}
+	}
+
+	$('#modalAjusteBH').modal('show');
+}
+
+function salvarAjusteBH() {
+	var id = $('#hdnPontoIdAjuste').val();
+	var valorDigitado = $('#txtValorAjuste').val();
+	var tipo = $('input[name="rdTipoAjuste"]:checked').val();
+
+	var valorFinal = null;
+
+	if (valorDigitado && valorDigitado.trim() !== '') {
+		valorDigitado = valorDigitado.replace('-', '').replace('+', '').trim();
+
+		if (tipo === 'D') {
+			valorFinal = '-' + valorDigitado;
+		} else {
+			valorFinal = valorDigitado;
+		}
+	}
+
+	RequisicaoAjaxComCarregamento('/FolhaDePonto/SalvarAjusteBancoHoras',
+		'POST',
+		{ id: id, ajuste: valorFinal },
+		function (data) {
+			if (data.sucesso) {
+				$('#modalAjusteBH').modal('hide');
+				carregarFolhaDePonto('O registro foi atualizado... Recarregando folha.');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		});
+}

@@ -3,8 +3,10 @@ using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Extensao;
+using AriD.Servicos.Helpers;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
+using System.Globalization;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace AriD.Servicos.Servicos
@@ -16,16 +18,23 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<RegistroDePonto> _repositorioRegistroDePonto;
         private readonly IRepositorio<VinculoDeTrabalho> _repositorioVinculo;
 
+        private readonly IWhatsappService _whatsappService;
+        private readonly IEmailService _emailService;
+
         public ServicoDeAplicativo(
             IRepositorio<Servidor> repositorioServidor,
             IRepositorio<RegistroAplicativo> repositorioRegistroApp,
             IRepositorio<RegistroDePonto> repositorioRegistroDePonto,
-            IRepositorio<VinculoDeTrabalho> repositorioVinculo)
+            IRepositorio<VinculoDeTrabalho> repositorioVinculo,
+            IWhatsappService whatsappService,
+            IEmailService emailService)
         {
             _repositorioServidor = repositorioServidor;
             _repositorioRegistroApp = repositorioRegistroApp;
             _repositorioRegistroDePonto = repositorioRegistroDePonto;
             _repositorioVinculo = repositorioVinculo;
+            _whatsappService = whatsappService;
+            _emailService = emailService;
         }
 
         public AutenticacaoAppDTO AutenticarUsuario(CredenciaisDTO credenciais)
@@ -305,10 +314,69 @@ namespace AriD.Servicos.Servicos
                     }
                 }
 
+                bool foraDaCerca = false;
+
+                if (!registro.Manual)
+                {
+                    try
+                    {
+                        double regLat = 0;
+                        double regLon = 0;
+
+                        bool coordenadasRegistroValidas =
+                            !string.IsNullOrWhiteSpace(registro.Latitude) &&
+                            !string.IsNullOrWhiteSpace(registro.Longitude) &&
+                            double.TryParse(registro.Latitude, NumberStyles.Any, CultureInfo.InvariantCulture, out regLat) &&
+                            double.TryParse(registro.Longitude, NumberStyles.Any, CultureInfo.InvariantCulture, out regLon);
+
+                        if (coordenadasRegistroValidas && vinculo.Lotacoes != null && vinculo.Lotacoes.Any())
+                        {
+                            bool dentroDeAlgumaUnidade = false;
+
+                            foreach (var lotacao in vinculo.Lotacoes)
+                            {
+                                var unidade = lotacao.UnidadeOrganizacional;
+                                if (!unidade.RaioDaCercaVirtualEmMetros.HasValue || string.IsNullOrEmpty(unidade.Longitude) || string.IsNullOrEmpty(unidade.Latitude))
+                                {
+                                    dentroDeAlgumaUnidade = true;
+                                    break;
+                                }
+
+                                double uniLat = 0;
+                                double uniLon = 0;
+
+                                bool unidadeValida =
+                                    !string.IsNullOrWhiteSpace(unidade.Latitude) &&
+                                    !string.IsNullOrWhiteSpace(unidade.Longitude) &&
+                                    unidade.RaioDaCercaVirtualEmMetros.HasValue &&
+                                    double.TryParse(unidade.Latitude, NumberStyles.Any, CultureInfo.InvariantCulture, out uniLat) &&
+                                    double.TryParse(unidade.Longitude, NumberStyles.Any, CultureInfo.InvariantCulture, out uniLon);
+
+                                if (unidadeValida)
+                                {
+                                    var distancia = CalculeDistanciaEmMetros(regLat, regLon, uniLat, uniLon);
+
+                                    if (distancia <= unidade.RaioDaCercaVirtualEmMetros.Value)
+                                    {
+                                        dentroDeAlgumaUnidade = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!dentroDeAlgumaUnidade)
+                            {
+                                foraDaCerca = true;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+
                 var registroAplicativo = new RegistroAplicativo
                 {
                     OrganizacaoId = vinculo.OrganizacaoId,
-                    Situacao = registro.Manual ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
+                    Situacao = registro.Manual || foraDaCerca ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
                     Manual = registro.Manual,
                     Observacao = registro.Observacao,
                     DataHora = registro.Manual && registro.DataHora.HasValue ? registro.DataHora.Value : dataAgora,
@@ -318,16 +386,18 @@ namespace AriD.Servicos.Servicos
                     AnexoPonto = anexoPontoNome,
                     DataInicialAtestado = registro.DataInicialAtestado,
                     DataFinalAtestado = registro.DataFinalAtestado,
-                    JustificativaDeAusenciaId = registro.JustificativaDeAusenciaId
+                    JustificativaDeAusenciaId = registro.JustificativaDeAusenciaId,
+                    ForaDaCerca = foraDaCerca
                 };
 
                 if (registro.DataHora > dataAgora)
                     throw new ApplicationException("O registro não pode ser para uma hora futura.");
 
-                if (!registro.Manual)
+                RegistroDePonto registroDePonto = null;
+                if (!registro.Manual && registroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                 {
                     /* Se for manual vai para a avaliação do administrador. */
-                    var registroDePonto = new RegistroDePonto
+                    registroDePonto = new RegistroDePonto
                     {
                         OrganizacaoId = registroAplicativo.OrganizacaoId,
                         DataHoraRegistro = registroAplicativo.DataHora,
@@ -344,6 +414,12 @@ namespace AriD.Servicos.Servicos
                 }
 
                 _repositorioRegistroApp.Commit();
+
+                if (!registro.Manual && registroDePonto != null)
+                {
+                    _whatsappService.EnviarComprovantePontoAsync(vinculo.Servidor, registroDePonto.Id, dataAgora);
+                    _emailService.EnviarComprovantePontoAsync(vinculo.Servidor, registroDePonto.Id, dataAgora);
+                }
             }
             catch (Exception)
             {
@@ -362,6 +438,23 @@ namespace AriD.Servicos.Servicos
                 return returnIfNull;
 
             return retorno;
+        }
+
+        private double CalculeDistanciaEmMetros(double lat1, double lon1, double lat2, double lon2)
+        {
+            var R = 6371e3;
+            var lat1Rad = lat1 * (Math.PI / 180);
+            var lat2Rad = lat2 * (Math.PI / 180);
+            var deltaLat = (lat2 - lat1) * (Math.PI / 180);
+            var deltaLon = (lon2 - lon1) * (Math.PI / 180);
+
+            var a = Math.Sin(deltaLat / 2) * Math.Sin(deltaLat / 2) +
+                    Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
+                    Math.Sin(deltaLon / 2) * Math.Sin(deltaLon / 2);
+
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            return R * c;
         }
     }
 }

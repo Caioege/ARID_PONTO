@@ -48,6 +48,26 @@
             }
             @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
             <br />
+
+            <h6>Cerca Virtual de Registro de Ponto</h6>
+            <div class="row">
+                <div class="col col-md-3 col-sm-6">
+                    <label class="form-label" for="Latitude">Latitude</label>
+                    @Html.TextBoxFor(model => model.Latitude, new { @class = "form-control", @maxlength = "20" })
+                </div>
+
+                <div class="col col-md-3 col-sm-6">
+                    <label class="form-label" for="Longitude">Longitude</label>
+                    @Html.TextBoxFor(model => model.Longitude, new { @class = "form-control", @maxlength = "20" })
+                </div>
+
+                <div class="col col-md-3 col-sm-6">
+                    <label class="form-label" for="RaioDaCercaVirtualEmMetros">Raio da cerca em metros</label>
+                    @Html.TextBoxFor(model => model.RaioDaCercaVirtualEmMetros, new { @class = "form-control numeroAte999", @maxlength = "3" })
+                </div>
+            </div>
+
+            <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = Model.OrganizacaoId })')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>

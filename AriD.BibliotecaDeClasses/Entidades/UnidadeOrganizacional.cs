@@ -17,5 +17,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public eTipoUnidadeOrganizacional? Tipo { get; set; }
 
         public bool Ativa { get; set; }
+
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
+        public int? RaioDaCercaVirtualEmMetros { get; set; }
     }
 }

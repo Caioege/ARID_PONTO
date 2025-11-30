@@ -1,0 +1,61 @@
+﻿@model Servidor
+
+@{
+    var anexos = Model.ListaDeAnexos;
+    var gerenciarAnexos = Context.PossuiPermissao(eItemDePermissao_Servidor.GerenciarAnexos);
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" width="45%">Descricação</th>
+            <th class="text-center" width="40%">Tipo do Arquivo</th>
+            <th class="text-center" width="15%">
+                @if (gerenciarAnexos)
+                {
+                    <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAnexo(0)">
+                        <i class='bx bx-list-plus'></i>
+                    </button>
+                }
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (anexos != null && anexos.Count() > 0)
+        {
+            foreach (var anexo in anexos
+                .OrderBy(c => c.Descricao)
+                .ThenBy(c => c.Id))
+            {
+                <tr>
+                    <td>
+                        @anexo.Descricao
+                    </td>
+                    <td class="text-center">
+                        @anexo.ExtensaoArquivo.ToUpper()
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="baixarAnexo(@anexo.Id)">
+                            <i class='bx bxs-download'></i>
+                        </button>
+
+                        @if (gerenciarAnexos)
+                        {
+                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAnexo(@anexo.Id)">
+                                <i class='bx bxs-edit-alt'></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else 
+        {
+            <tr>
+                <td class="text-center" colspan="99">
+                    Nenhum anexo foi cadastrado para esse @(Context.NomenclaturaServidor().ToLower()).
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

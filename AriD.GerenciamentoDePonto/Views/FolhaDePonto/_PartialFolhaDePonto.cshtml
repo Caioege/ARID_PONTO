@@ -1,9 +1,13 @@
-﻿@model List<PontoDoDia>
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+@model List<PontoDoDia>
 
 @{
     const int larguraPeriodo = 60;
     ViewBag.ExibirNomeServidor = false;
     var horarioDeTrabalho = (HorarioDeTrabalho)ViewBag.HorarioDeTrabalho;
+
+    var configColunas = horarioDeTrabalho.ColunasVisiveis;
 }
 
 <style>
@@ -93,30 +97,52 @@
                 </th>
             }
 
-            <th class="text-center" width="@(larguraPeriodo)px">
-                HOR<br />TRA
-            </th>
+            @if (configColunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+            {
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    HOR<br />TRA
+                </th>
+            }
 
-            <th class="text-center" width="@(larguraPeriodo)px">
-                CAR<br />HOR
-            </th>
+            @if (configColunas.HasFlag(eColunasDaFolha.CargaHoraria))
+            {
+                <th class="text-center" width="@(larguraPeriodo)px">
+                    CAR<br />HOR
+                </th>
+            }
 
             @if (horarioDeTrabalho.TipoCargaHoraria != AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa)
             {
-                <th class="text-center" width="@(larguraPeriodo)px">
-                    HOR<br />POS
-                </th>
+                if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
+                {
+                    <th class="text-center" width="@(larguraPeriodo)px">
+                        HOR<br />POS
+                    </th>
+                }
 
-                <th class="text-center" width="@(larguraPeriodo)px">
-                    HOR<br />NEG
-                </th>
+                if (configColunas.HasFlag(eColunasDaFolha.HorasNegativas))
+                {
+                    <th class="text-center" width="@(larguraPeriodo)px">
+                        HOR<br />NEG
+                    </th>
+                }
             }
 
             @if (horarioDeTrabalho.UtilizaBancoDeHoras)
             {
-                <th class="text-center" width="@(larguraPeriodo)px">
-                    BH<br />SALDO
-                </th>
+                if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
+                {
+                    <th class="text-center" width="@(larguraPeriodo)px">
+                        BH<br />SALDO
+                    </th>
+                }
+
+                if (configColunas.HasFlag(eColunasDaFolha.BHAjuste))
+                {
+                    <th class="text-center" width="@(larguraPeriodo)px">
+                        BH<br />AJUSTE
+                    </th>
+                }
             }
         </tr>
     </thead>
@@ -143,7 +169,10 @@
                 @{
                     var horasTrabalhadas = TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
                 }
-                <b>HOR TRA:</b> @FormatarTimeSpan(horasTrabalhadas)&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (configColunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+                {
+                    <b>HOR TRA:</b> @FormatarTimeSpan(horasTrabalhadas)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                }
                 @{
                     var cargaHorariaMensalFixa = horarioDeTrabalho.TipoCargaHoraria == AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa;
                     var cargaHoraria = TimeSpan.FromTicks(Model.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
@@ -153,19 +182,28 @@
                         cargaHoraria = TimeSpan.FromHours(horarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
                     }
                 }
-                <b>CAR HOR:</b> @FormatarTimeSpan(cargaHoraria)&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (configColunas.HasFlag(eColunasDaFolha.CargaHoraria))
+                {
+                    <b>CAR HOR:</b> @FormatarTimeSpan(cargaHoraria)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                }
                 @{ 
                     var horasPositivasMes = cargaHorariaMensalFixa ?
                         (horasTrabalhadas > cargaHoraria ? horasTrabalhadas - cargaHoraria : TimeSpan.Zero) :
                         TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasPositivas ?? TimeSpan.Zero).Ticks)); 
                 }
-                <b>HOR POS:</b> @FormatarTimeSpan(horasPositivasMes)&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
+                {
+                    <b>HOR POS:</b> @FormatarTimeSpan(horasPositivasMes)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                }
                 @{
                     var horasNegativasMes = cargaHorariaMensalFixa ?
                         (cargaHoraria > horasTrabalhadas ? cargaHoraria - horasTrabalhadas : TimeSpan.Zero) :
                         TimeSpan.FromTicks(Model.Where(c => !c.DataFutura).Sum(c => (c.HorasNegativas ?? TimeSpan.Zero).Ticks));
                 }
-                <b>HOR NEG:</b> @FormatarTimeSpan(horasNegativasMes)&nbsp;&nbsp;&nbsp;&nbsp;
+                @if (configColunas.HasFlag(eColunasDaFolha.HorasNegativas))
+                {
+                    <b>HOR NEG:</b> @FormatarTimeSpan(horasNegativasMes)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                }
                 @{
                     string FormatarSaldoMes(TimeSpan? horasPositivas, TimeSpan? horasNegativas)
                     {
@@ -220,8 +258,25 @@
 
                     @Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
 
-                    <b>BH SALDO:</b> @FormatarBancoDeHoras(ultimoRegistroBanco)
+                    if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
+                    {
+                        <b>BH SALDO:</b> @FormatarBancoDeHoras(ultimoRegistroBanco)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                    }
                 }
+            </td>
+        </tr>
+        <tr>
+            <td colspan="99" style="background-color: lightyellow; text-align: center">
+                <b>LEGENDA:</b>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                @eTipoDeRegistroDePeriodo.RegistroAplicativo.DescricaoTipoDeRegistroDoEnumerador() - Aplicativo
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                @eTipoDeRegistroDePeriodo.RegistroManual.DescricaoTipoDeRegistroDoEnumerador() - Manual
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                @eTipoDeRegistroDePeriodo.Automatico.DescricaoTipoDeRegistroDoEnumerador() - Intervalo Automático
             </td>
         </tr>
     </tfoot>

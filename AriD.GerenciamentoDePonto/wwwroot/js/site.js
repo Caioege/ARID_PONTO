@@ -178,6 +178,18 @@ function assineMascarasDoComponente(componente) {
         }
     });
 
+    componente.find('.hora-3').mask('000:00', { placeholder: "___:__" });
+
+    componente.find('.hora-3').on('change', function () {
+        const valor = $(this).val();
+
+        if (!validarHoraBanco(valor)) {
+            MensagemRodape('warning', 'Insira um valor válido (Minutos entre 00 e 59)!');
+            $(this).val('');
+            $(this).focus();
+        }
+    });
+
     componente.find('.data').attr('type', 'date');
     componente.find('.data').on('focusout', function () {
         const valor = $(this).val();
@@ -242,6 +254,7 @@ function assineMascarasDoComponente(componente) {
     });
 
     componente.find('.numeroAte999').mask('000');
+    componente.find('.celular').mask('(00) 00000-0000');
 }
 
 function dataValida(dateString) {
@@ -269,6 +282,11 @@ function dataValida(dateString) {
     );
 }
 
+function validarHoraBanco(horario) {
+    if (!horario || horario.trim() === '') return false;
+    const regex = /^\d{2,3}:[0-5][0-9]$/;
+    return regex.test(horario);
+}
 
 function cpfValido(cpf) {
     if (!cpf) {

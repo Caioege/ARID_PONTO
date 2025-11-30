@@ -15,6 +15,8 @@ using iText.Layout.Borders;
 using AriD.Servicos.Extensao;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Comum;
+using System.Globalization;
+using System.Text;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -335,6 +337,96 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var nomeArquivo = $"Horas Positivas e Negativas por {HttpContext.NomenclaturaServidor()}.pdf";
 
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult AniversariantesDoPeriodo()
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            var organizacaoId = dadosDaSessao.OrganizacaoId;
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                    "Id", "Nome");
+            }
+            else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+            {
+                ViewBag.Unidades = new SelectList(
+                    _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                    "Id", "Nome");
+            }
+
+            ViewBag.Horarios = new SelectList(_servicoHorario
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            ViewBag.Tipos = new SelectList(_servicoTipo
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                .OrderBy(c => c.SiglaComDescricao),
+                "Id",
+                "SiglaComDescricao");
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarAniversariantesDoPeriodo(
+            int mes,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            if (mes == 0)
+                throw new ApplicationException("O mês deve ser informado.");
+
+            var relatorio = RelatorioAniversariantesDoPeriodo(
+                mes,
+                unidadeId,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId);
+
+            var nomeArquivo = $"Aniversariantes do Mês {mes.ToString().PadLeft(2, '0')}.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpPost]
+        public ActionResult ExportarEventosAnuais(eTipoDeExportacao tipoDeExportacao)
+        {
+            string extensao;
+
+            switch (tipoDeExportacao)
+            {
+                case eTipoDeExportacao.Excel:
+                    extensao = ".xlsx";
+                    break;
+                case eTipoDeExportacao.TXT:
+                    extensao = ".txt";
+                    break;
+                default:
+                    extensao = ".pdf";
+                    break;
+            }
+
+            var relatorio = RelatorioAniversariantesDoPeriodo(tipoDeExportacao);
+            var nomeArquivo = $"Eventos Anuais{extensao}";
             return Json(new
             {
                 sucesso = true,
@@ -870,7 +962,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var table = new Table(UnitValue.CreatePercentArray(new[]
                 {
                     35f,
-                    35f,
+                    25f,
+                    10f,
                     10f,
                     10f,
                 })).UseAllAvailableWidth();
@@ -903,6 +996,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .Add(new Text("Horas\nNegativas"))
                     .SetBold()
                     .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Saldo\nMês"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
                     .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
 
             foreach (var servidor in dicionarioHorasDoServidor)
@@ -917,21 +1017,276 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(new Paragraph()
                     .Add(new Text($"{vinculo.ToString()}"))));
 
-                table.AddCell(new Cell()
-                .Add(new Paragraph()
-                    .SetTextAlignment(TextAlignment.CENTER)
-                    .Add(new Text($"{FormatarTimeSpan(dicionarioHorasDoServidor[vinculo.Id].Item1)}"))));
+                var horasPositivas = dicionarioHorasDoServidor[vinculo.Id].Item1;
+                var horasNegativas = dicionarioHorasDoServidor[vinculo.Id].Item2;
 
                 table.AddCell(new Cell()
                 .Add(new Paragraph()
                     .SetTextAlignment(TextAlignment.CENTER)
-                    .Add(new Text($"{FormatarTimeSpan(dicionarioHorasDoServidor[vinculo.Id].Item2)}"))));
+                    .Add(new Text($"{FormatarTimeSpan(horasPositivas)}"))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{FormatarTimeSpan(horasNegativas)}"))));
+
+                table.AddCell(new Cell()
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{FormatarSaldoMes(horasPositivas, horasNegativas)}"))));
             }
 
             document.Add(new Div().Add(table));
 
             document.Close();
             return stream.ToArray();
+        }
+
+        private byte[] RelatorioAniversariantesDoPeriodo(
+            int mes,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = dadosDaSessao.UnidadeOrganizacionais.First();
+            else if (!unidadeId.HasValue)
+                throw new ApplicationException("A unidade deve ser informada.");
+
+            var listaDeVinculos = _servicoDeRelatorios
+                .ObtenhaListaDeVinculos(
+                    dadosDaSessao.OrganizacaoId,
+                    unidadeId.Value,
+                    horarioDeTrabalhoId,
+                    tipoDeVinculoDeTrabalhoId,
+                    null)
+                .OrderBy(c => c.Servidor.Nome);
+
+            var servidores = listaDeVinculos
+                .Select(c => c.Servidor)
+                .DistinctBy(c => c.Id)
+                .ToList();
+
+            servidores.RemoveAll(x => x.Pessoa.DataDeNascimento.Month != mes);
+
+            if (servidores.Count() == 0)
+                throw new ApplicationException($"Nenhum {HttpContext.NomenclaturaServidor().ToLower()} encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(10);
+
+            var nomeMes = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mes);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add($"Aniversariantes do período: {nomeMes}")));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    50f,
+                    25f,
+                    25f,
+                })).UseAllAvailableWidth();
+
+            table
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Nome"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("CPF"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Data de\nNascimento"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            foreach (var servidor in servidores
+                .OrderBy(c => c.Pessoa.DataDeNascimento)
+                .ThenBy(c => c.Nome))
+            {
+                table.AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .Add(new Text(servidor.Nome))));
+
+                table.AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{servidor.Pessoa.Cpf}"))));
+
+                table.AddCell(new Cell()
+                    .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{servidor.Pessoa.DataDeNascimento.ToString("dd/MM/yyyy")}"))));
+            }
+
+            document.Add(new Div().Add(table));
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] RelatorioAniversariantesDoPeriodo(eTipoDeExportacao tipoDeExportacao)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+            var eventos = _servicoDeRelatorios.ObtenhaListaDeEventosDaOrganizacao(dadosDaSessao.OrganizacaoId);
+
+            if (eventos == null || eventos.Count() == 0)
+                throw new ApplicationException("Não há nenhum evento anual cadastrado.");
+
+            switch (tipoDeExportacao)
+            {
+                case eTipoDeExportacao.Excel:
+                    using (var workbook = new ClosedXML.Excel.XLWorkbook())
+                    {
+                        var worksheet = workbook.Worksheets.Add("Eventos Anuais");
+
+                        worksheet.Cell(1, 1).Value = "Descrição";
+                        worksheet.Cell(1, 2).Value = "Tipo";
+                        worksheet.Cell(1, 3).Value = "Data";
+
+                        var header = worksheet.Range("A1:C1");
+                        header.Style.Font.Bold = true;
+                        header.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
+
+                        int linha = 2;
+                        foreach (var evento in eventos)
+                        {
+                            worksheet.Cell(linha, 1).Value = evento.Descricao;
+                            worksheet.Cell(linha, 2).Value = evento.Tipo.DescricaoDoEnumerador();
+                            worksheet.Cell(linha, 3).Value = evento.Data;
+                            worksheet.Cell(linha, 3).Style.DateFormat.Format = "dd/MM/yyyy";
+                            linha++;
+                        }
+
+                        worksheet.Columns().AdjustToContents();
+
+                        using (var stream = new MemoryStream())
+                        {
+                            workbook.SaveAs(stream);
+                            return stream.ToArray();
+                        }
+                    }
+
+                case eTipoDeExportacao.TXT:
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine("EVENTOS ANUAIS");
+                    sb.AppendLine(new string('-', 80));
+                    sb.AppendLine($"{"Descrição".PadRight(40)} | {"Tipo".PadRight(20)} | {"Data".PadRight(15)}");
+                    sb.AppendLine(new string('-', 80));
+
+                    foreach (var evento in eventos)
+                    {
+                        var descricao = evento.Descricao.Length > 37 ? evento.Descricao.Substring(0, 37) + "..." : evento.Descricao;
+                        var tipo = evento.Tipo.DescricaoDoEnumerador();
+                        var data = evento.Data.ToString("dd/MM/yyyy");
+
+                        sb.AppendLine($"{descricao.PadRight(40)} | {tipo.PadRight(20)} | {data.PadRight(15)}");
+                    }
+
+                    return Encoding.UTF8.GetBytes(sb.ToString());
+
+                default:
+                    using (var stream = new MemoryStream())
+                    {
+                        var writer = new PdfWriter(stream);
+                        var pdf = new PdfDocument(writer);
+                        var document = new Document(pdf);
+
+                        AdicioneCabecalho(
+                            document,
+                            dadosDaSessao.OrganizacaoId,
+                            dadosDaSessao.OrganizacaoNome);
+
+                        document.SetFontSize(10);
+
+                        document.Add(
+                            new Div()
+                            .SetMarginBottom(10)
+                            .Add(new Paragraph()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetFontSize(15f)
+                                .Add($"Eventos Anuais")));
+
+                        var table = new Table(UnitValue.CreatePercentArray(new[]
+                            {
+                    40f,
+                    30f,
+                    30f,
+                })).UseAllAvailableWidth();
+
+                        table
+                            .AddCell(new Cell()
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                                .Add(new Paragraph()
+                                .Add(new Text("Descrição"))
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                            .AddCell(new Cell()
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                                .Add(new Paragraph()
+                                .Add(new Text("Tipo"))
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                            .AddCell(new Cell()
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                                .Add(new Paragraph()
+                                .Add(new Text("Data"))
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+                        foreach (var evento in eventos)
+                        {
+                            table.AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .Add(new Text(evento.Descricao))));
+
+                            table.AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .Add(new Text(evento.Tipo.DescricaoDoEnumerador()))));
+
+                            table.AddCell(new Cell()
+                                .Add(new Paragraph()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .Add(new Text($"{evento.Data.ToString("dd/MM/yyyy")}"))));
+                        }
+
+                        document.Add(new Div().Add(table));
+
+                        document.Close();
+                        return stream.ToArray();
+                    }
+            }
         }
 
         #endregion
@@ -1007,6 +1362,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var minutos = valor.Value.Minutes.ToString().PadLeft(2, '0');
 
             return $"{horas:D2}:{minutos}";
+        }
+
+        static string FormatarSaldoMes(TimeSpan? horasPositivas, TimeSpan? horasNegativas)
+        {
+            if ((horasPositivas ?? TimeSpan.Zero) > TimeSpan.Zero || (horasNegativas ?? TimeSpan.Zero) > TimeSpan.Zero)
+            {
+                if (horasPositivas == horasNegativas)
+                {
+                    return "00:00";
+                }
+
+                if (horasPositivas > horasNegativas)
+                {
+                    var diferencahoras = horasPositivas - horasNegativas;
+                    return "+" + (diferencahoras.Value.TotalHours >= 1
+                        ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                        : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                }
+                else
+                {
+                    var diferencahoras = horasNegativas - horasPositivas;
+                    return "-" + (diferencahoras.Value.TotalHours >= 1
+                        ? $"{(int)diferencahoras.Value.TotalHours}:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}"
+                        : $"00:{diferencahoras.Value.Minutes.ToString().PadLeft(2, '0')}");
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

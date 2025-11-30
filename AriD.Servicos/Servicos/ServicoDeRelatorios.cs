@@ -304,5 +304,25 @@ namespace AriD.Servicos.Servicos
                 throw;
             }
         }
+
+        public List<EventoAnual> ObtenhaListaDeEventosDaOrganizacao(int organizacaoId)
+        {
+            try
+            {
+                var query =
+                    @"select
+	                        *
+                        from eventoanual
+                        where
+	                        OrganizacaoId = @ORGANIZACAOID
+                        order by Data";
+
+                return _repositorio.ConsultaDapper<EventoAnual>(query, new { @ORGANIZACAOID = organizacaoId });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

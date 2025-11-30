@@ -78,6 +78,17 @@
                     <label class="form-label">Início do Banco de Horas</label>
                     @Html.TextBox("InicioBancoDeHoras", Model.InicioBancoDeHoras?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
                 </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio" for="IntervaloAutomatico">Intervalo automático</label>
+                    @Html.EnumDropDownListFor(model => model.IntervaloAutomatico, new { @class = "form-select" })
+                    <div class="form-text">Define quais batidas serão preenchidas automaticamente.</div>
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio" for="ToleranciaDiariaEmMinutos">Tolerância Diária em Minutos</label>
+                    @Html.TextBoxFor(model => model.ToleranciaDiariaEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
+                </div>
             </div>
 
             <br />
@@ -152,6 +163,51 @@
                         }
                     </tbody>
                 </table>
+            </div>
+
+            <br />
+            <h6 class="text-muted">Configuração de Exibição</h6>
+            <div class="row">
+                <div class="col-12">
+                    @Html.HiddenFor(model => model.ColunasVisiveis)
+
+                    <div class="row g-2">
+                        @{
+                            var colunas = new Dictionary<eColunasDaFolha, string>
+                            {
+                                { eColunasDaFolha.HorasTrabalhadas, "Horas Trabalhadas" },
+                                { eColunasDaFolha.CargaHoraria, "Carga Horária" },
+                                { eColunasDaFolha.HorasPositivas, "Horas Positivas" },
+                                { eColunasDaFolha.HorasNegativas, "Horas Negativas" },
+                                { eColunasDaFolha.BHSaldo, "BH Saldo" },
+                                { eColunasDaFolha.BHAjuste, "BH Ajuste" }
+                            };
+                        }
+
+                        @foreach (var coluna in colunas)
+                        {
+                            var isChecked = Model.ColunasVisiveis.HasFlag(coluna.Key);
+                            var valorInt = (int)coluna.Key;
+
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <div class="form-check card-select p-2 border rounded text-center h-100 d-flex flex-column align-items-center justify-content-center bg-light">
+                                    <input class="form-check-input check-coluna mb-1"
+                                           type="checkbox"
+                                           value="@valorInt"
+                                           id="chk_col_@valorInt"
+                                    @(isChecked ? "checked" : "")
+                                           style="cursor: pointer;">
+
+                                    <label class="form-check-label cursor-pointer small fw-bold" for="chk_col_@valorInt" style="font-size: 0.85rem;">
+                                        @coluna.Value
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="form-text mt-2">Desmarque as colunas que deseja ocultar.</div>
+                </div>
             </div>
 
             <br />

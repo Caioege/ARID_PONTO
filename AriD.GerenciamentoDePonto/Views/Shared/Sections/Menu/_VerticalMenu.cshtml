@@ -234,6 +234,17 @@
                     </div>
                 </div>
                 <ul class="menu-sub">
+                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAniversariantesDoPeriodo.Visualizar, usuarioAdm))
+                    {
+                        <li class='menu-item'>
+                            <a onclick="CarregarPagina('@Url.Action("AniversariantesDoPeriodo", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                <div style="white-space: normal !important;">
+                                    <i class='bx bxs-calendar'></i>
+                                    Aniversariantes do Período
+                                </div>
+                            </a>
+                        </li>
+                    }
                     @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
                     { 
                         <li class='menu-item'>

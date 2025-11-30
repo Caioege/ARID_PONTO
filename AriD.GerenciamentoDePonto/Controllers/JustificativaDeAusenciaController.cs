@@ -75,6 +75,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int id = justificativa.Id;
             justificativa.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
+            if (justificativa.TipoDeLimite != eTipoDeLimiteDeJustificativa.NaoUtiliza && !justificativa.TotalDeUsos.HasValue)
+                throw new ApplicationException("O total de usos deve ser definido quando se utiliza limite de lançamentos.");
+
             if (justificativa.Id == 0)
                 id = _justificativaServico.Adicionar(justificativa);
             else

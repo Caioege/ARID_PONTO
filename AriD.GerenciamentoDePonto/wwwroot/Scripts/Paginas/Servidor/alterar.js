@@ -378,3 +378,119 @@ function removerServidor(id) {
         }
     });
 }
+
+function baixarAnexo(anexoId) {
+    RequisicaoAjaxComCarregamento(
+        '/Servidor/BaixarArquivo',
+        'GET',
+        { anexoId },
+        function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', 'O arquivo será baixado...');
+                downloadBase64File(data.base64, data.fileName, data.mimeType);
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function abrirModalAnexo(id) {
+    RequisicaoAjaxComCarregamento(
+        '/Servidor/ModalAnexo',
+        'GET',
+        { id, servidorId: $('#formulario-servidor #Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_Modal'));
+                assineSalvarAnexo();
+                assineRemoverAnexo();
+                $('#_Modal').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function assineSalvarAnexo() {
+    $('#_Modal').find('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-anexo');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        var form = $("#formulario-anexo")[0];
+        var formData = new FormData(form);
+
+        AbrirCaixaDeCarregamento('Carregando...');
+
+        setTimeout(function () {
+            $.ajax({
+                url: '/Servidor/SalvarAnexo',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                error: function (jqXHR, textStatus, errorThrown) {
+                    FecharCaixaDeCarregamento();
+                    MensagemRodape('warning', 'Ocorreu um erro inesperado ao fazer a requisição. Tente novamente mais tarde.');
+                }
+            }).done(function (data) {
+                FecharCaixaDeCarregamento();
+
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    $('#_Modal').modal('hide');
+                    recarregarPartialDeAnexo();
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+        }, 750);
+    });
+}
+
+function recarregarPartialDeAnexo() {
+    $.ajax({
+        url: '/Servidor/PartialAnexo',
+        type: 'GET',
+        data: { servidorId: $('#formulario-servidor').find('#Id').val() }
+    }).done(function (data) {
+        if (data.sucesso) {
+            $('#s4').html(data.html);
+        } else {
+            MensagemRodape('warning', data.mensagem);
+        }
+    });
+}
+
+function assineRemoverAnexo() {
+    $('#_Modal').find('#btn-remover-modal').on('click', function () {
+        Swal.fire({
+            html: 'Tem certeza que deseja remover esse anexo?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#7b7b7b",
+            confirmButtonText: "Sim",
+            cancelButtonText: 'Não'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                RequisicaoAjaxComCarregamento(
+                    '/Servidor/RemoverAnexo',
+                    'POST',
+                    { anexoId: $('#formulario-anexo').find('#Id').val() },
+                    function (data) {
+                        if (data.sucesso) {
+                            MensagemRodape('success', data.mensagem);
+                            $('#_Modal').modal('hide');
+                            recarregarPartialDeAnexo();
+                        } else {
+                            MensagemRodape('warning', data.mensagem);
+                        }
+                    });
+            }
+        });
+    });
+}

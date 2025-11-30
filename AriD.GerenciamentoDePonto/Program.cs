@@ -49,6 +49,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MySQLDBContext>();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
 builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
 builder.Services.AddScoped(typeof(IServicoDeFolhaDePonto), typeof(ServicoDeFolhaDePonto));
@@ -58,6 +60,8 @@ builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegist
 builder.Services.AddScoped(typeof(IServicoDeArquivoFonteDeDados), typeof(ServicoDeArquivoFonteDeDados));
 builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboard));
 builder.Services.AddScoped(typeof(IServicoDeAplicativo), typeof(ServicoDeAplicativo));
+builder.Services.AddScoped(typeof(IWhatsappService), typeof(WhatsappService));
+builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
 
 var app = builder.Build();
 

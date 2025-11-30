@@ -18,6 +18,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public eLocalDeUsoDeJustificativaDeAusencia LocalDeUso { get; set; }
 
+        public eTipoDeLimiteDeJustificativa TipoDeLimite { get; set; }
+        public int? TotalDeUsos { get; set; }
+
         public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
     }
 }

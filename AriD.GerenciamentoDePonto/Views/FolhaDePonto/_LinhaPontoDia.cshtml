@@ -5,6 +5,9 @@
 @{
     var exibirNomeServidor = (bool?)ViewBag.ExibirNomeServidor ?? true;
     var horarioDeTrabalho = Model.VinculoDeTrabalho.HorarioDeTrabalho;
+
+    var configColunas = horarioDeTrabalho.ColunasVisiveis;
+
     var dataString = @Model.Data.ToString("yyyy-MM-dd");
     var dataTicks = Model.Data.Ticks;
 
@@ -112,45 +115,78 @@
             </td>
         }
 
-        <td class="text-center">
-            @(Model.HorasTrabalhadas?.ToString(@"hh\:mm"))
-        </td>
+        @if (configColunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+        {
+            <td class="text-center">
+                @(Model.HorasTrabalhadas?.ToString(@"hh\:mm"))
+            </td>
+        }
 
-        <td class="text-center">
-            @(Model.CargaHoraria?.ToString(@"hh\:mm"))
-        </td>
+        @if (configColunas.HasFlag(eColunasDaFolha.CargaHoraria))
+        {
+            <td class="text-center">
+                @(Model.CargaHoraria?.ToString(@"hh\:mm"))
+            </td>
+        }
 
         @if (horarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
         {
-            <td class="text-center">
-                @(Model.HorasPositivas?.ToString(@"hh\:mm"))
-            </td>
+            if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
+            {
+                <td class="text-center">
+                    @(Model.HorasPositivas?.ToString(@"hh\:mm"))
+                </td>
+            }
 
-            <td class="text-center">
-                @(Model.HorasNegativas?.ToString(@"hh\:mm"))
-            </td>
+            if (configColunas.HasFlag(eColunasDaFolha.HorasNegativas))
+            {
+                <td class="text-center">
+                    @(Model.HorasNegativas?.ToString(@"hh\:mm"))
+                </td>
+            }
         }
 
         @if (horarioDeTrabalho.UtilizaBancoDeHoras)
         {
-            <td class="text-center">
-                @if ((Model.BancoDeHorasCredito ?? TimeSpan.Zero) > TimeSpan.Zero) 
-                {
-                    <span>
-                        +@(Model.BancoDeHorasCredito.Value.TotalHours >= 1
-                           ? $"{(int)Model.BancoDeHorasCredito.Value.TotalHours}:{Model.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}"
-                           : $"00:{Model.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}")
-                    </span>
-                }
-                else if ((Model.BancoDeHorasDebito ?? TimeSpan.Zero) > TimeSpan.Zero) 
-                {
-                    <span>
-                        -@(Model.BancoDeHorasDebito.Value.TotalHours >= 1
-                           ? $"{(int)Model.BancoDeHorasDebito.Value.TotalHours}:{Model.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}"
-                           : $"00:{Model.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}")
-                    </span>
-                }
-            </td>
+            if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
+            {
+                <td class="text-center">
+                    @if ((Model.BancoDeHorasCredito ?? TimeSpan.Zero) > TimeSpan.Zero) 
+                    {
+                        <span>
+                            +@(Model.BancoDeHorasCredito.Value.TotalHours >= 1
+                               ? $"{(int)Model.BancoDeHorasCredito.Value.TotalHours}:{Model.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                               : $"00:{Model.BancoDeHorasCredito.Value.Minutes.ToString().PadLeft(2, '0')}")
+                        </span>
+                    }
+                    else if ((Model.BancoDeHorasDebito ?? TimeSpan.Zero) > TimeSpan.Zero) 
+                    {
+                        <span>
+                            -@(Model.BancoDeHorasDebito.Value.TotalHours >= 1
+                               ? $"{(int)Model.BancoDeHorasDebito.Value.TotalHours}:{Model.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}"
+                               : $"00:{Model.BancoDeHorasDebito.Value.Minutes.ToString().PadLeft(2, '0')}")
+                        </span>
+                    }
+                </td>
+            }
+
+            if (configColunas.HasFlag(eColunasDaFolha.BHAjuste))
+            {
+                var temAjuste = Model.BancoDeHorasAjuste.HasValue;
+                var isNegativo = temAjuste && Model.BancoDeHorasAjuste.Value < TimeSpan.Zero;
+
+                var textoExibicao = temAjuste
+                    ? Model.BancoDeHorasAjuste.Value.Duration().ToString(@"hh\:mm")
+                    : "";
+
+                var valorRaw = temAjuste
+                    ? $"{(isNegativo ? "-" : "")}{Model.BancoDeHorasAjuste.Value.Duration():hh\\:mm}"
+                    : "";
+
+                <td class="text-center @classeInteracao" onclick="abrirModalAjuste(@Model.Id, '@valorRaw')">
+                    @($"{(temAjuste ? isNegativo ? "-" : "+" : string.Empty)}{textoExibicao}")
+                </td>
+            }
         }
     }
 </tr>

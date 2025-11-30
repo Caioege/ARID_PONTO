@@ -8,6 +8,7 @@ using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
 
@@ -25,6 +26,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<HorarioDeTrabalho> _servicoHorarioDeTrabalho;
         private readonly IServico<Afastamento> _servicoAfastamento;
         private readonly IServico<JustificativaDeAusencia> _servicoJustificativa;
+        private readonly IServico<AnexoServidor> _servicoAnexoServidor;
 
         public ServidorController(
             IServico<Servidor> servico,
@@ -36,7 +38,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<Departamento> servicoDepartamento,
             IServico<HorarioDeTrabalho> servicoHorarioDeTrabalho,
             IServico<Afastamento> servicoAfastamento,
-            IServico<JustificativaDeAusencia> servicoJustificativa)
+            IServico<JustificativaDeAusencia> servicoJustificativa,
+            IServico<AnexoServidor> servicoAnexoServidor)
         {
             _servico = servico;
             _servicoVinculoDeTrabalho = servicoVinculoDeTrabalho;
@@ -48,6 +51,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoHorarioDeTrabalho = servicoHorarioDeTrabalho;
             _servicoAfastamento = servicoAfastamento;
             _servicoJustificativa = servicoJustificativa;
+            _servicoAnexoServidor = servicoAnexoServidor;
         }
 
         [HttpGet]
@@ -297,6 +301,101 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             _servicoAfastamento.Remover(_servicoAfastamento.Obtenha(afastamentoId));
             return Json(new { sucesso = true, mensagem = "O afastamento foi removido." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ModalAnexo(int id, int servidorId)
+        {
+            var modelo = id == 0 ?
+                new AnexoServidor() { ServidorId = servidorId } :
+                _servicoAnexoServidor.Obtenha(id);
+
+            var html = await RenderizarComoString("_ModalAnexo", modelo);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult SalvarAnexo(AnexoServidor anexo, IFormFile arquivoUpload)
+        {
+            if(anexo.Id == 0 && arquivoUpload == null)
+                throw new ApplicationException("O arquivo é obrigatório para novos anexos.");
+
+            if (arquivoUpload != null)
+            {
+                var extensoesPermitidas = new[] { ".pdf", ".doc", ".docx", ".html", ".htm", ".jpg", ".jpeg", ".png", ".gif" };
+                var extensao = Path.GetExtension(arquivoUpload.FileName).ToLower();
+
+                if (!extensoesPermitidas.Contains(extensao))
+                    throw new Exception("Extensão de arquivo não permitida.");
+
+                var nomeArquivo = $"{anexo.ServidorId}_{Guid.NewGuid()}{extensao}";
+                var caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "anexos", "servidor");
+
+                if (!Directory.Exists(caminhoPasta))
+                    Directory.CreateDirectory(caminhoPasta);
+
+                var caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
+
+                using (var stream = new FileStream(caminhoCompleto, FileMode.Create))
+                {
+                    arquivoUpload.CopyTo(stream);
+                }
+
+                anexo.CaminhoArquivo = $"anexos/servidor/{nomeArquivo}";
+            }
+
+            anexo.OrganizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+            if (anexo.Id == 0)
+                _servicoAnexoServidor.Adicionar(anexo);
+            else
+                _servicoAnexoServidor.Atualizar(anexo);
+
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PartialAnexo(int servidorId)
+        {
+            var servidor = _servico.Obtenha(servidorId);
+            var html = await RenderizarComoString("_Anexos", servidor);
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult RemoverAnexo(int anexoId)
+        {
+            _servicoAnexoServidor.Remover(_servicoAnexoServidor.Obtenha(anexoId));
+            return Json(new { sucesso = true, mensagem = "O anexo foi removido." });
+        }
+
+        [HttpGet]
+        public IActionResult BaixarArquivo(int anexoId)
+        {
+            var anexo = _servicoAnexoServidor.Obtenha(anexoId);
+            if (anexo == null)
+                return NotFound("Registro não encontrado.");
+
+            var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", anexo.CaminhoArquivo);
+
+            if (!System.IO.File.Exists(caminhoArquivo))
+                return NotFound("Arquivo físico não encontrado no servidor.");
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(caminhoArquivo, out string contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(caminhoArquivo);
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = $"{anexo.Descricao}{Path.GetExtension(anexo.CaminhoArquivo)}",
+                base64 = Convert.ToBase64String(fileBytes),
+                mimeType = contentType
+            });
         }
 
         [HttpPost]

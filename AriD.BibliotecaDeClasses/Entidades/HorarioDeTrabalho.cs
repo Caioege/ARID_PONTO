@@ -25,6 +25,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public int? CargaHorariaMensalFixa { get; set; }
 
+        public eIntervaloAutomatico IntervaloAutomatico { get; set; }
+
+        public int ToleranciaDiariaEmMinutos { get; set; } = 0;
+
+        public eColunasDaFolha ColunasVisiveis { get; set; } = eColunasDaFolha.Todas;
+
         public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }

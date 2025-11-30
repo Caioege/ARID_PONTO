@@ -55,3 +55,14 @@ function removerRegistro() {
         }
     );
 }
+
+function onChangeTipoDeLimite() {
+    let tipoDeLimite = $('#TipoDeLimite').val();
+    if (tipoDeLimite == '0' || tipoDeLimite == 'NaoUtiliza') {
+        $('#LabelTotalDeUsos').removeClass('obrigatorio');
+        $('#LabelTotalDeUsos').parent().hide();
+    } else {
+        $('#LabelTotalDeUsos').addClass('obrigatorio');
+        $('#LabelTotalDeUsos').parent().show();
+    }
+}

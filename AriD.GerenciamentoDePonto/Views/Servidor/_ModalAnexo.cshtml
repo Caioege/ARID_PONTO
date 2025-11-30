@@ -1,0 +1,57 @@
+﻿@model AnexoServidor
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Anexo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="div-dados-modal">
+                    <form id="formulario-anexo">
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ServidorId)
+                        @Html.HiddenFor(model => model.CaminhoArquivo)
+
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                                @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "120" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="arquivoUpload" class="form-label">Arquivo</label>
+                            <input type="file" class="form-control" id="arquivoUpload" name="arquivoUpload"
+                                   accept=".pdf, .doc, .docx, .html, .htm, image/*" @(adicionar ? "required" : "") />
+                            <div class="form-text">Extensões permitidas: .pdf, imagens, .doc, .html</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-footer-principal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class='bx bx-window-close'></i> Fechar
+                    </button>
+
+                    @if (!adicionar)
+                    {
+                        <button type="button" class="btn btn-danger" id="btn-remover-modal">
+                            <i class='bx bxs-trash'></i> Remover
+                        </button>
+                    }
+
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

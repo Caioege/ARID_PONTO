@@ -1,7 +1,9 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+﻿using AriD.BibliotecaDeClasses.Atributos;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {
@@ -86,6 +88,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public TimeSpan? BancoDeHorasCredito { get; set; }
         public TimeSpan? BancoDeHorasDebito { get; set; }
 
+        public TimeSpan? BancoDeHorasAjuste { get; set; }
+
         public int? JustificativaPeriodo1Id { get; set; }
         [ForeignKey(nameof(JustificativaPeriodo1Id))]
         public virtual JustificativaDeAusencia JustificativaPeriodo1 { get; set; }
@@ -168,7 +172,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
             {
                 case 1:
                     retorno = Entrada1.HasValue ?
-                        Entrada1.Value.ToString(@"hh\:mm") :
+                        $"{Entrada1.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoEntrada1)}" :
                         JustificativaPeriodo1Id.HasValue ?
                             JustificativaPeriodo1.Sigla :
                     string.Empty;
@@ -178,7 +182,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 2:
                     retorno = Entrada2.HasValue ?
-                        Entrada2.Value.ToString(@"hh\:mm") :
+                        $"{Entrada2.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoEntrada2)}" :
                         JustificativaPeriodo2Id.HasValue ?
                             JustificativaPeriodo2.Sigla :
                     string.Empty;
@@ -188,7 +192,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 3:
                     retorno = Entrada3.HasValue ?
-                        Entrada3.Value.ToString(@"hh\:mm") :
+                        $"{Entrada3.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoEntrada3)}" :
                         JustificativaPeriodo3Id.HasValue ?
                             JustificativaPeriodo3.Sigla :
                             string.Empty;
@@ -199,7 +203,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 4:
                     retorno = Entrada4.HasValue ?
-                        Entrada4.Value.ToString(@"hh\:mm") :
+                        $"{Entrada4.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoEntrada4)}" :
                         JustificativaPeriodo4Id.HasValue ?
                             JustificativaPeriodo4.Sigla :
                             string.Empty;
@@ -209,7 +213,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 5:
                     retorno = Entrada5.HasValue ?
-                        Entrada5.Value.ToString(@"hh\:mm") :
+                        $"{Entrada5.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoEntrada5)}" :
                         JustificativaPeriodo5Id.HasValue ?
                             JustificativaPeriodo5.Sigla :
                             string.Empty;
@@ -233,7 +237,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
             {
                 case 1:
                     retorno = Saida1.HasValue ?
-                        Saida1.Value.ToString(@"hh\:mm") :
+                        $"{Saida1.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoSaida1)}" :
                         JustificativaPeriodo1Id.HasValue ?
                             JustificativaPeriodo1.Sigla :
                             string.Empty;
@@ -243,7 +247,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 2:
                     retorno = Saida2.HasValue ?
-                        Saida2.Value.ToString(@"hh\:mm") :
+                        $"{Saida2.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoSaida2)}" :
                         JustificativaPeriodo2Id.HasValue ?
                             JustificativaPeriodo2.Sigla :
                             string.Empty;
@@ -253,7 +257,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 3:
                     retorno = Saida3.HasValue ?
-                        Saida3.Value.ToString(@"hh\:mm") :
+                        $"{Saida3.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoSaida3)}" :
                         JustificativaPeriodo3Id.HasValue ?
                             JustificativaPeriodo3.Sigla :
                             string.Empty;
@@ -262,7 +266,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
                     break;
                 case 4:
                     retorno = Saida4.HasValue ?
-                        Saida4.Value.ToString(@"hh\:mm") :
+                        $"{Saida4.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoSaida4)}" :
                         JustificativaPeriodo4Id.HasValue ?
                             JustificativaPeriodo4.Sigla :
                             string.Empty;
@@ -272,7 +276,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
                 case 5:
                     retorno = Saida5.HasValue ?
-                        Saida5.Value.ToString(@"hh\:mm") :
+                        $"{Saida5.Value.ToString(@"hh\:mm")}{DescricaoTipoDeRegistroDoEnumerador(TipoSaida5)}" :
                         JustificativaPeriodo5Id.HasValue ?
                             JustificativaPeriodo5.Sigla :
                             string.Empty;
@@ -332,6 +336,33 @@ namespace AriD.BibliotecaDeClasses.Entidades
                 default:
                     return false;
             }
+        }
+
+        public static string DescricaoTipoDeRegistroDoEnumerador(Enum value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            Type type = value.GetType();
+
+            string name = Enum.GetName(type, value);
+
+            if (name != null)
+            {
+                FieldInfo field = type.GetField(name);
+                if (field != null)
+                {
+                    DescricaoTipoRegistroDePontoAttribute attribute = field.GetCustomAttribute<DescricaoTipoRegistroDePontoAttribute>();
+                    if (attribute != null)
+                    {
+                        return attribute.Descricao;
+                    }
+                }
+            }
+
+            return string.Empty;
         }
     }
 }
