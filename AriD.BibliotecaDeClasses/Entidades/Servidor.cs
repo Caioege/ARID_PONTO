@@ -29,6 +29,9 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [MaxLength(120)]
         public string? Email { get; set; }
 
+        [MaxLength(300)]
+        public string? SenhaPersonalizadaDeAcesso { get; set; }
+
         public string Nome => Pessoa?.Nome;
     }
 }

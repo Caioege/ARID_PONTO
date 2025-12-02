@@ -35,267 +35,331 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && listaDePermissao.PossuiPermissao(eItemDePermissao_Dashboard.Visualizar, usuarioAdm))
-         {
-             <li class='menu-item'>
-                <a onclick="CarregarPagina('@Url.Action("Index", "Dashboard")')" href="javascript:void(0)" class="menu-link">
+        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Servidor)
+        {
+            <li class='menu-item'>
+                <a onclick="CarregarPagina('@Url.Action("RegistrosDePonto", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
                     <div>
-                        <i class='bx bxs-dashboard'></i>
-                        Dashboard
+                        <i class='bx bxs-time'></i>
+                        Registros de Ponto
                     </div>
                 </a>
             </li>
-         }
 
-        <li class='menu-item open'>
-            <div class="divider" style="margin: 0px 15px 0px 15px;">
-                <div class="divider-text">
-                    <i class="bx bx-slider-alt"></i>
-                    Administração
-                </div>
-            </div>
-            <ul class="menu-sub">
-                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
-                {
-                    <li class='menu-item'>
-                        <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
-                            <div>
-                                <i class='bx bx-buildings'></i>
-                                Organizações
-                            </div>
-                        </a>
-                    </li>
-                }
-                else
-                {
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_Departamento.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-bookmark'></i>
-                                    Departamento
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_EventoAnual.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "EventoAnual")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-calendar-event'></i>
-                                    Evento Anual
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_Funcao.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-bookmark-alt'></i>
-                                    Função
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_EquipamentoDePonto.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bx-mobile-alt'></i>
-                                    Equipamento de Ponto
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-timer'></i>
-                                    Horário de Trabalho
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_ImportarAFD.ImportarArquivoFonteDeDados, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("ImportarAFD", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-file-import'></i>
-                                    Importar AFD
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    if (listaDePermissao.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "JustificativaDeAusencia")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-bookmark-minus'></i>
-                                    Justificativa de Ausência
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bx-buildings'></i>
-                                    Minha Organização
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_TipoDeVinculoDeTrabalho.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-bookmarks'></i>
-                                    Tipo do Vínculo de Trabalho
-                                </div>
-                            </a>
-                        </li>
-                    }
-                }
-            </ul>
-        </li>
-        @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+            <li class='menu-item'>
+                <a onclick="CarregarPagina('@Url.Action("Atestados", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
+                    <div>
+                        <i class='bx bx-plus-medical'></i>
+                        Atestados
+                    </div>
+                </a>
+            </li>
+
+            <li class='menu-item'>
+                <a onclick="CarregarPagina('@Url.Action("AlterarSenha", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
+                    <div>
+                        <i class='bx bxs-log-in-circle'></i>
+                        Alterar Senha
+                    </div>
+                </a>
+            </li>
+        }
+        else
         {
+            if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && listaDePermissao.PossuiPermissao(eItemDePermissao_Dashboard.Visualizar, usuarioAdm))
+            {
+                <li class='menu-item'>
+                    <a onclick="CarregarPagina('@Url.Action("Index", "Dashboard")')" href="javascript:void(0)" class="menu-link">
+                        <div>
+                            <i class='bx bxs-dashboard'></i>
+                            Dashboard
+                        </div>
+                    </a>
+                </li>
+            }
+
             <li class='menu-item open'>
                 <div class="divider" style="margin: 0px 15px 0px 15px;">
                     <div class="divider-text">
-                        <i class='bx bxs-user-circle'></i>
-                        @nomenclaturaServidor
+                        <i class="bx bx-slider-alt"></i>
+                        Administração
                     </div>
                 </div>
                 <ul class="menu-sub">
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Servidor.Visualizar, usuarioAdm)) 
+                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
                     {
                         <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-user-detail'></i>
-                                    Cadastro de @nomenclaturaServidores
+                            <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
+                                <div>
+                                    <i class='bx bx-buildings'></i>
+                                    Organizações
                                 </div>
                             </a>
                         </li>
                     }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Escala.Visualizar, usuarioAdm))
+                    else
                     {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "Escala")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class="bx bx-book-content"></i>
-                                    Escalas
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.Gerenciar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bxs-calendar'></i>
-                                    Folha de Ponto
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RegistrosDePonto.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bx-collection'></i>
-                                    Registros de Ponto
-                                </div>
-                            </a>
-                        </li>
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_Departamento.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-bookmark'></i>
+                                        Departamento
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_EventoAnual.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "EventoAnual")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-calendar-event'></i>
+                                        Evento Anual
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_Funcao.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-bookmark-alt'></i>
+                                        Função
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_EquipamentoDePonto.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bx-mobile-alt'></i>
+                                        Equipamento de Ponto
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-timer'></i>
+                                        Horário de Trabalho
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_ImportarAFD.ImportarArquivoFonteDeDados, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ImportarAFD", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-file-import'></i>
+                                        Importar AFD
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "JustificativaDeAusencia")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-bookmark-minus'></i>
+                                        Justificativa de Ausência
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bx-buildings'></i>
+                                        Minha Organização
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_TipoDeVinculoDeTrabalho.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-bookmarks'></i>
+                                        Tipo do Vínculo de Trabalho
+                                    </div>
+                                </a>
+                            </li>
+                        }
                     }
                 </ul>
             </li>
+            @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+            {
+                <li class='menu-item open'>
+                    <div class="divider" style="margin: 0px 15px 0px 15px;">
+                        <div class="divider-text">
+                            <i class='bx bxs-user-circle'></i>
+                            @nomenclaturaServidor
+                        </div>
+                    </div>
+                    <ul class="menu-sub">
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Servidor.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-user-detail'></i>
+                                        Cadastro de @nomenclaturaServidores
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Escala.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Escala")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class="bx bx-book-content"></i>
+                                        Escalas
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.Gerenciar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-calendar'></i>
+                                        Folha de Ponto
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RegistrosDePonto.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bx-collection'></i>
+                                        Registros de Ponto
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+                <li class='menu-item open'>
+                    <div class="divider" style="margin: 0px 15px 0px 15px;">
+                        <div class="divider-text">
+                            <i class='bx bxs-report'></i>
+                            Relatórios
+                        </div>
+                    </div>
+                    <ul class="menu-sub">
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAniversariantesDoPeriodo.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("AniversariantesDoPeriodo", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-calendar'></i>
+                                        Aniversariantes do Período
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ListaDeServidores", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-user-account'></i>
+                                        Lista de @nomenclaturaServidores
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComAfastamento.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ServidoresComAfastamento", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-user-voice'></i>
+                                        @nomenclaturaServidores com Afastamentos
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComEscala.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ServidoresPorEscala", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bx-book-content'></i>
+                                        @nomenclaturaServidores por Escala
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-timer'></i>
+                                        @nomenclaturaServidores por Horário de Trabalho
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioHorasPorServidor.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("HorasPorServidor", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bxs-user-account'></i>
+                                        Horas Positivas/Negativas por @nomenclaturaServidor
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
             <li class='menu-item open'>
                 <div class="divider" style="margin: 0px 15px 0px 15px;">
                     <div class="divider-text">
-                        <i class='bx bxs-report'></i>
-                        Relatórios
+                        <i class='bx bxs-user-badge'></i>
+                        Usuários
                     </div>
                 </div>
                 <ul class="menu-sub">
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAniversariantesDoPeriodo.Visualizar, usuarioAdm))
+                    @if ((dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao || dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) && listaDePermissao.PossuiPermissao(eItemDePermissao_Usuarios.Visualizar, usuarioAdm))
                     {
                         <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("AniversariantesDoPeriodo", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-calendar'></i>
-                                    Aniversariantes do Período
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
-                    { 
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("ListaDeServidores", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                            <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
                                 <div style="white-space: normal !important;">
                                     <i class='bx bxs-user-account'></i>
-                                    Lista de @nomenclaturaServidores
+                                    Cadastro de Usuários
                                 </div>
                             </a>
                         </li>
                     }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComAfastamento.Visualizar, usuarioAdm))
-                    { 
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("ServidoresComAfastamento", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-user-voice'></i>
-                                    @nomenclaturaServidores com Afastamentos
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComEscala.Visualizar, usuarioAdm))
+                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao && listaDePermissao.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Visualizar, usuarioAdm))
                     {
                         <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("ServidoresPorEscala", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                            <a onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')" href="javascript:void(0)" class="menu-link">
                                 <div style="white-space: normal !important;">
-                                    <i class='bx bx-book-content'></i>
-                                    @nomenclaturaServidores por Escala
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-timer'></i>
-                                    @nomenclaturaServidores por Horário de Trabalho
-                                </div>
-                            </a>
-                        </li>
-                    }
-                    @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioHorasPorServidor.Visualizar, usuarioAdm))
-                    {
-                        <li class='menu-item'>
-                            <a onclick="CarregarPagina('@Url.Action("HorasPorServidor", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-user-account'></i>
-                                    Horas Positivas/Negativas por @nomenclaturaServidor
+                                    <i class='bx bxs-user-check'></i>
+                                    Grupo de Permissão
                                 </div>
                             </a>
                         </li>
@@ -303,38 +367,6 @@
                 </ul>
             </li>
         }
-        <li class='menu-item open'>
-            <div class="divider" style="margin: 0px 15px 0px 15px;">
-                <div class="divider-text">
-                    <i class='bx bxs-user-badge'></i>
-                    Usuários
-                </div>
-            </div>
-            <ul class="menu-sub">
-                @if ((dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao || dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) && listaDePermissao.PossuiPermissao(eItemDePermissao_Usuarios.Visualizar, usuarioAdm))
-                {
-                    <li class='menu-item'>
-                        <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
-                            <div style="white-space: normal !important;">
-                                <i class='bx bxs-user-account'></i>
-                                Cadastro de Usuários
-                            </div>
-                        </a>
-                    </li>
-                }
-                @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao && listaDePermissao.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Visualizar, usuarioAdm))
-                {
-                    <li class='menu-item'>
-                        <a onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')" href="javascript:void(0)" class="menu-link">
-                            <div style="white-space: normal !important;">
-                                <i class='bx bxs-user-check'></i>
-                                Grupo de Permissão
-                            </div>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </li>
     </ul>
 </aside>
 

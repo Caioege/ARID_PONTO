@@ -53,16 +53,12 @@ namespace AriD.Servicos.Helpers
             }
 
             document.Add(new Paragraph("EMPREGADOR").SetFontSize(7).SetBold());
-            document.Add(new Paragraph($"{razaoSocial}").SetFontSize(9));
-            document.Add(new Paragraph($"CNPJ: {cnpj}").SetFontSize(9));
-
-            document.Add(new Paragraph("\n"));
+            document.Add(new Paragraph($"{razaoSocial}").SetFontSize(8));
+            document.Add(new Paragraph($"CNPJ: {cnpj}").SetFontSize(8));
 
             document.Add(new Paragraph("TRABALHADOR").SetFontSize(7).SetBold());
-            document.Add(new Paragraph($"Nome: {nomeColaborador}").SetFontSize(9));
-            document.Add(new Paragraph($"CPF: {cpfColaborador}").SetFontSize(9));
-
-            document.Add(new Paragraph("\n"));
+            document.Add(new Paragraph($"Nome: {nomeColaborador}").SetFontSize(8));
+            document.Add(new Paragraph($"CPF: {cpfColaborador}").SetFontSize(8));
 
             var containerRegistro = new Div()
                 .SetBorder(new DashedBorder(ColorConstants.GRAY, 1))

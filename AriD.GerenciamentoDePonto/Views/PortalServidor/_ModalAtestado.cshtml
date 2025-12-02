@@ -1,0 +1,63 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@model List<CodigoDescricaoDTO>
+
+<div class="modal" tabindex="-1" id="_ModalAtestado" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar Atestado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-registro-manual">
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo</label>
+                            @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(Model, "Codigo", "Descricao"), string.Empty, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="JustificativaId">Justificativa</label>
+                            @Html.DropDownList("JustificativaId", new SelectList((List<CodigoDescricaoDTO>)ViewBag.Justificativas, "Codigo", "Descricao"), string.Empty, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <div class="col col-md-6">
+                                <label class="form-label obrigatorio" for="DataInicial">Data inicial</label>
+                                <input type="date" name="DataInicial" id="DataInicial" class="form-control" />
+                            </div>
+
+                            <div class="col col-md-6">
+                                <label class="form-label obrigatorio" for="DataFinal">Data final</label>
+                                <input type="date" name="DataFinal" id="DataFinal" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Anexo</label>
+                        <input type="file" name="Anexo" class="form-control" accept="image/*,.pdf" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Observação</label>
+                        <textarea id="Observacao" name="Observacao" class="form-control" rows="3" required placeholder="Descreva o motivo..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="salvarAtestado()">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

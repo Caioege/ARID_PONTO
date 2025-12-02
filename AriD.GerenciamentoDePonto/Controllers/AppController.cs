@@ -175,7 +175,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
-                _servicoDeAplicativo.ReceptarRegistro(registro);
+                _servicoDeAplicativo.ReceptarRegistro(registro, true);
                 return Ok();
             }
             catch (Exception ex)

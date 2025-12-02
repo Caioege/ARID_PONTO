@@ -1,0 +1,46 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@model List<CodigoDescricaoDTO>
+
+<div class="modal" tabindex="-1" id="_ModalExportarFolha" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Exportar Folha</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-exportar-folha">
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo</label>
+                            @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(Model, "Codigo", "Descricao"), string.Empty, new { @class = "form-select", @onchange = "carregarListagemDeLotacoes()" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="UnidadeId">Unidade</label>
+                            @Html.DropDownList("UnidadeId", new SelectList(string.Empty), string.Empty, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <label class="form-label obrigatorio" for="MesDeReferencia">Período</label>
+                            <input id="MesDeReferencia" type="month" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="exportarFolhaDePonto()">
+                    <i class='bx bxs-file-export'></i> Exportar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

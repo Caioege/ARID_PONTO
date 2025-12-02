@@ -1,0 +1,76 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@model List<CodigoDescricaoDTO>
+
+<div class="modal" tabindex="-1" id="_ModalRegistroManual" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar Registro Manual</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-registro-manual">
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <label class="form-label obrigatorio" for="VinculoDeTrabalhoId">Vínculo</label>
+                            @Html.DropDownList("VinculoDeTrabalhoId", new SelectList(Model, "Codigo", "Descricao"), string.Empty, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="TipoSolicitacao" id="tipoHora" value="Hora" checked autocomplete="off">
+                            <label class="btn btn-outline-primary" for="tipoHora">
+                                <i class='bx bx-time'></i> Horário
+                            </label>
+
+                            <input type="radio" class="btn-check" name="TipoSolicitacao" id="tipoPeriodo" value="Periodo" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="tipoPeriodo">
+                                <i class='bx bx-calendar-exclamation'></i> Justificativa
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label obrigatorio" for="txtDataBase">Data</label>
+                        <input type="date" name="DataBase" id="txtDataBase" class="form-control" required />
+                    </div>
+
+                    <div id="container-hora">
+                        <div class="mb-3">
+                            <label class="form-label obrigatorio" >Horário</label>
+                            <input type="time" name="Horario" id="Horario" class="form-control" />
+                            <div class="form-text">Informe o horário exato da batida esquecida.</div>
+                        </div>
+                    </div>
+
+                    <div id="container-periodo" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label obrigatorio">Justificativa</label>
+                            @Html.DropDownList("JustificativaId", new SelectList((List<CodigoDescricaoDTO>)ViewBag.Justificativas, "Codigo", "Descricao"), string.Empty, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Anexo</label>
+                        <input type="file" name="Anexo" class="form-control" accept="image/*,.pdf" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Observação</label>
+                        <textarea id="Observacao" name="Observacao" class="form-control" rows="3" required placeholder="Descreva o motivo..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="salvarRegistroManual()">
+                    <i class='bx bxs-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

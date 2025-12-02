@@ -11,11 +11,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
     public class AutenticacaoController : BaseController
     {
         private readonly IServico<Usuario> _servico;
+        private readonly IServicoDeAplicativo _servicoDeAplicativo;
 
         public AutenticacaoController(
-            IServico<Usuario> servico)
+            IServico<Usuario> servico, IServicoDeAplicativo servicoDeAplicativo)
         {
             _servico = servico;
+            _servicoDeAplicativo = servicoDeAplicativo;
         }
 
         [HttpGet]
@@ -31,27 +33,51 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public IActionResult Entrar([FromBody] CredenciaisDTO credenciais)
         {
             var usuarioAcesso = _servico.Obtenha(c => c.UsuarioDeAcesso.Equals(credenciais.Usuario));
-
-            if (usuarioAcesso == null ||
-                !usuarioAcesso.Ativo ||
-                !usuarioAcesso.Senha.Equals(Criptografia.CriptografarSenha(credenciais.Senha)))
+            if (usuarioAcesso != null)
             {
-                throw new ApplicationException("Usuário ou senha incorretos.");
+                if (!usuarioAcesso.Ativo ||
+                    !usuarioAcesso.Senha.Equals(Criptografia.CriptografarSenha(credenciais.Senha)))
+                {
+                    throw new ApplicationException("Usuário ou senha incorretos.");
+                }
+
+                this.Autenticar(new SessaoDTO(
+                    usuarioAcesso.Id,
+                    usuarioAcesso.NomeDaPessoa,
+                    usuarioAcesso.PerfilDeAcesso,
+                    usuarioAcesso.OrganizacaoId ?? 0,
+                    usuarioAcesso.Organizacao?.Nome ?? "ADMINISTRAÇÃO DO SISTEMA",
+                    usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional ? [usuarioAcesso.UnidadeOrganizacionalId.Value] : [],
+                    usuarioAcesso.DepartamentoId,
+                    ObtenhaListaDePermissoes(usuarioAcesso),
+                    usuarioAcesso.Organizacao?.NomenclaturaServidor ?? eNomenclaturaServidor.Servidores,
+                    usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
+
+                return Json(new { sucesso = true, mensagem = "O acesso foi feito com sucesso." });
             }
 
-            this.Autenticar(new SessaoDTO(
-                usuarioAcesso.Id,
-                usuarioAcesso.NomeDaPessoa,
-                usuarioAcesso.PerfilDeAcesso,
-                usuarioAcesso.OrganizacaoId ?? 0,
-                usuarioAcesso.Organizacao?.Nome ?? "ADMINISTRAÇÃO DO SISTEMA",
-                usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.UnidadeOrganizacional ?[usuarioAcesso.UnidadeOrganizacionalId.Value] : [],
-                usuarioAcesso.DepartamentoId,
-                ObtenhaListaDePermissoes(usuarioAcesso),
-                usuarioAcesso.Organizacao?.NomenclaturaServidor ?? eNomenclaturaServidor.Servidores,
-                usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
+            if (usuarioAcesso == null)
+            {
+                var acesso = _servicoDeAplicativo.AutenticarUsuario(credenciais);
+                if (acesso != null)
+                {
+                    this.Autenticar(new SessaoDTO(
+                        acesso.ServidorId,
+                        acesso.ServidorNome,
+                        ePerfilDeAcesso.Servidor,
+                        acesso.OrganizacaoId,
+                        acesso.OrganizacaoNome,
+                        [],
+                        null,
+                        [],
+                        eNomenclaturaServidor.Servidores,
+                        false));
 
-            return Json(new { sucesso = true, mensagem = "O acesso foi feito com sucesso." });
+                    return Json(new { sucesso = true, mensagem = "O acesso foi feito com sucesso." });
+                }
+            }
+
+            throw new ApplicationException("Usuário ou senha incorretos.");
         }
 
         [HttpGet]

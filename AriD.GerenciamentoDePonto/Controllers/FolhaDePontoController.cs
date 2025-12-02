@@ -264,6 +264,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 unidadeId,
                 mesAno);
 
+            if (HttpContext.DadosDaSessao().Perfil == ePerfilDeAcesso.Servidor)
+            {
+                if (!listaDePonto.All(c => c.PontoFechado))
+                    throw new ApplicationException("Não é possível exportar essa folha pois ela ainda não foi fechada.");
+            }
+
             var vinculoDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId);
             var eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 

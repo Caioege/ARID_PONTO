@@ -1,0 +1,124 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@using AriD.Servicos.Extensao
+@model List<RegistroDePonto>
+
+<style>
+    .badge {
+        background: cadetblue !important;
+    }
+</style>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-time'></i> Meus Registros de Ponto
+        </h5>
+    </div>
+    <div class="card-body">
+        @if ((bool)ViewBag.PodeRegistrarManual)
+        {
+            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalRegistroManual()">
+                <i class='bx bxs-edit'></i> Registro Manual
+            </button>
+        }
+
+        <button type="button" class="btn btn-secondary btn-sm" onclick="abrirModalExportarFolha()">
+            <i class='bx bxs-file-export'></i> Exportar Folha
+        </button>
+        <br />
+        <br />
+
+        <h6>Registros de Hoje: @DateTime.Now.ToString("dd/MM/yyyy")</h6>
+        @{
+            var registrosHoje = Model.Where(c => c.DataHoraRegistro.Date == DateTime.Today).ToList();
+        }
+        @if (registrosHoje.Count > 0)
+        {
+            foreach (var registro in registrosHoje.OrderBy(c => c.DataHoraRegistro))
+            {
+                var origemRegistro = registro.EquipamentoDePontoId.HasValue ?
+                "Equipamento Facial" : registro.RegistroAplicativo?.Manual ?? false ?
+                "Manual" : "Aplicativo";
+
+                var situacaoRegistro = registro.RegistroAplicativo != null ? registro.RegistroAplicativo.Situacao.DescricaoDoEnumerador() : "Aprovado";
+
+                <p>
+                    @registro.DataHoraRegistro.TimeOfDay.ToString(@"hh\:mm") - @origemRegistro 
+                    <badge class="badge">@situacaoRegistro</badge>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="baixarComprovante(@registro.Id)">Baixar comprovante</button>
+                </p>
+            }
+        }
+        else
+        {
+            <span class="form-text">Nenhum registro encontrado.</span>
+        }
+
+        <hr />
+        <h6>Registros Manuais</h6>
+        @{
+            var registrosManuais = (List<RegistroAplicativo>)ViewBag.RegistrosManuais;
+        }
+        @if (registrosManuais.Count > 0)
+        {
+            foreach (var registro in registrosManuais
+                .OrderBy(c => c.DataHora))
+            {
+                <p >
+                    @registro.DataHora.ToString("dd/MM/yyyy")
+                    @if (registro.JustificativaDeAusenciaId.HasValue)
+                    {
+                        @Html.Raw($" - {registro.JustificativaDeAusencia.Descricao}")
+                    }
+                    else 
+                    {
+                        @Html.Raw($" - {registro.DataHora.TimeOfDay.ToString(@"hh\:mm")}")
+                    }
+                    &nbsp;
+
+                    <badge class="badge">@registro.Situacao.DescricaoDoEnumerador()</badge>
+                </p>
+            }
+        }
+        else
+        {
+            <span class="form-text">Nenhum registro encontrado.</span>
+        }
+
+        <hr />
+        <h6>Registros dos Últimos 15 dias</h6>
+        @if (Model.Count > 0)
+        {
+            foreach (var data in Model
+               .GroupBy(c => c.DataHoraRegistro.Date)
+               .OrderByDescending(c => c.Key))
+            {
+                @foreach (var registro in data.OrderBy(c => c.DataHoraRegistro))
+                {
+                    var origemRegistro = registro.EquipamentoDePontoId.HasValue ?
+                    "Equipamento Facial" : registro.RegistroAplicativo?.Manual ?? false ?
+                    "Manual" : "Aplicativo";
+
+                    var situacaoRegistro = registro.RegistroAplicativo != null ? registro.RegistroAplicativo.Situacao.DescricaoDoEnumerador() : "Aprovado";
+
+                    <p>
+                        @data.Key.ToString("dd/MM/yyyy") @registro.DataHoraRegistro.TimeOfDay.ToString(@"hh\:mm") 
+                        - @origemRegistro 
+                        <badge class="badge">@situacaoRegistro</badge>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="baixarComprovante(@registro.Id)">Baixar comprovante</button>
+                    </p>
+                }
+            }
+        }
+        else
+        {
+            <span class="form-text">Nenhum registro encontrado.</span>
+        }
+    </div>
+</div>
+
+@Html.Partial("_ModalExportarFolha", new List<CodigoDescricaoDTO>((List<CodigoDescricaoDTO>)ViewBag.VinculosDeTrabalho))
+@Html.Partial("_ModalRegistroManual", new List<CodigoDescricaoDTO>((List<CodigoDescricaoDTO>)ViewBag.VinculosDeTrabalho))
+
+<div id="div-modal"></div>
+<script src="/Scripts/Paginas/PortalDoServidor/registroDePonto.js?t=@DateTime.Now.Ticks"></script>

@@ -1,0 +1,56 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@using AriD.Servicos.Extensao
+@model List<RegistroAplicativo>
+
+<style>
+    .badge {
+        background: cadetblue !important;
+    }
+</style>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bx-plus-medical'></i> Meus Atestados Registrados
+        </h5>
+    </div>
+    <div class="card-body">
+        @if ((bool)ViewBag.PodeRegistrarAtestado)
+        {
+            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalAtestado()">
+                <i class='bx bxs-bookmark-alt-plus'></i> Registrar Novo Atestado
+            </button>
+            <br />
+            <br />
+        }
+
+        <h6>Últimos 6 meses</h6>
+        @if (Model.Count > 0)
+        {
+            foreach (var registro in Model.OrderBy(c => c.DataInicialAtestado))
+            {
+                <p>
+                    <b>@registro.DataInicialAtestado?.ToString("dd/MM/yyyy") até @registro.DataFinalAtestado?.ToString("dd/MM/yyyy")</b>
+                    -
+                    <b>@(registro.JustificativaDeAusencia?.SiglaComDescricao)</b>
+                    -
+                    <badge class="badge text-center">@registro.Situacao.DescricaoDoEnumerador()</badge>
+                    @if (!string.IsNullOrEmpty(registro.Observacao))
+                    {
+                        <br />
+                        <span><b>Observações:</b> @registro.Observacao</span>
+                    }
+                    <hr />
+                </p>
+            }
+        }
+        else
+        {
+            <span class="form-text">Nenhum atestado registrado.</span>
+        }
+    </div>
+</div>
+
+@Html.Partial("_ModalAtestado", new List<CodigoDescricaoDTO>((List<CodigoDescricaoDTO>)ViewBag.VinculosDeTrabalho))
+
+<script src="/Scripts/Paginas/PortalDoServidor/atestados.js?t=@DateTime.Now.Ticks"></script>

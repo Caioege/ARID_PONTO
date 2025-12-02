@@ -1,0 +1,39 @@
+﻿@using AriD.Servicos.Extensao
+@model List<RegistroAplicativo>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class='bx bxs-log-in-circle'></i> Alterar Minha Senha
+        </h5>
+    </div>
+    <div class="card-body" id="formulario-alterar-senha">
+        <div class="row">
+            <div class="col col-md-4 col-sm-12">
+                <label class="form-label obrigatorio" for="SenhaAtual">Senha atual</label>
+                @Html.Password("SenhaAtual", string.Empty, new { @class = "form-control", @maxlength = "70" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-4 col-sm-12">
+                <label class="form-label obrigatorio" for="NovaSenha">Nova Senha</label>
+                @Html.Password("NovaSenha", string.Empty, new { @class = "form-control", @maxlength = "70" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-4 col-sm-12">
+                <label class="form-label obrigatorio" for="ConfirmacaoSenha">Confirmação da Nova Senha</label>
+                @Html.Password("ConfirmacaoSenha", string.Empty, new { @class = "form-control", @maxlength = "70" })
+            </div>
+        </div>
+
+        <br />
+        <button type="button" class="btn btn-primary" id="btn-salvar">
+            <i class='bx bxs-save'></i> Alterar Senha
+        </button>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/PortalDoServidor/alterarSenha.js?t=@DateTime.Now.Ticks"></script>

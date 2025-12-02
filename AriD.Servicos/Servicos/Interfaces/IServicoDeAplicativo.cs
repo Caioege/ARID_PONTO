@@ -13,6 +13,6 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<CodigoDescricaoDTO> ObtenhaListaDeLotacoes(int vinculoId);
         List<KeyValuePair<DateTime, string>> ObtenhaUltimosRegistrosDoServidor(int servidorId);
         List<CodigoDescricaoDTO> ObtenhaListaDeJustificativas(int organizacaoId);
-        void ReceptarRegistro(PostRegistroDePontoDTO registro);
+        void ReceptarRegistro(PostRegistroDePontoDTO registro, bool fromApp);
     }
 }

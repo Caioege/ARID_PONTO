@@ -58,14 +58,15 @@ namespace AriD.Servicos.Servicos
 	                    on s.PessoaId = p.Id
                     where
 	                    replace(replace(p.Cpf, '.', ''), '-', '') = @USUARIO
-                        and DATE_FORMAT(p.DataDeNascimento, '%d%m%Y') = @SENHA
+                        and IF(s.SenhaPersonalizadaDeAcesso IS NULL, DATE_FORMAT(p.DataDeNascimento, '%d%m%Y') = @SENHA, s.SenhaPersonalizadaDeAcesso = @SENHACRIPTOGRAFADA) = true
                         and s.AcessoAoAplicativo = true
                     limit 1";
 
                 return _repositorioServidor.ConsultaDapper<AutenticacaoAppDTO>(queryAcesso, new
                 {
                     @USUARIO = ObterSomenteNumeros(credenciais.Usuario, "---"),
-                    @SENHA = ObterSomenteNumeros(credenciais.Senha, "---")
+                    @SENHA = ObterSomenteNumeros(credenciais.Senha, "---"),
+                    @SENHACRIPTOGRAFADA = Criptografia.CriptografarSenha(credenciais.Senha)
                 }).FirstOrDefault();
             }
             catch (Exception)
@@ -281,7 +282,7 @@ namespace AriD.Servicos.Servicos
             }
         }
 
-        public void ReceptarRegistro(PostRegistroDePontoDTO registro)
+        public void ReceptarRegistro(PostRegistroDePontoDTO registro, bool fromApp)
         {
             try
             {
@@ -291,7 +292,7 @@ namespace AriD.Servicos.Servicos
                 string anexoPontoNome = null;
                 if (registro.Imagem != null)
                 {
-                    if (!registro.Imagem.ContentType.Contains("image"))
+                    if (!registro.Imagem.ContentType.Contains("image") && fromApp)
                         throw new ApplicationException("O comprovante enviado não é uma imagem.");
 
                     var extensaoArquivo = Path.GetExtension(registro.Imagem.FileName);
