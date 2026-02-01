@@ -1,6 +1,7 @@
 $(document).ready(() => {
     assineEventoBotaoSalvar();
     assinechangeArquivoImagem();
+    assineChangeCodigoCRM();
 });
 
 function assineEventoBotaoSalvar() {
@@ -88,6 +89,7 @@ function abrirModalVinculoDeTrabalho(id) {
                 salvarCadastroDeVinculo();
                 salvarCadastroDeLotacao();
                 removerCadastroDeLotacao();
+                assineChangeSituacaoVinculo();
                 assineMascarasDoComponente($('#_Modal'));
                 $('#_Modal').modal('show');
             } else {
@@ -492,5 +494,33 @@ function assineRemoverAnexo() {
                     });
             }
         });
+    });
+}
+
+function assineChangeCodigoCRM() {
+    $('#CodigoCRM').on('change', function () {
+        let codigoInformado = $(this).val();
+        if (codigoInformado) {
+            $('[for="EspecialidadeMedica"]').addClass('obrigatorio');
+        } else {
+            $('[for="EspecialidadeMedica"]').removeClass('obrigatorio');
+        }
+    });
+}
+
+function assineChangeSituacaoVinculo() {
+    $('#_Modal #Situacao').on('change', function () {
+        let situacao = $(this).val();
+        let ehDemissao = situacao == 'Demitido' || situacao == '3';
+        if (ehDemissao) {
+            $('#_Modal [for="MotivoDeDemissaoId"]').addClass('obrigatorio');
+            $('#_Modal [for="DataDemissao"]').addClass('obrigatorio');
+            $('#_Modal #div-demissao').fadeIn('fast');
+        }
+        else {
+            $('#_Modal [for="MotivoDeDemissaoId"]').removeClass('obrigatorio');
+            $('#_Modal [for="DataDemissao"]').removeClass('obrigatorio');
+            $('#_Modal #div-demissao').fadeOut('fast');
+        }
     });
 }

@@ -27,6 +27,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<Afastamento> _servicoAfastamento;
         private readonly IServico<JustificativaDeAusencia> _servicoJustificativa;
         private readonly IServico<AnexoServidor> _servicoAnexoServidor;
+        private readonly IServico<MotivoDeDemissao> _servicoMotivoDeDemissao;
+        private readonly IServicoDeServidor _servicoDeServidor;
 
         public ServidorController(
             IServico<Servidor> servico,
@@ -39,7 +41,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<HorarioDeTrabalho> servicoHorarioDeTrabalho,
             IServico<Afastamento> servicoAfastamento,
             IServico<JustificativaDeAusencia> servicoJustificativa,
-            IServico<AnexoServidor> servicoAnexoServidor)
+            IServico<AnexoServidor> servicoAnexoServidor,
+            IServico<MotivoDeDemissao> servicoMotivoDeDemissao,
+            IServicoDeServidor servicoDeServidor)
         {
             _servico = servico;
             _servicoVinculoDeTrabalho = servicoVinculoDeTrabalho;
@@ -52,6 +56,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoAfastamento = servicoAfastamento;
             _servicoJustificativa = servicoJustificativa;
             _servicoAnexoServidor = servicoAnexoServidor;
+            _servicoMotivoDeDemissao = servicoMotivoDeDemissao;
+            _servicoDeServidor = servicoDeServidor;
         }
 
         [HttpGet]
@@ -156,6 +162,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
                 .OrderBy(c => c.SiglaComDescricao);
             ViewBag.Horarios = new SelectList(horarios, "Id", "SiglaComDescricao");
+
+            var motivosDeDemissao = _servicoMotivoDeDemissao
+                .ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo)
+                .OrderBy(c => c.SiglaComDescricao);
+            ViewBag.MotivosDeDemissao = new SelectList(motivosDeDemissao, "Id", "SiglaComDescricao");
 
             var html = await RenderizarComoString("_Modal", modelo);
 
@@ -411,6 +422,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Json(new { sucesso = true, mensagem = $"O {HttpContext.NomenclaturaServidor().ToLower()} foi removido." });
         }
 
+        [HttpPost]
+        public IActionResult ExecutarAcaoEmLote(int acao)
+        {
+            _servicoDeServidor.ExecuteAcaoEmLote(acao, this.HttpContext.DadosDaSessao());
+            return Json(new { sucesso = true, mensagem = $"A ação em lote foi executada." });
+        }
+
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
         {
             var dados = _servico.ObtenhaListaPaginada(
@@ -428,6 +446,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             Expression<Func<Servidor, bool>> pesquisa = c =>
                 (c.OrganizacaoId == dadosDaSessao.OrganizacaoId);
+
+            if (dadosDaSessao.UnidadeOrganizacionais.Any())
+            {
+                var unidadesIds = dadosDaSessao.UnidadeOrganizacionais;
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => c.VinculosDeTrabalho.Any(v => v.Lotacoes.Any(l => unidadesIds.Contains(l.UnidadeOrganizacionalId))));
+            }
+
+            if (dadosDaSessao.DepartamentoId.HasValue)
+            {
+                var departamentoId = dadosDaSessao.DepartamentoId.Value;
+                pesquisa = ConcatenadorDeExpressao.Concatenar(
+                    pesquisa,
+                    c => c.VinculosDeTrabalho.Any(v => v.DepartamentoId == departamentoId));
+            }
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
             {

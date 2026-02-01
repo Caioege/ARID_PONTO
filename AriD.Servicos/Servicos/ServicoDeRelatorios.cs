@@ -84,6 +84,69 @@ namespace AriD.Servicos.Servicos
             }
         }
 
+        public List<RelatorioDemitidosDTO> ObtenhaServidoresDemitidosPorPeriodo(
+            int organizacaoId,
+            int? unidadeId,
+            DateTime? inicio,
+            DateTime? fim,
+            int? motivoDeDemissaoId,
+            int? departamentoId)
+        {
+            try
+            {
+                var query = @"select
+		                        p.Nome as PessoaNome,
+		                        v.Matricula as MatriculaContrato,
+		                        concat('[', t.Sigla, '] ', t.Descricao) as TipoContrato,
+		                        v.Situacao as SituacaoContrato,
+		                        p.Cpf as PessoaCpf,
+                                m.Id as MotivoDeDemissaoId,
+                                m.Descricao as MotivoDeDemissaoDescricao,
+                                v.DataDemissao as DataDaDemissao,
+                                v.ObservacoesDaDemissao as Observacoes
+	                        from vinculodetrabalho v
+	                        inner join servidor s
+		                        on s.Id = v.ServidorId
+	                        inner join pessoa p
+		                        on p.Id = s.PessoaId
+	                        inner join tipodovinculodetrabalho t
+		                        on t.Id = v.TipoDoVinculoDeTrabalhoId
+	                        inner join motivodedemissao m
+		                        on m.Id = v.MotivoDeDemissaoId
+	                        where
+		                        v.OrganizacaoId = @ORGANIZACAOID";
+
+                if (inicio.HasValue)
+                    query += " and v.DataDemissao >= @INICIO";
+
+                if (fim.HasValue)
+                    query += " and v.DataDemissao <= @FIM";
+
+                if (motivoDeDemissaoId.HasValue)
+                    query += " and m.Id = @MOTIVOID";
+
+                if (unidadeId.HasValue)
+                    query += " and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = v.Id and l.UnidadeOrganizacionalId = @UNIDADEID)";
+
+                if (departamentoId.HasValue)
+                    query += " and v.DepartamentoId = @DEPARTAMENTOID ";
+
+                return _repositorio.ConsultaDapper<RelatorioDemitidosDTO>(query, new
+                {
+                    @ORGANIZACAOID = organizacaoId,
+                    @INICIO = inicio,
+                    @FIM = fim,
+                    @MOTIVOID = motivoDeDemissaoId,
+                    @UNIDADEID = unidadeId,
+                    @DEPARTAMENTOID = departamentoId
+                });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
             int organizacaoId,
             int? horarioDeTrabalhoId,

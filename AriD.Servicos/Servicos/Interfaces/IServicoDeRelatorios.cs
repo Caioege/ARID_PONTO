@@ -13,6 +13,14 @@ namespace AriD.Servicos.Servicos.Interfaces
             int? justificativaId,
             int? departamentoId);
 
+        List<RelatorioDemitidosDTO> ObtenhaServidoresDemitidosPorPeriodo(
+            int organizacaoId,
+            int? unidadeId,
+            DateTime? inicio,
+            DateTime? fim,
+            int? motivoDeDemissaoId,
+            int? departamentoId);
+
         List<ItemRelatorioServidorPorHorarioDTO> ObtenhaServidoresPorHorario(
             int organizacaoId,
             int? horarioDeTrabalhoId,

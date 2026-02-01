@@ -32,6 +32,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [MaxLength(300)]
         public string? SenhaPersonalizadaDeAcesso { get; set; }
 
+        [MaxLength(20)]
+        public string? CodigoCRM { get; set; }
+        [MaxLength(200)]
+        public string? EspecialidadeMedica { get; set; }
+
         public string Nome => Pessoa?.Nome;
     }
 }

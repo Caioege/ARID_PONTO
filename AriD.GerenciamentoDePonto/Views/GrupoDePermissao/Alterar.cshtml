@@ -92,6 +92,10 @@
 
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
+                var modelFuncao =
+                    new Tuple<string, Type, GrupoDePermissao>("Cargo/Função", typeof(eItemDePermissao_Funcao), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelFuncao)
+
                 var modelDepartamento = 
                     new Tuple<string, Type, GrupoDePermissao>("Departamento", typeof(eItemDePermissao_Departamento), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelDepartamento)
@@ -99,16 +103,12 @@
                 var modelEventoAnual =
                 new Tuple<string, Type, GrupoDePermissao>("Evento Anual", typeof(eItemDePermissao_EventoAnual), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelEventoAnual)
-
-                var modelFuncao =
-                new Tuple<string, Type, GrupoDePermissao>("Função", typeof(eItemDePermissao_Funcao), Model);
-                @await Html.PartialAsync("_PartialItemPermissao", modelFuncao)
             }
 
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
                 var modelEquipamento =
-                new Tuple<string, Type, GrupoDePermissao>("Equipamento de Ponto", typeof(eItemDePermissao_EquipamentoDePonto), Model);
+                    new Tuple<string, Type, GrupoDePermissao>("Equipamento de Ponto", typeof(eItemDePermissao_EquipamentoDePonto), Model);
 
                 @await Html.PartialAsync("_PartialItemPermissao", modelEquipamento)
             }
@@ -116,25 +116,29 @@
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao) 
             {
                 var modelHorario =
-                new Tuple<string, Type, GrupoDePermissao>("Horário de Trabalho", typeof(eItemDePermissao_HorarioDeTrabalho), Model);
+                    new Tuple<string, Type, GrupoDePermissao>("Horário de Trabalho", typeof(eItemDePermissao_HorarioDeTrabalho), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelHorario)
             }
 
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
                 var modelImportarAFD =
-                new Tuple<string, Type, GrupoDePermissao>("Importar AFD", typeof(eItemDePermissao_ImportarAFD), Model);
+                    new Tuple<string, Type, GrupoDePermissao>("Importar AFD", typeof(eItemDePermissao_ImportarAFD), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelImportarAFD)
             }
 
             @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
             {
                 var modelJustificativa =
-                new Tuple<string, Type, GrupoDePermissao>("Justificativa de Ausência", typeof(eItemDePermissao_JustificativaDeAusencia), Model);
+                    new Tuple<string, Type, GrupoDePermissao>("Justificativa de Ausência", typeof(eItemDePermissao_JustificativaDeAusencia), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelJustificativa)
 
+                var modelMotivoDeDemissao =
+                    new Tuple<string, Type, GrupoDePermissao>("Motivo de Demissão", typeof(eItemDePermissao_MotivoDeDemissao), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelMotivoDeDemissao)
+
                 var modelTipoDeVinculo =
-                new Tuple<string, Type, GrupoDePermissao>("Tipo de Vínculo de Trabalho", typeof(eItemDePermissao_TipoDeVinculoDeTrabalho), Model);
+                    new Tuple<string, Type, GrupoDePermissao>("Tipo de Vínculo de Trabalho", typeof(eItemDePermissao_TipoDeVinculoDeTrabalho), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelTipoDeVinculo)
             }
 
@@ -187,6 +191,12 @@
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelListaDeServidores)
 
+            @{
+                var modelRelServidoresDemitidos =
+                new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} Demitidos", typeof(eItemDePermissao_RelatorioServidoresDemitidos), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresDemitidos)
+            
             @{
                 var modelRelServidoresComAfastamento =
                 new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} com Afastamentos", typeof(eItemDePermissao_RelatorioServidoresComAfastamento), Model);

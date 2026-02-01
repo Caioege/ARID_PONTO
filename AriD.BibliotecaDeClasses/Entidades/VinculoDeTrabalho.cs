@@ -37,6 +37,15 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public eSituacaoVinculoDeTrabalho Situacao { get; set; }
 
+        public int? MotivoDeDemissaoId { get; set; }
+        [ForeignKey(nameof(MotivoDeDemissaoId))]
+        public virtual MotivoDeDemissao MotivoDeDemissao { get; set; }
+
+        public DateTime? DataDemissao { get; set; }
+
+        [MaxLength(500)]
+        public string? ObservacoesDaDemissao { get; set; }
+
         public virtual List<LotacaoUnidadeOrganizacional> Lotacoes { get; set; } = new();
 
         public virtual List<Afastamento> Afastamentos { get; set; } = new();

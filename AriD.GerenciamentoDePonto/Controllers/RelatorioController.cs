@@ -28,6 +28,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<HorarioDeTrabalho> _servicoHorario;
         private readonly IServico<TipoDoVinculoDeTrabalho> _servicoTipo;
         private readonly IServico<Escala> _servicoEscala;
+        private readonly IServico<MotivoDeDemissao> _servicoMotivoDeDemissao;
         private readonly IServicoDeFolhaDePonto _servicoDeFolhaDePonto;
 
         public RelatorioController(
@@ -37,7 +38,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<HorarioDeTrabalho> servicoHorario,
             IServico<TipoDoVinculoDeTrabalho> servicoTipo,
             IServico<Escala> servicoEscala,
-            IServicoDeFolhaDePonto servicoDeFolhaDePonto)
+            IServicoDeFolhaDePonto servicoDeFolhaDePonto,
+            IServico<MotivoDeDemissao> servicoMotivoDeDemissao)
         {
             _servicoDeRelatorios = servicoDeRelatorios;
             _servicoJustificativa = servicoJustificativa;
@@ -46,6 +48,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoTipo = servicoTipo;
             _servicoEscala = servicoEscala;
             _servicoDeFolhaDePonto = servicoDeFolhaDePonto;
+            _servicoMotivoDeDemissao = servicoMotivoDeDemissao;
         }
 
         #region Views
@@ -436,6 +439,66 @@ namespace AriD.GerenciamentoDePonto.Controllers
             });
         }
 
+        [HttpGet]
+        public IActionResult ServidoresDemitidos()
+        {
+            try
+            {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                ViewBag.MotivosDeDemissao = new SelectList(
+                    _servicoMotivoDeDemissao
+                    .ObtenhaLista(c =>
+                        c.OrganizacaoId == organizacaoId && c.Ativo)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id", "SiglaComDescricao");
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ProcessarServidoresDemitidos(
+            int? unidadeLotacaoId,
+            DateTime? inicio,
+            DateTime? fim,
+            int? motivoDeDemissaoId)
+        {
+            var relatorio = ObtenhaRelatorioServidoresDemitidos(
+                    unidadeLotacaoId,
+                    inicio,
+                    fim,
+                    motivoDeDemissaoId);
+
+            var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} Demitidos.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
         #endregion
 
         #region Relatórios
@@ -569,6 +632,118 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 document.Add(new Div().SetMarginBottom(3).Add(table));
             }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] ObtenhaRelatorioServidoresDemitidos(
+            int? unidadeLotacaoId,
+            DateTime? inicio,
+            DateTime? fim,
+            int? motivoDeDemissaoId)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeLotacaoId = dadosDaSessao.UnidadeOrganizacionais.First();
+
+            var registros = _servicoDeRelatorios.ObtenhaServidoresDemitidosPorPeriodo(
+                dadosDaSessao.OrganizacaoId,
+                unidadeLotacaoId,
+                inicio,
+                fim,
+                motivoDeDemissaoId,
+                dadosDaSessao.DepartamentoId);
+
+            if (registros.Count == 0)
+                throw new ApplicationException("Nenhuma demissão encontrada para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(10);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add($"{HttpContext.NomenclaturaServidores()} Demitidos")));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    35f,
+                    10f,
+                    25f,
+                    30f
+                })).UseAllAvailableWidth();
+
+            table
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text($"{HttpContext.NomenclaturaServidor()}"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Data"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Motivo"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Observações"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            foreach (var registro in registros.OrderBy(c => c.DataDaDemissao).ThenBy(c => c.PessoaNome))
+            {
+                table.AddCell(new Cell()
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                    .Add(new Paragraph()
+                    .Add(new Text(registro.PessoaNome))));
+
+                table.AddCell(new Cell()
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                    .Add(new Paragraph()
+                    .Add(new Text($"{registro.DataDaDemissao.ToString("dd/MM/yyyy")}"))));
+
+                table.AddCell(new Cell()
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                    .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{registro.MotivoDeDemissaoDescricao}"))));
+
+                table.AddCell(new Cell()
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                    .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Text($"{registro.Observacoes}"))));
+            }
+
+            document.Add(new Div().Add(table));
 
             document.Close();
             return stream.ToArray();

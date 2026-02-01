@@ -1,4 +1,5 @@
-﻿@model VinculoDeTrabalho
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@model VinculoDeTrabalho
 
 @{
     var adicionar = Model.Id == 0;
@@ -53,13 +54,35 @@
 
                         <div class="row">
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio" for="FuncaoId">Função</label>
+                                <label class="form-label obrigatorio" for="FuncaoId">Cargo/Função</label>
                                 @Html.DropDownListFor(model => model.FuncaoId, (SelectList)ViewBag.Funcoes, string.Empty, new { @class = "select2" })
                             </div>
 
                             <div class="col col-lg-6 col-md-12 col-sm-12">
                                 <label class="form-label obrigatorio" for="DepartamentoId">Departamento</label>
                                 @Html.DropDownListFor(model => model.DepartamentoId, (SelectList)ViewBag.Departamentos, string.Empty, new { @class = "select2" })
+                            </div>
+                        </div>
+
+                        @{ var demitido = Model.Situacao == eSituacaoVinculoDeTrabalho.Demitido; }
+                        <div id="div-demissao" style="@(demitido ? "" : "display:none")">
+                            <div class="row">
+                                <div class="col col-lg-9 col-md-12 col-sm-12">
+                                    <label class="form-label @(demitido ? "obrigatorio" : "")" for="MotivoDeDemissaoId">Motivo de Demissão</label>
+                                    @Html.DropDownListFor(model => model.MotivoDeDemissaoId, (SelectList)ViewBag.MotivosDeDemissao, string.Empty, new { @class = "select2" })
+                                </div>
+
+                                <div class="col col-lg-3 col-md-12 col-sm-12">
+                                    <label class="form-label @(demitido ? "obrigatorio" : "")" for="DataDemissao">Data da Demissão</label>
+                                    @Html.TextBox("DataDemissao", !Model.DataDemissao.HasValue ? string.Empty : Model.DataDemissao.Value.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <label class="form-label">Observações da demissão</label>
+                                    @Html.TextAreaFor(model => model.ObservacoesDaDemissao, new { @class = "form-control", @rows = "3", @maxlength = "500" })
+                                </div>
                             </div>
                         </div>
                     </form>

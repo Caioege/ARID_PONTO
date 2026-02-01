@@ -99,6 +99,17 @@
                     }
                     else
                     {
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_Funcao.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
+                                    <div>
+                                        <i class='bx bxs-bookmark-alt'></i>
+                                        Cargo/Função
+                                    </div>
+                                </a>
+                            </li>
+                        }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_Departamento.Visualizar, usuarioAdm))
                         {
                             <li class='menu-item'>
@@ -117,17 +128,6 @@
                                     <div>
                                         <i class='bx bxs-calendar-event'></i>
                                         Evento Anual
-                                    </div>
-                                </a>
-                            </li>
-                        }
-                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_Funcao.Visualizar, usuarioAdm))
-                        {
-                            <li class='menu-item'>
-                                <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-bookmark-alt'></i>
-                                        Função
                                     </div>
                                 </a>
                             </li>
@@ -183,6 +183,17 @@
                                     <div>
                                         <i class='bx bx-buildings'></i>
                                         Minha Organização
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        if (listaDePermissao.PossuiPermissao(eItemDePermissao_MotivoDeDemissao.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "MotivoDeDemissao")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bx-task-x'></i>
+                                        Motivo de Demissão
                                     </div>
                                 </a>
                             </li>
@@ -283,6 +294,17 @@
                                     <div style="white-space: normal !important;">
                                         <i class='bx bxs-user-account'></i>
                                         Lista de @nomenclaturaServidores
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresDemitidos.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ServidoresDemitidos", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <div style="white-space: normal !important;">
+                                        <i class='bx bx-task-x'></i>
+                                        @nomenclaturaServidores Demitidos
                                     </div>
                                 </a>
                             </li>

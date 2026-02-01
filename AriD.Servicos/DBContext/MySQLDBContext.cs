@@ -12,7 +12,7 @@ namespace AriD.Servicos.DBContext
             {
                 var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
-                optionsBuilder.UseMySql(connStringProd, ServerVersion.AutoDetect(connStringProd))  
+                optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))  
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
@@ -46,5 +46,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<ItemDoGrupoDePermissao> ItemDoGrupoDePermissao { get; set; }
         public DbSet<RegistroAplicativo> RegistroAplicativo { get; set; }
         public DbSet<AnexoServidor> AnexoServidor { get; set; }
+        public DbSet<MotivoDeDemissao> MotivoDeDemissao { get; set; }
     }
 }

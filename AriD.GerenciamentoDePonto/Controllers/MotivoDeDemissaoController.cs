@@ -10,21 +10,21 @@ using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
-    public class FuncaoController : BaseController
+    public class MotivoDeDemissaoController : BaseController
     {
-        private readonly IServico<Funcao> _funcaoServico;
+        private readonly IServico<MotivoDeDemissao> _motivoDeDemissaoServico;
         private readonly IServico<Organizacao> _servicoOrganizacao;
 
-        public FuncaoController(
-            IServico<Funcao> funcaoServico, 
+        public MotivoDeDemissaoController(
+            IServico<MotivoDeDemissao> motivoDeDemissaoServico, 
             IServico<Organizacao> servicoOrganizacao)
         {
-            _funcaoServico = funcaoServico;
+            _motivoDeDemissaoServico = motivoDeDemissaoServico;
             _servicoOrganizacao = servicoOrganizacao;
         }
 
         [HttpGet]
-        public IActionResult Index(ListaPaginada<Funcao> listaPaginada)
+        public IActionResult Index(ListaPaginada<MotivoDeDemissao> listaPaginada)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public IActionResult TabelaPaginada(ListaPaginada<Funcao> listaPaginada)
+        public IActionResult TabelaPaginada(ListaPaginada<MotivoDeDemissao> listaPaginada)
         {
             try
             {
@@ -52,11 +52,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Modal(int funcaoId)
+        public async Task<IActionResult> Modal(int motivoId)
         {
-            var model = funcaoId == 0 ?
-                    new Funcao { Ativa = true } :
-                    _funcaoServico.Obtenha(funcaoId);
+            var model = motivoId == 0 ?
+                    new MotivoDeDemissao { Ativo = true } :
+                    _motivoDeDemissaoServico.Obtenha(motivoId);
 
             var html = await RenderizarComoString("_Modal", model);
 
@@ -64,35 +64,35 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar(Funcao funcao)
+        public IActionResult Salvar(MotivoDeDemissao motivoDeDemissao)
         {
-            int id = funcao.Id;
-            funcao.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            int id = motivoDeDemissao.Id;
+            motivoDeDemissao.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-            if (funcao.Id == 0)
-                id = _funcaoServico.Adicionar(funcao);
+            if (motivoDeDemissao.Id == 0)
+                id = _motivoDeDemissaoServico.Adicionar(motivoDeDemissao);
             else
-                _funcaoServico.Atualizar(funcao);
+                _motivoDeDemissaoServico.Atualizar(motivoDeDemissao);
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
 
         [HttpPost]
-        public IActionResult Remova(int funcaoId)
+        public IActionResult Remova(int motivoId)
         {
-            var funcao = _funcaoServico.Obtenha(funcaoId);
-            _funcaoServico.Remover(funcao);
+            var item = _motivoDeDemissaoServico.Obtenha(motivoId);
+            _motivoDeDemissaoServico.Remover(item);
 
             return Json(new { sucesso = true, mensagem = "O registro foi removido." });
         }
 
-        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Funcao> listaPaginada)
+        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<MotivoDeDemissao> listaPaginada)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-            Expression<Func<Funcao, bool>> filtro =
+            Expression<Func<MotivoDeDemissao, bool>> filtro =
                 c => c.OrganizacaoId == parametros.OrganizacaoId;
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
@@ -100,11 +100,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 filtro = ConcatenadorDeExpressao.Concatenar(
                     filtro,
                     c => c.Sigla.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()) ||
-                    c.Descricao.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()) ||
-                    c.CodigoCBO.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()));
+                    c.Descricao.ToLower().Contains(listaPaginada.TermoDeBusca.ToLower()));
             }
 
-            var dados = _funcaoServico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+            var dados = _motivoDeDemissaoServico.ObtenhaListaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }

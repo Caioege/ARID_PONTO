@@ -4,6 +4,7 @@
     {
         Normal,
         Concluido,
-        Cancelado
+        Cancelado,
+        Demitido
     }
 }

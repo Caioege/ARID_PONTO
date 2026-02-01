@@ -62,6 +62,7 @@ builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboar
 builder.Services.AddScoped(typeof(IServicoDeAplicativo), typeof(ServicoDeAplicativo));
 builder.Services.AddScoped(typeof(IWhatsappService), typeof(WhatsappService));
 builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
+builder.Services.AddScoped(typeof(IServicoDeServidor), typeof(ServicoDeServidor));
 
 var app = builder.Build();
 

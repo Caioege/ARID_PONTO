@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {
-    public class Funcao : EntidadeOrganizacaoBase
+    public class MotivoDeDemissao : EntidadeOrganizacaoBase
     {
         [Required, MaxLength(5)]
         public string Sigla { get; set; }
@@ -11,10 +11,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required, MaxLength(100)]
         public string Descricao { get; set; }
 
-        [MaxLength(20)]
-        public string? CodigoCBO { get; set; }
-
-        public bool Ativa { get; set; }
+        public bool Ativo { get; set; }
 
         public string SiglaComDescricao => $"[{Sigla}] {Descricao}";
     }

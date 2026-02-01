@@ -1,20 +1,20 @@
-﻿@model Funcao
+﻿@model MotivoDeDemissao
 
 @{
     var adicionar = Model.Id == 0;
-    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Funcao.Excluir);
-    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Funcao.CadastrarOuAlterar);
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_MotivoDeDemissao.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_MotivoDeDemissao.CadastrarOuAlterar);
 }
 
 <div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Cargo/Função</h5>
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Motivo de Demissão</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formulario-funcao">
+                <form id="formulario-motivo">
                     @Html.HiddenFor(model => model.Id)
                     <div class="row">
                         <div class="col col-lg-4 col-md-12 col-sm-6">
@@ -23,13 +23,8 @@
                         </div>
 
                         <div class="col col-lg-4 col-md-12 col-sm-6 float-end">
-                            <label class="form-label obrigatorio" for="Ativa">Ativa</label>
-                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
-                        </div>
-
-                        <div class="col col-lg-4 col-md-12 col-sm-6 float-end">
-                            <label class="form-label">Código CBO</label>
-                            @Html.TextBoxFor(model => model.CodigoCBO, new { @class = "form-control", @maxlength = "20" })
+                            <label class="form-label obrigatorio" for="Ativo">Ativo</label>
+                            @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
                         </div>
                     </div>
 
