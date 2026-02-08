@@ -1,0 +1,59 @@
+﻿@model ObservacaoServidor
+
+@{
+    var adicionar = Model.Id == 0;
+}
+
+<div class="modal" tabindex="-1" id="_ModalObservacao" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Observação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="div-dados-modal">
+                    <form id="formulario-observacao">
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.ServidorId)
+
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <label class="form-label">Ativa</label>
+                                @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                                <div class="note">
+                                    Quando inativa deixa de ser exibida nos relatórios.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col col-md-12">
+                                <label class="form-label obrigatorio" for="Texto">Observação</label>
+                                @Html.TextAreaFor(model => model.Texto, new { @class = "form-control", @maxlength = "3000", @rows = "10" })
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-footer-principal">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class='bx bx-window-close'></i> Fechar
+                    </button>
+
+                    @if (!adicionar)
+                    {
+                        <button type="button" class="btn btn-danger" id="btn-remover-modal">
+                            <i class='bx bxs-trash'></i> Remover
+                        </button>
+                    }
+
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

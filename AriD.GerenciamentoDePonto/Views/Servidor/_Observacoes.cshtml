@@ -1,0 +1,56 @@
+﻿@model Servidor
+
+@{
+    var observacoes = Model.ListaDeObservacoes;
+    var dadosDaSessao = Context.DadosDaSessao();
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center" width="60%">Observação</th>
+            <th class="text-center" width="25%">Cadastrada em/por</th>
+            <th class="text-center" width="15%">
+                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalObservacao(0)">
+                    <i class='bx bx-list-plus'></i>
+                </button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (observacoes != null && observacoes.Count() > 0)
+        {
+            foreach (var observacao in observacoes
+                .OrderBy(c => c.CadastradaEm)
+                .ThenBy(c => c.Id))
+            {
+                <tr>
+                    <td style="text-align: justify">
+                        @Html.Raw(observacao.Texto.Replace("\n", "<br />"))
+                    </td>
+                    <td class="text-center" style="vertical-align: middle">
+                        @observacao.CadastradaEm.ToString("dd/MM/yyyy HH:mm")
+                        <hr style="margin-bottom: 5px; margin-top: 5px;" />
+                        @observacao.Usuario.NomeDaPessoa
+                    </td>
+                    <td>
+                        @if (dadosDaSessao.Perfil == AriD.BibliotecaDeClasses.Enumeradores.ePerfilDeAcesso.Organizacao || dadosDaSessao.UsuarioId == observacao.UsuarioId)
+                        {
+                            <button type="button" class="btn btn-primary btn-sm" onclick="abrirModalObservacao(@observacao.Id)">
+                                <i class='bx bxs-edit-alt'></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else 
+        {
+            <tr>
+                <td class="text-center" colspan="99">
+                    Nenhuma observação foi cadastrada para esse @(Context.NomenclaturaServidor().ToLower()).
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

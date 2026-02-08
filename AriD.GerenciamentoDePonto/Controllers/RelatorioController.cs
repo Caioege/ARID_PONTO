@@ -30,6 +30,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<Escala> _servicoEscala;
         private readonly IServico<MotivoDeDemissao> _servicoMotivoDeDemissao;
         private readonly IServicoDeFolhaDePonto _servicoDeFolhaDePonto;
+        private readonly IServico<Servidor> _servicoServidor;
 
         public RelatorioController(
             IServicoDeRelatorios servicoDeRelatorios,
@@ -39,7 +40,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<TipoDoVinculoDeTrabalho> servicoTipo,
             IServico<Escala> servicoEscala,
             IServicoDeFolhaDePonto servicoDeFolhaDePonto,
-            IServico<MotivoDeDemissao> servicoMotivoDeDemissao)
+            IServico<MotivoDeDemissao> servicoMotivoDeDemissao,
+            IServico<Servidor> servicoServidor)
         {
             _servicoDeRelatorios = servicoDeRelatorios;
             _servicoJustificativa = servicoJustificativa;
@@ -49,6 +51,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoEscala = servicoEscala;
             _servicoDeFolhaDePonto = servicoDeFolhaDePonto;
             _servicoMotivoDeDemissao = servicoMotivoDeDemissao;
+            _servicoServidor = servicoServidor;
         }
 
         #region Views
@@ -489,6 +492,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     motivoDeDemissaoId);
 
             var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} Demitidos.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpPost]
+        public IActionResult ProcessarRelatorioFichaDoServidor(int servidorId)
+        {
+            var relatorio = ObtenhaRelatorioFichaDoServidor(servidorId);
+            var nomeArquivo = "Ficha do Servidor.pdf";
 
             return Json(new
             {
@@ -1464,6 +1482,160 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        private byte[] ObtenhaRelatorioFichaDoServidor(int servidorId)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
+            var servidor = _servicoServidor.Obtenha(servidorId);
+
+            if (servidor == null)
+                throw new ApplicationException("Servidor não encontrado.");
+
+            ImageData imageData = ObterImagemServidor(servidor.Id, dadosDaSessao.OrganizacaoId);
+
+            var stream = new MemoryStream();
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.Add(new Paragraph($"Ficha Cadastral do {HttpContext.NomenclaturaServidor()}")
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(15f)
+                .SetBold()
+                .SetMarginBottom(15));
+
+            var tableInfoGeral = new Table(new float[] { 1f, 1f, 3f })
+                .SetWidth(UnitValue.CreatePercentValue(100))
+                .SetMarginBottom(10);
+
+            var cellFoto = new Cell(5, 1)
+                .SetBorder(Border.NO_BORDER)
+                .SetVerticalAlignment(VerticalAlignment.TOP);
+
+            if (imageData != null)
+            {
+                cellFoto.Add(new Image(imageData)
+                    .SetWidth(80).SetHeight(80).SetAutoScale(false)
+                    .SetMargins(0, 0, 0, 0).SetPadding(0));
+            }
+            else
+            {
+                cellFoto.Add(new Paragraph("Sem Foto").SetFontSize(10).SetItalic().SetWidth(80));
+            }
+            tableInfoGeral.AddCell(cellFoto);
+
+            // Título da Seção (ao lado da foto)
+            tableInfoGeral.AddCell(new Cell(1, 2)
+                .Add(new Paragraph("Dados de Identificação").SetBold().SetFontSize(10))
+                .SetBackgroundColor(ColorConstants.GRAY).SetFontColor(ColorConstants.WHITE)
+                .SetBorder(Border.NO_BORDER).SetPadding(2));
+
+            // Linhas de Dados (ao lado da foto)
+            tableInfoGeral.AddCell(CriarCelulaLabel("Nome:").SetPadding(2));
+            tableInfoGeral.AddCell(CriarCelulaValor(servidor.Pessoa?.Nome).SetPadding(2));
+
+            tableInfoGeral.AddCell(CriarCelulaLabel("Nome Social:").SetPadding(2));
+            tableInfoGeral.AddCell(CriarCelulaValor(servidor.Pessoa?.NomeSocial).SetPadding(2));
+
+            tableInfoGeral.AddCell(CriarCelulaLabel("CPF:").SetPadding(2));
+            tableInfoGeral.AddCell(CriarCelulaValor(servidor.Pessoa?.Cpf).SetPadding(2));
+
+            tableInfoGeral.AddCell(CriarCelulaLabel("Data Nasc.:").SetPadding(2));
+            tableInfoGeral.AddCell(CriarCelulaValor(servidor.Pessoa?.DataDeNascimento.ToString("dd/MM/yyyy")).SetPadding(2));
+
+            document.Add(tableInfoGeral);
+
+            // 7. Seção de Endereço
+            var tableEndereco = new Table(UnitValue.CreatePercentArray(new float[] { 1, 2, 1, 2 }))
+                .SetWidth(UnitValue.CreatePercentValue(100))
+                .SetMarginBottom(10);
+
+            tableEndereco.AddCell(CriarCelulaTituloSecao("Endereço", 4));
+            tableEndereco.AddCell(CriarCelulaLabel("Endereço:"));
+            tableEndereco.AddCell(CriarCelulaValor(servidor.Pessoa?.Endereco?.ToString(), 3));
+            document.Add(tableEndereco);
+
+            // 8. Seção de Vínculos (Loop)
+            if (servidor.VinculosDeTrabalho == null || !servidor.VinculosDeTrabalho.Any())
+            {
+                document.Add(new Paragraph("Servidor não possui vínculos de trabalho cadastrados.")
+                    .SetItalic().SetTextAlignment(TextAlignment.CENTER).SetMarginTop(10));
+            }
+            else
+            {
+                // Itera sobre cada vínculo
+                foreach (var vinculo in servidor.VinculosDeTrabalho.OrderBy(v => v.Inicio))
+                {
+                    var tableVinculo = new Table(UnitValue.CreatePercentArray(new float[] { 1, 2, 1, 2 }))
+                        .SetWidth(UnitValue.CreatePercentValue(100))
+                        .SetMarginBottom(10);
+
+                    string tituloVinculo = $"Vínculo: {vinculo.Matricula} ({vinculo.TipoDoVinculoDeTrabalho?.Descricao ?? "N/A"})";
+                    tableVinculo.AddCell(CriarCelulaTituloSecao(tituloVinculo, 4));
+
+                    tableVinculo.AddCell(CriarCelulaLabel("Matrícula:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Matricula));
+                    tableVinculo.AddCell(CriarCelulaLabel("Situação:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Situacao.DescricaoDoEnumerador()));
+
+                    tableVinculo.AddCell(CriarCelulaLabel("Tipo:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.TipoDoVinculoDeTrabalho?.Descricao, 3));
+
+                    tableVinculo.AddCell(CriarCelulaLabel("Função:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Funcao?.Descricao, 3));
+
+                    tableVinculo.AddCell(CriarCelulaLabel("Departamento:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Departamento?.Descricao, 3));
+
+                    tableVinculo.AddCell(CriarCelulaLabel("Início:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Inicio.ToString("dd/MM/yyyy")));
+                    tableVinculo.AddCell(CriarCelulaLabel("Fim:"));
+                    tableVinculo.AddCell(CriarCelulaValor(vinculo.Fim?.ToString("dd/MM/yyyy")));
+
+                    if (vinculo.Lotacoes != null && vinculo.Lotacoes.Any())
+                    {
+                        tableVinculo.AddCell(CriarCelulaSubTitulo("Lotações deste Vínculo", 4));
+
+                        foreach (var lotacao in vinculo.Lotacoes.OrderBy(l => l.Entrada))
+                        {
+                            tableVinculo.AddCell(CriarCelulaLabel("Unidade Organizacional:"));
+                            tableVinculo.AddCell(CriarCelulaValor(lotacao.UnidadeOrganizacional?.Nome, 3));
+
+                            tableVinculo.AddCell(CriarCelulaLabel("Entrada:"));
+                            tableVinculo.AddCell(CriarCelulaValor(lotacao.Entrada.ToString("dd/MM/yyyy")));
+                            tableVinculo.AddCell(CriarCelulaLabel("Saída:"));
+                            tableVinculo.AddCell(CriarCelulaValor(lotacao.Saida?.ToString("dd/MM/yyyy")));
+                        }
+                    }
+
+                    document.Add(tableVinculo);
+                }
+            }
+
+            if (servidor.ListaDeObservacoes != null && servidor.ListaDeObservacoes.Any())
+            {
+                var tableObservacoes = new Table(UnitValue.CreatePercentArray(new float[] { 1, 2, 1, 2 }))
+                    .SetWidth(UnitValue.CreatePercentValue(100))
+                    .SetMarginBottom(10);
+
+                foreach (var observacao in servidor.ListaDeObservacoes.OrderBy(c => c.CadastradaEm))
+                {
+                    tableObservacoes.AddCell(CriarCelulaTituloSecao("Observações", 4));
+                    tableObservacoes.AddCell(CriarCelulaValor(observacao.Texto, 4));
+                }
+                
+                document.Add(tableObservacoes);
+            }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
         #endregion
 
         private string GetMimeType(string fileName)
@@ -1565,6 +1737,91 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Cria uma célula de "Rótulo" (Label) padronizada para as tabelas.
+        /// </summary>
+        private Cell CriarCelulaLabel(string texto)
+        {
+            return new Cell()
+                .Add(new Paragraph(texto ?? "")
+                    .SetBold()
+                    .SetFontSize(8))
+                .SetBackgroundColor(ColorConstants.LIGHT_GRAY, 0.5f) // Fundo cinza claro
+                .SetBorderTop(Border.NO_BORDER)
+                .SetBorderLeft(Border.NO_BORDER)
+                .SetBorderRight(Border.NO_BORDER)
+                .SetPadding(4)
+                .SetVerticalAlignment(VerticalAlignment.MIDDLE);
+        }
+
+        /// <summary>
+        /// Cria uma célula de "Valor" (Value) padronizada para as tabelas.
+        /// </summary>
+        private Cell CriarCelulaValor(string texto, int colspan = 1)
+        {
+            return new Cell(1, colspan)
+                .Add(new Paragraph(string.IsNullOrWhiteSpace(texto) ? "Não informado" : texto)
+                    .SetFontSize(9))
+                .SetBorderTop(Border.NO_BORDER)
+                .SetBorderLeft(Border.NO_BORDER)
+                .SetBorderRight(Border.NO_BORDER)
+                .SetPadding(4)
+                .SetVerticalAlignment(VerticalAlignment.MIDDLE);
+        }
+
+        /// <summary>
+        /// Cria uma célula de "Título de Seção" que ocupa várias colunas.
+        /// </summary>
+        private Cell CriarCelulaTituloSecao(string texto, int colspan)
+        {
+            return new Cell(1, colspan)
+                .Add(new Paragraph(texto)
+                    .SetBold()
+                    .SetFontSize(10))
+                .SetBackgroundColor(ColorConstants.GRAY) // Fundo cinza escuro
+                .SetFontColor(ColorConstants.WHITE)     // Texto branco
+                .SetBorder(Border.NO_BORDER)
+                .SetPadding(5)
+                .SetMarginTop(8); // Espaçamento entre seções
+        }
+
+        private Cell CriarCelulaSubTitulo(string texto, int colspan)
+        {
+            return new Cell(1, colspan)
+                .Add(new Paragraph(texto)
+                    .SetBold()
+                    .SetFontSize(9))
+                .SetBackgroundColor(ColorConstants.LIGHT_GRAY, 0.7f)
+                .SetBorder(Border.NO_BORDER)
+                .SetPadding(3)
+                .SetMarginTop(5);
+        }
+
+        private ImageData ObterImagemServidor(int servidorId, int organizacaoId)
+        {
+            var caminhoFoto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{organizacaoId}", $"{servidorId}.png");
+
+            if (!System.IO.File.Exists(caminhoFoto))
+            {
+                caminhoFoto = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "sem-foto.png");
+            }
+
+            if (System.IO.File.Exists(caminhoFoto))
+            {
+                try
+                {
+                    byte[] fotoBytes = System.IO.File.ReadAllBytes(caminhoFoto);
+                    return ImageDataFactory.Create(fotoBytes);
+                }
+                catch (IOException)
+                {
+                    return null;
+                }
+            }
+
+            return null;
         }
     }
 }

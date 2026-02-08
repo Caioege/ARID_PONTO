@@ -6,6 +6,13 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class Servidor : EntidadeOrganizacaoBase
     {
+        public Servidor()
+        {
+            VinculosDeTrabalho = new();
+            ListaDeAnexos = new();
+            ListaDeObservacoes = new();
+        }
+
         [Required]
         public int PessoaId { get; set; }
 
@@ -17,6 +24,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public virtual List<VinculoDeTrabalho> VinculosDeTrabalho { get; set; }
         public virtual List<AnexoServidor> ListaDeAnexos { get; set; }
+        public virtual List<ObservacaoServidor> ListaDeObservacoes { get; set; }
 
         public bool AcessoAoAplicativo { get; set; }
         public bool RegistroDePontoNoAplicativo { get; set; }

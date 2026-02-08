@@ -47,5 +47,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<RegistroAplicativo> RegistroAplicativo { get; set; }
         public DbSet<AnexoServidor> AnexoServidor { get; set; }
         public DbSet<MotivoDeDemissao> MotivoDeDemissao { get; set; }
+        public DbSet<ObservacaoServidor> ObservacaoServidor { get; set; }
     }
 }

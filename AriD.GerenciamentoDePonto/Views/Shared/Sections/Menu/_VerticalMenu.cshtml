@@ -3,13 +3,9 @@
 
 @{
     TempData.Keep();
-    string? currentPage = ViewContext.HttpContext.Request.Path;
 }
 
 @{
-    var menuControlador = TempData[VariaveisDeMenu.MenuControlador] ?? string.Empty;
-    var paginaAtual = TempData[VariaveisDeMenu.MenuPaginaAtual] ?? string.Empty;
-
     var dadosDaSessao = this.Context.DadosDaSessao();
     var listaDePermissao = dadosDaSessao.Permissoes;
     var usuarioAdm = dadosDaSessao.UsuarioAdministradorAutenticado;
@@ -17,6 +13,59 @@
     var nomenclaturaServidores = Context.NomenclaturaServidores();
     var nomenclaturaServidor = Context.NomenclaturaServidor();
 }
+
+<style>
+    #menuSearchInput {
+        background-color: #ffffff !important;
+        color: #495057 !important;
+        border: 1px solid #d9dee3;
+    }
+
+    #menuSearchInput::placeholder {
+        color: #b5b5b5;
+    }
+
+    .menu-inner > .menu-item {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .menu-inner > .menu-item > .menu-link {
+        padding-left: 1.5rem !important;
+    }
+
+    .menu-sub .menu-item .menu-link {
+        padding-left: 2rem !important;
+    }
+
+    .menu-item.menu-group.open {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid #d9dee3 !important;
+        border-radius: 0.375rem !important;
+    }
+
+    .menu-group.open > .menu-sub {
+        background: #c8d2e0;
+    }
+
+    .menu-inner {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .search-container {
+        padding: 0 1.5rem 0.5rem 1.5rem; 
+    }
+
+    mark.highlight-text {
+        background-color: #ffe000;
+        color: #000;
+        padding: 0;
+        font-weight: bold;
+        border-radius: 2px;
+    }
+</style>
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
@@ -27,40 +76,39 @@
             <span class="app-brand-text demo menu-text fw-bold ms-2">@TempData.Peek("appName")</span>
         </div>
 
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text- large ms-auto d-block d-xl-none">
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
         </a>
     </div>
 
     <div class="menu-inner-shadow"></div>
 
-    <ul class="menu-inner py-1">
+    @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && dadosDaSessao.Perfil != ePerfilDeAcesso.Servidor)
+    {
+        <div class="search-container mb-2">
+            <input type="text" id="menuSearchInput" class="form-control" placeholder="Pesquisar no menu..." autocomplete="off">
+        </div>
+    }
+
+    <ul class="menu-inner py-1" id="main-menu-list">
         @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Servidor)
         {
-            <li class='menu-item'>
+            <li class='menu-item searchable-item'>
                 <a onclick="CarregarPagina('@Url.Action("RegistrosDePonto", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
-                    <div>
-                        <i class='bx bxs-time'></i>
-                        Registros de Ponto
-                    </div>
+                    <i class='menu-icon bx bxs-time'></i>
+                    <div class="menu-text-content">Registros de Ponto</div>
                 </a>
             </li>
-
-            <li class='menu-item'>
+            <li class='menu-item searchable-item'>
                 <a onclick="CarregarPagina('@Url.Action("Atestados", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
-                    <div>
-                        <i class='bx bx-plus-medical'></i>
-                        Atestados
-                    </div>
+                    <i class='menu-icon bx bx-plus-medical'></i>
+                    <div class="menu-text-content">Atestados</div>
                 </a>
             </li>
-
-            <li class='menu-item'>
+            <li class='menu-item searchable-item'>
                 <a onclick="CarregarPagina('@Url.Action("AlterarSenha", "PortalServidor")')" href="javascript:void(0)" class="menu-link">
-                    <div>
-                        <i class='bx bxs-log-in-circle'></i>
-                        Alterar Senha
-                    </div>
+                    <i class='menu-icon bx bxs-log-in-circle'></i>
+                    <div class="menu-text-content">Alterar Senha</div>
                 </a>
             </li>
         }
@@ -68,32 +116,26 @@
         {
             if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && listaDePermissao.PossuiPermissao(eItemDePermissao_Dashboard.Visualizar, usuarioAdm))
             {
-                <li class='menu-item'>
+                <li class='menu-item searchable-item'>
                     <a onclick="CarregarPagina('@Url.Action("Index", "Dashboard")')" href="javascript:void(0)" class="menu-link">
-                        <div>
-                            <i class='bx bxs-dashboard'></i>
-                            Dashboard
-                        </div>
+                        <i class='menu-icon bx bxs-dashboard'></i>
+                        <div class="menu-text-content">Dashboard</div>
                     </a>
                 </li>
             }
 
-            <li class='menu-item open'>
-                <div class="divider" style="margin: 0px 15px 0px 15px;">
-                    <div class="divider-text">
-                        <i class="bx bx-slider-alt"></i>
-                        Administração
-                    </div>
-                </div>
+            <li class="menu-item menu-group">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-slider-alt"></i>
+                    <div data-i18n="Administração">Administração</div>
+                </a>
                 <ul class="menu-sub">
                     @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
                     {
-                        <li class='menu-item'>
+                        <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
-                                <div>
-                                    <i class='bx bx-buildings'></i>
-                                    Organizações
-                                </div>
+                                <i class='menu-icon bx bx-buildings'></i>
+                                <div class="menu-text-content">Organizações</div>
                             </a>
                         </li>
                     }
@@ -101,288 +143,239 @@
                     {
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_Funcao.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-bookmark-alt'></i>
-                                        Cargo/Função
-                                    </div>
+                                    <i class='menu-icon bx bxs-bookmark-alt'></i>
+                                    <div class="menu-text-content">Cargo/Função</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_Departamento.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "Departamento")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-bookmark'></i>
-                                        Departamento
-                                    </div>
+                                    <i class='menu-icon bx bxs-bookmark'></i>
+                                    <div class="menu-text-content">Departamento</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_EventoAnual.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "EventoAnual")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-calendar-event'></i>
-                                        Evento Anual
-                                    </div>
+                                    <i class='menu-icon bx bxs-calendar-event'></i>
+                                    <div class="menu-text-content">Evento Anual</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_EquipamentoDePonto.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bx-mobile-alt'></i>
-                                        Equipamento de Ponto
-                                    </div>
+                                    <i class='menu-icon bx bx-mobile-alt'></i>
+                                    <div class="menu-text-content">Equipamento de Ponto</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-timer'></i>
-                                        Horário de Trabalho
-                                    </div>
+                                    <i class='menu-icon bx bxs-timer'></i>
+                                    <div class="menu-text-content">Horário de Trabalho</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_ImportarAFD.ImportarArquivoFonteDeDados, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ImportarAFD", "EquipamentoDePonto")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-file-import'></i>
-                                        Importar AFD
-                                    </div>
+                                    <i class='menu-icon bx bxs-file-import'></i>
+                                    <div class="menu-text-content">Importar AFD</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_JustificativaDeAusencia.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "JustificativaDeAusencia")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-bookmark-minus'></i>
-                                        Justificativa de Ausência
-                                    </div>
+                                    <i class='menu-icon bx bxs-bookmark-minus'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Justificativa de Ausência</div>
                                 </a>
                             </li>
                         }
                         @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bx-buildings'></i>
-                                        Minha Organização
-                                    </div>
+                                    <i class='menu-icon bx bx-buildings'></i>
+                                    <div class="menu-text-content">Minha Organização</div>
                                 </a>
                             </li>
                         }
                         if (listaDePermissao.PossuiPermissao(eItemDePermissao_MotivoDeDemissao.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "MotivoDeDemissao")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bx-task-x'></i>
-                                        Motivo de Demissão
-                                    </div>
+                                    <i class='menu-icon bx bx-task-x'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Motivo de Demissão</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_TipoDeVinculoDeTrabalho.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-bookmarks'></i>
-                                        Tipo do Vínculo de Trabalho
-                                    </div>
+                                    <i class='menu-icon bx bxs-bookmarks'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Tipo do Vínculo de Trabalho</div>
                                 </a>
                             </li>
                         }
                     }
                 </ul>
             </li>
+
             @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
             {
-                <li class='menu-item open'>
-                    <div class="divider" style="margin: 0px 15px 0px 15px;">
-                        <div class="divider-text">
-                            <i class='bx bxs-user-circle'></i>
-                            @nomenclaturaServidor
-                        </div>
-                    </div>
+                <li class="menu-item menu-group">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class='menu-icon tf-icons bx bxs-user-circle'></i>
+                        <div data-i18n="@nomenclaturaServidor">@nomenclaturaServidor</div>
+                    </a>
                     <ul class="menu-sub">
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Servidor.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "Servidor")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-user-detail'></i>
-                                        Cadastro de @nomenclaturaServidores
-                                    </div>
+                                    <i class='menu-icon bx bxs-user-detail'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Cadastro de @nomenclaturaServidores</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Escala.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "Escala")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class="bx bx-book-content"></i>
-                                        Escalas
-                                    </div>
+                                    <i class="menu-icon bx bx-book-content"></i>
+                                    <div class="menu-text-content">Escalas</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.Gerenciar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bxs-calendar'></i>
-                                        Folha de Ponto
-                                    </div>
+                                    <i class='menu-icon bx bxs-calendar'></i>
+                                    <div class="menu-text-content">Folha de Ponto</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RegistrosDePonto.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "RegistroDePonto")')" href="javascript:void(0)" class="menu-link">
-                                    <div>
-                                        <i class='bx bx-collection'></i>
-                                        Registros de Ponto
-                                    </div>
+                                    <i class='menu-icon bx bx-collection'></i>
+                                    <div class="menu-text-content">Registros de Ponto</div>
                                 </a>
                             </li>
                         }
                     </ul>
                 </li>
-                <li class='menu-item open'>
-                    <div class="divider" style="margin: 0px 15px 0px 15px;">
-                        <div class="divider-text">
-                            <i class='bx bxs-report'></i>
-                            Relatórios
-                        </div>
-                    </div>
+
+                <li class="menu-item menu-group">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class='menu-icon tf-icons bx bxs-report'></i>
+                        <div data-i18n="Relatórios">Relatórios</div>
+                    </a>
                     <ul class="menu-sub">
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAniversariantesDoPeriodo.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("AniversariantesDoPeriodo", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-calendar'></i>
-                                        Aniversariantes do Período
-                                    </div>
+                                    <i class='menu-icon bx bxs-calendar'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Aniversariantes do Período</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ListaDeServidores", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-user-account'></i>
-                                        Lista de @nomenclaturaServidores
-                                    </div>
+                                    <i class='menu-icon bx bxs-user-account'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Lista de @nomenclaturaServidores</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresDemitidos.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresDemitidos", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bx-task-x'></i>
-                                        @nomenclaturaServidores Demitidos
-                                    </div>
+                                    <i class='menu-icon bx bx-task-x'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores Demitidos</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComAfastamento.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresComAfastamento", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-user-voice'></i>
-                                        @nomenclaturaServidores com Afastamentos
-                                    </div>
+                                    <i class='menu-icon bx bxs-user-voice'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores com Afastamentos</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresComEscala.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresPorEscala", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bx-book-content'></i>
-                                        @nomenclaturaServidores por Escala
-                                    </div>
+                                    <i class='menu-icon bx bx-book-content'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Escala</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-timer'></i>
-                                        @nomenclaturaServidores por Horário de Trabalho
-                                    </div>
+                                    <i class='menu-icon bx bxs-timer'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Horário de Trabalho</div>
                                 </a>
                             </li>
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioHorasPorServidor.Visualizar, usuarioAdm))
                         {
-                            <li class='menu-item'>
+                            <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("HorasPorServidor", "Relatorio")')" href="javascript:void(0)" class="menu-link">
-                                    <div style="white-space: normal !important;">
-                                        <i class='bx bxs-user-account'></i>
-                                        Horas Positivas/Negativas por @nomenclaturaServidor
-                                    </div>
+                                    <i class='menu-icon bx bxs-user-account'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Horas Positivas/Negativas por @nomenclaturaServidor</div>
                                 </a>
                             </li>
                         }
                     </ul>
                 </li>
             }
-            <li class='menu-item open'>
-                <div class="divider" style="margin: 0px 15px 0px 15px;">
-                    <div class="divider-text">
-                        <i class='bx bxs-user-badge'></i>
-                        Usuários
-                    </div>
-                </div>
+
+            <li class="menu-item menu-group">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class='menu-icon tf-icons bx bxs-user-badge'></i>
+                    <div data-i18n="Usuários">Usuários</div>
+                </a>
                 <ul class="menu-sub">
                     @if ((dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao || dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) && listaDePermissao.PossuiPermissao(eItemDePermissao_Usuarios.Visualizar, usuarioAdm))
                     {
-                        <li class='menu-item'>
+                        <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-user-account'></i>
-                                    Cadastro de Usuários
-                                </div>
+                                <i class='menu-icon bx bxs-user-account'></i>
+                                <div class="menu-text-content" style="white-space: normal !important;">Cadastro de Usuários</div>
                             </a>
                         </li>
                     }
                     @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao && listaDePermissao.PossuiPermissao(eItemDePermissao_GrupoDePermissao.Visualizar, usuarioAdm))
                     {
-                        <li class='menu-item'>
+                        <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')" href="javascript:void(0)" class="menu-link">
-                                <div style="white-space: normal !important;">
-                                    <i class='bx bxs-user-check'></i>
-                                    Grupo de Permissão
-                                </div>
+                                <i class='menu-icon bx bxs-user-check'></i>
+                                <div class="menu-text-content" style="white-space: normal !important;">Grupo de Permissão</div>
                             </a>
                         </li>
                     }
@@ -393,11 +386,92 @@
 </aside>
 
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll('.menu-item.open').forEach(function (menu) {
-                if (menu.querySelectorAll('li').length === 0) {
-                    menu.remove();
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const menuSearchInput = document.getElementById('menuSearchInput');
+        const menuItems = document.querySelectorAll('.searchable-item');
+        const menuGroups = document.querySelectorAll('.menu-group');
+
+        function removerAcentos(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        function criarRegexParaHighlight(termo) {
+            const mapaAcentos = {
+                'a': '[aáàâãä]', 'e': '[eéèêë]', 'i': '[iíìîï]',
+                'o': '[oóòôõö]', 'u': '[uúùûü]', 'c': '[cç]',
+                'n': '[nñ]', 'y': '[yýÿ]'
+            };
+
+            let termoSeguro = termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            termoSeguro = termoSeguro.replace(/[aeioucny]/gi, function(match) {
+                return mapaAcentos[match.toLowerCase()] || match;
+            });
+
+            return new RegExp(`(${termoSeguro})`, 'gi');
+        }
+
+        function verificarGruposVazios() {
+            menuGroups.forEach(group => {
+                const subItems = group.querySelectorAll('.menu-sub li');
+                const visibleSubItems = Array.from(subItems).filter(item => item.style.display !== 'none');
+
+                if (visibleSubItems.length === 0) {
+                    group.style.display = 'none';
+                } else {
+                    group.style.display = '';
                 }
             });
+        }
+
+        verificarGruposVazios();
+
+        menuSearchInput.addEventListener('input', function () {
+            const textoDigitado = this.value;
+            const textoFiltro = removerAcentos(textoDigitado);
+
+            menuItems.forEach(item => {
+                const textDiv = item.querySelector('.menu-text-content');
+
+                if (!textDiv.hasAttribute('data-original-text')) {
+                    textDiv.setAttribute('data-original-text', textDiv.textContent);
+                }
+
+                const textoOriginal = textDiv.getAttribute('data-original-text');
+                const textoOriginalNormalizado = removerAcentos(textoOriginal);
+
+                if (textoOriginalNormalizado.includes(textoFiltro)) {
+                    item.style.display = '';
+
+                    if (textoFiltro.length > 0) {
+                        const regexHighlight = criarRegexParaHighlight(textoDigitado);
+                        if (textoOriginal.match(regexHighlight)) {
+                            textDiv.innerHTML = textoOriginal.replace(regexHighlight, '<mark class="highlight-text">$1</mark>');
+                        } else {
+                            textDiv.innerHTML = textoOriginal;
+                        }
+
+                        const parentGroup = item.closest('.menu-group');
+                        if (parentGroup) {
+                            parentGroup.classList.add('open');
+                        }
+                    } else {
+                        textDiv.innerHTML = textoOriginal;
+                    }
+                } else {
+                    item.style.display = 'none';
+                    textDiv.innerHTML = textoOriginal;
+                }
+            });
+
+            if (textoFiltro.length === 0) {
+                document.querySelectorAll('.menu-group.open').forEach(group => {
+                    group.classList.remove('open');
+                });
+            }
+
+            verificarGruposVazios();
         });
+    });
 </script>

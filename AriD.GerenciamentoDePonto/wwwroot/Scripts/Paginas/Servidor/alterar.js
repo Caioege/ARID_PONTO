@@ -524,3 +524,104 @@ function assineChangeSituacaoVinculo() {
         }
     });
 }
+
+function abrirModalObservacao(id) {
+    RequisicaoAjaxComCarregamento(
+        '/Servidor/ModalObservacao',
+        'GET',
+        { id, servidorId: $('#formulario-servidor #Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                assineMascarasDoComponente($('#_ModalObservacao'));
+                assineSalvarObservacao();
+                assineRemoverObservacao();
+                $('#_ModalObservacao').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}
+
+function assineSalvarObservacao() {
+    $('#_ModalObservacao').find('#btn-salvar-modal').on('click', function () {
+        let dadosFormulario = ObtenhaFormularioSerializado('formulario-observacao');
+        if (!dadosFormulario.formularioEstaValido) {
+            MensagemRodape('warning', 'Existem campos obrigatórios que não foram preenchidos!');
+            return;
+        }
+
+        RequisicaoAjaxComCarregamento(
+            '/Servidor/SalvarObservacao',
+            'POST',
+            { observacao: dadosFormulario.dados },
+            function (data) {
+                if (data.sucesso) {
+                    MensagemRodape('success', data.mensagem);
+                    $('#_ModalObservacao').modal('hide');
+                    recarregarPartialDeObservacao();
+                } else {
+                    MensagemRodape('warning', data.mensagem);
+                }
+            });
+    });
+}
+
+function recarregarPartialDeObservacao() {
+    $.ajax({
+        url: '/Servidor/PartialObservacao',
+        type: 'GET',
+        data: { servidorId: $('#formulario-servidor').find('#Id').val() }
+    }).done(function (data) {
+        if (data.sucesso) {
+            $('#s5').html(data.html);
+        } else {
+            MensagemRodape('warning', data.mensagem);
+        }
+    });
+}
+
+function assineRemoverObservacao() {
+    $('#_ModalObservacao').find('#btn-remover-modal').on('click', function () {
+        Swal.fire({
+            html: 'Tem certeza que deseja remover essa observação?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#7b7b7b",
+            confirmButtonText: "Sim",
+            cancelButtonText: 'Não'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                RequisicaoAjaxComCarregamento(
+                    '/Servidor/RemoverObservacao',
+                    'POST',
+                    { observacaoId: $('#formulario-observacao').find('#Id').val() },
+                    function (data) {
+                        if (data.sucesso) {
+                            MensagemRodape('success', data.mensagem);
+                            $('#_ModalObservacao').modal('hide');
+                            recarregarPartialDeObservacao();
+                        } else {
+                            MensagemRodape('warning', data.mensagem);
+                        }
+                    });
+            }
+        });
+    });
+}
+
+function gerarRelatorioServidor(rota) {
+    RequisicaoAjaxComCarregamento(
+        '/Relatorio' + rota,
+        'POST',
+        { servidorId: $('#Id').val() },
+        function (data) {
+            if (data.sucesso) {
+                MensagemRodape('success', 'O arquivo será baixado...');
+                downloadBase64File(data.base64, data.fileName, data.mimeType);
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}

@@ -2,14 +2,12 @@
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
-using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.StaticFiles;
-using Newtonsoft.Json;
 using System.Linq.Expressions;
 
 namespace AriD.GerenciamentoDePonto.Controllers
@@ -29,6 +27,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<AnexoServidor> _servicoAnexoServidor;
         private readonly IServico<MotivoDeDemissao> _servicoMotivoDeDemissao;
         private readonly IServicoDeServidor _servicoDeServidor;
+        private readonly IServico<ObservacaoServidor> _servicoObservacao;
 
         public ServidorController(
             IServico<Servidor> servico,
@@ -43,7 +42,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<JustificativaDeAusencia> servicoJustificativa,
             IServico<AnexoServidor> servicoAnexoServidor,
             IServico<MotivoDeDemissao> servicoMotivoDeDemissao,
-            IServicoDeServidor servicoDeServidor)
+            IServicoDeServidor servicoDeServidor,
+            IServico<ObservacaoServidor> servicoObservacao)
         {
             _servico = servico;
             _servicoVinculoDeTrabalho = servicoVinculoDeTrabalho;
@@ -58,6 +58,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoAnexoServidor = servicoAnexoServidor;
             _servicoMotivoDeDemissao = servicoMotivoDeDemissao;
             _servicoDeServidor = servicoDeServidor;
+            _servicoObservacao = servicoObservacao;
         }
 
         [HttpGet]
@@ -427,6 +428,56 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             _servicoDeServidor.ExecuteAcaoEmLote(acao, this.HttpContext.DadosDaSessao());
             return Json(new { sucesso = true, mensagem = $"A ação em lote foi executada." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ModalObservacao(int id, int servidorId)
+        {
+            var modelo = id == 0 ?
+                new ObservacaoServidor() { ServidorId = servidorId, Ativa = true } :
+                _servicoObservacao.Obtenha(id);
+
+            var html = await RenderizarComoString("_ModalObservacao", modelo);
+
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult SalvarObservacao(ObservacaoServidor observacao)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            observacao.OrganizacaoId = dadosDaSessao.OrganizacaoId;
+            observacao.UsuarioId = dadosDaSessao.UsuarioId;
+            observacao.CadastradaEm = DateTime.Now;
+
+            if (observacao.Id == 0)
+                _servicoObservacao.Adicionar(observacao);
+            else
+            {
+                var persistido = _servicoObservacao.Obtenha(observacao.Id);
+
+                observacao.CadastradaEm = persistido.CadastradaEm;
+                observacao.UsuarioId = persistido.UsuarioId;
+
+                _servicoObservacao.Atualizar(observacao);
+            }
+
+            return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PartialObservacao(int servidorId)
+        {
+            var servidor = _servico.Obtenha(servidorId);
+            var html = await RenderizarComoString("_Observacoes", servidor);
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult RemoverObservacao(int observacaoId)
+        {
+            _servicoAnexoServidor.Remover(_servicoAnexoServidor.Obtenha(observacaoId));
+            return Json(new { sucesso = true, mensagem = "A observação foi removida." });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Servidor> listaPaginada)
