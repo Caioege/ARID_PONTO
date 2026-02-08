@@ -186,6 +186,18 @@
             </table>
 
             @{
+                var modelRelAniversariantes =
+                    new Tuple<string, Type, GrupoDePermissao>($"Aniversariantes do Período", typeof(eItemDePermissao_RelatorioAniversariantesDoPeriodo), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelAniversariantes)
+
+            @{
+                var modelRelConferenciaDePonto =
+                    new Tuple<string, Type, GrupoDePermissao>($"Conferência de Ponto Diário", typeof(eItemDePermissao_RelatorioConferenciaDePonto), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelConferenciaDePonto)
+
+            @{
                 var modelRelListaDeServidores =
                 new Tuple<string, Type, GrupoDePermissao>($"Lista de {nomenclaturaServidores}", typeof(eItemDePermissao_RelatorioListaDeServidores), Model);
             }
@@ -214,6 +226,12 @@
                 new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} por Horário de Trabalho", typeof(eItemDePermissao_RelatorioServidoresPorHorarioDeTrabalho), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorHorario)
+
+            @{
+                var modelRelServidoresPorLotacao =
+                new Tuple<string, Type, GrupoDePermissao>($"{nomenclaturaServidores} por Lotação", typeof(eItemDePermissao_RelatorioServidoresPorLotacao), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelServidoresPorLotacao)
             
             @{
                 var modelRelHorasPorServidor =

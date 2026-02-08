@@ -297,6 +297,15 @@
                                 </a>
                             </li>
                         }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioConferenciaDePonto.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ConferenciaDePontoDiario", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='bx bxs-calendar-check'></i> 
+                                    <div class="menu-text-content" style="white-space: normal !important;">Conferência de Ponto Diário</div>
+                                </a>
+                            </li>
+                        }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioListaDeServidores.Visualizar, usuarioAdm))
                         {
                             <li class='menu-item searchable-item'>
@@ -339,6 +348,15 @@
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-timer'></i>
                                     <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Horário de Trabalho</div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioServidoresPorLotacao.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("ServidoresPorLotacao", "Relatorio")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='bx bx-list-ol'></i>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Lotação</div>
                                 </a>
                             </li>
                         }

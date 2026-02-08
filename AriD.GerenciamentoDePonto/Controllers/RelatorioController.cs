@@ -1,20 +1,21 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.GerenciamentoDePonto.Helpers;
+using AriD.Servicos.Extensao;
 using AriD.Servicos.Servicos.Interfaces;
+using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using AriD.BibliotecaDeClasses.Enumeradores;
-using iText.IO.Image;
-using iText.Layout.Borders;
-using AriD.Servicos.Extensao;
-using AriD.BibliotecaDeClasses.DTO;
-using AriD.BibliotecaDeClasses.Comum;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Win32;
 using System.Globalization;
 using System.Text;
 
@@ -507,6 +508,152 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             var relatorio = ObtenhaRelatorioFichaDoServidor(servidorId);
             var nomeArquivo = "Ficha do Servidor.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult ConferenciaDePontoDiario()
+        {
+            try
+            {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
+
+                ViewBag.Horarios = new SelectList(_servicoHorario
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id",
+                    "SiglaComDescricao");
+
+                ViewBag.Tipos = new SelectList(_servicoTipo
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id",
+                    "SiglaComDescricao");
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarConferenciaDePontoDiario(
+            DateTime? data,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            if (!data.HasValue || data == DateTime.MinValue)
+                throw new ApplicationException("A data deve ser informada.");
+            else if (data > DateTime.Today)
+                throw new ApplicationException("Não é possível processar a conferência para datas futuras.");
+
+            var sessao = HttpContext.DadosDaSessao();
+            if (sessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = sessao.UnidadeOrganizacionais.First();
+
+            if (!unidadeId.HasValue)
+                throw new ApplicationException("A unidade organizacional deve ser informada.");
+
+            var relatorio = ObtenhaRelatorioConferenciaDePonto(
+                unidadeId.Value,
+                data.Value,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId);
+
+            var nomeArquivo = $"Conferência de Ponto {data.Value.ToString("dd-MM-yyyy")}.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult ServidoresPorLotacao()
+        {
+            try
+            {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
+
+                ViewBag.Horarios = new SelectList(_servicoHorario
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id",
+                    "SiglaComDescricao");
+
+                ViewBag.Tipos = new SelectList(_servicoTipo
+                    .ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
+                    .OrderBy(c => c.SiglaComDescricao),
+                    "Id",
+                    "SiglaComDescricao");
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarServidoresPorLotacao(
+            DateTime? entrada,
+            int? unidadeId,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var sessao = HttpContext.DadosDaSessao();
+            if (sessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = sessao.UnidadeOrganizacionais.First();
+
+            var relatorio = ObtenhaRelatorioServidoresPorLotacao(
+                unidadeId,
+                entrada,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId);
+
+            var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} por Lotação.pdf";
 
             return Json(new
             {
@@ -1617,19 +1764,347 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
             }
 
-            if (servidor.ListaDeObservacoes != null && servidor.ListaDeObservacoes.Any())
+            if (servidor.ListaDeObservacoes != null && servidor.ListaDeObservacoes.Any(c => c.Ativa))
             {
                 var tableObservacoes = new Table(UnitValue.CreatePercentArray(new float[] { 1, 2, 1, 2 }))
                     .SetWidth(UnitValue.CreatePercentValue(100))
                     .SetMarginBottom(10);
 
-                foreach (var observacao in servidor.ListaDeObservacoes.OrderBy(c => c.CadastradaEm))
+                foreach (var observacao in servidor.ListaDeObservacoes.Where(c => c.Ativa).OrderBy(c => c.CadastradaEm))
                 {
                     tableObservacoes.AddCell(CriarCelulaTituloSecao("Observações", 4));
                     tableObservacoes.AddCell(CriarCelulaValor(observacao.Texto, 4));
                 }
                 
                 document.Add(tableObservacoes);
+            }
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] ObtenhaRelatorioConferenciaDePonto(
+            int unidadeOrganizacionalId,
+            DateTime data,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+
+            var registros = _servicoDeRelatorios.ObtenhaListaDeDadosParaConferenciaDePonto(
+                dadosDaSessao.OrganizacaoId,
+                unidadeOrganizacionalId,
+                data,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId,
+                dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento ? dadosDaSessao.DepartamentoId : null);
+
+            if (registros.Count == 0)
+                throw new ApplicationException($"Nenhum registro encontrado para os filtros informados.");
+
+            var nomeUnidade = _servicoUnidade.Obtenha(unidadeOrganizacionalId).Nome;
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(8);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(3)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add($"Conferência de Ponto: {data.ToString("dd/MM/yyyy")}\n{nomeUnidade}")));
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.RIGHT)
+                    .SetFontSize(6f)
+                    .Add($"Consulta efetuada em: {DateTime.Now.ToString("dd/MM/yyyy")} às {DateTime.Now.ToString("HH:mm")}")));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    35f,
+                    30f, // ORIGEM
+                    5f,  // HORA
+                    10f, // SITUACAO
+                    20f, // LAT/LONG
+                })).UseAllAvailableWidth();
+
+            table
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text(dadosDaSessao.NomenclaturaServidor.NomenclaturaSingular()))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Origem"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Hora"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Situação"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Lat/Long"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+            foreach (var grupoServidor in registros
+                .OrderBy(c => c.ServidorNome)
+                .GroupBy(c => c.ServidorId))
+            {
+                var servidor = grupoServidor.First();
+
+                var rowSpan = grupoServidor.Count();
+
+                table.AddCell(new Cell(rowSpan, 1)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                    .Add(new Paragraph()
+                    .Add(new Text($"{servidor.ServidorNome}\nCPF:{servidor.ServidorCpf}"))));
+
+                foreach (var registro in grupoServidor.OrderBy(c => c.DataHora))
+                {
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{registro.Origem}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{registro.DataHora.ToString("HH:mm")}"))));
+
+                    var situacaoTexto = registro.Situacao switch
+                    {
+                        eSituacaoRegistroAplicativo.AguardandoAvaliacao => "AGD\nAVA",
+                        eSituacaoRegistroAplicativo.Aprovado => "APR",
+                        eSituacaoRegistroAplicativo.Reprovado => "REP",
+                        _ => "-"
+                    };
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{situacaoTexto}"))));
+
+                    var textoLatLong = (!string.IsNullOrWhiteSpace(registro.Latitude) && !string.IsNullOrWhiteSpace(registro.Longitude)) ?
+                        $"Lat: {servidor.Latitude}\nLong:{servidor.Longitude}" :
+                        "";
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{textoLatLong}"))));
+                }
+            }
+
+            document.Add(new Div().Add(table));
+
+            document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] ObtenhaRelatorioServidoresPorLotacao(
+            int? unidadeOrganizacionalId,
+            DateTime? entrada,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId)
+        {
+            var dadosDaSessao = this.DadosDaSessao();
+
+            var registros = _servicoDeRelatorios.ObtenhaListaDeDadosPorLotacao(
+                dadosDaSessao.OrganizacaoId,
+                unidadeOrganizacionalId,
+                entrada,
+                horarioDeTrabalhoId,
+                tipoDeVinculoDeTrabalhoId,
+                dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento ? dadosDaSessao.DepartamentoId : null);
+
+            if (registros.Count == 0)
+                throw new ApplicationException($"Nenhum registro encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(8);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .Add($"{HttpContext.NomenclaturaServidores()} por Lotação")));
+
+            var grupoUnidade = registros
+                .OrderBy(c => c.UnidadeNome)
+                .GroupBy(c => c.UnidadeId);
+
+            var ultimaUnidade = grupoUnidade.Last();
+            foreach (var unidade in grupoUnidade)
+            {
+                var table = new Table(UnitValue.CreatePercentArray(new[]
+                {
+                    25f, // NOME
+                    15f, // CPF
+                    10f, // MATRICULA
+                    15f, // TIPO
+                    15f, // HORARIO
+                    10f, // ENTRADA
+                    10f  // TEMPO
+                })).UseAllAvailableWidth();
+
+                table
+                    .AddCell(new Cell(1, 7)
+                    .Add(new Paragraph()
+                            .Add(new Text($"{unidade.First().UnidadeNome}\nEndereço: {unidade.First().EnderecoCompleto}")))
+                            .SetBold()
+                            .SetBackgroundColor(ColorConstants.GRAY, 0.5f)
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetVerticalAlignment(VerticalAlignment.MIDDLE));
+
+                table
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text(dadosDaSessao.NomenclaturaServidor.NomenclaturaSingular()))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("CPF"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Matrícula"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Tipo"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Horário"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Entrada"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)))
+                .AddCell(new Cell()
+                    .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                    .Add(new Paragraph()
+                    .Add(new Text("Tempo\nServiço"))
+                    .SetBold()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+                foreach (var servidor in unidade
+                    .OrderBy(c => c.ServidorNome)
+                    .ThenBy(c => c.Entrada))
+                {
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .Add(new Text($"{servidor.ServidorNome}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{servidor.ServidorCpf}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{servidor.VinculoMatricula}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{servidor.TipoVinculo}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{servidor.HorarioDeTrabalho}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{servidor.Entrada.ToString("dd/MM/yyyy")}"))));
+
+                    table.AddCell(new Cell()
+                        .SetVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .Add(new Paragraph()
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .Add(new Text($"{CalcularTempoServico(servidor.Entrada)}"))));
+                }
+
+                document.Add(new Div().Add(table));
+
+                if (ultimaUnidade.Key != unidade.Key)
+                    document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
             }
 
             document.Close();
@@ -1822,6 +2297,47 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             return null;
+        }
+
+        public string CalcularTempoServico(DateTime dataAdmissao)
+        {
+            var dataAtual = DateTime.Now.Date;
+
+            if (dataAdmissao.Date > dataAtual)
+                return string.Empty;
+
+            var anos = dataAtual.Year - dataAdmissao.Year;
+            var meses = dataAtual.Month - dataAdmissao.Month;
+            var dias = dataAtual.Day - dataAdmissao.Day;
+
+            if (dias < 0)
+            {
+                meses--;
+                var dataMesAnterior = dataAtual.AddMonths(-1);
+                dias += DateTime.DaysInMonth(dataMesAnterior.Year, dataMesAnterior.Month);
+            }
+
+            if (meses < 0)
+            {
+                anos--;
+                meses += 12;
+            }
+
+            if (anos >= 1)
+            {
+                var strAnos = anos == 1 ? "1 ano" : $"{anos} anos";
+                var strMeses = meses == 1 ? "1 mês" : $"{meses} meses";
+                return $"{strAnos} e {strMeses}";
+            }
+
+            if (meses >= 1)
+            {
+                var strMeses = meses == 1 ? "1 mês" : $"{meses} meses";
+                var strDias = dias == 1 ? "1 dia" : $"{dias} dias";
+                return $"{strMeses} e {strDias}";
+            }
+
+            return dias == 1 ? "1 dia" : $"{dias} dias";
         }
     }
 }

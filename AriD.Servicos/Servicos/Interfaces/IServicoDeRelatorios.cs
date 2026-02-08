@@ -48,5 +48,21 @@ namespace AriD.Servicos.Servicos.Interfaces
             int? departamentoId);
 
         List<EventoAnual> ObtenhaListaDeEventosDaOrganizacao(int organizacaoId);
+
+        List<RelatorioConferenciaDePontoDTO> ObtenhaListaDeDadosParaConferenciaDePonto(
+            int organizacaoId,
+            int unidadeOrganizacionalId,
+            DateTime data,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId);
+
+        List<RelatorioServidorPorLotacaoDTO> ObtenhaListaDeDadosPorLotacao(
+            int organizacaoId,
+            int? unidadeOrganizacionalId,
+            DateTime? entrada,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId);
     }
 }

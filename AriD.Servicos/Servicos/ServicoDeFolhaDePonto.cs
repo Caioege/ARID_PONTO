@@ -1200,6 +1200,26 @@ namespace AriD.Servicos.Servicos
             }
         }
 
+        public string ObtenhaObservacaoDoServidorNaFolhaDePonto(int vinculoDeTrabalhoId)
+        {
+            try
+            {
+                return _repositorio.ConsultaDapper<string>(
+                    @"select
+	                    ser.AlertaManutencaoDePonto
+                    from servidor ser
+                    inner join vinculodetrabalho vin
+	                    on vin.ServidorId = ser.Id
+                    where
+	                    vin.Id = @VINCULOID
+                    limit 1", new { @VINCULOID = vinculoDeTrabalhoId }).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private void CalculeCargaHorariaDoDia(
             ref PontoDoDia pontoDoDia,
             EventoAnual eventoNoDia,

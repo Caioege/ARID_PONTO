@@ -45,6 +45,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [MaxLength(200)]
         public string? EspecialidadeMedica { get; set; }
 
+        [Required]
+        public bool HabilitaExportacaoParaFolhaDePagamento { get; set; }
+
+        [MaxLength(1000)]
+        public string? AlertaManutencaoDePonto { get; set; }
+
         public string Nome => Pessoa?.Nome;
     }
 }

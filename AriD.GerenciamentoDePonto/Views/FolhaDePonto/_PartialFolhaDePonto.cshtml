@@ -8,6 +8,8 @@
     var horarioDeTrabalho = (HorarioDeTrabalho)ViewBag.HorarioDeTrabalho;
 
     var configColunas = horarioDeTrabalho.ColunasVisiveis;
+
+    var observacaoServidor = (string)ViewBag.ObservacaoServidor;
 }
 
 <style>
@@ -40,20 +42,12 @@
     }
 </style>
 
-@* <div class="legenda">
-    <ul style="display: flex; justify-content: space-evenly;">
-        <li>
-            <i class='bx bxs-square-rounded' style="color: ivory;"></i>&nbsp;Afastamento com Abono
-        </li>
-        <li>
-            <i class='bx bxs-square-rounded' style="color: #fff0f3"></i>&nbsp;Afastamento sem Abono
-        </li>
-        <li>
-            <b>*</b>&nbsp;Registro inserido manualmente
-        </li>
-    </ul>
-</div>
-<br /> *@
+@if (!string.IsNullOrEmpty(observacaoServidor))
+{
+    <div class="alert alert-primary" role="alert">
+        @Html.Raw(observacaoServidor.Replace("\n", "<br />"))
+    </div>
+}
 
 @Html.Hidden("PodeMovimentarRegistros", Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.MoverRegistros).ToString().ToLower())
 <table class="table table-bordered">

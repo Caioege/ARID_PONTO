@@ -5,6 +5,20 @@
     var dadosDaSessao = Context.DadosDaSessao();
 }
 
+<div class="row">
+    <div class="col col-md-12">
+        <label class="form-label">Alerta para <b>MANUTENÇÃO DE PONTO</b></label>
+        @Html.TextAreaFor(model => model.AlertaManutencaoDePonto, new { @class = "form-control", rows = 3, maxlength = 1000 })
+        <div>
+            <small class="form-text text-muted">
+                O alerta para manutenção de ponto é uma observação que aparecerá para os usuários que acessarem a folha de ponto desse @(Context.NomenclaturaServidor().ToLower()).
+            </small>
+        </div>
+    </div>
+</div>
+
+<hr style="margin-bottom: 10px; margin-top: 10px;" />
+
 <table class="table table-bordered">
     <thead>
         <tr>

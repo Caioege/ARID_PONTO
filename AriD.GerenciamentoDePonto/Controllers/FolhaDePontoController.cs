@@ -210,6 +210,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             ViewBag.HorarioDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId).HorarioDeTrabalho;
             ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 
+            ViewBag.ObservacaoServidor = _servicoDeFolhaDePonto.ObtenhaObservacaoDoServidorNaFolhaDePonto(vinculoDeTrabalhoId);
+
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
             return Json(new
             {

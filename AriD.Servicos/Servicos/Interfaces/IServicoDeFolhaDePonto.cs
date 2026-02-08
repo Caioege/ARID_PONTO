@@ -76,5 +76,7 @@ namespace AriD.Servicos.Servicos.Interfaces
 
         public void AprovarRegistroAplicativo(int registroId, int unidadeLotacaoId, MesAno mesAno);
         void ReprovarRegistroAplicativo(int registroId);
+
+        string ObtenhaObservacaoDoServidorNaFolhaDePonto(int vinculoDeTrabalhoId);
     }
 }

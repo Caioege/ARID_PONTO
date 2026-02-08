@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 
@@ -381,6 +382,160 @@ namespace AriD.Servicos.Servicos
                         order by Data";
 
                 return _repositorio.ConsultaDapper<EventoAnual>(query, new { @ORGANIZACAOID = organizacaoId });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<RelatorioConferenciaDePontoDTO> ObtenhaListaDeDadosParaConferenciaDePonto(
+            int organizacaoId,
+            int unidadeOrganizacionalId,
+            DateTime data,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId)
+        {
+            try
+            {
+                return _repositorio.ConsultaDapper<RelatorioConferenciaDePontoDTO>(
+                    $@"(select
+	                    ser.Id as ServidorId,
+                        pes.Nome as ServidorNome,
+                        pes.Cpf as ServidorCpf,
+                        reg.DataHoraRegistro as DataHora,
+                        'Aplicativo' as Origem,
+                        ra.Latitude,
+                        ra.Longitude,
+                        ra.ForaDaCerca,
+                        ra.Situacao
+                    from registrodeponto reg
+                    inner join registroaplicativo ra
+	                    on ra.Id = reg.RegistroAplicativoId
+                    inner join vinculodetrabalho vin
+	                    on vin.Id = ra.VinculoDeTrabalhoId
+                    inner join servidor ser
+	                    on ser.Id = vin.ServidorId
+                    inner join pessoa pes
+	                    on pes.Id = ser.PessoaId
+                    where
+	                    reg.OrganizacaoId = @ORGANIZACAOID
+	                    and date(reg.DataHoraRegistro) = @DATA
+                        and ra.Manual = false
+                        and ra.JustificativaDeAusenciaId = false
+                        {(tipoDeVinculoDeTrabalhoId.HasValue ? "and vin.TipoDoVinculoDeTrabalhoId = @TIPOID" : string.Empty)}
+                        {(departamentoId.HasValue ? "and vin.DepartamentoId = @DEPARTAMENTOID" : string.Empty)}
+                        and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = vin.Id and l.UnidadeOrganizacionalId = @UNIDADEID)
+                        {(horarioDeTrabalhoId.HasValue ? "and vin.HorarioDeTrabalhoId = @HORARIOID" : string.Empty)})
+                    union
+                    (select
+	                    ser.Id as ServidorId,
+                        pes.Nome as ServidorNome,
+                        pes.Cpf as ServidorCpf,
+                        reg.DataHoraRegistro as DataHora,
+                        eq.Descricao as Origem,
+                        null as Latitude,
+                        null as Longitude,
+                        false as ForaDaCerca,
+                        @SITUACAOAPROVADO as Situacao
+                    from registrodeponto reg
+                    inner join equipamentodeponto eq
+	                    on eq.Id = reg.EquipamentoDePontoId
+                    inner join lotacaounidadeorganizacional lot
+	                    on lot.MatriculaEquipamento = reg.UsuarioEquipamentoId
+                        and lot.UnidadeOrganizacionalId = eq.UnidadeOrganizacionalId
+                        and reg.DataHoraRegistro between lot.Entrada and coalesce(lot.Saida, reg.DataHoraRegistro)
+                    inner join vinculodetrabalho vin
+	                    on vin.Id = lot.VinculoDeTrabalhoId
+                    inner join servidor ser
+	                    on ser.Id = vin.ServidorId
+                    inner join pessoa pes
+	                    on pes.Id = ser.PessoaId
+                    where
+	                    reg.OrganizacaoId = @ORGANIZACAOID
+                        and date(reg.DataHoraRegistro) = @DATA
+                        {(horarioDeTrabalhoId.HasValue ? "and vin.HorarioDeTrabalhoId = @HORARIOID" : string.Empty)}
+                        and eq.UnidadeOrganizacionalId = @UNIDADEID
+                        {(departamentoId.HasValue ? "and vin.DepartamentoId = @DEPARTAMENTOID" : string.Empty)}
+                        {(tipoDeVinculoDeTrabalhoId.HasValue ? "and vin.TipoDoVinculoDeTrabalhoId = @TIPOID" : string.Empty)})",
+                    new
+                    {
+                        @ORGANIZACAOID = organizacaoId,
+                        @UNIDADEID = unidadeOrganizacionalId,
+                        @DATA = data.Date,
+                        @HORARIOID = horarioDeTrabalhoId,
+                        @TIPOID = tipoDeVinculoDeTrabalhoId,
+                        @DEPARTAMENTOID = departamentoId,
+                        @SITUACAOAPROVADO = eSituacaoRegistroAplicativo.Aprovado
+                    });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<RelatorioServidorPorLotacaoDTO> ObtenhaListaDeDadosPorLotacao(
+            int organizacaoId,
+            int? unidadeOrganizacionalId,
+            DateTime? entrada,
+            int? horarioDeTrabalhoId,
+            int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId)
+        {
+            try
+            {
+                return _repositorio.ConsultaDapper<RelatorioServidorPorLotacaoDTO>(
+                    $@"select
+	                    ser.Id as ServidorId,
+                        pes.Nome as ServidorNome,
+                        pes.Cpf as ServidorCpf,
+                        uni.Id as UnidadeId,
+                        uni.Nome as UnidadeNome,
+                        en.Logradouro,
+                        en.Bairro,
+                        en.Cep,
+                        en.Cidade,
+                        en.UF,
+                        lot.Entrada,
+                        vin.Matricula as VinculoMatricula,
+                        hor.Descricao as HorarioDeTrabalho,
+                        tip.Descricao as TipoVinculo
+                    from servidor ser
+                    inner join vinculodetrabalho vin
+	                    on vin.ServidorId = ser.Id
+                    inner join lotacaounidadeorganizacional lot
+	                    on lot.VinculoDeTrabalhoId = vin.Id
+                    inner join unidadeorganizacional uni
+	                    on uni.Id = lot.UnidadeOrganizacionalId
+                    inner join horariodetrabalho hor
+	                    on hor.Id = vin.HorarioDeTrabalhoId
+                    inner join tipodovinculodetrabalho tip
+	                    on tip.Id = vin.TipoDoVinculoDeTrabalhoId
+                    inner join pessoa pes
+	                    on pes.Id = ser.PessoaId
+                    left join endereco en
+	                    on en.Id = uni.EnderecoId
+                    where
+	                    ser.OrganizacaoId = @ORGANIZACAOID
+                        {(unidadeOrganizacionalId.HasValue ? "and  lot.UnidadeOrganizacionalId = @UNIDADEID" : string.Empty)}
+                        {(horarioDeTrabalhoId.HasValue ? "and hor.Id = @HORARIOID" : string.Empty)}
+                        {(tipoDeVinculoDeTrabalhoId.HasValue ? "and tip.Id = @TIPOID" : string.Empty)}
+                        {(departamentoId.HasValue ? "and vin.DepartamentoId = @DEPARTAMENTOID" : string.Empty)}
+                        {(entrada.HasValue ? "and lot.Entrada >= @ENTRADA" : string.Empty)}
+                        and vin.Situacao = @ATIVA
+                        and lot.Saida is null
+                    order by uni.Nome, pes.Nome, lot.Entrada", new
+                    {
+                        @ORGANIZACAOID = organizacaoId,
+                        @UNIDADEID = unidadeOrganizacionalId,
+                        @HORARIOID = horarioDeTrabalhoId,
+                        @TIPOID = tipoDeVinculoDeTrabalhoId,
+                        @DEPARTAMENTOID = departamentoId,
+                        @ENTRADA = entrada,
+                        @ATIVA = eSituacaoVinculoDeTrabalho.Normal
+                    });
             }
             catch (Exception)
             {

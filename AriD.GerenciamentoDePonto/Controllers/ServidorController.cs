@@ -456,10 +456,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 var persistido = _servicoObservacao.Obtenha(observacao.Id);
 
-                observacao.CadastradaEm = persistido.CadastradaEm;
-                observacao.UsuarioId = persistido.UsuarioId;
+                persistido.Texto = observacao.Texto;
+                persistido.Ativa = observacao.Ativa;
 
-                _servicoObservacao.Atualizar(observacao);
+                _servicoObservacao.Atualizar(persistido);
             }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });

@@ -209,7 +209,7 @@
                     <li class="nav-item" role="presentation">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#s5" aria-controls="s5" aria-selected="false" tabindex="-1">
                             <i class="tf-icons bx bx-notepad"></i>
-                            OBSERVAÇÕES
+                            ALERTA/OBSERVAÇÕES
                         </button>
                     </li>
 
@@ -243,9 +243,13 @@
                                     <label class="form-label">Código CRM</label>
                                     @Html.TextBoxFor(model => model.CodigoCRM, new { @class = "form-control", @maxlength = "20" })
                                 </section>
-                                <section class="col col-md-9 col-sm-6">
+                                <section class="col col-md-6 col-sm-6">
                                     <label class="form-label @(string.IsNullOrEmpty(Model.CodigoCRM) ? "" : "obrigatorio")" for="EspecialidadeMedica">Especialidade Médica</label>
                                     @Html.TextBoxFor(model => model.EspecialidadeMedica, new { @class = "form-control", @maxlength = "200" })
+                                </section>
+                                <section class="col col-md-3 col-sm-6">
+                                    <label class="form-label">Exportação para Folha de Pagamento</label>
+                                    @Html.CheckboxDropDownListFor(model => model.HabilitaExportacaoParaFolhaDePagamento, new { @class = "form-select" })
                                 </section>
                             </div>
                             <br />
