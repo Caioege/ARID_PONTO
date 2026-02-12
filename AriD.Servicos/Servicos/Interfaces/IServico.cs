@@ -10,10 +10,14 @@ namespace AriD.Servicos.Servicos.Interfaces
 
         List<T> ObtenhaLista();
         List<T> ObtenhaLista(Expression<Func<T, bool>> predicate);
+
         (int Total, List<T> Itens) ObtenhaListaPaginada(Expression<Func<T, bool>> predicate, int pagina, int limite);
+        (int Total, List<T> Itens) ObtenhaListaPaginada<TKey>(Expression<Func<T, bool>> predicate, int pagina, int limite, Func<T, TKey> orderSeletor, bool asc);
 
         int Adicionar(T entidade);
-        void Atualizar(T entidade);
+        void Atualizar(T entidade, bool commit = true);
         void Remover(T entidade, bool commit = true);
+
+        void Commit();
     }
 }

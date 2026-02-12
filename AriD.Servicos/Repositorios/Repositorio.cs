@@ -70,8 +70,30 @@ namespace AriD.Servicos.Repositorios
                 .ToList();
         }
 
-        public List<T> ObtenhaListaPaginada(Expression<Func<T, bool>> predicate, int pagina, int limite)
+        public List<T> ObtenhaListaPaginada<TKey>(Expression<Func<T, bool>> predicate, int pagina, int limite, Func<T, TKey> orderSeletor = null, bool asc = false)
         {
+            if (orderSeletor != null)
+            {
+                if (asc)
+                {
+                    return _dbSet
+                        .Where(predicate)
+                        .OrderBy(orderSeletor)
+                        .Skip((pagina - 1) * limite)
+                        .Take(limite)
+                        .ToList();
+                }
+                else
+                {
+                    return _dbSet
+                        .Where(predicate)
+                        .OrderByDescending(orderSeletor)
+                        .Skip((pagina - 1) * limite)
+                        .Take(limite)
+                        .ToList();
+                }
+            }
+
             return _dbSet
                 .Where(predicate)
                 .Skip((pagina - 1) * limite)

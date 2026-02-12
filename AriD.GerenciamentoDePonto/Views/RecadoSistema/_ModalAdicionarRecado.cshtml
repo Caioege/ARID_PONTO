@@ -1,0 +1,36 @@
+﻿<div class="modal" tabindex="-1" id="_ModalAdicionarRecado" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class='bx bxs-purchase-tag'></i> Adicionar recado ao mural</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col col-md-12">
+                        <label class="form-label obrigatorio">Mensagem</label>
+                        @Html.TextArea("Mensagem", null, new { @class = "form-control", rows = 10, @maxlength = 5000, style = "white-space: pre-wrap !important;" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Cancelar
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="salvarCadastroAdicionarRecado()">
+                    <i class='bx bx-save'></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#_ModalAdicionarRecado #Mensagem').on('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.stopPropagation();
+            }
+        });
+    });
+</script>

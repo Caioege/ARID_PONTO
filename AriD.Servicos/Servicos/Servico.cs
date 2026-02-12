@@ -22,10 +22,11 @@ namespace AriD.Servicos.Servicos
             return entidade.Id;
         }
 
-        public void Atualizar(T entidade)
+        public void Atualizar(T entidade, bool commit = true)
         {
             _repositorio.Atualizar(entidade);
-            _repositorio.Commit();
+            if (commit)
+                _repositorio.Commit();
         }
 
         public T Obtenha(int id)
@@ -53,13 +54,28 @@ namespace AriD.Servicos.Servicos
             return
             (
                 _repositorio.TotalDeItens(predicate),
-                _repositorio.ObtenhaListaPaginada(predicate, pagina, limite)
+                _repositorio.ObtenhaListaPaginada(predicate, pagina, limite, c => c.Id, true)
+            );
+        }
+
+        public (int Total, List<T> Itens) ObtenhaListaPaginada<TKey>(Expression<Func<T, bool>> predicate, int pagina, int limite, Func<T, TKey> orderSeletor, bool asc = true)
+        {
+            return
+            (
+                _repositorio.TotalDeItens(predicate),
+                _repositorio.ObtenhaListaPaginada(predicate, pagina, limite, orderSeletor, asc)
             );
         }
 
         public void Remover(T entidade, bool commit = true)
         {
             _repositorio.Remover(entidade);
+            if (commit)
+                _repositorio.Commit();
+        }
+
+        public void Commit()
+        {
             _repositorio.Commit();
         }
     }

@@ -69,6 +69,14 @@
                 </div>
             </div>
 
+            @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Servidor)
+            {
+                <br />
+                var modelRecadoSistema =
+                    new Tuple<string, Type, GrupoDePermissao>("Recados", typeof(eItemDePermissao_RecadoSistema), Model);
+                @await Html.PartialAsync("_PartialItemPermissao", modelRecadoSistema)
+            }
+
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
                 <br />

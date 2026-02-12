@@ -1,4 +1,7 @@
 ﻿$(document).ready(function () {
+    verificarNotificacoes();
+    setInterval(verificarNotificacoes, 300000);
+
     $.ajaxSetup({
         statusCode: {
             401: function () {
@@ -429,4 +432,91 @@ function downloadBase64File(base64, fileName, mimeType) {
     }
     downloadLink.download = fileName;
     downloadLink.click();
+}
+
+function abrirModalRecadosSistema() {
+    RequisicaoAjaxComCarregamento('/RecadoSistema/AbrirModalRecados',
+        'GET',
+        {},
+        function (data) {
+            $('#div-modal-recados').html(data.html);
+            $('#_ModalRecados').modal('show');
+            marqueRecadosComoLidos(1);
+        });
+}
+
+function verificarNotificacoes() {
+    if ($('#btnRecados').length > 0) {
+        $.ajax({
+            url: '/RecadoSistema/ExistemRecadosNaoLidos',
+            method: 'GET',
+            success: function (response) {
+                var $icone = $('#btnRecados i');
+
+                if (response.temNotificacao) {
+                    $icone.attr('class', 'bx bxs-bell-ring sino-alerta');
+                } else {
+                    $icone.attr('class', 'bx bx-bell');
+                }
+            }
+        });
+    }
+}
+
+function carregarMaisRecados(pagina) {
+    RequisicaoAjaxComCarregamento('/RecadoSistema/CarregarMaisRecados',
+        'GET',
+        { pagina },
+        function (data) {
+            $('#div-ver-mais-recados').remove();
+            $('#div-partial-recados').append(data.html);
+
+            marqueRecadosComoLidos(pagina);
+        });
+}
+
+function marqueRecadosComoLidos(pagina) {
+    $.ajax({
+        url: '/RecadoSistema/MarqueRecadosComoLido',
+        method: 'POST',
+        data: { pagina }
+    });
+
+    $('#btnRecados i').attr('class', 'bx bx-bell');
+}
+
+function atualizarSituacaoDeRecado(recadoId) {
+    $(`#switch_${recadoId}`).prop('disabled', true);
+    $(`#switch_${recadoId}`).prop('readonly', true);
+
+    $.ajax({
+        url: '/RecadoSistema/AltereSituacao',
+        method: 'POST',
+        data: { id: recadoId }
+    }).done(function (data) {
+        $(`#switch_${recadoId}`).prop('disabled', false);
+        $(`#switch_${recadoId}`).prop('readonly', false);
+    });
+}
+
+function abrirModalAdicionarRecado() {
+    $('#_ModalRecados').modal('hide');
+
+    RequisicaoAjaxComCarregamento('/RecadoSistema/AbrirModalAdicionarRecado',
+        'GET',
+        { },
+        function (data) {
+            $('#div-modal-recados').html(data.html);
+            $('#_ModalAdicionarRecado').modal('show');
+        });
+}
+
+function salvarCadastroAdicionarRecado() {
+    RequisicaoAjaxComCarregamento('/RecadoSistema/Adicionar',
+        'POST',
+        { mensagem: $('#_ModalAdicionarRecado #Mensagem').val() },
+        function (data) {
+            $('#_ModalAdicionarRecado').modal('hide');
+            abrirModalRecadosSistema();
+        });
 }

@@ -12,7 +12,7 @@ namespace AriD.Servicos.DBContext
             {
                 var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
-                optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))  
+                optionsBuilder.UseMySql(connStringProd, ServerVersion.AutoDetect(connStringProd))  
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
@@ -21,7 +21,26 @@ namespace AriD.Servicos.DBContext
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        {
+            modelBuilder.Entity<RecadoSistema>()
+                .HasMany(a => a.ListaDeUsuariosQueLeram)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "Usuario_RecadoSistema",
+                    j => j.HasOne<Usuario>()
+                          .WithMany()
+                          .HasForeignKey("UsuarioId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<RecadoSistema>()
+                          .WithMany()
+                          .HasForeignKey("RecadoSistemaId")
+                          .OnDelete(DeleteBehavior.Cascade),
+                    j => {
+                        j.HasKey("UsuarioId", "RecadoSistemaId");
+                        j.ToTable("Usuario_RecadoSistema");
+                    });
+        }
 
         public DbSet<Endereco> Endereco { get; set; }
         public DbSet<Organizacao> Organizacao { get; set; }
@@ -48,5 +67,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<AnexoServidor> AnexoServidor { get; set; }
         public DbSet<MotivoDeDemissao> MotivoDeDemissao { get; set; }
         public DbSet<ObservacaoServidor> ObservacaoServidor { get; set; }
+        public DbSet<RecadoSistema> RecadoSistema { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace AriD.Servicos.Repositorios.Interfaces
 
         List<T> ObtenhaLista();
         List<T> ObtenhaLista(Expression<Func<T, bool>> predicate);
-        List<T> ObtenhaListaPaginada(Expression<Func<T, bool>> predicate, int pagina, int limite);
+        List<T> ObtenhaListaPaginada<TKey>(Expression<Func<T, bool>> predicate, int pagina, int limite, Func<T, TKey> orderSeletor = null, bool asc = false);
         int TotalDeItens(Expression<Func<T, bool>> predicate);
 
         void Add(T entidade);

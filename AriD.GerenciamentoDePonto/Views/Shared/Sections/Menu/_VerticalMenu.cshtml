@@ -65,6 +65,25 @@
         font-weight: bold;
         border-radius: 2px;
     }
+
+    @@keyframes balancarSinoPausado {
+      0% { transform: rotate(0); }
+      4% { transform: rotate(15deg); }
+      8% { transform: rotate(-15deg); }
+      12% { transform: rotate(15deg); }
+      16% { transform: rotate(-15deg); }
+      20% { transform: rotate(15deg); }
+      24% { transform: rotate(-15deg); }
+      28% { transform: rotate(15deg); }
+      32% { transform: rotate(-15deg); }
+      37.5% { transform: rotate(0); }
+      100% { transform: rotate(0); }
+    }
+
+    .sino-alerta {
+      animation: balancarSinoPausado 8s ease-in-out infinite;
+      color: #ffc107;
+    }
 </style>
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -85,6 +104,13 @@
 
     @if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema && dadosDaSessao.Perfil != ePerfilDeAcesso.Servidor)
     {
+        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RecadoSistema.Visualizar, usuarioAdm))
+        {
+            <button type="button" class="btn btn-sm btn-secondary" id="btnRecados" onclick="abrirModalRecadosSistema()" style="margin: 5px 25px 10px 25px;">
+                <i class='bx bx-bell'></i>
+            </button>
+        }
+
         <div class="search-container mb-2">
             <input type="text" id="menuSearchInput" class="form-control" placeholder="Pesquisar no menu..." autocomplete="off">
         </div>
@@ -402,6 +428,8 @@
         }
     </ul>
 </aside>
+
+<div id="div-modal-recados"></div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

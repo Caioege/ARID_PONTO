@@ -1,0 +1,70 @@
+﻿@model List<RecadoSistema>
+
+@{
+    var usuarioLogadoId = Context.DadosDaSessao().UsuarioId;
+    var podeAdicionarOuAlterar = Context.PossuiPermissao(eItemDePermissao_RecadoSistema.CadastrarOuAlterar);
+
+    var paginaAtual = (int?)ViewBag.PaginaAtual ?? 1;
+}
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var recado in Model.OrderByDescending(x => x.DataHoraCadastro))
+    {
+        var foiLido = recado.ListaDeUsuariosQueLeram.Any(u => u.Id == usuarioLogadoId);
+        var classeNaoLido = !foiLido ? "nao-lido" : "";
+
+        <div class="recado-item p-3 mb-3 @classeNaoLido">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-circle">
+                        @(recado.Usuario?.NomeDaPessoa?.FirstOrDefault().ToString().ToUpper() ?? "?")
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">@recado.Usuario?.NomeDaPessoa</h6>
+                        <small class="text-muted" style="font-size: 0.75rem;">
+                            @recado.DataHoraCadastro.ToString("dd/MM/yyyy HH:mm")
+                        </small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    @if (!foiLido)
+                    {
+                        <span class="badge bg-primary rounded-pill" style="font-size: 0.7rem;">Novo</span>
+                    }
+
+                    @if (usuarioLogadoId == recado.UsuarioId && podeAdicionarOuAlterar)
+                    {
+                        <div class="form-check form-switch m-0" title="Alterar status do recado">
+                            <input class="form-check-input toggle-recado"
+                                   onclick="atualizarSituacaoDeRecado(@recado.Id)"
+                                   type="checkbox"
+                                   role="switch"
+                                   id="switch_@recado.Id"
+                                   data-id="@recado.Id"
+                                   @(recado.Ativo ? "checked" : "")>
+                            <label class="form-check-label small text-muted user-select-none" for="switch_@recado.Id">
+                                Está ativo
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="recado-conteudo text-secondary mt-2">
+                @Html.Raw(recado.Mensagem.Replace("\n", "<br />"))
+            </div>
+        </div>
+    }
+
+    <div class="text-center mt-4 mb-2" id="div-ver-mais-recados" onclick="carregarMaisRecados(@(paginaAtual + 1))">
+        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4">
+            Ver mais recados <i class='bx bx-chevron-down'></i>
+        </button>
+    </div>
+}
+else
+{
+    <div class="text-center py-5 text-muted">
+        Não existem mais recados para carregar.
+    </div>
+}

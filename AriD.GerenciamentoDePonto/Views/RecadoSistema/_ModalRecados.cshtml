@@ -1,0 +1,82 @@
+﻿@model List<RecadoSistema>
+
+@{
+    var usuarioLogadoId = Context.DadosDaSessao().UsuarioId;
+
+    var podeAdicionarOuAlterar = Context.PossuiPermissao(eItemDePermissao_RecadoSistema.CadastrarOuAlterar);
+}
+
+<style>
+    .scroll-area {
+        max-height: 60vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+    
+    .recado-item {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .recado-item.nao-lido {
+        background-color: #f8faff;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .recado-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        background-color: #e9ecef;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+</style>
+
+<div class="modal" tabindex="-1" id="_ModalRecados" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class='bx bxs-purchase-tag'></i> Mural de Recados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="scroll-area px-2">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div id="div-partial-recados">
+                            @await Html.PartialAsync("_PartialRecados", Model)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class='bx bx-message-x fs-1 mb-2'></i>
+                            <p>Nenhum recado encontrado.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (podeAdicionarOuAlterar)
+                {
+                    <button type="button" class="btn btn-primary" onclick="abrirModalAdicionarRecado()">
+                        <i class='bx bxs-comment-add'></i> Adicionar Recado
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
