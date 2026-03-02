@@ -78,5 +78,14 @@ namespace AriD.Servicos.Servicos.Interfaces
         void ReprovarRegistroAplicativo(int registroId);
 
         string ObtenhaObservacaoDoServidorNaFolhaDePonto(int vinculoDeTrabalhoId);
+
+        List<PontoDoDiaHoraExtra> ObtenhaHorasExtrasDoDia(int pontoDoDiaId);
+        void AprovarHoraExtra(int horaExtraId, int minutosAprovados, string usuarioNome);
+        void ReprovarHoraExtra(int horaExtraId, string usuarioNome);
+
+        List<PontoDoDiaHoraExtra> HorasExtrasDaFolhaDePonto(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim);
+
+        List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim);
+        List<LogAuditoriaPonto> ObtenhaAuditoriaDoDia(int organizacaoId, int pontoDoDiaId);
     }
 }

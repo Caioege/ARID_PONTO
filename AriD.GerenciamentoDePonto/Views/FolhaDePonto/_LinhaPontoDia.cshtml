@@ -44,6 +44,22 @@
 
     var eventos = (List<EventoAnual>)ViewBag.Eventos;
     var eventoDoDia = eventos.FirstOrDefault(c => c.Data.Date == Model.Data.Date);
+
+    var mapa = ViewBag.ExtMapa as Dictionary<int, Dictionary<decimal, int>>;
+    var percentuais = ViewBag.ExtPercentuais as List<decimal> ?? new();
+
+    Dictionary<decimal, int> porPerc = null;
+    mapa?.TryGetValue(Model.Id, out porPerc);
+
+    string fmt(int m) => TimeSpan.FromMinutes(m).ToString(@"hh\:mm");
+
+    var pendencias = ViewBag.ExtPendenciasPorDia as Dictionary<int, int>;
+    int pendMin = 0;
+    pendencias?.TryGetValue(Model.Id, out pendMin);
+
+    bool temPendencia = pendMin > 0;
+    bool temAprovado = porPerc != null && porPerc.Values.Any(v => v > 0);
+    bool temRegistroHE = temAprovado || temPendencia;
 }
 
 <tr id="linha-@(Model.VinculoDeTrabalhoId)-@(Model.Data.Ticks)" class="linha-servidor @(exibirNomeServidor ? string.Empty : "linha-dia") @(classeAfastamento) @(classePontoFechado)" data-vinculodetrabalhoid="@Model.VinculoDeTrabalhoId" title="@tituloLinha">
@@ -133,9 +149,39 @@
         {
             if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
             {
-                <td class="text-center">
-                    @(Model.HorasPositivas?.ToString(@"hh\:mm"))
+                <td class="text-center @(temPendencia ? "he-pendente" : "")">
+                    @if (temRegistroHE)
+                    {
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <a href="javascript:void(0)"
+                               onclick="modalHorasExtrasDoDia(@Model.Id);"
+                               title="Clique para ver/aprovar horas extras"
+                               style="text-decoration:underline;font-weight:600;">
+                                @(Model.HorasPositivas?.ToString(@"hh\:mm") ?? "00:00")
+                            </a>
+
+                            @if (temPendencia)
+                            {
+                                <div class="he-badge" onclick="modalHorasExtrasDoDia(@Model.Id);" title="Pendências de aprovação">
+                                    <span>⏳</span>
+                                    <span>PEND @fmt(pendMin)</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        @(Model.HorasPositivas?.ToString(@"hh\:mm") ?? "")
+                    }
                 </td>
+
+                @foreach (var p in percentuais)
+                {
+                    int min = 0;
+                    if (porPerc != null && porPerc.TryGetValue(p, out var v)) min = v;
+
+                    <td class="text-center">@(min > 0 ? fmt(min) : "")</td>
+                }
             }
 
             if (configColunas.HasFlag(eColunasDaFolha.HorasNegativas))

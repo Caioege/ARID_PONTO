@@ -1,0 +1,135 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@model HorarioDeTrabalho
+
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">Configuração de Horas Extras (por Horário)</h6>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label" for="ConsiderarFacultativoComoFeriadoHoraExtra">
+                    Facultativo conta como Feriado (HE)
+                </label>
+                @Html.CheckboxDropDownListFor(m => m.ConsiderarFacultativoComoFeriadoHoraExtra, new { @class = "form-select" })
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="accordion" id="accHE">
+
+            @for (int i = 0; i < Model.RegrasHoraExtra.Count; i++)
+            {
+                var r = Model.RegrasHoraExtra[i];
+                var titulo = r.TipoDia.ToString();
+
+                <div class="accordion-item regra-he" data-index="@i" data-tipodia="@((int)r.TipoDia)" style="border: 1px solid lightgray !important;">
+                    <h2 class="accordion-header" id="he_head_@i">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#he_body_@i">
+                            @titulo
+                        </button>
+                    </h2>
+
+                    <div id="he_body_@i" class="accordion-collapse collapse" data-bs-parent="#accHE">
+                        <div class="accordion-body">
+
+                            @Html.Hidden($"RegrasHoraExtra[{i}].TipoDia", (int)r.TipoDia)
+                            @Html.Hidden($"RegrasHoraExtra[{i}].Ativo", true)
+
+                            <div class="row">
+                                <div class="col col-lg-4 col-md-6 col-sm-12">
+                                    <label class="form-label">Gerar HE sobre base da jornada</label>
+                                    <select class="form-select he-gerar-base" name="RegrasHoraExtra[@i].GerarHoraExtraSobreBaseDaJornada">
+                                        <option value="false" selected="@(r.GerarHoraExtraSobreBaseDaJornada ? "" : "selected")">Não</option>
+                                        <option value="true" selected="@(r.GerarHoraExtraSobreBaseDaJornada ? "selected" : "")">Sim</option>
+                                    </select>
+                                    <div class="form-text">Usado principalmente para DiaFolga/Feriado.</div>
+                                </div>
+
+                                <div class="col col-lg-3 col-md-6 col-sm-12">
+                                    <label class="form-label">% da base</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           name="RegrasHoraExtra[@i].PercentualBase"
+                                           step="1" min="0" max="300"
+                                           value="@(r.PercentualBase)" />
+                                </div>
+
+                                <div class="col col-lg-3 col-md-6 col-sm-12">
+                                    <label class="form-label">Aprovação automática</label>
+                                    <select class="form-select" name="RegrasHoraExtra[@i].AprovarAutomaticamente">
+                                        <option value="false" selected="@(r.AprovarAutomaticamente ? "" : "selected")">Não (avaliar)</option>
+                                        <option value="true" selected="@(r.AprovarAutomaticamente ? "selected" : "")">Sim (auto)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <br />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <b>Faixas do excedente (Horas Positivas)</b>
+                                <button type="button" class="btn btn-sm btn-outline-primary btn-add-faixa">
+                                    + Adicionar faixa
+                                </button>
+                            </div>
+
+                            <div class="table-responsive mt-2">
+                                <table class="table table-bordered tabela-faixas">
+                                    <thead style="background:#f3f3f3">
+                                        <tr>
+                                            <th style="width:70px" class="text-center">Ordem</th>
+                                            <th style="width:140px" class="text-center">Até (min)</th>
+                                            <th style="width:140px" class="text-center">%</th>
+                                            <th style="width:80px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            var faixas = r.Faixas ?? new List<FaixaHoraExtra>();
+                                            if (!faixas.Any())
+                                            {
+                                                // 1 linha vazia pra começar
+                                                faixas = new List<FaixaHoraExtra> { new FaixaHoraExtra { Ordem = 1 } };
+                                            }
+                                        }
+
+                                        @for (int j = 0; j < faixas.Count; j++)
+                                        {
+                                            var fx = faixas[j];
+                                            <tr class="linha-faixa">
+                                                <td class="text-center">
+                                                    <input type="text" class="form-control ordem" value="@(fx.Ordem == 0 ? (j + 1) : fx.Ordem)" readonly />
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="text" class="form-control numeroAte999 minutosAte" value="@(fx.MinutosAte?.ToString() ?? "")" placeholder="vazio = restante" />
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number"
+                                                           class="form-control percentual"
+                                                           step="1" min="0" max="300"
+                                                           value="@(fx.Percentual == 0 ? "" : fx.Percentual.ToString())"
+                                                           placeholder="50, 70, 100..." />
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-faixa">X</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="form-text">
+                                Dica: deixe o campo "Até (min)" vazio na última faixa para significar "restante".
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

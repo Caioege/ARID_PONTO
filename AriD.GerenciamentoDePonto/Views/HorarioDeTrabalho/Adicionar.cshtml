@@ -84,6 +84,12 @@
                     <label class="form-label obrigatorio" for="ToleranciaDiariaEmMinutos">Tolerância Diária em Minutos</label>
                     @Html.TextBoxFor(model => model.ToleranciaDiariaEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
                 </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label" for="ToleranciaDsrEmMinutos">Tolerância DSR em Minutos</label>
+                    @Html.TextBoxFor(model => model.ToleranciaDsrEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
+                    <div class="form-text">Se o dia não tiver carga horária e o trabalho no dia for até esta tolerância, não gera saldo/HE.</div>
+                </div>
             </div>
 
             <br />
@@ -159,6 +165,8 @@
                     </tbody>
                 </table>
             </div>
+
+            @Html.Partial("_ConfiguracaoHoraExtra", Model)
 
             <br />
             <h6 class="text-muted">Configuração de Exibição</h6>

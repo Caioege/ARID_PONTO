@@ -51,7 +51,9 @@ builder.Services.AddDbContext<MySQLDBContext>();
 
 builder.Services.AddHttpClient();
 
+builder.Services.AddScoped(typeof(IUsuarioAtual), typeof(UsuarioAtual));
 builder.Services.AddScoped(typeof(IRepositorio<>), typeof(Repositorio<>));
+
 builder.Services.AddScoped(typeof(IServico<>), typeof(Servico<>));
 builder.Services.AddScoped(typeof(IServicoDeFolhaDePonto), typeof(ServicoDeFolhaDePonto));
 builder.Services.AddScoped(typeof(IServicoDeRelatorios), typeof(ServicoDeRelatorios));

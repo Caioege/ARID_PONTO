@@ -62,6 +62,44 @@ $(document).ready(() => {
     $('#TipoCargaHoraria').trigger('change');
 
     assineEventoBotaoSalvar();
+
+    $(document).on('click', '.btn-add-faixa', function () {
+        const tabela = $(this).closest('.accordion-body').find('.tabela-faixas tbody');
+        const ordem = tabela.find('tr.linha-faixa').length + 1;
+
+        tabela.append(`
+            <tr class="linha-faixa">
+                <td class="text-center">
+                    <input type="text" class="form-control ordem" value="${ordem}" readonly />
+                </td>
+                <td class="text-center">
+                    <input type="number"
+                           class="form-control minutosAte"
+                           step="1" min="0" max="999"
+                           placeholder="vazio = restante" />
+                </td>
+                <td class="text-center">
+                    <input type="number"
+                           class="form-control percentual"
+                           step="1" min="0" max="300"
+                           placeholder="50, 70, 100..." />
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-faixa">X</button>
+                </td>
+            </tr>
+        `);
+    });
+
+    $(document).on('click', '.btn-remove-faixa', function () {
+        const tbody = $(this).closest('tbody');
+        $(this).closest('tr').remove();
+
+        // renumera ordens
+        tbody.find('tr.linha-faixa').each(function (i) {
+            $(this).find('.ordem').val(i + 1);
+        });
+    });
 });
 
 function assineEventoBotaoSalvar() {
@@ -83,6 +121,8 @@ function assineEventoBotaoSalvar() {
             dia.Id = $(linha).data('id');
             formulario.Dias.push(dia);
         });
+
+        formulario.RegrasHoraExtra = obterRegrasHoraExtraDaTela();
 
         RequisicaoAjaxComCarregamento(
             '/HorarioDeTrabalho/Salvar',
@@ -151,4 +191,54 @@ function atualizarValorEnumColunas() {
     });
 
     $('#ColunasVisiveis').val(somaTotal);
+}
+
+function obterRegrasHoraExtraDaTela() {
+    let regras = [];
+
+    $('.regra-he').each(function () {
+        const tipoDia = parseInt($(this).data('tipodia'), 10);
+        const gerarBase = $(this).find('.he-gerar-base').val() === 'true';
+        const percBase = lerDecimalPtBr($(this).find('.he-percent-base').val());
+        const aprovarAuto = $(this).find('select[name*="AprovarAutomaticamente"]').val() === 'true';
+
+        let faixas = [];
+        let ordem = 1;
+
+        $(this).find('.tabela-faixas tbody tr.linha-faixa').each(function () {
+            const minutosAteStr = $(this).find('.minutosAte').val();
+            const percentualStr = $(this).find('.percentual').val();
+            
+            const percentual = lerDecimalPtBr(percentualStr);
+            if (!percentual || percentual <= 0) return;
+
+            const minutosAte = minutosAteStr ? parseInt(minutosAteStr, 10) : null;
+
+            faixas.push({
+                Ordem: ordem++,
+                MinutosAte: minutosAte,
+                Percentual: percentual,
+            });
+        });
+
+        regras.push({
+            TipoDia: tipoDia,
+            GerarHoraExtraSobreBaseDaJornada: gerarBase,
+            PercentualBase: gerarBase ? (percBase || 0) : 0,
+            Faixas: faixas,
+            AprovarAutomaticamente: aprovarAuto,
+
+        });
+    });
+
+    return regras;
+}
+
+function lerDecimalPtBr(valor) {
+    if (!valor) return 0;
+    // troca vírgula por ponto, remove espaços
+    valor = (valor + '').trim().replace(',', '.');
+    // remove qualquer coisa que não seja dígito ou ponto
+    valor = valor.replace(/[^0-9.]/g, '');
+    return parseFloat(valor || '0');
 }

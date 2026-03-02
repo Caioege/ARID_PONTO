@@ -10,6 +10,25 @@ namespace AriD.Servicos.Servicos
 {
     public class ServicoDeFolhaDePonto : Servico<PontoDoDia>, IServicoDeFolhaDePonto
     {
+        private static string Fmt(TimeSpan? t) => t.HasValue ? t.Value.ToString(@"hh\:mm") : "-";
+        private static string FmtId(int? id) => id.HasValue ? id.Value.ToString() : "-";
+        private static string ResumoPeriodos(PontoDoDia p)
+        {
+            return $"E1={Fmt(p.Entrada1)} S1={Fmt(p.Saida1)} | " +
+                   $"E2={Fmt(p.Entrada2)} S2={Fmt(p.Saida2)} | " +
+                   $"E3={Fmt(p.Entrada3)} S3={Fmt(p.Saida3)} | " +
+                   $"E4={Fmt(p.Entrada4)} S4={Fmt(p.Saida4)} | " +
+                   $"E5={Fmt(p.Entrada5)} S5={Fmt(p.Saida5)} | " +
+                   $"Abono={Fmt(p.Abono)}";
+        }
+        private static string ResumoJustificativas(PontoDoDia p)
+        {
+            return $"J1={FmtId(p.JustificativaPeriodo1Id)} J2={FmtId(p.JustificativaPeriodo2Id)} " +
+                   $"J3={FmtId(p.JustificativaPeriodo3Id)} J4={FmtId(p.JustificativaPeriodo4Id)} J5={FmtId(p.JustificativaPeriodo5Id)}";
+        }
+
+        private readonly IUsuarioAtual _usuarioAtual;
+
         private readonly IRepositorio<PontoDoDia> _repositorio;
         private readonly IRepositorio<Servidor> _repositorioServidor;
         private readonly IRepositorio<LotacaoUnidadeOrganizacional> _repositorioLotacao;
@@ -19,6 +38,10 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<EscalaDoServidor> _repositorioEscala;
         private readonly IRepositorio<RegistroAplicativo> _repositorioRegistroAplicativo;
         private readonly IRepositorio<RegistroDePonto> _repositorioRegistroDePonto;
+        private readonly IRepositorio<RegraHoraExtra> _repositorioRegraHoraExtra;
+        private readonly IRepositorio<FaixaHoraExtra> _repositorioFaixaHoraExtra;
+        private readonly IRepositorio<PontoDoDiaHoraExtra> _repositorioPontoDoDiaHoraExtra;
+        private readonly IRepositorio<LogAuditoriaPonto> _repositorioAuditoriaPonto;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
@@ -29,7 +52,12 @@ namespace AriD.Servicos.Servicos
             IRepositorio<Afastamento> repositorioAfastamento,
             IRepositorio<EscalaDoServidor> repositorioEscala,
             IRepositorio<RegistroAplicativo> repositorioRegistroAplicativo,
-            IRepositorio<RegistroDePonto> repositorioRegistroDePonto)
+            IRepositorio<RegistroDePonto> repositorioRegistroDePonto,
+            IRepositorio<RegraHoraExtra> repositorioRegraHoraExtra,
+            IRepositorio<FaixaHoraExtra> repositorioFaixaHoraExtra,
+            IRepositorio<PontoDoDiaHoraExtra> repositorioPontoDoDiaHoraExtra,
+            IRepositorio<LogAuditoriaPonto> repositorioAuditoriaPonto,
+            IUsuarioAtual usuarioAtual)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -41,6 +69,11 @@ namespace AriD.Servicos.Servicos
             _repositorioEscala = repositorioEscala;
             _repositorioRegistroAplicativo = repositorioRegistroAplicativo;
             _repositorioRegistroDePonto = repositorioRegistroDePonto;
+            _repositorioRegraHoraExtra = repositorioRegraHoraExtra;
+            _repositorioFaixaHoraExtra = repositorioFaixaHoraExtra;
+            _repositorioPontoDoDiaHoraExtra = repositorioPontoDoDiaHoraExtra;
+            _repositorioAuditoriaPonto = repositorioAuditoriaPonto;
+            _usuarioAtual = usuarioAtual;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -213,6 +246,8 @@ namespace AriD.Servicos.Servicos
                     ValideLimiteDeUso(pontoDoDia, justificativaId.Value, acao);
                 }
 
+                var antesResumo = pontoDoDia != null ? $"{ResumoPeriodos(pontoDoDia)} | {ResumoJustificativas(pontoDoDia)}" : "NOVO";
+
                 Func<int?, JustificativaDeAusencia> CarregueJustificativa = new Func<int?, JustificativaDeAusencia>((id) =>
                 {
                     return id.HasValue ?
@@ -372,6 +407,16 @@ namespace AriD.Servicos.Servicos
                 }
 
                 _repositorio.Commit();
+
+                var depoisPersistido = _repositorio.Obtenha(pontoDoDia.Id);
+                var depoisResumo = $"{ResumoPeriodos(depoisPersistido)} | {ResumoJustificativas(depoisPersistido)}";
+
+                Auditar(organizacaoId,
+                        vinculoDeTrabalhoId,
+                        depoisPersistido.Id,
+                        _usuarioAtual.Nome,
+                        "AJUSTE_PONTO_DIA",
+                        $"Dia {data:dd/MM/yyyy} | Campo='{acao}' | {antesResumo} -> {depoisResumo}");
 
                 return pontoDoDia;
             }
@@ -718,8 +763,12 @@ namespace AriD.Servicos.Servicos
                         CalculeHorasTrabalhadas(ref pontoDoDia);
                         CalculeHorasTrabalhadasConsiderandoAbono(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
 
+                        ApliqueToleranciaDsr(ref pontoDoDia, vinculoDeTrabalho.HorarioDeTrabalho, horarioDoDia, eventoNoDia, afastamento);
+
                         CalculeHorasPositivas(ref pontoDoDia, afastamento);
                         CalculeHorasNegativas(ref pontoDoDia, afastamento);
+
+                        GerarEventosHoraExtraDoDia(organizacaoId, pontoDoDia, vinculoDeTrabalho.HorarioDeTrabalho, eventoNoDia);
 
                         int tolerancia = vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos > 0
                             ? vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos
@@ -772,6 +821,8 @@ namespace AriD.Servicos.Servicos
                     out var inicio,
                     out var fim,
                     out var pontosDoPeriodo);
+
+                var totalDias = pontosDoPeriodo.Count;
 
                 foreach (var dia in pontosDoPeriodo)
                 {
@@ -897,10 +948,23 @@ namespace AriD.Servicos.Servicos
                         registroPersistido.RegistroDePontoSaida5Id = null;
                     }
 
+                    if (registroPersistido.ListaDeHoraExtra != null && registroPersistido.ListaDeHoraExtra.Any())
+                    {
+                        foreach (var item in registroPersistido.ListaDeHoraExtra)
+                            _repositorioPontoDoDiaHoraExtra.Remover(item);
+                    }
+
                     _repositorio.Remover(registroPersistido);
                 }
 
                 _repositorio.Commit();
+
+                Auditar(organizacaoId,
+                    vinculoDeTrabalhoId,
+                    null,
+                    _usuarioAtual.Nome,
+                    "RESET_FOLHA",
+                    $"Período {mesAno} | Dias removidos={totalDias}. Registros manuais aprovados voltaram para 'AguardandoAvaliação' quando aplicável.");
             }
             catch (Exception)
             {
@@ -1072,6 +1136,15 @@ namespace AriD.Servicos.Servicos
                 }
 
                 _repositorio.Commit();
+
+                var qtd = pontosDoPeriodo.Count();
+
+                Auditar(organizacaoId,
+                        vinculoDeTrabalhoId,
+                        null,
+                        _usuarioAtual.Nome,
+                        fechar ? "FECHAR_FOLHA" : "ABRIR_FOLHA",
+                        $"Período {mesAno} | Dias afetados={qtd} | UnidadeLotacaoId={unidadeLotacaoId}");
             }
             catch (Exception)
             {
@@ -1135,6 +1208,9 @@ namespace AriD.Servicos.Servicos
                 if (registroAplicativo.Situacao != eSituacaoRegistroAplicativo.AguardandoAvaliacao)
                     throw new ApplicationException("Esse registro não pode ter sua situação alterada.");
 
+                var antesSit = registroAplicativo.Situacao;
+                var info = $"RegAppId={registroAplicativo.Id} DataHora={registroAplicativo.DataHora:dd/MM/yyyy HH:mm} Manual={registroAplicativo.Manual} Justif={FmtId(registroAplicativo.JustificativaDeAusenciaId)}";
+
                 registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Aprovado;
                 _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
 
@@ -1175,6 +1251,13 @@ namespace AriD.Servicos.Servicos
                 }
 
                 _repositorioRegistroAplicativo.Commit();
+
+                Auditar(registroAplicativo.OrganizacaoId,
+                    registroAplicativo.VinculoDeTrabalhoId,
+                    null,
+                    _usuarioAtual.Nome,
+                    "APROVAR_REGISTRO_APP",
+                    $"{info} | {antesSit} -> {registroAplicativo.Situacao}");
             }
             catch (Exception)
             {
@@ -1193,6 +1276,13 @@ namespace AriD.Servicos.Servicos
                 registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Reprovado;
                 _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
                 _repositorioRegistroAplicativo.Commit();
+
+                Auditar(registroAplicativo.OrganizacaoId,
+                    registroAplicativo.VinculoDeTrabalhoId,
+                    null,
+                    _usuarioAtual.Nome,
+                    "REPROVAR_REGISTRO_APP",
+                    $"RegAppId={registroAplicativo.Id} DataHora={registroAplicativo.DataHora:dd/MM/yyyy HH:mm} | {antesSit} -> {registroAplicativo.Situacao}");
             }
             catch (Exception)
             {
@@ -1218,6 +1308,101 @@ namespace AriD.Servicos.Servicos
             {
                 throw;
             }
+        }
+
+        public List<PontoDoDiaHoraExtra> ObtenhaHorasExtrasDoDia(int pontoDoDiaId)
+        {
+            return _repositorioPontoDoDiaHoraExtra
+                .ObtenhaLista(e => e.PontoDoDiaId == pontoDoDiaId)
+                .OrderBy(e => e.TipoDia)
+                .ThenBy(e => e.Origem)
+                .ThenBy(e => e.Percentual)
+                .ToList();
+        }
+
+        public void AprovarHoraExtra(int horaExtraId, int minutosAprovados, string usuarioNome)
+        {
+            var ev = _repositorioPontoDoDiaHoraExtra.Obtenha(horaExtraId);
+            if (ev == null) throw new Exception("Hora extra não encontrada.");
+
+            var antes = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+
+            minutosAprovados = Math.Max(0, Math.Min(minutosAprovados, ev.Minutos));
+            ev.Status = eStatusAprovacaoHoraExtra.Aprovado;
+            ev.MinutosAprovados = minutosAprovados;
+
+            _repositorioPontoDoDiaHoraExtra.Atualizar(ev);
+            _repositorioPontoDoDiaHoraExtra.Commit();
+
+            var depois = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, ev.PontoDoDiaId,
+                usuarioNome,
+                "APROVAR_HE",
+                $"HE {ev.Percentual}% ({ev.Origem}) | {antes} -> {depois}");
+        }
+
+        public void ReprovarHoraExtra(int horaExtraId, string usuarioNome)
+        {
+            var ev = _repositorioPontoDoDiaHoraExtra.Obtenha(horaExtraId);
+            if (ev == null) throw new Exception("Hora extra não encontrada.");
+
+            var antes = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+
+            ev.Status = eStatusAprovacaoHoraExtra.Reprovado;
+            ev.MinutosAprovados = 0;
+
+            _repositorioPontoDoDiaHoraExtra.Atualizar(ev);
+            _repositorioPontoDoDiaHoraExtra.Commit();
+
+            var depois = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, ev.PontoDoDiaId,
+                usuarioNome,
+                "APROVAR_HE",
+                $"HE {ev.Percentual}% ({ev.Origem}) | {antes} -> {depois}");
+        }
+
+        public List<PontoDoDiaHoraExtra> HorasExtrasDaFolhaDePonto(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim)
+        {
+            var pontoIds = _repositorio
+                .ObtenhaLista(p => p.OrganizacaoId == organizacaoId
+                               && p.VinculoDeTrabalhoId == vinculoDeTrabalhoId
+                               && p.Data.Date >= inicio.Date
+                               && p.Data.Date <= fim.Date)
+                .Select(p => p.Id)
+                .ToList();
+
+            if (pontoIds.Count == 0) return new List<PontoDoDiaHoraExtra>();
+
+            return _repositorioPontoDoDiaHoraExtra
+                .ObtenhaLista(e => e.OrganizacaoId == organizacaoId && pontoIds.Contains(e.PontoDoDiaId))
+                .ToList();
+        }
+
+        public List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim)
+        {
+            var pontoIds = _repositorio.ObtenhaLista(p =>
+                    p.OrganizacaoId == organizacaoId &&
+                    p.VinculoDeTrabalhoId == vinculoDeTrabalhoId &&
+                    p.Data.Date >= inicio.Date &&
+                    p.Data.Date <= fim.Date)
+                .Select(p => p.Id)
+                .ToList();
+
+            return _repositorioAuditoriaPonto.ObtenhaLista(l =>
+                    l.OrganizacaoId == organizacaoId &&
+                    l.VinculoDeTrabalhoId == vinculoDeTrabalhoId &&
+                    (l.PontoDoDiaId == null || pontoIds.Contains(l.PontoDoDiaId.Value)))
+                .OrderByDescending(l => l.DataHora)
+                .ToList();
+        }
+
+        public List<LogAuditoriaPonto> ObtenhaAuditoriaDoDia(int organizacaoId, int pontoDoDiaId)
+        {
+            return _repositorioAuditoriaPonto.ObtenhaLista(l =>
+                    l.OrganizacaoId == organizacaoId &&
+                    l.PontoDoDiaId == pontoDoDiaId)
+                .OrderByDescending(l => l.DataHora)
+                .ToList();
         }
 
         private void CalculeCargaHorariaDoDia(
@@ -1547,6 +1732,8 @@ namespace AriD.Servicos.Servicos
                 if (string.IsNullOrEmpty(classe))
                     throw new Exception("Classe não informada.");
 
+                var antesResumo = ResumoPeriodos(pontoDia);
+
                 var entrada1 = pontoDia.Entrada1;
                 var registroAppEntrada1 = pontoDia.RegistroDePontoEntrada1Id;
                 var tipoEntrada1 = pontoDia.TipoEntrada1;
@@ -1759,6 +1946,15 @@ namespace AriD.Servicos.Servicos
 
                 _repositorio.Atualizar(pontoDia);
                 _repositorio.Commit();
+
+                var depoisResumo = ResumoPeriodos(pontoDia);
+
+                Auditar(pontoDia.OrganizacaoId,
+                        pontoDia.VinculoDeTrabalhoId,
+                        pontoDia.Id,
+                        _usuarioAtual.Nome,
+                        "MOVER_REGISTRO",
+                        $"Dia {pontoDia.Data:dd/MM/yyyy} | Classe='{classe}' | Direcao={(avancar ? "Avançar" : "Voltar")} | {antesResumo} -> {depoisResumo}");
             }
             catch (Exception)
             {
@@ -1896,6 +2092,245 @@ namespace AriD.Servicos.Servicos
                 ponto.HorasPositivas = null;
                 ponto.HorasNegativas = null;
             }
+        }
+
+        private List<(decimal Percentual, int Minutos)> DistribuirEmFaixas(int minutos, List<FaixaHoraExtra> faixas)
+        {
+            var saida = new List<(decimal Percentual, int Minutos)>();
+            if (minutos <= 0) return saida;
+
+            var restante = minutos;
+            foreach (var fx in faixas.Where(f => f.Ativo).OrderBy(f => f.Ordem))
+            {
+                if (restante <= 0) break;
+
+                var consumir = fx.MinutosAte.HasValue
+                    ? Math.Min(restante, fx.MinutosAte.Value)
+                    : restante;
+
+                if (consumir > 0)
+                {
+                    saida.Add((fx.Percentual, consumir));
+                    restante -= consumir;
+                }
+            }
+
+            if (restante > 0 && faixas.Any())
+            {
+                var last = faixas.Where(f => f.Ativo).OrderBy(f => f.Ordem).Last();
+                saida.Add((last.Percentual, restante));
+            }
+
+            return saida;
+        }
+
+        private eTipoDiaHoraExtra ClassificarTipoDiaHoraExtra(PontoDoDia pontoDoDia, EventoAnual eventoNoDia, HorarioDeTrabalho horario)
+        {
+            var ehFeriado = eventoNoDia?.Tipo == eTipoDeEvento.Feriado;
+            var ehFacultativo = eventoNoDia?.Tipo == eTipoDeEvento.Facultativo;
+
+            if (ehFeriado) return eTipoDiaHoraExtra.Feriado;
+
+            if (ehFacultativo && horario.ConsiderarFacultativoComoFeriadoHoraExtra)
+                return eTipoDiaHoraExtra.Feriado;
+
+            bool temCarga = pontoDoDia.CargaHoraria.HasValue && pontoDoDia.CargaHoraria.Value > TimeSpan.Zero;
+            return temCarga ? eTipoDiaHoraExtra.DiaTrabalho : eTipoDiaHoraExtra.DiaFolga;
+        }
+
+        private void GerarEventosHoraExtraDoDia(
+            int organizacaoId,
+            PontoDoDia pontoDoDia,
+            HorarioDeTrabalho horario,
+            EventoAnual eventoNoDia)
+        {
+            // Se não tem trabalho, zera eventos
+            var minutosTrabalhados = (int)Math.Round((pontoDoDia.HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero).TotalMinutes);
+            if (minutosTrabalhados <= 0)
+            {
+                var antigosZero = _repositorioPontoDoDiaHoraExtra.ObtenhaLista(e => e.PontoDoDiaId == pontoDoDia.Id);
+                antigosZero.ForEach(_repositorioPontoDoDiaHoraExtra.Remover);
+                return;
+            }
+
+            var tipoDia = ClassificarTipoDiaHoraExtra(pontoDoDia, eventoNoDia, horario);
+
+            // Busca regra do horário p/ este tipo de dia.
+            // (Se não existir, fallback pra DiaTrabalho)
+            var regra = _repositorioRegraHoraExtra.Obtenha(r =>
+                r.OrganizacaoId == organizacaoId &&
+                r.HorarioDeTrabalhoId == horario.Id &&
+                r.TipoDia == tipoDia &&
+                r.Ativo);
+
+            if (regra == null)
+            {
+                regra = _repositorioRegraHoraExtra.Obtenha(r =>
+                    r.OrganizacaoId == organizacaoId &&
+                    r.HorarioDeTrabalhoId == horario.Id &&
+                    r.TipoDia == eTipoDiaHoraExtra.DiaTrabalho &&
+                    r.Ativo);
+            }
+
+            if (regra == null)
+            {
+                // Sem regra -> não gera detalhamento (mas seu HorasPositivas continua existindo)
+                return;
+            }
+
+            var statusPadrao = regra.AprovarAutomaticamente
+                ? eStatusAprovacaoHoraExtra.Aprovado
+                : eStatusAprovacaoHoraExtra.Pendente;
+
+            int aprovados(int minutos) => regra.AprovarAutomaticamente ? minutos : 0;
+
+            var faixas = _repositorioFaixaHoraExtra
+                .ObtenhaLista(f => f.OrganizacaoId == organizacaoId && f.RegraHoraExtraId == regra.Id && f.Ativo)
+                .OrderBy(f => f.Ordem)
+                .ToList();
+
+            // minutos excedentes (já calculado corretamente no seu fluxo)
+            var minutosExcedente = (int)Math.Round((pontoDoDia.HorasPositivas ?? TimeSpan.Zero).TotalMinutes);
+
+            // base da jornada: min(trabalhado, carga)
+            int minutosBase = 0;
+            if (pontoDoDia.CargaHoraria.HasValue && pontoDoDia.CargaHoraria.Value > TimeSpan.Zero)
+            {
+                var mCarga = (int)Math.Round(pontoDoDia.CargaHoraria.Value.TotalMinutes);
+                minutosBase = Math.Min(minutosTrabalhados, mCarga);
+            }
+
+            var diaSemana = (eDiaDaSemana)pontoDoDia.Data.DayOfWeek;
+            var ehFeriado = eventoNoDia?.Tipo == eTipoDeEvento.Feriado;
+            var ehFacultativo = eventoNoDia?.Tipo == eTipoDeEvento.Facultativo;
+
+            var novos = new List<PontoDoDiaHoraExtra>();
+
+            if (regra.GerarHoraExtraSobreBaseDaJornada && minutosBase > 0 && regra.PercentualBase > 0)
+            {
+                novos.Add(new PontoDoDiaHoraExtra
+                {
+                    OrganizacaoId = organizacaoId,
+                    PontoDoDiaId = pontoDoDia.Id,
+                    TipoDia = tipoDia,
+                    DiaDaSemana = diaSemana,
+                    EhFeriado = ehFeriado,
+                    EhFacultativo = ehFacultativo,
+                    Origem = eOrigemHoraExtra.BaseDaJornada,
+                    Percentual = regra.PercentualBase,
+                    Minutos = minutosBase,
+                    Status = statusPadrao,
+                    MinutosAprovados = aprovados(minutosBase)
+                });
+            }
+
+            foreach (var (percentual, minutos) in DistribuirEmFaixas(minutosExcedente, faixas))
+            {
+                novos.Add(new PontoDoDiaHoraExtra
+                {
+                    OrganizacaoId = organizacaoId,
+                    PontoDoDiaId = pontoDoDia.Id,
+                    TipoDia = tipoDia,
+                    DiaDaSemana = diaSemana,
+                    EhFeriado = ehFeriado,
+                    EhFacultativo = ehFacultativo,
+                    Origem = eOrigemHoraExtra.Excedente,
+                    Percentual = percentual,
+                    Minutos = minutos,
+                    Status = statusPadrao,
+                    MinutosAprovados = aprovados(minutos)
+                });
+            }
+
+            var antigos = _repositorioPontoDoDiaHoraExtra.ObtenhaLista(e => e.PontoDoDiaId == pontoDoDia.Id);
+
+            foreach (var n in novos)
+            {
+                var match = antigos.FirstOrDefault(a =>
+                    a.TipoDia == n.TipoDia &&
+                    a.Origem == n.Origem &&
+                    a.Percentual == n.Percentual);
+
+                if (match != null)
+                {
+                    n.Status = match.Status;
+                    n.MinutosAprovados = Math.Min(match.MinutosAprovados, n.Minutos);
+
+                    if (n.Status == eStatusAprovacaoHoraExtra.Reprovado)
+                        n.MinutosAprovados = 0;
+                }
+            }
+
+            antigos.ForEach(_repositorioPontoDoDiaHoraExtra.Remover);
+            novos.ForEach(_repositorioPontoDoDiaHoraExtra.Add);
+        }
+
+        private void ApliqueToleranciaDsr(
+            ref PontoDoDia pontoDoDia,
+            HorarioDeTrabalho horario,
+            HorarioDeTrabalhoDia horarioDoDia,
+            EventoAnual eventoNoDia,
+            Afastamento afastamento)
+        {
+            var tolerancia = horario.ToleranciaDsrEmMinutos;
+            if (tolerancia <= 0)
+                return;
+
+            // DSR aqui = dia de descanso do servidor (sem carga) e NÃO é feriado/facultativo.
+            if (eventoNoDia != null)
+                return;
+
+            // Se estiver afastado, não faz sentido tratar como DSR
+            if (afastamento != null)
+                return;
+
+            // Mensal fixa não usa carga diária, então ignore DSR
+            if (horario.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+                return;
+
+            bool diaSemCarga = horarioDoDia == null
+                || !pontoDoDia.CargaHoraria.HasValue
+                || pontoDoDia.CargaHoraria.Value == TimeSpan.Zero;
+
+            if (!diaSemCarga)
+                return;
+
+            var trabalhadas = pontoDoDia.HorasTrabalhadasConsiderandoAbono;
+            if (!trabalhadas.HasValue)
+                return;
+
+            // Se trabalhou pouco no descanso, zera o "trabalhado" para não gerar HE/saldo.
+            if (trabalhadas.Value.TotalMinutes <= tolerancia)
+            {
+                pontoDoDia.HorasTrabalhadas = null;
+                pontoDoDia.HorasTrabalhadasConsiderandoAbono = null;
+
+                // (opcional) Se você quiser também limpar o saldo:
+                pontoDoDia.HorasPositivas = null;
+                pontoDoDia.HorasNegativas = null;
+            }
+        }
+
+        private void Auditar(
+            int organizacaoId,
+            int vinculoDeTrabalhoId,
+            int? pontoDoDiaId,
+            string usuarioNome,
+            string acao,
+            string descricao)
+        {
+            _repositorioAuditoriaPonto.Add(new LogAuditoriaPonto
+            {
+                OrganizacaoId = organizacaoId,
+                VinculoDeTrabalhoId = vinculoDeTrabalhoId,
+                PontoDoDiaId = pontoDoDiaId,
+                UsuarioNome = usuarioNome ?? "Sistema",
+                DataHora = DateTime.Now,
+                Acao = acao,
+                Descricao = descricao
+            });
+
+            _repositorioAuditoriaPonto.Commit();
         }
     }
 }

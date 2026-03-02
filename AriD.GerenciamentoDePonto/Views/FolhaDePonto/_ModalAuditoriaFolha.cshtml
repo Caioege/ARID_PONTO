@@ -1,0 +1,76 @@
+﻿@model List<LogAuditoriaPonto>
+
+@{
+    var vinculoId = (int)ViewBag.VinculoId;
+    var mesAno = (string)ViewBag.MesAno;
+    var pontoDoDiaId = ViewBag.PontoDoDiaId as int?;
+}
+
+<div class="modal fade" id="_ModalAuditoria" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Auditoria - @(pontoDoDiaId.HasValue ? "Dia" : "Folha") (@mesAno)
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="d-flex gap-2 mb-3">
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            onclick="modalAuditoriaFolha(@vinculoId, '@mesAno');">
+                        Folha inteira
+                    </button>
+
+                    @if (pontoDoDiaId.HasValue)
+                    {
+                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                onclick="modalAuditoriaFolha(@vinculoId, '@mesAno', @pontoDoDiaId.Value);">
+                            Somente este dia
+                        </button>
+                    }
+
+                    <small class="text-muted align-self-center">
+                        Exibe logs do que foi alterado (antes → depois), usuário e data/hora.
+                    </small>
+                </div>
+
+                @if (Model == null || Model.Count == 0)
+                {
+                    <div class="alert alert-info">Nenhuma alteração registrada.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead style="background:#f3f3f3">
+                                <tr>
+                                    <th style="width:160px">Data/Hora</th>
+                                    <th style="width:180px">Usuário</th>
+                                    <th style="width:140px">Ação</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var l in Model)
+                                {
+                                    <tr>
+                                        <td>@l.DataHora.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@l.UsuarioNome</td>
+                                        <td>@l.Acao</td>
+                                        <td style="white-space:pre-wrap">@l.Descricao</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

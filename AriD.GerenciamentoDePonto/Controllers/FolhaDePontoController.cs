@@ -212,6 +212,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             ViewBag.ObservacaoServidor = _servicoDeFolhaDePonto.ObtenhaObservacaoDoServidorNaFolhaDePonto(vinculoDeTrabalhoId);
 
+            var heMes = _servicoDeFolhaDePonto.HorasExtrasDaFolhaDePonto(organizacaoId, vinculoDeTrabalhoId, mesAno.Inicio, mesAno.Fim);
+
+            var percentuais = ObterPercentuaisDaFolha(heMes);
+            var mapaAprovados = MapearMinutosAprovadosPorDiaEPercentual(heMes);
+
+            var pendenciasPorDia = heMes
+                .Where(x => x.Status == eStatusAprovacaoHoraExtra.Pendente && x.Minutos > 0)
+                .GroupBy(x => x.PontoDoDiaId)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.Minutos));
+
+            ViewBag.ExtPercentuais = percentuais;
+            ViewBag.ExtMapa = mapaAprovados;
+            ViewBag.ExtPendenciasPorDia = pendenciasPorDia;
+
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
             return Json(new
             {
@@ -275,12 +289,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var vinculoDeTrabalho = _servicoVinculoDeTrabalho.Obtenha(vinculoDeTrabalhoId);
             var eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, mesAno.Inicio, mesAno.Fim);
 
+            var horasExtrasDaFolha = _servicoDeFolhaDePonto
+                .HorasExtrasDaFolhaDePonto(organizacaoId, vinculoDeTrabalhoId, mesAno.Inicio, mesAno.Fim);
+
             var relatorio = RelatorioFolhaDePonto(
                 HttpContext.DadosDaSessao(),
                 vinculoDeTrabalho,
                 mesAno,
                 eventos,
-                listaDePonto);
+                listaDePonto,
+                horasExtrasDaFolha);
 
             var nomeArquivo = $"Folha de Ponto {mesAno.ToString().Replace("/", "-")}.pdf";
 
@@ -391,6 +409,71 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ModalHorasExtrasDoDia(int pontoDoDiaId)
+        {
+            var dados = HttpContext.DadosDaSessao();
+
+            // pega o PontoDoDia para validar/mostrar info
+            var pontoDoDia = _servicoPontoDoDia.Obtenha(pontoDoDiaId);
+            if (pontoDoDia == null)
+                return Json(new { sucesso = false, mensagem = "Ponto do dia não encontrado." });
+
+            // CarregueFolhaDePonto já terá gerado os eventos, mas caso o usuário abra direto o modal,
+            // ainda assim a tela vai mostrar o que existir.
+            var horasExtras = _servicoDeFolhaDePonto.ObtenhaHorasExtrasDoDia(pontoDoDiaId);
+
+            ViewBag.PontoDoDia = pontoDoDia;
+            ViewBag.PodeAprovar = (dados.Perfil != ePerfilDeAcesso.Servidor);
+
+            var html = await RenderizarComoString("_ModalHorasExtrasDoDia", horasExtras);
+            return Json(new { sucesso = true, html });
+        }
+
+        [HttpPost]
+        public IActionResult AprovarHoraExtra(int horaExtraId, int minutosAprovados)
+        {
+            var dados = HttpContext.DadosDaSessao();
+            if (dados.Perfil == ePerfilDeAcesso.Servidor)
+                return Json(new { sucesso = false, mensagem = "Sem permissão para aprovar horas extras." });
+
+            _servicoDeFolhaDePonto.AprovarHoraExtra(horaExtraId, minutosAprovados, this.HttpContext.DadosDaSessao().UsuarioNome);
+            return Json(new { sucesso = true, mensagem = "Hora extra aprovada." });
+        }
+
+        [HttpPost]
+        public IActionResult ReprovarHoraExtra(int horaExtraId)
+        {
+            var dados = HttpContext.DadosDaSessao();
+            if (dados.Perfil == ePerfilDeAcesso.Servidor)
+                return Json(new { sucesso = false, mensagem = "Sem permissão para reprovar horas extras." });
+
+            _servicoDeFolhaDePonto.ReprovarHoraExtra(horaExtraId, this.HttpContext.DadosDaSessao().UsuarioNome);
+            return Json(new { sucesso = true, mensagem = "Hora extra reprovada." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ModalAuditoriaFolha(int vinculoDeTrabalhoId, string mesAno, int? pontoDoDiaId = null)
+        {
+            var sessao = HttpContext.DadosDaSessao();
+            var orgId = sessao.OrganizacaoId;
+
+            var mes = new MesAno(mesAno);
+            List<LogAuditoriaPonto> logs;
+
+            if (pontoDoDiaId.HasValue)
+                logs = _servicoDeFolhaDePonto.ObtenhaAuditoriaDoDia(orgId, pontoDoDiaId.Value);
+            else
+                logs = _servicoDeFolhaDePonto.ObtenhaAuditoriaDaFolha(orgId, vinculoDeTrabalhoId, mes.Inicio, mes.Fim);
+
+            ViewBag.VinculoId = vinculoDeTrabalhoId;
+            ViewBag.MesAno = mesAno;
+            ViewBag.PontoDoDiaId = pontoDoDiaId;
+
+            var html = await RenderizarComoString("_ModalAuditoriaFolha", logs);
+            return Json(new { sucesso = true, html });
+        }
+
         private void ContextoPontoDoDia()
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
@@ -418,6 +501,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             MesAno mesAno,
             List<EventoAnual> eventos,
             List<PontoDoDia> listaDePonto,
+            List<PontoDoDiaHoraExtra> horasExtrasDaFolha,
             bool impressaoDoServidor = false)
         {
             var stream = new MemoryStream();
@@ -468,6 +552,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .Add(new Text("Horário de Trabalho: ").SetBold())
                     .Add(new Text(vinculoDeTrabalho.HorarioDeTrabalho.SiglaComDescricao))));
 
+            var percentuais = horasExtrasDaFolha
+                .Select(x => x.Percentual)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var mapa = horasExtrasDaFolha
+                .Where(x => x.Status == eStatusAprovacaoHoraExtra.Aprovado)
+                .GroupBy(x => x.PontoDoDiaId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(x => x.Percentual)
+                          .ToDictionary(gg => gg.Key, gg => gg.Sum(x => x.MinutosAprovados))
+                );
+
             var totalDeColunas = 7;
 
             if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasTrabalhadas))
@@ -479,7 +578,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
             {
                 if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasPositivas))
+                {
                     totalDeColunas++;
+                    if (percentuais.Count > 0)
+                        totalDeColunas += percentuais.Count;
+                }
 
                 if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
                     totalDeColunas++;
@@ -628,6 +731,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             .SetBold()
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+
+                    foreach (var p in percentuais)
+                    {
+                        table
+                            .AddCell(new Cell()
+                                .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
+                                .SetWidth(larguraColunas)
+                                .Add(new Paragraph()
+                                .Add(new Text($"EXT {p}%"))
+                                .SetBold()
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
+                    }
                 }
 
                 if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
@@ -742,6 +858,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 .AddCell(new Cell()
                                     .Add(new Paragraph()
                                     .Add(new Text(dia.HorasPositivas?.ToString(@"hh\:mm") ?? string.Empty))));
+
+                            Dictionary<decimal, int> porPerc = null;
+                            mapa.TryGetValue(dia.Id, out porPerc);
+
+                            foreach (var p in percentuais)
+                            {
+                                var min = (porPerc != null && porPerc.TryGetValue(p, out var v)) ? v : 0;
+                                var txt = min > 0 ? TimeSpan.FromMinutes(min).ToString(@"hh\:mm") : "";
+                                table.AddCell(new Cell().Add(new Paragraph(txt)).SetTextAlignment(TextAlignment.CENTER));
+                            }
                         }
 
                         if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
@@ -989,6 +1115,55 @@ namespace AriD.GerenciamentoDePonto.Controllers
             tableCabecalho.AddCell(celulaNome);
 
             document.Add(new Div().Add(tableCabecalho));
+        }
+
+        static string FormatarResumoHE(List<PontoDoDiaHoraExtra> itens)
+        {
+            if (itens == null || itens.Count == 0) return string.Empty;
+
+            // Mostrar aprovado se houver; se não, mostra total
+            bool temAprovacao = itens.Any(i => i.Status != eStatusAprovacaoHoraExtra.Pendente);
+
+            var grupos = itens
+                .GroupBy(i => i.Percentual)
+                .OrderBy(g => g.Key)
+                .Select(g =>
+                {
+                    var total = g.Sum(x => x.Minutos);
+                    var aprov = g.Sum(x => x.MinutosAprovados);
+                    var pend = g.Any(x => x.Status == eStatusAprovacaoHoraExtra.Pendente);
+
+                    var minutos = temAprovacao ? aprov : total;
+                    var hhmm = TimeSpan.FromMinutes(minutos).ToString(@"hh\:mm");
+
+                    return pend ? $"{g.Key}% {hhmm}*" : $"{g.Key}% {hhmm}";
+                });
+
+            return string.Join(" | ", grupos);
+        }
+
+        private static List<decimal> ObterPercentuaisDaFolha(List<PontoDoDiaHoraExtra> horasExtras)
+        {
+            return horasExtras
+                .Select(x => x.Percentual)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+        }
+
+        private static Dictionary<int, Dictionary<decimal, int>> MapearMinutosAprovadosPorDiaEPercentual(List<PontoDoDiaHoraExtra> horasExtras)
+        {
+            return horasExtras
+                .GroupBy(x => x.PontoDoDiaId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(x => x.Percentual)
+                          .ToDictionary(
+                              gg => gg.Key,
+                              gg => gg.Where(x => x.Status == eStatusAprovacaoHoraExtra.Aprovado)
+                                      .Sum(x => x.MinutosAprovados)
+                          )
+                );
         }
     }
 }

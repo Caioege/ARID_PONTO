@@ -10,6 +10,8 @@
     var configColunas = horarioDeTrabalho.ColunasVisiveis;
 
     var observacaoServidor = (string)ViewBag.ObservacaoServidor;
+
+    var extPercentuais = ViewBag.ExtPercentuais as List<decimal> ?? new();
 }
 
 <style>
@@ -40,6 +42,27 @@
     padding: 0;
     margin: 0;
     }
+
+    .he-pendente {
+        background: #fff3cd !important;
+    }
+
+    .he-badge {
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 11px;
+        border: 1px solid #ffeeba;
+        background: #fff3cd;
+        color: #856404;
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+        .he-badge:hover {
+            filter: brightness(0.98);
+        }
 </style>
 
 @if (!string.IsNullOrEmpty(observacaoServidor))
@@ -48,6 +71,16 @@
         @Html.Raw(observacaoServidor.Replace("\n", "<br />"))
     </div>
 }
+
+<div class="d-flex align-items-center gap-3 mb-2">
+    <div class="he-badge" style="cursor: default;">
+        <span>⏳</span>
+        <span>PEND hh:mm</span>
+    </div>
+    <small class="text-muted">
+        Célula destacada indica horas extras pendentes de aprovação. Clique no badge para abrir a aprovação do dia.
+    </small>
+</div>
 
 @Html.Hidden("PodeMovimentarRegistros", Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.MoverRegistros).ToString().ToLower())
 <table class="table table-bordered">
@@ -112,6 +145,11 @@
                     <th class="text-center" width="@(larguraPeriodo)px">
                         HOR<br />POS
                     </th>
+
+                    @foreach (var p in extPercentuais)
+                    {
+                        <th class="text-center" width="@(larguraPeriodo)px">EXT @p%</th>
+                    }
                 }
 
                 if (configColunas.HasFlag(eColunasDaFolha.HorasNegativas))

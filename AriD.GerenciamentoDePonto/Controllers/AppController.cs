@@ -148,6 +148,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 mesAno,
                 eventos,
                 listaDePonto,
+                null,
                 true);
 
             return File(relatorio, "application/pdf");

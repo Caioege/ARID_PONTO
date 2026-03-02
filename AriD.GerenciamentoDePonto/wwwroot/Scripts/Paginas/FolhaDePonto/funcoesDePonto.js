@@ -285,3 +285,75 @@ function salvarAjusteBH() {
 			}
 		});
 }
+
+function modalHorasExtrasDoDia(pontoDoDiaId) {
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/ModalHorasExtrasDoDia',
+		'GET',
+		{ pontoDoDiaId },
+		function (data) {
+			if (data.sucesso) {
+				$('#div-modal').html(data.html);
+				$('#_ModalHorasExtras').modal('show');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		}
+	);
+}
+
+function aprovarHoraExtra(horaExtraId, maxMinutos) {
+	let minutosAprovados = parseInt($(`#min-aprov-${horaExtraId}`).val() || '0', 10);
+	if (minutosAprovados < 0) minutosAprovados = 0;
+	if (minutosAprovados > maxMinutos) minutosAprovados = maxMinutos;
+
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/AprovarHoraExtra',
+		'POST',
+		{ horaExtraId, minutosAprovados },
+		function (data) {
+			if (data.sucesso) {
+				MensagemRodape('success', data.mensagem);
+				// Reabre modal para refletir status/valores
+				$('#_ModalHorasExtras').modal('hide');
+				// Se quiser atualizar a folha inteira:
+				carregarFolhaDePonto('Atualizando folha...');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		}
+	);
+}
+
+function reprovarHoraExtra(horaExtraId) {
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/ReprovarHoraExtra',
+		'POST',
+		{ horaExtraId },
+		function (data) {
+			if (data.sucesso) {
+				MensagemRodape('success', data.mensagem);
+				$('#_ModalHorasExtras').modal('hide');
+				carregarFolhaDePonto('Atualizando folha...');
+			} else {
+				MensagemRodape('warning', data.mensagem);
+			}
+		}
+	);
+}
+
+function modalAuditoriaFolha(vinculoDeTrabalhoId, mesAno, pontoDoDiaId) {
+	RequisicaoAjaxComCarregamento(
+		'/FolhaDePonto/ModalAuditoriaFolha',
+		'GET',
+		{ vinculoDeTrabalhoId, mesAno, pontoDoDiaId },
+		function (data) {
+			if (data.sucesso) {
+				$('#div-modal').html(data.html);
+				$('#_ModalAuditoria').modal('show');
+			} else {
+				MensagemRodape('warning', data.mensagem || 'Erro ao abrir auditoria.');
+			}
+		}
+	);
+}

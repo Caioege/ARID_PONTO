@@ -35,6 +35,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; }
 
+        public bool ConsiderarFacultativoComoFeriadoHoraExtra { get; set; } = false;
+        public virtual List<RegraHoraExtra> RegrasHoraExtra { get; set; } = new();
+
+        public int ToleranciaDsrEmMinutos { get; set; } = 0;
+
         public TimeSpan? ObtenhaCargaHorariaDoDia(eDiaDaSemana dia, bool diaFeriadoOuFacultativo)
             => diaFeriadoOuFacultativo || TipoCargaHoraria == eTipoCargaHoraria.MensalFixa ? null : Dias.FirstOrDefault(c => c.DiaDaSemana == dia)?.CalculeCargaHorariaTotal(diaFeriadoOuFacultativo);
     }
