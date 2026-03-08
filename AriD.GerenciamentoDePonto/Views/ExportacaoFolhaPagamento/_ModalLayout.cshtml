@@ -1,0 +1,117 @@
+﻿@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Enumeradores
+@model AriD.BibliotecaDeClasses.Entidades.LayoutExportacaoFolhaPagamento
+
+@{
+    var camposEnum = (List<CodigoDescricaoDTO>)ViewBag.CamposEnum;
+    var formatos = (List<CodigoDescricaoDTO>)ViewBag.Formatos;
+}
+
+<div class="modal fade" id="_ModalLayoutFolha" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Layout de Exportação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="form-layout">
+                    @Html.HiddenFor(m => m.Id)
+
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <label class="form-label obrigatorio" for="Nome">Nome</label>
+                            @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", @id = "Nome" })
+                        </div>
+
+                        <div class="col col-md-2">
+                            <label class="form-label" for="Delimitador">Delimitador</label>
+                            @Html.TextBoxFor(m => m.Delimitador, new { @class = "form-control", @maxlength = "5", @id = "Delimitador" })
+                        </div>
+
+                        <div class="col col-md-2">
+                            <label class="form-label" for="UsarCabecalho">Cabeçalho</label>
+                            <select class="form-select" name="UsarCabecalho" id="UsarCabecalho">
+                                <option value="true" selected="@(Model.UsarCabecalho ? "selected" : null)">Sim</option>
+                                <option value="false" selected="@(Model.UsarCabecalho ? null : "selected")">Não</option>
+                            </select>
+                        </div>
+
+                        <div class="col col-md-2">
+                            <label class="form-label" for="UsarBOM">BOM</label>
+                            <select class="form-select" name="UsarBOM" id="UsarBOM">
+                                <option value="true" selected="@(Model.UsarBOM ? "selected" : null)">Sim</option>
+                                <option value="false" selected="@(Model.UsarBOM ? null : "selected")">Não</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col col-md-6">
+                            <label class="form-label" for="FormatoQuantidade">Formato da Quantidade</label>
+                            @Html.DropDownListFor(m => m.FormatoQuantidade, new SelectList(formatos, "Codigo", "Descricao", (int)Model.FormatoQuantidade), new { @class = "form-select", @id = "FormatoQuantidade" })
+                        </div>
+                        <div class="col col-md-3">
+                            <label class="form-label" for="CasasDecimais">Casas decimais</label>
+                            @Html.TextBoxFor(m => m.CasasDecimais, new { @class = "form-control", @id = "CasasDecimais" })
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <input type="hidden" id="CamposJson" name="camposJson" />
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <b>Campos do layout (ordem do CSV)</b>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="adicionarCampoLayout()">
+                            + Adicionar campo
+                        </button>
+                    </div>
+
+                    <div class="table-responsive mt-2">
+                        <table class="table table-bordered" id="tbl-campos">
+                            <thead style="background:#f3f3f3">
+                                <tr>
+                                    <th style="width:70px" class="text-center">Ordem</th>
+                                    <th>Campo</th>
+                                    <th style="width:160px">Nome Coluna</th>
+                                    <th style="width:200px">Valor Fixo</th>
+                                    <th style="width:80px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var c in Model.Campos.OrderBy(x => x.Ordem))
+                                {
+                                    <tr>
+                                        <td class="text-center"><input class="form-control ordem" value="@c.Ordem" readonly /></td>
+                                        <td>
+                                            <select class="form-select campo">
+                                                @foreach (var opt in camposEnum)
+                                                {
+                                                    <option value="@opt.Codigo" selected="@(opt.Codigo == (int)c.Campo ? "selected" : null)">@opt.Descricao</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input class="form-control nomeColuna" value="@c.NomeColuna" /></td>
+                                        <td><input class="form-control valorFixo" value="@c.ValorFixo" /></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerLinhaCampo(this)">X</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <small class="text-muted">Dica: use “Valor Fixo” para campos exigidos pelo sistema de folha (ex.: tipo de registro).</small>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarLayout()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

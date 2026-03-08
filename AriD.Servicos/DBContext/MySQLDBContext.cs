@@ -72,5 +72,8 @@ namespace AriD.Servicos.DBContext
         public DbSet<FaixaHoraExtra> FaixaHoraExtra { get; set; }
         public DbSet<PontoDoDiaHoraExtra> PontoDoDiaHoraExtra { get; set; }
         public DbSet<LogAuditoriaPonto> LogAuditoriaPonto { get; set; }
+        public DbSet<LayoutExportacaoFolhaPagamento> LayoutExportacaoFolhaPagamento { get; set; }
+        public DbSet<LayoutExportacaoFolhaPagamentoCampo> LayoutExportacaoFolhaPagamentoCampo { get; set; }
+        public DbSet<MapeamentoEventoFolhaPagamento> MapeamentoEventoFolhaPagamento { get; set; }
     }
 }

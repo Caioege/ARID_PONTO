@@ -1,0 +1,95 @@
+﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@{
+    var sessao = Context.DadosDaSessao();
+}
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Exportação para Folha de Pagamento (CSV)</h5>
+        <small class="text-muted float-end">Campos com <span style="color:red">*</span> são obrigatórios.</small>
+    </div>
+
+    <div class="card-body">
+        <div class="alert alert-primary">
+            <b>Como funciona a exportação</b>
+            <ul class="mb-0">
+                <li><b>Somente folhas 100% fechadas</b> são exportadas. Se existir qualquer dia em aberto, a exportação é bloqueada.</li>
+                <li>Horas extras: se existirem registros aprovados por percentual (50/70/100), exportamos separados. Se não, exportamos HE total do mês.</li>
+                <li>Você precisa configurar os <b>códigos da folha</b> para cada evento (HE, Falta/Atraso, Abono, etc.).</li>
+            </ul>
+        </div>
+
+        <form id="form-export-folha">
+            <div class="row">
+                <div class="col col-md-12">
+                    <label class="form-label obrigatorio" for="UnidadeId">Unidade</label>
+                    @Html.DropDownList("unidadeId", (SelectList)ViewBag.Unidades, string.Empty, new { @class = "select2", @id = "UnidadeId" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-md-4">
+                    <label class="form-label obrigatorio" for="MesDeReferencia">Competência</label>
+                    <input id="MesDeReferencia" name="mesDeReferencia" type="month" class="form-control" />
+                </div>
+
+                <div class="col col-md-8">
+                    <label class="form-label obrigatorio" for="LayoutId">Layout</label>
+                    @Html.DropDownList("layoutId", (SelectList)ViewBag.Layouts, string.Empty, new { @class = "select2", @id = "LayoutId" })
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col col-md-3">
+                    <label class="form-label">Formato</label>
+                    <select class="form-select" id="FormatoArquivo" name="formatoArquivo">
+                        <option value="1" selected>CSV</option>
+                        <option value="2">TXT</option>
+                    </select>
+                </div>
+
+                <div class="col col-md-4">
+                    <label class="form-label">Agrupamento</label>
+                    <select class="form-select" id="AgruparPorMatricula" name="agruparPorMatricula">
+                        <option value="true" selected>Mensal (por matrícula, 1 linha por evento)</option>
+                        <option value="false">Diário (uma linha por dia por evento)</option>
+                    </select>
+                    <small class="text-muted">O modo mensal é o mais comum em folhas de pagamento.</small>
+                </div>
+
+                <div class="col col-md-4">
+                    <label class="form-label">Somente habilitados p/ folha</label>
+                    <select class="form-select" id="SomenteHabilitados" name="somenteServidoresHabilitados">
+                        <option value="true" selected>Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                    <small class="text-muted">Usa o campo “HabilitaExportacaoParaFolhaDePagamento” do servidor.</small>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col col-md-12">
+                        <button type="button" class="btn btn-outline-secondary" onclick="abrirModalCodigos()" style="width: 120px;">
+                            Configurar Códigos
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary" onclick="abrirModalLayout(0)" style="width: 120px;">
+                            Novo Layout
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary" onclick="editarLayoutSelecionado()" style="width: 120px;">
+                            Editar Layout
+                        </button>
+
+                        <button type="button" class="btn btn-primary float-end" onclick="exportarFolhaPagamento()">
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div id="div-modal"></div>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/ExportacaoFolhaPagamento/index.js?t=@DateTime.Now.Ticks"></script>
