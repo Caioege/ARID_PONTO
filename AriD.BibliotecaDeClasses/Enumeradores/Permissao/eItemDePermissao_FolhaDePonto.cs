@@ -13,6 +13,12 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         Resetar = 2,
 
         [Description("Gerenciar registros do aplicativo")]
-        GerenciarRegistrosDoAplicativo = 3
+        GerenciarRegistrosDoAplicativo = 3,
+
+        [Description("Visualizar Histórico")]
+        VisualizarHistorico = 4,
+
+        [Description("Desconsiderar Registros")]
+        DesconsiderarRegistros = 5
     }
 }

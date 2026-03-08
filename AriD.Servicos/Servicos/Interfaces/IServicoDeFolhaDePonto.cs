@@ -26,7 +26,9 @@ namespace AriD.Servicos.Servicos.Interfaces
             DateTime data,
             TimeSpan? valorHora,
             int? justificativaId,
-            string acao);
+            string acao,
+            string motivoAcao,
+            bool desconsideraRegistroAtual);
 
         List<CodigoDescricaoDTO> ObtenhaServidoresLotadosNaUnidade(
             int organizacaoId,
@@ -80,12 +82,14 @@ namespace AriD.Servicos.Servicos.Interfaces
         string ObtenhaObservacaoDoServidorNaFolhaDePonto(int vinculoDeTrabalhoId);
 
         List<PontoDoDiaHoraExtra> ObtenhaHorasExtrasDoDia(int pontoDoDiaId);
-        void AprovarHoraExtra(int horaExtraId, int minutosAprovados, string usuarioNome);
-        void ReprovarHoraExtra(int horaExtraId, string usuarioNome);
+        void AprovarHoraExtra(int horaExtraId, int minutosAprovados);
+        void ReprovarHoraExtra(int horaExtraId);
 
         List<PontoDoDiaHoraExtra> HorasExtrasDaFolhaDePonto(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim);
 
-        List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim);
+        List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, MesAno mesAno);
         List<LogAuditoriaPonto> ObtenhaAuditoriaDoDia(int organizacaoId, int pontoDoDiaId);
+
+        void ReconsiderarRegistroDePonto(int organizacaoId, int pontoDoDiaId, int registroDePontoId);
     }
 }

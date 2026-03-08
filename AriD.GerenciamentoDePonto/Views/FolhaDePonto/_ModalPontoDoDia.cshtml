@@ -6,6 +6,10 @@
 
     int? justificativaId = null;
     TimeSpan? hora = null;
+    bool registroPodeSerDesconsiderado = false;
+    int? registroId = null;
+    string origem = string.Empty;
+    var podeDesconsiderarRegistro = Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.DesconsiderarRegistros);
 
     RegistroAplicativo registroAplicativo = null;
 
@@ -16,12 +20,18 @@
             justificativaId = Model.JustificativaPeriodo1Id;
             hora = Model.Entrada1;
             registroAplicativo = Model.RegistroDePontoEntrada1?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoEntrada1Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoEntrada1Id.HasValue;
+            origem = Model.RegistroDePontoEntrada1?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoEntrada1?.EquipamentoDePonto.Descricao;
             break;
         case "saida1":
             titulo = "Saída 1";
             justificativaId = Model.JustificativaPeriodo1Id;
             hora = Model.Saida1;
             registroAplicativo = Model.RegistroDePontoSaida1?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoSaida1Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoSaida1Id.HasValue;
+            origem = Model.RegistroDePontoSaida1?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoSaida1?.EquipamentoDePonto.Descricao;
             break;
 
         case "entrada2":
@@ -29,12 +39,18 @@
             justificativaId = Model.JustificativaPeriodo2Id;
             registroAplicativo = Model.RegistroDePontoEntrada2?.RegistroAplicativo;
             hora = Model.Entrada2;
+            registroId = Model.RegistroDePontoEntrada2Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoEntrada2Id.HasValue;
+            origem = Model.RegistroDePontoEntrada2?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoEntrada2?.EquipamentoDePonto.Descricao;
             break;
         case "saida2":
             titulo = "Saída 2";
             justificativaId = Model.JustificativaPeriodo2Id;
             hora = Model.Saida2;
             registroAplicativo = Model.RegistroDePontoSaida2?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoSaida2Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoSaida2Id.HasValue;
+            origem = Model.RegistroDePontoSaida2?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoSaida2?.EquipamentoDePonto.Descricao;
             break;
 
         case "entrada3":
@@ -42,12 +58,18 @@
             justificativaId = Model.JustificativaPeriodo3Id;
             hora = Model.Entrada3;
             registroAplicativo = Model.RegistroDePontoEntrada3?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoEntrada3Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoEntrada3Id.HasValue;
+            origem = Model.RegistroDePontoEntrada3?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoEntrada3?.EquipamentoDePonto.Descricao;
             break;
         case "saida3":
             titulo = "Saída 3";
             justificativaId = Model.JustificativaPeriodo3Id;
             hora = Model.Saida3;
             registroAplicativo = Model.RegistroDePontoSaida3?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoSaida3Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoSaida3Id.HasValue;
+            origem = Model.RegistroDePontoSaida3?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoSaida3?.EquipamentoDePonto.Descricao;
             break;
 
         case "entrada4":
@@ -55,12 +77,18 @@
             justificativaId = Model.JustificativaPeriodo4Id;
             hora = Model.Entrada4;
             registroAplicativo = Model.RegistroDePontoEntrada4?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoEntrada4Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoEntrada4Id.HasValue;
+            origem = Model.RegistroDePontoEntrada4?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoEntrada4?.EquipamentoDePonto.Descricao;
             break;
         case "saida4":
             titulo = "Saída 4";
             justificativaId = Model.JustificativaPeriodo4Id;
             hora = Model.Saida4;
             registroAplicativo = Model.RegistroDePontoSaida4?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoSaida4Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoSaida4Id.HasValue;
+            origem = Model.RegistroDePontoSaida4?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoSaida4?.EquipamentoDePonto.Descricao;
             break;
 
         case "entrada5":
@@ -68,12 +96,18 @@
             justificativaId = Model.JustificativaPeriodo4Id;
             hora = Model.Entrada4;
             registroAplicativo = Model.RegistroDePontoEntrada5?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoEntrada5Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoEntrada5Id.HasValue;
+            origem = Model.RegistroDePontoEntrada5?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoEntrada5?.EquipamentoDePonto.Descricao;
             break;
         case "saida5":
             titulo = "Saída 5";
             justificativaId = Model.JustificativaPeriodo5Id;
             hora = Model.Saida5;
             registroAplicativo = Model.RegistroDePontoSaida5?.RegistroAplicativo;
+            registroId = Model.RegistroDePontoSaida5Id;
+            registroPodeSerDesconsiderado = podeDesconsiderarRegistro && Model.RegistroDePontoSaida5Id.HasValue;
+            origem = Model.RegistroDePontoSaida5?.RegistroAplicativoId.HasValue ?? false ? "Aplicativo" : Model?.RegistroDePontoSaida5?.EquipamentoDePonto.Descricao;
             break;
 
         case "abono":
@@ -97,6 +131,9 @@
                     @Html.Hidden("DataTicks", Model.Data.Ticks)
                     @Html.HiddenFor(model => model.VinculoDeTrabalhoId)
                     @Html.Hidden("Acao", acao)
+                    @Html.Hidden("RegistroId", registroId)
+                    @Html.Hidden("PontoDoDiaId", Model.Id)
+
                     @if (!acao.Equals("abono")) 
                     {
                         @if (registroAplicativo != null)
@@ -178,11 +215,29 @@
                                 </ul>
                                 <div class="tab-content" style="padding: 0px !important">
                                     <div class="tab-pane fade @(justificativaId.HasValue ? string.Empty : "active show")" id="navs-pills-hora" role="tabpanel">
+                                        @if (!string.IsNullOrEmpty(origem))
+                                        {
+                                            <badge class="badge badge-secondary" style="background: cadetblue; width: 100%; font-size: 13px; margin-bottom: 10px;">REGISTRO FEITO EM: @origem</badge>
+                                        }
                                         <div class="row">
-                                            <div class="col col-md-4">
+                                            <div class="col col-md-@(registroId.HasValue && registroPodeSerDesconsiderado ? 5 : 4)">
                                                 <div class="input-group input-group-merge">
-                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-time"></i></span>
-                                                    @Html.TextBox("ValorHora", hora?.ToString(@"hh\:mm"), new { @class = "form-control hora" })
+                                                    @if (registroId.HasValue)
+                                                    {
+                                                        <span id="basic-icon-default-fullname2" class="input-group-text" style="background: #f2f3f4;"><i class="bx bx-time"></i></span>
+                                                        @Html.TextBox("ValorHora", hora?.ToString(@"hh\:mm"), new { @class = "form-control hora", @disabled = "disabled", @readonly = "readonly" })
+                                                        @if (registroPodeSerDesconsiderado)
+                                                        {
+                                                            <button type="button" class="btn btn-danger btn-sm" title="Desconsiderar registro atual para folha de ponto" onclick="executeRemoverRegistroPontoDia()">
+                                                                <i class="bx bx-block"></i>
+                                                            </button>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-time"></i></span>
+                                                        @Html.TextBox("ValorHora", hora?.ToString(@"hh\:mm"), new { @class = "form-control hora" })
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -220,7 +275,7 @@
                 </button>
                 @if (registroAplicativo == null)
                 {
-                    <button type="button" class="btn btn-primary" id="btn-salvar-modal" onclick="salvarPontoDia()">
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal" onclick="salvarPontoDia(false, null)">
                         <i class='bx bxs-save'></i> Salvar
                     </button>
                 }

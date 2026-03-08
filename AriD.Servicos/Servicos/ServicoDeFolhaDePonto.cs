@@ -10,22 +10,87 @@ namespace AriD.Servicos.Servicos
 {
     public class ServicoDeFolhaDePonto : Servico<PontoDoDia>, IServicoDeFolhaDePonto
     {
-        private static string Fmt(TimeSpan? t) => t.HasValue ? t.Value.ToString(@"hh\:mm") : "-";
-        private static string FmtId(int? id) => id.HasValue ? id.Value.ToString() : "-";
-        private static string ResumoPeriodos(PontoDoDia p)
+        private static string FmtHora(TimeSpan? t) => t.HasValue ? t.Value.ToString(@"hh\:mm") : "-";
+        private static string FmtInt(int? v) => v.HasValue ? v.Value.ToString() : "-";
+
+        private static string CampoAmigavel(string campo)
         {
-            return $"E1={Fmt(p.Entrada1)} S1={Fmt(p.Saida1)} | " +
-                   $"E2={Fmt(p.Entrada2)} S2={Fmt(p.Saida2)} | " +
-                   $"E3={Fmt(p.Entrada3)} S3={Fmt(p.Saida3)} | " +
-                   $"E4={Fmt(p.Entrada4)} S4={Fmt(p.Saida4)} | " +
-                   $"E5={Fmt(p.Entrada5)} S5={Fmt(p.Saida5)} | " +
-                   $"Abono={Fmt(p.Abono)}";
+            if (string.IsNullOrWhiteSpace(campo)) return "Campo";
+
+            campo = campo.Trim().ToLowerInvariant();
+
+            return campo switch
+            {
+                "entrada1" => "Entrada 1",
+                "saida1" => "Saída 1",
+                "entrada2" => "Entrada 2",
+                "saida2" => "Saída 2",
+                "entrada3" => "Entrada 3",
+                "saida3" => "Saída 3",
+                "entrada4" => "Entrada 4",
+                "saida4" => "Saída 4",
+                "entrada5" => "Entrada 5",
+                "saida5" => "Saída 5",
+                "abono" => "Abono",
+
+                "justificativaperiodo1id" => "Justificativa Período 1",
+                "justificativaperiodo2id" => "Justificativa Período 2",
+                "justificativaperiodo3id" => "Justificativa Período 3",
+                "justificativaperiodo4id" => "Justificativa Período 4",
+                "justificativaperiodo5id" => "Justificativa Período 5",
+
+                _ => campo
+            };
         }
-        private static string ResumoJustificativas(PontoDoDia p)
+
+        private static string ValorDoCampo(PontoDoDia p, string acao)
         {
-            return $"J1={FmtId(p.JustificativaPeriodo1Id)} J2={FmtId(p.JustificativaPeriodo2Id)} " +
-                   $"J3={FmtId(p.JustificativaPeriodo3Id)} J4={FmtId(p.JustificativaPeriodo4Id)} J5={FmtId(p.JustificativaPeriodo5Id)}";
+            var a = acao?.Trim()?.ToLowerInvariant();
+
+            return a switch
+            {
+                "entrada1" => FmtHora(p.Entrada1),
+                "saida1" => FmtHora(p.Saida1),
+                "entrada2" => FmtHora(p.Entrada2),
+                "saida2" => FmtHora(p.Saida2),
+                "entrada3" => FmtHora(p.Entrada3),
+                "saida3" => FmtHora(p.Saida3),
+                "entrada4" => FmtHora(p.Entrada4),
+                "saida4" => FmtHora(p.Saida4),
+                "entrada5" => FmtHora(p.Entrada5),
+                "saida5" => FmtHora(p.Saida5),
+                "abono" => FmtHora(p.Abono),
+
+                "justificativaperiodo1id" => FmtInt(p.JustificativaPeriodo1Id),
+                "justificativaperiodo2id" => FmtInt(p.JustificativaPeriodo2Id),
+                "justificativaperiodo3id" => FmtInt(p.JustificativaPeriodo3Id),
+                "justificativaperiodo4id" => FmtInt(p.JustificativaPeriodo4Id),
+                "justificativaperiodo5id" => FmtInt(p.JustificativaPeriodo5Id),
+
+                _ => "-"
+            };
         }
+
+        private static string TipoDeMudanca(string antes, string depois)
+        {
+            if (antes == "-" && depois != "-") return "Inclusão manual";
+            if (antes != "-" && depois == "-") return "Remoção manual";
+            if (antes != depois) return "Edição manual";
+            return "Atualização manual";
+        }
+
+        private static string ProximoCampo(string classe, bool avancar)
+        {
+            var c = (classe ?? "").Trim().ToLowerInvariant();
+            string[] seq = { "entrada1", "saida1", "entrada2", "saida2", "entrada3", "saida3", "entrada4", "saida4", "entrada5", "saida5" };
+
+            var idx = Array.IndexOf(seq, c);
+            if (idx < 0) return c;
+
+            if (avancar) return (idx + 1 < seq.Length) ? seq[idx + 1] : seq[idx];
+            return (idx - 1 >= 0) ? seq[idx - 1] : seq[idx];
+        }
+
 
         private readonly IUsuarioAtual _usuarioAtual;
 
@@ -231,7 +296,9 @@ namespace AriD.Servicos.Servicos
             DateTime data,
             TimeSpan? valorHora,
             int? justificativaId,
-            string acao)
+            string acao,
+            string motivoAcao,
+            bool desconsideraRegistroAtual)
         {
             try
             {
@@ -246,7 +313,9 @@ namespace AriD.Servicos.Servicos
                     ValideLimiteDeUso(pontoDoDia, justificativaId.Value, acao);
                 }
 
-                var antesResumo = pontoDoDia != null ? $"{ResumoPeriodos(pontoDoDia)} | {ResumoJustificativas(pontoDoDia)}" : "NOVO";
+                var campo = CampoAmigavel(acao);
+                var antesValor = pontoDoDia != null ? ValorDoCampo(pontoDoDia, acao) : "-";
+                int? registroDePontoDesconsiderarId = null;
 
                 Func<int?, JustificativaDeAusencia> CarregueJustificativa = new Func<int?, JustificativaDeAusencia>((id) =>
                 {
@@ -258,137 +327,257 @@ namespace AriD.Servicos.Servicos
                 switch (acao.ToLower())
                 {
                     case "entrada1":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada1 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Entrada1 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoEntrada1Id;
+                            pontoDoDia.RegistroDePontoEntrada1Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada1 != valorHora)))
+                            {
+                                pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Entrada1 = valorHora;
-                        pontoDoDia.JustificativaPeriodo1Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Entrada1 = valorHora;
+                            pontoDoDia.JustificativaPeriodo1Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada1.HasValue || pontoDoDia.Saida1.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.1/SAI.1).");
+                        }
 
                         break;
                     case "saida1":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida1 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Saida1 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoSaida1Id;
+                            pontoDoDia.RegistroDePontoSaida1Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida1 != valorHora)))
+                            {
+                                pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Saida1 = valorHora;
-                        pontoDoDia.JustificativaPeriodo1Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Saida1 = valorHora;
+                            pontoDoDia.JustificativaPeriodo1Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo1 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada1.HasValue || pontoDoDia.Saida1.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.1/SAI.1).");
+                        }
 
                         break;
 
                     case "entrada2":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada2 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Entrada2 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoEntrada2Id;
+                            pontoDoDia.RegistroDePontoEntrada2Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada2 != valorHora)))
+                            {
+                                pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Entrada2 = valorHora;
-                        pontoDoDia.JustificativaPeriodo2Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Entrada2 = valorHora;
+                            pontoDoDia.JustificativaPeriodo2Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada2.HasValue || pontoDoDia.Saida2.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.2/SAI.2).");
+                        }
 
                         break;
                     case "saida2":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida2 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Saida2 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoSaida2Id;
+                            pontoDoDia.RegistroDePontoSaida2Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida2 != valorHora)))
+                            {
+                                pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Saida2 = valorHora;
-                        pontoDoDia.JustificativaPeriodo2Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Saida2 = valorHora;
+                            pontoDoDia.JustificativaPeriodo2Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo2 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada2.HasValue || pontoDoDia.Saida2.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.2/SAI.2).");
+                        }
 
                         break;
 
                     case "entrada3":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada3 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Entrada3 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoEntrada3Id;
+                            pontoDoDia.RegistroDePontoEntrada3Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada3 != valorHora)))
+                            {
+                                pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Entrada3 = valorHora;
-                        pontoDoDia.JustificativaPeriodo3Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Entrada3 = valorHora;
+                            pontoDoDia.JustificativaPeriodo3Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada3.HasValue || pontoDoDia.Saida3.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.3/SAI.3).");
+                        }
 
                         break;
                     case "saida3":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida3 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Saida3 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoSaida3Id;
+                            pontoDoDia.RegistroDePontoSaida3Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida3 != valorHora)))
+                            {
+                                pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Saida3 = valorHora;
-                        pontoDoDia.JustificativaPeriodo3Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Saida3 = valorHora;
+                            pontoDoDia.JustificativaPeriodo3Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo3 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada3.HasValue || pontoDoDia.Saida3.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.3/SAI.3).");
+                        }
 
                         break;
 
                     case "entrada4":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada4 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Entrada4 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoEntrada4Id;
+                            pontoDoDia.RegistroDePontoEntrada4Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada4 != valorHora)))
+                            {
+                                pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Entrada4 = valorHora;
-                        pontoDoDia.JustificativaPeriodo4Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Entrada4 = valorHora;
+                            pontoDoDia.JustificativaPeriodo4Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada4.HasValue || pontoDoDia.Saida4.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.4/SAI.4).");
+                        }
 
                         break;
                     case "saida4":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida4 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Saida4 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoSaida4Id;
+                            pontoDoDia.RegistroDePontoSaida4Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida4 != valorHora)))
+                            {
+                                pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Saida4 = valorHora;
-                        pontoDoDia.JustificativaPeriodo4Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Saida4 = valorHora;
+                            pontoDoDia.JustificativaPeriodo4Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo4 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada4.HasValue || pontoDoDia.Saida4.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.4/SAI.4).");
+                        }
 
                         break;
 
                     case "entrada5":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada5 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Entrada5 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoEntrada5Id;
+                            pontoDoDia.RegistroDePontoEntrada5Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Entrada5 != valorHora)))
+                            {
+                                pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoEntrada5 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Entrada5 = valorHora;
-                        pontoDoDia.JustificativaPeriodo5Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Entrada5 = valorHora;
+                            pontoDoDia.JustificativaPeriodo5Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada5.HasValue || pontoDoDia.Saida5.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.5/SAI.5).");
+                        }
 
                         break;
                     case "saida5":
-                        if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida5 != valorHora)))
+                        if (desconsideraRegistroAtual)
                         {
-                            pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.RegistroManual;
-                        }
-                        else if (!valorHora.HasValue)
                             pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.SemRegistro;
+                            pontoDoDia.Saida5 = null;
+                            registroDePontoDesconsiderarId = pontoDoDia.RegistroDePontoSaida5Id;
+                            pontoDoDia.RegistroDePontoSaida5Id = null;
+                        }
+                        else
+                        {
+                            if (valorHora.HasValue && (pontoDoDia.Id == 0 || (pontoDoDia.Saida5 != valorHora)))
+                            {
+                                pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.RegistroManual;
+                            }
+                            else if (!valorHora.HasValue)
+                                pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.SemRegistro;
 
-                        pontoDoDia.Saida5 = valorHora;
-                        pontoDoDia.JustificativaPeriodo5Id = justificativaId;
-                        pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
+                            pontoDoDia.Saida5 = valorHora;
+                            pontoDoDia.JustificativaPeriodo5Id = justificativaId;
+                            pontoDoDia.JustificativaPeriodo5 = CarregueJustificativa(justificativaId);
+                            if (justificativaId.HasValue && (pontoDoDia.Entrada5.HasValue || pontoDoDia.Saida5.HasValue))
+                                throw new ApplicationException("Você não pode registrar a justificativa pois existe um registro de hora nesse período (ENT.5/SAI.5).");
+                        }
 
                         break;
 
@@ -408,15 +597,18 @@ namespace AriD.Servicos.Servicos
 
                 _repositorio.Commit();
 
-                var depoisPersistido = _repositorio.Obtenha(pontoDoDia.Id);
-                var depoisResumo = $"{ResumoPeriodos(depoisPersistido)} | {ResumoJustificativas(depoisPersistido)}";
+                var depoisValor = pontoDoDia != null ? ValorDoCampo(pontoDoDia, acao) : ValorDoCampo(pontoDoDia, acao);
+                var tipoMudanca = TipoDeMudanca(antesValor, depoisValor);
 
-                Auditar(organizacaoId,
+                if (registroDePontoDesconsiderarId.HasValue)
+                    DesconsiderarRegistroDePonto(organizacaoId, pontoDoDia.Id, registroDePontoDesconsiderarId.Value, motivoAcao);
+                else
+                    Auditar(organizacaoId,
                         vinculoDeTrabalhoId,
-                        depoisPersistido.Id,
-                        _usuarioAtual.Nome,
+                        new MesAno(pontoDoDia.Data),
+                        pontoDoDia.Id,
                         "AJUSTE_PONTO_DIA",
-                        $"Dia {data:dd/MM/yyyy} | Campo='{acao}' | {antesResumo} -> {depoisResumo}");
+                        $"{tipoMudanca} em \"{campo}\" no dia {pontoDoDia.Data:dd/MM/yyyy}: {antesValor} → {depoisValor}");
 
                 return pontoDoDia;
             }
@@ -682,6 +874,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Entrada1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoEntrada1Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoEntrada1 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -689,6 +883,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Saida1 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoSaida1Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoSaida1 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -696,6 +892,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Entrada2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoEntrada2Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoEntrada2 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -703,6 +901,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Saida2 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoSaida2Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoSaida2 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -710,6 +910,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Entrada3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoEntrada3Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoEntrada3 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -717,6 +919,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Saida3 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoSaida3Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoSaida3 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -724,6 +928,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Entrada4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoEntrada4Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -731,6 +937,9 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Saida4 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoSaida4Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoSaida4 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
+
                                     continue;
                                 }
 
@@ -738,6 +947,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Entrada5 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoEntrada5Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoEntrada4 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
 
@@ -745,6 +956,8 @@ namespace AriD.Servicos.Servicos
                                 {
                                     pontoDoDia.Saida5 = TruncarSegundos(registroNaPosicao.DataHoraRegistro.TimeOfDay);
                                     pontoDoDia.RegistroDePontoSaida5Id = registroNaPosicao.Id;
+                                    if (registroNaPosicao.RegistroAplicativoId.HasValue)
+                                        pontoDoDia.TipoSaida5 = eTipoDeRegistroDePeriodo.RegistroAplicativo;
                                     continue;
                                 }
                             }
@@ -954,17 +1167,60 @@ namespace AriD.Servicos.Servicos
                             _repositorioPontoDoDiaHoraExtra.Remover(item);
                     }
 
-                    _repositorio.Remover(registroPersistido);
+                    registroPersistido.AfastamentoId = null;
+                    registroPersistido.BancoDeHorasAjuste = null;
+                    registroPersistido.BancoDeHorasCredito = null;
+                    registroPersistido.BancoDeHorasDebito = null;
+                    registroPersistido.CargaHoraria = null;
+                    registroPersistido.Entrada1 = null;
+                    registroPersistido.Entrada2 = null;
+                    registroPersistido.Entrada3 = null;
+                    registroPersistido.Entrada4 = null;
+                    registroPersistido.Entrada5 = null;
+                    registroPersistido.Saida1 = null;
+                    registroPersistido.Saida2 = null;
+                    registroPersistido.Saida3 = null;
+                    registroPersistido.Saida4 = null;
+                    registroPersistido.Saida5 = null;
+                    registroPersistido.JustificativaPeriodo1Id = null;
+                    registroPersistido.JustificativaPeriodo2Id = null;
+                    registroPersistido.JustificativaPeriodo3Id = null;
+                    registroPersistido.JustificativaPeriodo4Id = null;
+                    registroPersistido.JustificativaPeriodo5Id = null;
+                    registroPersistido.HorasTrabalhadas = null;
+                    registroPersistido.HorasTrabalhadasConsiderandoAbono = null;
+                    registroPersistido.HorasPositivas = null;
+                    registroPersistido.HorasNegativas = null;
+                    registroPersistido.TipoEntrada1 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoEntrada2 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoEntrada3 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoEntrada4 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoEntrada5 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoSaida1 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoSaida2 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoSaida3 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoSaida4 = eTipoDeRegistroDePeriodo.SemRegistro;
+                    registroPersistido.TipoSaida5 = eTipoDeRegistroDePeriodo.SemRegistro;
+
+                    _repositorio.Atualizar(registroPersistido);
+                }
+
+                List<RegistroDePonto> registrosDePonto = ObtenhaRegistrosDePontoDoPeriodo(vinculoDeTrabalhoId, unidadeLotacaoId, inicio, fim, true);
+                foreach (var item in registrosDePonto)
+                {
+                    var registroPersistido = _repositorioRegistroDePonto.Obtenha(item.Id);
+                    registroPersistido.Desconsiderado = false;
+                    _repositorioRegistroDePonto.Atualizar(registroPersistido);
                 }
 
                 _repositorio.Commit();
 
                 Auditar(organizacaoId,
                     vinculoDeTrabalhoId,
+                    mesAno,
                     null,
-                    _usuarioAtual.Nome,
                     "RESET_FOLHA",
-                    $"Período {mesAno} | Dias removidos={totalDias}. Registros manuais aprovados voltaram para 'AguardandoAvaliação' quando aplicável.");
+                    $"Reset da folha do mês {mesAno} (remoção de lançamentos manuais e reprocessamento).");
             }
             catch (Exception)
             {
@@ -972,7 +1228,15 @@ namespace AriD.Servicos.Servicos
             }
         }
 
-        private void ObtenhaRegistrosDePonto(int organizacaoId, int vinculoDeTrabalhoId, int unidadeLotacaoId, MesAno mesAno, out VinculoDeTrabalho vinculoDeTrabalho, out DateTime inicio, out DateTime fim, out List<PontoDoDia> pontosDoPeriodo)
+        private void ObtenhaRegistrosDePonto(
+            int organizacaoId,
+            int vinculoDeTrabalhoId,
+            int unidadeLotacaoId,
+            MesAno mesAno,
+            out VinculoDeTrabalho vinculoDeTrabalho,
+            out DateTime inicio,
+            out DateTime fim,
+            out List<PontoDoDia> pontosDoPeriodo)
         {
             vinculoDeTrabalho = _repositorioVinculo.Obtenha(vinculoDeTrabalhoId);
             if (vinculoDeTrabalho.Fim.HasValue && vinculoDeTrabalho.Fim < mesAno.Inicio)
@@ -1141,10 +1405,12 @@ namespace AriD.Servicos.Servicos
 
                 Auditar(organizacaoId,
                         vinculoDeTrabalhoId,
+                        mesAno,
                         null,
-                        _usuarioAtual.Nome,
                         fechar ? "FECHAR_FOLHA" : "ABRIR_FOLHA",
-                        $"Período {mesAno} | Dias afetados={qtd} | UnidadeLotacaoId={unidadeLotacaoId}");
+                        fechar
+                            ? $"Fechamento da folha do mês {mesAno}."
+                            : $"Reabertura da folha do mês {mesAno}.");
             }
             catch (Exception)
             {
@@ -1209,7 +1475,7 @@ namespace AriD.Servicos.Servicos
                     throw new ApplicationException("Esse registro não pode ter sua situação alterada.");
 
                 var antesSit = registroAplicativo.Situacao;
-                var info = $"RegAppId={registroAplicativo.Id} DataHora={registroAplicativo.DataHora:dd/MM/yyyy HH:mm} Manual={registroAplicativo.Manual} Justif={FmtId(registroAplicativo.JustificativaDeAusenciaId)}";
+                var dataHora = registroAplicativo.DataHora;
 
                 registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Aprovado;
                 _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
@@ -1254,10 +1520,10 @@ namespace AriD.Servicos.Servicos
 
                 Auditar(registroAplicativo.OrganizacaoId,
                     registroAplicativo.VinculoDeTrabalhoId,
+                    mesAno,
                     null,
-                    _usuarioAtual.Nome,
                     "APROVAR_REGISTRO_APP",
-                    $"{info} | {antesSit} -> {registroAplicativo.Situacao}");
+                    $"Aprovação de registro do aplicativo em {dataHora:dd/MM/yyyy HH:mm}.");
             }
             catch (Exception)
             {
@@ -1273,16 +1539,18 @@ namespace AriD.Servicos.Servicos
                 if (registroAplicativo.Situacao != eSituacaoRegistroAplicativo.AguardandoAvaliacao)
                     throw new ApplicationException("Esse registro não pode ter sua situação alterada.");
 
+                var dataHora = registroAplicativo.DataHora;
+
                 registroAplicativo.Situacao = eSituacaoRegistroAplicativo.Reprovado;
                 _repositorioRegistroAplicativo.Atualizar(registroAplicativo);
                 _repositorioRegistroAplicativo.Commit();
 
                 Auditar(registroAplicativo.OrganizacaoId,
                     registroAplicativo.VinculoDeTrabalhoId,
+                    new MesAno(registroAplicativo.DataHora),
                     null,
-                    _usuarioAtual.Nome,
                     "REPROVAR_REGISTRO_APP",
-                    $"RegAppId={registroAplicativo.Id} DataHora={registroAplicativo.DataHora:dd/MM/yyyy HH:mm} | {antesSit} -> {registroAplicativo.Situacao}");
+                    $"Reprovação de registro do aplicativo em {dataHora:dd/MM/yyyy HH:mm}.");
             }
             catch (Exception)
             {
@@ -1320,12 +1588,13 @@ namespace AriD.Servicos.Servicos
                 .ToList();
         }
 
-        public void AprovarHoraExtra(int horaExtraId, int minutosAprovados, string usuarioNome)
+        public void AprovarHoraExtra(int horaExtraId, int minutosAprovados)
         {
             var ev = _repositorioPontoDoDiaHoraExtra.Obtenha(horaExtraId);
             if (ev == null) throw new Exception("Hora extra não encontrada.");
 
-            var antes = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+            var antesAprov = ev.MinutosAprovados;
+            var antesStatus = ev    .Status;
 
             minutosAprovados = Math.Max(0, Math.Min(minutosAprovados, ev.Minutos));
             ev.Status = eStatusAprovacaoHoraExtra.Aprovado;
@@ -1334,19 +1603,20 @@ namespace AriD.Servicos.Servicos
             _repositorioPontoDoDiaHoraExtra.Atualizar(ev);
             _repositorioPontoDoDiaHoraExtra.Commit();
 
-            var depois = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
-            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, ev.PontoDoDiaId,
-                usuarioNome,
+            var campo = $"HE {ev.Percentual}% ({ev.Origem})";
+
+            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, new MesAno(ev.PontoDoDia.Data), ev.PontoDoDiaId,
                 "APROVAR_HE",
-                $"HE {ev.Percentual}% ({ev.Origem}) | {antes} -> {depois}");
+                $"Aprovação de {campo} no dia {ev.PontoDoDia.Data:dd/MM/yyyy}: {antesAprov}min ({antesStatus}) → {antesAprov}min (Aprovado)");
         }
 
-        public void ReprovarHoraExtra(int horaExtraId, string usuarioNome)
+        public void ReprovarHoraExtra(int horaExtraId)
         {
             var ev = _repositorioPontoDoDiaHoraExtra.Obtenha(horaExtraId);
             if (ev == null) throw new Exception("Hora extra não encontrada.");
 
-            var antes = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
+            var antesAprov = ev.MinutosAprovados;
+            var antesStatus = ev.Status;
 
             ev.Status = eStatusAprovacaoHoraExtra.Reprovado;
             ev.MinutosAprovados = 0;
@@ -1354,11 +1624,10 @@ namespace AriD.Servicos.Servicos
             _repositorioPontoDoDiaHoraExtra.Atualizar(ev);
             _repositorioPontoDoDiaHoraExtra.Commit();
 
-            var depois = $"Status={ev.Status} Aprovados={ev.MinutosAprovados} de {ev.Minutos}";
-            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, ev.PontoDoDiaId,
-                usuarioNome,
-                "APROVAR_HE",
-                $"HE {ev.Percentual}% ({ev.Origem}) | {antes} -> {depois}");
+            var campo = $"HE {ev.Percentual}% ({ev.Origem})";
+            Auditar(ev.OrganizacaoId, ev.PontoDoDia.VinculoDeTrabalhoId, new MesAno(ev.PontoDoDia.Data), ev.PontoDoDiaId,
+                "REPROVAR_HE",
+                $"Reprovação de {campo} no dia {ev.PontoDoDia.Data:dd/MM/yyyy}.");
         }
 
         public List<PontoDoDiaHoraExtra> HorasExtrasDaFolhaDePonto(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim)
@@ -1378,21 +1647,14 @@ namespace AriD.Servicos.Servicos
                 .ToList();
         }
 
-        public List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, DateTime inicio, DateTime fim)
+        public List<LogAuditoriaPonto> ObtenhaAuditoriaDaFolha(int organizacaoId, int vinculoDeTrabalhoId, MesAno mesAno)
         {
-            var pontoIds = _repositorio.ObtenhaLista(p =>
-                    p.OrganizacaoId == organizacaoId &&
-                    p.VinculoDeTrabalhoId == vinculoDeTrabalhoId &&
-                    p.Data.Date >= inicio.Date &&
-                    p.Data.Date <= fim.Date)
-                .Select(p => p.Id)
-                .ToList();
-
             return _repositorioAuditoriaPonto.ObtenhaLista(l =>
                     l.OrganizacaoId == organizacaoId &&
                     l.VinculoDeTrabalhoId == vinculoDeTrabalhoId &&
-                    (l.PontoDoDiaId == null || pontoIds.Contains(l.PontoDoDiaId.Value)))
-                .OrderByDescending(l => l.DataHora)
+                    l.MesAno == mesAno.ToString())
+                .OrderBy(l => l.DataHora)
+                .ThenBy(c => c.Id)
                 .ToList();
         }
 
@@ -1401,7 +1663,8 @@ namespace AriD.Servicos.Servicos
             return _repositorioAuditoriaPonto.ObtenhaLista(l =>
                     l.OrganizacaoId == organizacaoId &&
                     l.PontoDoDiaId == pontoDoDiaId)
-                .OrderByDescending(l => l.DataHora)
+                .OrderBy(l => l.DataHora)
+                .ThenBy(c => c.Id)
                 .ToList();
         }
 
@@ -1679,7 +1942,8 @@ namespace AriD.Servicos.Servicos
             int vinculoDeTrabalhoId,
             int unidadeId,
             DateTime inicio,
-            DateTime fim)
+            DateTime fim,
+            bool somenteDesconsiderados = false)
         {
             var query =
                     @"(select
@@ -1698,6 +1962,7 @@ namespace AriD.Servicos.Servicos
 	                    WHERE
 		                    l.VinculoDeTrabalhoId = @VINCULOID
                             and r.RegistroAplicativoId is null
+                            AND r.Desconsiderado = @SOMENTEDESCONSIDERADOS
 		                    and l.UnidadeOrganizacionalId = @UNIDADEID))
                     union
                     (select
@@ -1707,6 +1972,7 @@ namespace AriD.Servicos.Servicos
 	                    on a.Id = r.RegistroAplicativoId
                     where
 	                    a.VinculoDeTrabalhoId = @VINCULOID
+                        AND r.Desconsiderado = @SOMENTEDESCONSIDERADOS
                         and date(a.DataHora) between date(@INICIO) and date(@FIM))";
 
             return _repositorio.ConsultaDapper<RegistroDePonto>(query, new
@@ -1714,7 +1980,8 @@ namespace AriD.Servicos.Servicos
                 @UNIDADEID = unidadeId,
                 @VINCULOID = vinculoDeTrabalhoId,
                 @INICIO = inicio,
-                @FIM = fim
+                @FIM = fim,
+                @SOMENTEDESCONSIDERADOS = somenteDesconsiderados
             });
         }
 
@@ -1732,7 +1999,8 @@ namespace AriD.Servicos.Servicos
                 if (string.IsNullOrEmpty(classe))
                     throw new Exception("Classe não informada.");
 
-                var antesResumo = ResumoPeriodos(pontoDia);
+                var origemCampo = CampoAmigavel(classe);
+                var valorMovido = pontoDia != null ? ValorDoCampo(pontoDia, classe) : "-";
 
                 var entrada1 = pontoDia.Entrada1;
                 var registroAppEntrada1 = pontoDia.RegistroDePontoEntrada1Id;
@@ -1947,19 +2215,60 @@ namespace AriD.Servicos.Servicos
                 _repositorio.Atualizar(pontoDia);
                 _repositorio.Commit();
 
-                var depoisResumo = ResumoPeriodos(pontoDia);
+                var destinoClasse = ProximoCampo(classe, avancar);
+                var destinoCampo = CampoAmigavel(destinoClasse);
 
                 Auditar(pontoDia.OrganizacaoId,
                         pontoDia.VinculoDeTrabalhoId,
+                        new MesAno(pontoDia.Data),
                         pontoDia.Id,
-                        _usuarioAtual.Nome,
                         "MOVER_REGISTRO",
-                        $"Dia {pontoDia.Data:dd/MM/yyyy} | Classe='{classe}' | Direcao={(avancar ? "Avançar" : "Voltar")} | {antesResumo} -> {depoisResumo}");
+                        $"Movimentação de registro ({valorMovido}) de \"{origemCampo}\" para \"{destinoCampo}\" no dia {pontoDia.Data:dd/MM/yyyy}.");
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        public void ReconsiderarRegistroDePonto(int organizacaoId, int pontoDoDiaId, int registroDePontoId)
+        {
+            var r = _repositorioRegistroDePonto.Obtenha(registroDePontoId);
+            if (r == null) throw new Exception("Registro de ponto não encontrado.");
+
+
+            if (!r.Desconsiderado) return;
+
+            var pontoDoDia = _repositorio.Obtenha(pontoDoDiaId);
+
+            r.Desconsiderado = false;
+            r.MotivoDesconsideracao = null;
+            r.UsuarioDesconsideracaoNome = _usuarioAtual?.Nome ?? "Sistema";
+            r.DataDesconsideracao = DateTime.Now;
+
+            _repositorioRegistroDePonto.Atualizar(r);
+            _repositorioRegistroDePonto.Commit();
+
+            Auditar(organizacaoId, pontoDoDia.VinculoDeTrabalhoId, new MesAno(pontoDoDia.Data), pontoDoDiaId, "RECONSIDERAR_BATIDA", $"Reconsideração de marcação {r.DataHoraRegistro:dd/MM/yyyy HH:mm}.");
+        }
+
+        private void DesconsiderarRegistroDePonto(int organizacaoId, int pontoDoDiaId, int registroDePontoId, string motivo)
+        {
+            var r = _repositorioRegistroDePonto.Obtenha(registroDePontoId);
+            if (r == null) throw new Exception("Registro de ponto não encontrado.");
+
+            if (r.Desconsiderado) return;
+
+            var pontoDoDia = _repositorio.Obtenha(pontoDoDiaId);
+
+            r.Desconsiderado = true;
+            r.MotivoDesconsideracao = motivo;
+            r.UsuarioDesconsideracaoNome = _usuarioAtual?.Nome ?? "Sistema";
+            r.DataDesconsideracao = DateTime.Now;
+
+            _repositorioRegistroDePonto.Atualizar(r);
+
+            Auditar(organizacaoId, pontoDoDia.VinculoDeTrabalhoId, new MesAno(pontoDoDia.Data), pontoDoDiaId, "DESCONSIDERAR_BATIDA", $"Desconsideração de marcação {r.DataHoraRegistro:dd/MM/yyyy HH:mm}. Motivo: {motivo}");
         }
 
         private void ValideLimiteDeUso(PontoDoDia ponto, int justificativaId, string acao)
@@ -2314,8 +2623,8 @@ namespace AriD.Servicos.Servicos
         private void Auditar(
             int organizacaoId,
             int vinculoDeTrabalhoId,
+            MesAno mesAno,
             int? pontoDoDiaId,
-            string usuarioNome,
             string acao,
             string descricao)
         {
@@ -2324,10 +2633,11 @@ namespace AriD.Servicos.Servicos
                 OrganizacaoId = organizacaoId,
                 VinculoDeTrabalhoId = vinculoDeTrabalhoId,
                 PontoDoDiaId = pontoDoDiaId,
-                UsuarioNome = usuarioNome ?? "Sistema",
+                UsuarioNome = _usuarioAtual?.Nome ?? "Sistema",
                 DataHora = DateTime.Now,
                 Acao = acao,
-                Descricao = descricao
+                Descricao = descricao,
+                MesAno = mesAno.ToString()
             });
 
             _repositorioAuditoriaPonto.Commit();

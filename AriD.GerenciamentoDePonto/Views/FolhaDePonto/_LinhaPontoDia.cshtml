@@ -60,6 +60,8 @@
     bool temPendencia = pendMin > 0;
     bool temAprovado = porPerc != null && porPerc.Values.Any(v => v > 0);
     bool temRegistroHE = temAprovado || temPendencia;
+
+    var podeVerHistorico = Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.VisualizarHistorico);
 }
 
 <tr id="linha-@(Model.VinculoDeTrabalhoId)-@(Model.Data.Ticks)" class="linha-servidor @(exibirNomeServidor ? string.Empty : "linha-dia") @(classeAfastamento) @(classePontoFechado)" data-vinculodetrabalhoid="@Model.VinculoDeTrabalhoId" title="@tituloLinha">
@@ -72,6 +74,12 @@
     else 
     {
         <td>
+            @if (podeVerHistorico)
+            {
+                <button type="button" class="btn btn-secondary btn-sm" onclick="modalAuditoriaFolha(@Model.Id)" style="padding: 4px 7px; background: cadetblue" title="Ver histórico de alterações do dia.">
+                    <i class='bx bx-history' style="font-size: 14px;"></i>
+                </button>
+            }
             @Model.Data.ToShortDateString() - @(Model.DiaDaSemana.SiglaDaSemanaDoEnumerador())
             @if (eventoDoDia != null) 
             {

@@ -1,5 +1,6 @@
 ﻿using AriD.BibliotecaDeClasses.Entidades.Base;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {
@@ -8,7 +9,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [Required]
         public int VinculoDeTrabalhoId { get; set; }
 
+        [Required]
+        public string MesAno { get; set; }
+
         public int? PontoDoDiaId { get; set; }
+        [ForeignKey(nameof(PontoDoDiaId))]
+        public virtual PontoDoDia PontoDoDia { get; set; }
 
         [Required, MaxLength(120)]
         public string UsuarioNome { get; set; }

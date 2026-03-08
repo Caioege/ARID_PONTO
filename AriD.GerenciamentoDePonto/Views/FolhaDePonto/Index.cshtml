@@ -5,6 +5,10 @@
 }
 
 <style>
+    .swal-zindex-alto {
+        z-index: 99999 !important;
+    }
+
     .btn-acao-ponto {
         margin-top: 23px;
         display: none !important;
@@ -82,29 +86,40 @@
             </div>
 
             <div class="col col-md-8 col-sm-12 col-12 float-end">
+                <button id="btn-imprimir" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="imprimirFolhaDePonto()" style="display:none; margin-right: 5px;">
+                    <i class='bx bx-printer' ></i> Imprimir
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col col-md-12 col-sm-12 col-12 float-end">
                 <button id="btn-fechar-ponto" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="fecharPeriodoPonto()">
                     <i class='bx bxs-lock-alt'></i> Fechar Ponto
                 </button>
 
                 <button id="btn-abrir-ponto" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="abrirPeriodoPonto()">
-                    <i class='bx bxs-lock-open-alt' ></i> Abrir Ponto
+                    <i class='bx bxs-lock-open-alt'></i> Abrir Ponto
                 </button>
 
-                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.Resetar)) 
+                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.Resetar))
                 {
                     <button id="btn-resetar" type="button" class="btn btn-info btn-acao-ponto float-end" onclick="resetarFolhaDePonto()" style="display:none; margin-right: 5px;">
-                        <i class='bx bx-refresh' ></i> Resetar folha
+                        <i class='bx bx-refresh'></i> Resetar folha
                     </button>
                 }
 
-                <button id="btn-imprimir" type="button" class="btn btn-primary btn-acao-ponto float-end" onclick="imprimirFolhaDePonto()" style="display:none; margin-right: 5px;">
-                    <i class='bx bx-printer' ></i> Imprimir
-                </button>
-
-                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.GerenciarRegistrosDoAplicativo)) 
+                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.GerenciarRegistrosDoAplicativo))
                 {
                     <button id="btn-gerenciar-app" type="button" class="btn btn-secondary btn-acao-ponto float-end" onclick="abrirModalGerenciarRegistrosApp()" style="display:none; margin-right: 5px;">
-                        <i class='bx bx-mobile-alt' ></i> Solicitações App
+                        <i class='bx bx-mobile-alt'></i> Solicitações App
+                    </button>
+                }
+
+                @if (Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.VisualizarHistorico))
+                {
+                    <button id="btn-visualizarhistoricofolha" type="button" class="btn btn-secondary btn-acao-ponto float-end" onclick="modalAuditoriaFolha(null)" style="display:none; margin-right: 5px; background: cadetblue !important">
+                        <i class='bx bx-history'></i> Alterações Gerais
                     </button>
                 }
             </div>

@@ -124,6 +124,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public virtual List<PontoDoDiaHoraExtra> ListaDeHoraExtra { get; set; } = new();
 
+        public virtual List<LogAuditoriaPonto> LogAuditoriaPontos { get; set; } = new();
+
         public bool PossuiRegistroNaEntrada(int periodo)
         {
             switch (periodo)

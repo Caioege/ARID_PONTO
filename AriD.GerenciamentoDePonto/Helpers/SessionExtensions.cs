@@ -1,4 +1,5 @@
 ﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.Servicos.Extensao;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;

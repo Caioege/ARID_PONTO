@@ -28,7 +28,7 @@ function modalPontoDia(vinculoDeTrabalhoId, data, dataTicks, acao) {
 		});
 }
 
-function salvarPontoDia() {
+function salvarPontoDia(removerRegistro, motivoAcao) {
 	let form = $('#formulario-pontodia');
 	let data = {
 		vinculoDeTrabalhoId: form.find('#VinculoDeTrabalhoId').val(),
@@ -36,7 +36,9 @@ function salvarPontoDia() {
 		valorHora: $('[data-bs-target="#navs-pills-hora"]').hasClass('active') ? form.find('#ValorHora').val() : null,
 		justificativaId: $('[data-bs-target="#navs-pills-justificativa"]').hasClass('active') ? form.find('#JustificativaId').val() : null,
 		acao: form.find('#Acao').val(),
-		folhaDePonto: $('#TelaFolhaDePonto').length > 0
+		folhaDePonto: $('#TelaFolhaDePonto').length > 0,
+		removerRegistro: removerRegistro || false,
+		motivoAcao: motivoAcao
 	};
 
 	RequisicaoAjaxComCarregamento(
@@ -58,6 +60,37 @@ function salvarPontoDia() {
 				MensagemRodape('warning', data.mensagem);
 			}
 		});
+}
+
+function executeRemoverRegistroPontoDia() {
+	Swal.fire({
+		target: document.getElementById('_Modal'),
+		html: 'Desconsiderar esse registro de ponto?<br />Ele não voltará a ser exibido na folha de ponto a menos que ela seja resetada.',
+		input: 'textarea',
+		inputLabel: 'Informe o motivo (máximo 300 caracteres)',
+		inputPlaceholder: 'Digite o motivo aqui...',
+		inputAttributes: {
+			maxlength: '300'
+		},
+		showCancelButton: true,
+		confirmButtonText: 'Confirmar',
+		cancelButtonText: 'Cancelar',
+		allowOutsideClick: false,
+		reverseButtons: true,
+		customClass: {
+			container: 'swal-zindex-alto'
+		},
+		inputValidator: (value) => {
+			if (!value) {
+				return 'O motivo é obrigatório!';
+			}
+		}
+	}).then((result) => {
+		if (result.isConfirmed) {
+			const motivo = result.value;
+			salvarPontoDia(true, motivo);
+		}
+	});
 }
 
 function converterData(data) {
@@ -154,16 +187,28 @@ function assineEventoAvancarRecuarPonto() {
 }
 
 function executaMovimentacaoRegistro(id, classe, avancar) {
-	RequisicaoAjaxComCarregamento('/FolhaDePonto/MovimentarRegistro',
-		'POST',
-		{ id, classe, avancar },
-		function (data) {
-			if (data.sucesso) {
-				carregarFolhaDePonto('O registro foi atualizado... Recarregando folha.');
-			} else {
-				MensagemRodape('warning', data.mensagem);
-			}
-		});
+	Swal.fire({
+		html: "Tem certeza que deseja <b>movimentar</b> esse registro?",
+		icon: "question",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "SIM",
+		cancelButtonText: 'NÃO'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			RequisicaoAjaxComCarregamento('/FolhaDePonto/MovimentarRegistro',
+				'POST',
+				{ id, classe, avancar },
+				function (data) {
+					if (data.sucesso) {
+						carregarFolhaDePonto('O registro foi atualizado... Recarregando folha.');
+					} else {
+						MensagemRodape('warning', data.mensagem);
+					}
+				});
+		}
+	});
 }
 
 function expandirImagem(caminho) {
@@ -342,11 +387,11 @@ function reprovarHoraExtra(horaExtraId) {
 	);
 }
 
-function modalAuditoriaFolha(vinculoDeTrabalhoId, mesAno, pontoDoDiaId) {
+function modalAuditoriaFolha(pontoDoDiaId) {
 	RequisicaoAjaxComCarregamento(
 		'/FolhaDePonto/ModalAuditoriaFolha',
 		'GET',
-		{ vinculoDeTrabalhoId, mesAno, pontoDoDiaId },
+		{ vinculoDeTrabalhoId: $('#VinculoDeTrabalhoId').val(), mesAno: $('#MesDeReferencia').val(), pontoDoDiaId },
 		function (data) {
 			if (data.sucesso) {
 				$('#div-modal').html(data.html);

@@ -121,7 +121,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             TimeSpan? valorHora,
             int? justificativaId,
             string acao,
-            bool folhaDePonto)
+            string motivoAcao,
+            bool folhaDePonto,
+            bool removerRegistro)
         {
             var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
             var pontoDoDia = _servicoDeFolhaDePonto.AtualizePontoDoDia(
@@ -130,7 +132,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 data,
                 valorHora,
                 justificativaId,
-                acao);
+                acao,
+                motivoAcao,
+                removerRegistro);
 
             ViewBag.Eventos = _servicoDeFolhaDePonto.EventosDaFolhaDePonto(organizacaoId, data, data);
             ViewBag.ExibirNomeServidor = !folhaDePonto;
@@ -437,7 +441,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (dados.Perfil == ePerfilDeAcesso.Servidor)
                 return Json(new { sucesso = false, mensagem = "Sem permissão para aprovar horas extras." });
 
-            _servicoDeFolhaDePonto.AprovarHoraExtra(horaExtraId, minutosAprovados, this.HttpContext.DadosDaSessao().UsuarioNome);
+            _servicoDeFolhaDePonto.AprovarHoraExtra(horaExtraId, minutosAprovados);
             return Json(new { sucesso = true, mensagem = "Hora extra aprovada." });
         }
 
@@ -448,7 +452,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (dados.Perfil == ePerfilDeAcesso.Servidor)
                 return Json(new { sucesso = false, mensagem = "Sem permissão para reprovar horas extras." });
 
-            _servicoDeFolhaDePonto.ReprovarHoraExtra(horaExtraId, this.HttpContext.DadosDaSessao().UsuarioNome);
+            _servicoDeFolhaDePonto.ReprovarHoraExtra(horaExtraId);
             return Json(new { sucesso = true, mensagem = "Hora extra reprovada." });
         }
 
@@ -464,7 +468,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (pontoDoDiaId.HasValue)
                 logs = _servicoDeFolhaDePonto.ObtenhaAuditoriaDoDia(orgId, pontoDoDiaId.Value);
             else
-                logs = _servicoDeFolhaDePonto.ObtenhaAuditoriaDaFolha(orgId, vinculoDeTrabalhoId, mes.Inicio, mes.Fim);
+            {
+                logs = _servicoDeFolhaDePonto.ObtenhaAuditoriaDaFolha(orgId, vinculoDeTrabalhoId, mes);
+                logs.RemoveAll(x => x.PontoDoDiaId.HasValue);
+            }
 
             ViewBag.VinculoId = vinculoDeTrabalhoId;
             ViewBag.MesAno = mesAno;

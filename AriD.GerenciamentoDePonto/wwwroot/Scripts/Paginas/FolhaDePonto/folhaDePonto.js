@@ -10,6 +10,14 @@ function assineChangeUnidadeOrganizacional() {
 		let campoServidores = $('#ServidorId');
 		campoServidores.empty().trigger("change");
 
+		$('#div-ponto').html('');
+
+		$('#btn-imprimir').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-gerenciar-app').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-fechar-ponto').attr("style", "display: none !important");
+
 		if ($(this).val()) {
 			$.ajax({
 				url: '/FolhaDePonto/ServidoresLotadosNaUnidade',
@@ -39,6 +47,14 @@ function assineChangeServidor() {
 	$('#ServidorId').on('change', function () {
 		let campoVinculos = $('#VinculoDeTrabalhoId');
 		campoVinculos.empty().trigger("change");
+
+		$('#div-ponto').html('');
+
+		$('#btn-imprimir').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-gerenciar-app').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-fechar-ponto').attr("style", "display: none !important");
 
 		if ($(this).val()) {
 			$.ajax({
@@ -86,6 +102,7 @@ function carregarFolhaDePonto(mensagem) {
 
 				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
 				$('#btn-gerenciar-app').attr("style", "display: inline !important; margin-right: 5px;");
+				$('#btn-visualizarhistoricofolha').attr("style", "display: inline !important; margin-right: 5px;");
 
 				if (!data.exibirAbrir) {
 					$('#btn-resetar').attr("style", "display: inline !important; margin-right: 5px;");

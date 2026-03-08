@@ -12,6 +12,15 @@
             Mes = int.Parse(valorDividido[1]);
         }
 
+        public MesAno(DateTime data)
+        {
+            if (data == DateTime.MinValue)
+                throw new ArgumentException("Data inválida", nameof(data));
+
+            Ano = data.Year;
+            Mes = data.Month;
+        }
+
         public int Mes { get; set; }
         public int Ano { get; set; }
 

@@ -32,5 +32,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public int? RegistroAplicativoId { get; set; }
         [ForeignKey(nameof(RegistroAplicativoId))]
         public virtual RegistroAplicativo RegistroAplicativo { get; set; }
+
+        public bool Desconsiderado { get; set; }
+        [MaxLength(255)]
+        public string? MotivoDesconsideracao { get; set; }
+        public string? UsuarioDesconsideracaoNome { get; set; }
+        public DateTime? DataDesconsideracao { get; set; }
     }
 }

@@ -17,25 +17,6 @@
             </div>
 
             <div class="modal-body">
-                <div class="d-flex gap-2 mb-3">
-                    <button type="button" class="btn btn-sm btn-outline-primary"
-                            onclick="modalAuditoriaFolha(@vinculoId, '@mesAno');">
-                        Folha inteira
-                    </button>
-
-                    @if (pontoDoDiaId.HasValue)
-                    {
-                        <button type="button" class="btn btn-sm btn-outline-primary"
-                                onclick="modalAuditoriaFolha(@vinculoId, '@mesAno', @pontoDoDiaId.Value);">
-                            Somente este dia
-                        </button>
-                    }
-
-                    <small class="text-muted align-self-center">
-                        Exibe logs do que foi alterado (antes → depois), usuário e data/hora.
-                    </small>
-                </div>
-
                 @if (Model == null || Model.Count == 0)
                 {
                     <div class="alert alert-info">Nenhuma alteração registrada.</div>
@@ -46,9 +27,8 @@
                         <table class="table table-bordered">
                             <thead style="background:#f3f3f3">
                                 <tr>
-                                    <th style="width:160px">Data/Hora</th>
-                                    <th style="width:180px">Usuário</th>
-                                    <th style="width:140px">Ação</th>
+                                    <th class="text-center" width="15%">Data/Hora</th>
+                                    <th class="text-center" width="25%">Usuário</th>
                                     <th>Detalhes</th>
                                 </tr>
                             </thead>
@@ -56,9 +36,12 @@
                                 @foreach (var l in Model)
                                 {
                                     <tr>
-                                        <td>@l.DataHora.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>@l.UsuarioNome</td>
-                                        <td>@l.Acao</td>
+                                        <td class="text-center">
+                                            @l.DataHora.ToString("dd/MM/yyyy")
+                                            <br />
+                                            @l.DataHora.ToString("HH:mm")
+                                        </td>
+                                        <td class="text-center">@l.UsuarioNome</td>
                                         <td style="white-space:pre-wrap">@l.Descricao</td>
                                     </tr>
                                 }
