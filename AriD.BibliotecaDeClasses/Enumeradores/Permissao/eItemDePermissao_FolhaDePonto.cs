@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
 {
@@ -19,6 +19,9 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         VisualizarHistorico = 4,
 
         [Description("Desconsiderar Registros")]
-        DesconsiderarRegistros = 5
+        DesconsiderarRegistros = 5,
+
+        [Description("Aprovação em Lote")]
+        AprovacaoEmLote = 6
     }
 }

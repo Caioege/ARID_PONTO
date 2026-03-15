@@ -279,6 +279,30 @@
                                     <div class="menu-text-content" style="white-space: normal !important;">Cadastro de @nomenclaturaServidores</div>
                                 </a>
                             </li>
+
+                            @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.AprovacaoEmLote, usuarioAdm))
+                            {
+                                <li>
+                                    <a onclick="CarregarPagina('@Url.Action("AprovarMarcacaoLote", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="fa fa-fw fa-clock-o"></i>
+                                        </span>
+                                        <div class="menu-text-content" style="white-space: normal !important;">Registros Fora da Tolerância</div>
+                                    </a>
+                                </li>
+                            }
+
+                            @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Bonus.Visualizar, usuarioAdm))
+                            {
+                                <li>
+                                    <a onclick="CarregarPagina('@Url.Action("Index", "Bonus")')" href="javascript:void(0)" class="menu-link">
+                                        <span class="menu-icon">
+                                            <i class="fa fa-fw fa-money"></i>
+                                        </span>
+                                        <div class="menu-text-content" style="white-space: normal !important;">Configurações de Bônus</div>
+                                    </a>
+                                </li>
+                            }
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Escala.Visualizar, usuarioAdm))
                         {

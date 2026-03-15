@@ -77,5 +77,8 @@ namespace AriD.Servicos.DBContext
         public DbSet<LayoutExportacaoFolhaPagamentoCampo> LayoutExportacaoFolhaPagamentoCampo { get; set; }
         public DbSet<MapeamentoEventoFolhaPagamento> MapeamentoEventoFolhaPagamento { get; set; }
         public DbSet<FiltroRelatorio> FiltroRelatorio { get; set; }
+        public DbSet<LogAuditoriaEscala> LogAuditoriaEscala { get; set; }
+        public DbSet<ConfiguracaoBonus> ConfiguracaoBonus { get; set; }
+        public DbSet<BonusCalculado> BonusCalculado { get; set; }
     }
 }

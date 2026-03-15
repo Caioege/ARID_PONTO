@@ -2,6 +2,8 @@ using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
+using AriD.BibliotecaDeClasses.Enumeradores.Permissao;
+using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.Servicos.Extensao;
 using AriD.Servicos.Servicos.Interfaces;
@@ -1265,6 +1267,38 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                       .Sum(x => x.MinutosAprovados)
                           )
                 );
+        }
+        [HttpGet]
+        public IActionResult AprovarMarcacaoLote(int? unidadeId, int? departamentoId, int? horarioId, DateTime? dataInicial, DateTime? dataFinal, int pagina = 1)
+        {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_FolhaDePonto.AprovacaoEmLote)) return RedirectToAction("ErroDeAcesso", "ControleDeAcesso");
+
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            
+            var (total, itens) = _servicoDeFolhaDePonto.ObtenhaRegistrosForaDaTolerancia(
+                dadosDaSessao.OrganizacaoId, unidadeId, departamentoId, horarioId,
+                dataInicial ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                dataFinal ?? DateTime.Now,
+                pagina, 50);
+
+            var viewModel = new ListaPaginada<RegistroForaDaToleranciaDTO>()
+            {
+                Pagina = pagina,
+                QuantidadeDeItensPorPagina = 50,
+                TotalDeItens = total,
+                Itens = itens
+            };
+            
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult ExecutarAprovacaoMarcacaoLote(List<int> registrosIds, string acao, string motivo)
+        {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_FolhaDePonto.AprovacaoEmLote)) return RedirectToAction("ErroDeAcesso", "ControleDeAcesso");
+
+            _servicoDeFolhaDePonto.AproveOuDesconsidereLote(HttpContext.DadosDaSessao().OrganizacaoId, registrosIds, acao, motivo);
+            return Json(new { sucesso = true, mensagem = "Processamento em lote realizado com sucesso." });
         }
     }
 }

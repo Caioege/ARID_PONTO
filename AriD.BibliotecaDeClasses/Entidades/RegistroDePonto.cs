@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -38,5 +38,14 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? MotivoDesconsideracao { get; set; }
         public string? UsuarioDesconsideracaoNome { get; set; }
         public DateTime? DataDesconsideracao { get; set; }
+
+        public bool? AprovadoForaTolerancia { get; set; }
+        [MaxLength(255)]
+        public string? AcaoAprovacao { get; set; }
+        [MaxLength(255)]
+        public string? MotivoAprovacaoTolerancia { get; set; }
+        [MaxLength(255)]
+        public string? UsuarioAprovacaoToleranciaNome { get; set; }
+        public DateTime? DataAprovacaoTolerancia { get; set; }
     }
 }

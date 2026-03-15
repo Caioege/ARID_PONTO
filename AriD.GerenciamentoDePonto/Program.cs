@@ -66,6 +66,7 @@ builder.Services.AddScoped(typeof(IWhatsappService), typeof(WhatsappService));
 builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
 builder.Services.AddScoped(typeof(IServicoDeServidor), typeof(ServicoDeServidor));
 builder.Services.AddScoped(typeof(IServicoDeExportacaoFolhaPagamento), typeof(ServicoDeExportacaoFolhaPagamento));
+builder.Services.AddScoped(typeof(IServicoBonus), typeof(ServicoBonus));
 
 var app = builder.Build();
 

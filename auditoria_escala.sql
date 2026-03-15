@@ -1,0 +1,21 @@
+CREATE TABLE `LogAuditoriaEscala` (
+  `Id` int NOT NULL AUTO_INCREMENT,
+  `DataHora` datetime(6) NOT NULL,
+  `UsuarioNome` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `UsuarioId` int DEFAULT NULL,
+  `Acao` varchar(60) CHARACTER SET utf8mb4 NOT NULL,
+  `Descricao` text CHARACTER SET utf8mb4 NOT NULL,
+  `EscalaId` int DEFAULT NULL,
+  `UnidadeOrganizacionalId` int DEFAULT NULL,
+  `OrganizacaoId` int NOT NULL,
+  `DataCriacao` datetime(6) NOT NULL,
+  `DataAlteracao` datetime(6) DEFAULT NULL,
+  `Excluido` tinyint(1) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `IX_LogAuditoriaEscala_EscalaId` (`EscalaId`),
+  KEY `IX_LogAuditoriaEscala_OrganizacaoId` (`OrganizacaoId`),
+  KEY `IX_LogAuditoriaEscala_UnidadeOrganizacionalId` (`UnidadeOrganizacionalId`),
+  CONSTRAINT `FK_LogAuditoriaEscala_Escala_EscalaId` FOREIGN KEY (`EscalaId`) REFERENCES `Escala` (`Id`) ON DELETE RESTRICT,
+  CONSTRAINT `FK_LogAuditoriaEscala_Organizacao_OrganizacaoId` FOREIGN KEY (`OrganizacaoId`) REFERENCES `Organizacao` (`Id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_LogAuditoriaEscala_UnidadeOrganizacional_UnidadeOrganiza~` FOREIGN KEY (`UnidadeOrganizacionalId`) REFERENCES `UnidadeOrganizacional` (`Id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -256,6 +256,21 @@
             @await Html.PartialAsync("_PartialItemPermissao", modelRelHorasPorServidor)
 
 
+            <br />
+            <table class="table-titulo">
+                <tr>
+                    <td class="text-center">
+                        <i class='bx bxs-dollar-circle'></i>
+                        Bônus (VT/VA)
+                    </td>
+                </tr>
+            </table>
+
+            @{
+                var modelBonus = new Tuple<string, Type, GrupoDePermissao>("Configurações e Cálculos de Bônus", typeof(eItemDePermissao_Bonus), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelBonus)
+
             @if (Model.PerfilDeAcesso != ePerfilDeAcesso.Departamento)
             {
                 <br />

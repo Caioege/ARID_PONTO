@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
 {
@@ -7,6 +7,8 @@ namespace AriD.BibliotecaDeClasses.Enumeradores.Permissao
         Visualizar = 0,
         [Description("Cadastrar/Alterar")]
         CadastrarOuAlterar = 1,
-        Excluir = 2
+        Excluir = 2,
+        [Description("Visualizar Auditoria")]
+        VisualizarAuditoria = 3
     }
 }

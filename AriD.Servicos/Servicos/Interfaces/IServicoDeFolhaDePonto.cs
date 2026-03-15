@@ -95,5 +95,11 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<OcorrenciaDoEspelhoPonto> ObtenhaOcorrenciasDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia);
         OcorrenciaDoEspelhoPonto SalvarOcorrenciaDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia, string descricao, int usuarioCadastroId, string usuarioCadastroNome);
         void ExcluirOcorrenciaDoEspelhoPonto(int id);
+
+        (int Total, List<RegistroForaDaToleranciaDTO> Itens) ObtenhaRegistrosForaDaTolerancia(
+            int organizacaoId, int? unidadeId, int? departamentoId, int? horarioId, 
+            DateTime dataInicial, DateTime dataFinal, int pagina, int qtd);
+
+        void AproveOuDesconsidereLote(int organizacaoId, List<int> registrosIds, string acao, string motivo);
     }
 }

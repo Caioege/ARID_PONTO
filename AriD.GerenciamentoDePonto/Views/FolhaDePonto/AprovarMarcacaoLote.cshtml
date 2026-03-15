@@ -1,0 +1,109 @@
+@using AriD.BibliotecaDeClasses.DTO
+@using AriD.GerenciamentoDePonto.Helpers
+@model AriD.GerenciamentoDePonto.WebGrid.ListaPaginada<RegistroForaDaToleranciaDTO>
+@{
+    ViewBag.Title = "Aprovação de Registros Fora da Tolerância";
+    Layout = "~/Views/Shared/_LayoutListagem.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-fw fa-clock-o"></i> Aprovação de Marcações (Lote)
+        </h1>
+    </div>
+</div>
+
+<section id="widget-grid" class="">
+    <div class="row">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Filtros e Lote</h2>
+                </header>
+                <div>
+                    <div class="jarviswidget-editbox"></div>
+                    <div class="widget-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="checkAll" /></th>
+                                        <th>Servidor</th>
+                                        <th>Unidade</th>
+                                        <th>Registro</th>
+                                        <th>Esperado</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Itens.Count > 0)
+                                    {
+                                        foreach (var item in Model.Itens)
+                                        {
+                                            <tr>
+                                                <td><input type="checkbox" class="chk-registro" value="@item.RegistroId" /></td>
+                                                <td>@item.ServidorNome</td>
+                                                <td>@item.UnidadeNome</td>
+                                                <td>@($"{item.DataHoraRegistro:dd/MM/yyyy HH:mm} ({item.TipoRegistro})")</td>
+                                                <td>@item.HorarioEsperado.ToString(@"hh\:mm")</td>
+                                                <td>@item.AcaoAprovacao</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr><td colspan="6" class="text-center">Nenhuma marcação fora da tolerância encontrada.</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                            @await Html.PartialAsync("_PaginacaoWebGrid", Model)
+                        </div>
+
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-3">
+                                <select id="ddlAcaoLote" class="form-control">
+                                    <option value="">(Selecione a Ação em Lote)</option>
+                                    <option value="Aprovar">Aprovar Marcação</option>
+                                    <option value="Desconsiderar">Desconsiderar Registro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" id="txtMotivo" class="form-control" placeholder="Motivo da ação" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary" onclick="ExecutarLote()">Executar Lote</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+@section pagespecific {
+    <script>
+        $('#checkAll').change(function () {
+            $('.chk-registro').prop('checked', $(this).prop('checked'));
+        });
+
+        function ExecutarLote() {
+            var acao = $('#ddlAcaoLote').val();
+            var motivo = $('#txtMotivo').val();
+            var ids = $('.chk-registro:checked').map(function () { return $(this).val(); }).get();
+
+            if (!acao) { alert('Selecione uma ação.'); return; }
+            if (ids.length === 0) { alert('Selecione ao menos um registro.'); return; }
+
+            $.post('/FolhaDePonto/ExecutarAprovacaoMarcacaoLote', { registrosIds: ids, acao: acao, motivo: motivo }, function (res) {
+                if (res.sucesso) {
+                    Swal.fire('Sucesso', res.mensagem, 'success').then(() => { window.location.reload(); });
+                } else {
+                    Swal.fire('Erdro', res.mensagem, 'error');
+                }
+            });
+        }
+    </script>
+}

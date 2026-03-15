@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 using System.Linq.Expressions;
@@ -14,7 +14,7 @@ namespace AriD.Servicos.Servicos
             _repositorio = repositorio;
         }
 
-        public int Adicionar(T entidade)
+        public virtual int Adicionar(T entidade)
         {
             _repositorio.Add(entidade);
             _repositorio.Commit();
@@ -22,7 +22,7 @@ namespace AriD.Servicos.Servicos
             return entidade.Id;
         }
 
-        public void Atualizar(T entidade, bool commit = true)
+        public virtual void Atualizar(T entidade, bool commit = true)
         {
             _repositorio.Atualizar(entidade);
             if (commit)

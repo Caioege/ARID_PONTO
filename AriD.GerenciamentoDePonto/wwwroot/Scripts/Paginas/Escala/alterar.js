@@ -297,3 +297,18 @@ function removerEscala() {
         }
     });
 }
+
+function abrirModalAuditoria(escalaId) {
+    RequisicaoAjaxComCarregamento(
+        '/Escala/ModalAuditoria',
+        'GET',
+        { escalaId },
+        function (data) {
+            if (data.sucesso) {
+                $('#div-modal').html(data.html);
+                $('#modalAuditoriaEscala').modal('show');
+            } else {
+                MensagemRodape('warning', data.mensagem);
+            }
+        });
+}

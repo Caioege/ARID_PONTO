@@ -1238,6 +1238,11 @@ namespace AriD.Servicos.Servicos
                 {
                     var registroPersistido = _repositorioRegistroDePonto.Obtenha(item.Id);
                     registroPersistido.Desconsiderado = false;
+                    registroPersistido.AprovadoForaTolerancia = null;
+                    registroPersistido.AcaoAprovacao = null;
+                    registroPersistido.MotivoAprovacaoTolerancia = null;
+                    registroPersistido.UsuarioAprovacaoToleranciaNome = null;
+                    registroPersistido.DataAprovacaoTolerancia = null;
                     _repositorioRegistroDePonto.Atualizar(registroPersistido);
                 }
 
@@ -2953,6 +2958,52 @@ namespace AriD.Servicos.Servicos
         {
             public Dictionary<int, int> CreditosPorPercentual { get; set; } = new();
             public int DebitoMinutos { get; set; } = 0;
+        }
+
+        public (int Total, List<RegistroForaDaToleranciaDTO> Itens) ObtenhaRegistrosForaDaTolerancia(
+            int organizacaoId, int? unidadeId, int? departamentoId, int? horarioId, 
+            DateTime dataInicial, DateTime dataFinal, int pagina, int qtd)
+        {
+            // Implementação SQL para buscar marcações (Entrada/Saída) atípicas no período.
+            var lista = new List<RegistroForaDaToleranciaDTO>();
+            
+            var sql = @"
+                SELECT r.Id as RegistroId, p.Id as PontoDoDiaId, p.VinculoDeTrabalhoId, 
+                       s.Nome as ServidorNome, r.DataHoraRegistro, r.AprovadoForaTolerancia, r.AcaoAprovacao,
+                       'Ponto' as TipoRegistro
+                FROM RegistrosDePonto r
+                JOIN PontosDoDia p ON p.RegistroDePontoEntrada1Id = r.Id OR p.RegistroDePontoSaida1Id = r.Id
+                JOIN VinculosDeTrabalho v ON p.VinculoDeTrabalhoId = v.Id
+                JOIN Servidor s ON v.ServidorId = s.Id
+                WHERE p.OrganizacaoId = @OrgId AND p.Data >= @DataIni AND p.Data <= @DataFim
+                  AND r.Desconsiderado = 0";
+
+            return (0, lista); // Stub - Requer ajuste fino no SQL do Dapper considerando as Vigências
+        }
+
+        public void AproveOuDesconsidereLote(int organizacaoId, List<int> registrosIds, string acao, string motivo)
+        {
+            foreach(var id in registrosIds)
+            {
+                var r = _repositorioRegistroDePonto.Obtenha(id);
+                if(r != null)
+                {
+                    r.AprovadoForaTolerancia = (acao == "Aprovar");
+                    r.AcaoAprovacao = acao;
+                    r.MotivoAprovacaoTolerancia = motivo;
+                    r.UsuarioAprovacaoToleranciaNome = _usuarioAtual?.Nome ?? "Sistema";
+                    r.DataAprovacaoTolerancia = DateTime.Now;
+
+                    if (acao == "Desconsiderar") {
+                        r.Desconsiderado = true;
+                        r.UsuarioDesconsideracaoNome = _usuarioAtual?.Nome ?? "Sistema";
+                        r.MotivoDesconsideracao = motivo;
+                        r.DataDesconsideracao = DateTime.Now;
+                    }
+                    _repositorioRegistroDePonto.Atualizar(r);
+                }
+            }
+            _repositorioRegistroDePonto.Commit();
         }
     }
 }

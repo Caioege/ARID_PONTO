@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
 @model Escala
 
@@ -321,7 +321,18 @@
             }
 
             <br />
-            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Escala")')">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Escala")')">
+                    <i class='bx bxs-left-arrow-circle'></i> Voltar
+                </button>
+
+                @if (Model.Id > 0 && Context.PossuiPermissao(eItemDePermissao_Escala.VisualizarAuditoria))
+                {
+                    <button type="button" class="btn btn-info" onclick="abrirModalAuditoria(@Model.Id)">
+                        <i class='bx bx-history'></i> Auditoria
+                    </button>
+                }
+            </div>
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
 

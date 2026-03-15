@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -50,6 +50,59 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 ConfigureDadosDaTabelaPaginada(listaPaginada);
                 return View("_TabelaPaginada", listaPaginada);
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ModalAuditoria(int escalaId)
+        {
+            try
+            {
+                if (!HttpContext.PossuiPermissao(AriD.BibliotecaDeClasses.Enumeradores.Permissao.eItemDePermissao_Escala.VisualizarAuditoria))
+                    throw new Exception("Você não possui permissão para visualizar a auditoria de escalas.");
+
+                var html = await RenderizarComoString("_ModalAuditoriaEscala", escalaId);
+                return Json(new { sucesso = true, html });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult TabelaPaginadaAuditoria(ListaPaginada<LogAuditoriaEscala> listaPaginada, int escalaId, string mesAno)
+        {
+            try
+            {
+                Expression<Func<LogAuditoriaEscala, bool>> filtro =
+                    c => c.OrganizacaoId == HttpContext.DadosDaSessao().OrganizacaoId &&
+                    c.EscalaId == escalaId;
+
+                if (!string.IsNullOrEmpty(mesAno))
+                {
+                    if (DateTime.TryParse("01/" + mesAno, out DateTime dataMesAno))
+                    {
+                        var primeiroDia = new DateTime(dataMesAno.Year, dataMesAno.Month, 1);
+                        var ultimoDia = primeiroDia.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+                        filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.DataHora >= primeiroDia && c.DataHora <= ultimoDia);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
+                {
+                    filtro = ConcatenadorDeExpressao.Concatenar(filtro,
+                        c => c.Acao.Contains(listaPaginada.TermoDeBusca) || c.Descricao.Contains(listaPaginada.TermoDeBusca) || c.UsuarioNome.Contains(listaPaginada.TermoDeBusca));
+                }
+
+                var dados = _servico.ObtenhaAuditoriaPaginada(filtro, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+                listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginadaAuditoria");
+
+                return View("_TabelaPaginadaAuditoriaEscala", listaPaginada);
             }
             catch (Exception ex)
             {

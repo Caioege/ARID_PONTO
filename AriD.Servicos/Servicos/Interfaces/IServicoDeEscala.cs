@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Entidades;
 
 namespace AriD.Servicos.Servicos.Interfaces
 {
@@ -15,5 +15,6 @@ namespace AriD.Servicos.Servicos.Interfaces
         void RemoverEscalaServidor(int id);
 
         void RemoverEscala(int id);
+        (int Total, System.Collections.Generic.List<LogAuditoriaEscala> Itens) ObtenhaAuditoriaPaginada(System.Linq.Expressions.Expression<Func<LogAuditoriaEscala, bool>> filtro, int pagina, int quantidadeDeItens);
     }
 }

@@ -1,0 +1,39 @@
+@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.Entidades
+
+@model ListaPaginada<LogAuditoriaEscala>
+
+<div class="table-responsive text-nowrap mt-3">
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th class="text-white">Data/Hora</th>
+                <th class="text-white">Usuário</th>
+                <th class="text-white">Ação</th>
+                <th class="text-white">Descrição</th>
+            </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+            @if (Model != null && Model.Itens.Any())
+            {
+                foreach (var log in Model.Itens)
+                {
+                    <tr>
+                        <td>@log.DataHora.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@log.UsuarioNome</td>
+                        <td><span class="badge bg-label-primary">@log.Acao</span></td>
+                        <td style="white-space: pre-wrap; word-break: break-word; max-width: 400px;">@log.Descricao</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">Nenhum registro de auditoria encontrado para esta escala no período selecionado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@await Html.PartialAsync("_PaginacaoWebGrid", Model)
