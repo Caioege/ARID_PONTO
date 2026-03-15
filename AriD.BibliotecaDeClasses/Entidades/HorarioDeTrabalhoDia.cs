@@ -8,12 +8,6 @@ namespace AriD.BibliotecaDeClasses.Entidades
     public class HorarioDeTrabalhoDia : EntidadeOrganizacaoBase
     {
         [Required]
-        public int HorarioDeTrabalhoId { get; set; }
-
-        [ForeignKey(nameof(HorarioDeTrabalhoId))]
-        public virtual HorarioDeTrabalho HorarioDeTrabalho { get; set; }
-
-        [Required]
         public eDiaDaSemana DiaDaSemana { get; set; }
 
         public TimeSpan? Entrada1 { get; set; }
@@ -32,6 +26,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public TimeSpan? Saida5 { get; set; }
 
         public TimeSpan? CargaHorariaFixa { get; set; }
+
+        public int HorarioDeTrabalhoVigenciaId { get; set; }
+
+        [ForeignKey(nameof(HorarioDeTrabalhoVigenciaId))]
+        public virtual HorarioDeTrabalhoVigencia HorarioDeTrabalhoVigencia { get; set; }
 
         public TimeSpan? CargaHorariaPeriodo(int periodo)
         {

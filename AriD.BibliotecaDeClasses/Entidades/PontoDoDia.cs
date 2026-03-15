@@ -122,6 +122,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(AfastamentoId))]
         public virtual Afastamento Afastamento { get; set; }
 
+        public string? BancoDeHorasCreditosJson { get; set; }
+
         public virtual List<PontoDoDiaHoraExtra> ListaDeHoraExtra { get; set; } = new();
 
         public virtual List<LogAuditoriaPonto> LogAuditoriaPontos { get; set; } = new();

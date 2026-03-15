@@ -8,10 +8,10 @@ namespace AriD.BibliotecaDeClasses.Entidades
     public class RegraHoraExtra : EntidadeOrganizacaoBase
     {
         [Required]
-        public int HorarioDeTrabalhoId { get; set; }
+        public int HorarioDeTrabalhoVigenciaId { get; set; }
 
-        [ForeignKey(nameof(HorarioDeTrabalhoId))]
-        public virtual HorarioDeTrabalho HorarioDeTrabalho { get; set; }
+        [ForeignKey(nameof(HorarioDeTrabalhoVigenciaId))]
+        public virtual HorarioDeTrabalhoVigencia HorarioDeTrabalhoVigencia { get; set; }
 
         [Required]
         public eTipoDiaHoraExtra TipoDia { get; set; }

@@ -1,4 +1,45 @@
 $(document).ready(() => {
+    if ($('#VigenciaSelect').length) {
+        $('#VigenciaSelect').on('change', function () {
+            const horarioId = $('#Id').val();
+            const vigId = $(this).val();
+            CarregarPagina('/HorarioDeTrabalho/Alterar/' + horarioId + '?vigenciaId=' + vigId);
+        });
+    }
+
+    if ($('#btn-nova-vigencia').length) {
+        $('#btn-nova-vigencia').on('click', function () {
+            const horarioId = $('#Id').val();
+            const vigenciaBaseId = $('#VigenciaSelect').val();
+
+            Swal.fire({
+                title: 'Nova vigência',
+                input: 'text',
+                inputLabel: 'Data de início (dd/mm/aaaa)',
+                inputPlaceholder: 'ex: 01/03/2026',
+                showCancelButton: true,
+                confirmButtonText: 'Criar',
+                cancelButtonText: 'Cancelar'
+            }).then((r) => {
+                if (!r.isConfirmed) return;
+
+                RequisicaoAjaxComCarregamento(
+                    '/HorarioDeTrabalho/ClonarVigencia',
+                    'POST',
+                    { horarioId, vigenciaBaseId, vigenciaInicio: r.value },
+                    function (data) {
+                        if (data.sucesso) {
+                            MensagemRodape('success', data.mensagem);
+                            CarregarPagina('/HorarioDeTrabalho/Alterar/' + horarioId + '?vigenciaId=' + data.vigenciaId);
+                        } else {
+                            MensagemRodape('warning', data.mensagem);
+                        }
+                    }
+                );
+            });
+        });
+    }
+
     $('#UtilizaCincoPeriodos').on('change', function () {
         if ($(this).val() == 'true') {
             $('.ocultar-cinco-periodo').show();
@@ -10,11 +51,7 @@ $(document).ready(() => {
     });
 
     $('#UtilizaBancoDeHoras').on('change', function () {
-        if ($(this).val() == 'true') {
-            $('#div-data-bh').fadeIn('fast');
-        } else {
-            $('#div-data-bh').fadeOut('fast');
-        }
+        toggleCamposBancoHoras();
     });
 
     $('.linha').find('.hora').on('change', function () {
@@ -100,6 +137,10 @@ $(document).ready(() => {
             $(this).find('.ordem').val(i + 1);
         });
     });
+
+    initSelect2Vigencia();
+    toggleCamposBancoHoras();
+    initSelect2PrioridadeBH();
 });
 
 function assineEventoBotaoSalvar() {
@@ -131,11 +172,10 @@ function assineEventoBotaoSalvar() {
             function (data) {
                 if (data.sucesso) {
                     MensagemRodape('success', data.mensagem);
-                    CarregarPagina('/HorarioDeTrabalho/Alterar/' + data.id);
+                    CarregarPagina('/HorarioDeTrabalho/Alterar/' + data.id + '?vigenciaId=' + data.vigenciaId);
+                    return;
                 }
-                else {
-                    MensagemRodape('warning', data.mensagem);
-                }
+                MensagemRodape('warning', data.mensagem);
             });
     });
 }
@@ -236,9 +276,91 @@ function obterRegrasHoraExtraDaTela() {
 
 function lerDecimalPtBr(valor) {
     if (!valor) return 0;
-    // troca vírgula por ponto, remove espaços
     valor = (valor + '').trim().replace(',', '.');
-    // remove qualquer coisa que não seja dígito ou ponto
     valor = valor.replace(/[^0-9.]/g, '');
     return parseFloat(valor || '0');
+}
+
+function bhEstaAtivo() {
+    const el = $('#UtilizaBancoDeHoras');
+    if (!el.length) return false;
+
+    const v = (el.val() || '').toString().toLowerCase();
+    return v === 'true' || v === '1' || v === 'sim';
+}
+
+function toggleCamposBancoHoras() {
+    const ativo = bhEstaAtivo();
+
+    $('#div-data-bh').toggle(ativo);
+    $('#div-bh-extra').toggle(ativo);
+}
+
+function parsePercentuais(texto) {
+    if (!texto) return [];
+    return texto
+        .split(',')
+        .map(x => x.trim())
+        .filter(x => /^\d+$/.test(x))
+        .filter(x => x.length > 0);
+}
+
+function initSelect2PrioridadeBH() {
+    const $sel = $('#sel-bh-prioridade');
+    const $hidden = $('#BancoDeHorasPrioridadePercentuais');
+
+    if (!$sel.length || !$hidden.length) return;
+
+    const iniciais = parsePercentuais($hidden.val());
+
+    $sel.empty();
+    iniciais.forEach(p => {
+        const opt = new Option(p, p, true, true);
+        $sel.append(opt);
+    });
+
+    $sel.select2({
+        tags: true,
+        width: '100%',
+        tokenSeparators: [',', ' '],
+        placeholder: 'Ex: 100,70,50',
+        createTag: function (params) {
+            const term = (params.term || '').trim();
+
+            if (!/^\d+$/.test(term)) return null;
+
+            return {
+                id: term,
+                text: term,
+                newTag: true
+            };
+        }
+    });
+
+    function syncHidden() {
+        const vals = ($sel.val() || [])
+            .map(x => (x || '').toString().trim())
+            .filter(x => /^\d+$/.test(x));
+
+        const seen = new Set();
+        const unique = [];
+        vals.forEach(v => {
+            if (!seen.has(v)) { seen.add(v); unique.push(v); }
+        });
+
+        $hidden.val(unique.join(','));
+    }
+
+    $sel.on('change', syncHidden);
+    syncHidden();
+}
+
+function initSelect2Vigencia() {
+    const $vig = $('#VigenciaSelect');
+    if (!$vig.length) return;
+
+    $vig.select2({
+        width: '100%',
+        minimumResultsForSearch: 10
+    });
 }

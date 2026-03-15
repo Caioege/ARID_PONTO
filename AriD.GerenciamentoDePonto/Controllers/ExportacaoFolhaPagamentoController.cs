@@ -80,13 +80,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 mesAno,
                 layoutId,
                 (eFormatoArquivoExportacao)formatoArquivo,
-                agruparPorMatricula: true, // modo comum
+                agruparPorMatricula: true,
                 somenteServidoresHabilitados);
 
-            // gera PDF humano AQUI no web
             var pdfBytes = GerarPdfExportacao(res, unidadeId, mesAno, (eFormatoArquivoExportacao)formatoArquivo);
 
-            // zip
             var nomePdf = $"Relatorio_Exportacao_Folha_{mesAno.ToString().Replace("/", "-")}.pdf";
             var zipName = $"Exportacao_Folha_{mesAno.ToString().Replace("/", "-")}.zip";
 
@@ -237,7 +235,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             doc.Add(new Paragraph(" ").SetFontSize(6));
 
-            // Exportados (resumo por colaborador)
             doc.Add(new Paragraph("Colaboradores exportados (resumo por código)").SetBold());
 
             var tblExp = new Table(new float[] { 2, 6, 8 }).UseAllAvailableWidth();
@@ -262,7 +259,6 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             doc.Add(new Paragraph(" ").SetFontSize(6));
 
-            // Ignorados
             doc.Add(new Paragraph("Colaboradores ignorados (motivo)").SetBold());
 
             var tblIgn = new Table(new float[] { 2, 6, 8 }).UseAllAvailableWidth();

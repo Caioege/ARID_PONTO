@@ -73,7 +73,7 @@
             <th class="text-center" width="@(larguraPeriodo)px">
                 SAI<br />3
             </th>
-            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)) 
+            @if (@* Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos) *@ true) 
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
                     ENT<br />4
@@ -106,7 +106,7 @@
                 HOR<br />NEG
             </th>
 
-            @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+            @if (@* Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras) *@ true)
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
                     BH<br />SALDO

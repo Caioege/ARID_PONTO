@@ -5,6 +5,7 @@ using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace AriD.Servicos.Servicos
 {
@@ -107,6 +108,8 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<FaixaHoraExtra> _repositorioFaixaHoraExtra;
         private readonly IRepositorio<PontoDoDiaHoraExtra> _repositorioPontoDoDiaHoraExtra;
         private readonly IRepositorio<LogAuditoriaPonto> _repositorioAuditoriaPonto;
+        private readonly IRepositorio<HorarioDeTrabalhoVigencia> _repositorioHorarioVigencia;
+        private readonly IRepositorio<HorarioDeTrabalhoDia> _repositorioHorarioDia;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
@@ -122,7 +125,9 @@ namespace AriD.Servicos.Servicos
             IRepositorio<FaixaHoraExtra> repositorioFaixaHoraExtra,
             IRepositorio<PontoDoDiaHoraExtra> repositorioPontoDoDiaHoraExtra,
             IRepositorio<LogAuditoriaPonto> repositorioAuditoriaPonto,
-            IUsuarioAtual usuarioAtual)
+            IUsuarioAtual usuarioAtual,
+            IRepositorio<HorarioDeTrabalhoVigencia> repositorioHorarioVigencia,
+            IRepositorio<HorarioDeTrabalhoDia> repositorioHorarioDia)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -139,6 +144,8 @@ namespace AriD.Servicos.Servicos
             _repositorioPontoDoDiaHoraExtra = repositorioPontoDoDiaHoraExtra;
             _repositorioAuditoriaPonto = repositorioAuditoriaPonto;
             _usuarioAtual = usuarioAtual;
+            _repositorioHorarioVigencia = repositorioHorarioVigencia;
+            _repositorioHorarioDia = repositorioHorarioDia;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -727,7 +734,12 @@ namespace AriD.Servicos.Servicos
                 List<EscalaDoServidor> escalasDoPeriodo = ObtenhaEscalasDoServidorNoPeriodo(vinculoDeTrabalhoId, inicio, fim);
                 List<Afastamento> afastamentosDoPeriodo = ObtenhaAfastamentosDoPeriodo(vinculoDeTrabalhoId, inicio, fim);
                 List<EventoAnual> eventosDoPeriodo = EventosDaFolhaDePonto(organizacaoId, inicio, fim);
-                Tuple<TimeSpan?, TimeSpan?> bancoDeHoras = ObtenhaCreditoDebitoDoPeriodoAnterior(vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras, vinculoDeTrabalhoId, inicio) ?? new(null, null);
+
+                var vigenciasBase = CarregueVigenciasComDias(organizacaoId, vinculoDeTrabalho.HorarioDeTrabalhoId, fim);
+                var idxVigBase = 0;
+
+                var saldoBh = ObtenhaSaldoBancoDeHorasAnterior(vinculoDeTrabalhoId, inicio);
+
 
                 registrosDePonto = registrosDePonto
                     .OrderBy(r => r.DataHoraRegistro)
@@ -745,11 +757,13 @@ namespace AriD.Servicos.Servicos
                 var dataAuxiliar = inicio;
                 while (dataAuxiliar <= fim)
                 {
+                    var vig = ObtenhaVigenciaVigente(vigenciasBase, dataAuxiliar, ref idxVigBase);
+
                     var eventoNoDia = eventosDoPeriodo
                         .FirstOrDefault(c => c.Data.Date == dataAuxiliar.Date);
                     var afastamento = afastamentosDoPeriodo
                         .FirstOrDefault(d => d.Inicio.Date <= dataAuxiliar.Date && (!d.Fim.HasValue || d.Fim.Value.Date >= dataAuxiliar.Date));
-                    var horarioDoDia = vinculoDeTrabalho.HorarioDeTrabalho.Dias.FirstOrDefault(c => c.DiaDaSemana == (eDiaDaSemana)dataAuxiliar.DayOfWeek);
+                    var horarioDoDia = vig.Dias.FirstOrDefault(c => c.DiaDaSemana == (eDiaDaSemana)dataAuxiliar.DayOfWeek);
 
                     var escalaNoDia = escalasDoPeriodo
                         .FirstOrDefault(c =>
@@ -758,6 +772,20 @@ namespace AriD.Servicos.Servicos
 
                     if (escalaNoDia != null)
                     {
+                        var vigenciaOverrideId = TryGetIntProp(escalaNoDia, "HorarioDeTrabalhoVigenciaId");
+                        var horarioOverrideId = TryGetIntProp(escalaNoDia, "HorarioDeTrabalhoId");
+
+                        if (vigenciaOverrideId.HasValue)
+                        {
+                            vig = CarregueVigenciaPorIdComDias(organizacaoId, vigenciaOverrideId.Value);
+                        }
+                        else if (horarioOverrideId.HasValue && horarioOverrideId.Value != vinculoDeTrabalho.HorarioDeTrabalhoId)
+                        {
+                            var vigsOutro = CarregueVigenciasComDias(organizacaoId, horarioOverrideId.Value, fim);
+                            int idxOutro = 0;
+                            vig = ObtenhaVigenciaVigente(vigsOutro, dataAuxiliar, ref idxOutro);
+                        }
+
                         if (escalaNoDia.Escala.Tipo == eTipoDeEscala.Mensal)
                         {
                             horarioDoDia = new()
@@ -966,33 +994,29 @@ namespace AriD.Servicos.Servicos
                             {
                                 if (pontoDoDia.Id == 0)
                                 {
-                                    var configIntervalo = vinculoDeTrabalho.HorarioDeTrabalho.IntervaloAutomatico;
+                                    var configIntervalo = vig.IntervaloAutomatico;
                                     ProcessarIntervalosAutomaticos(pontoDoDia, horarioDoDia, configIntervalo);
                                 }
                             }
                         }
 
-                        CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
+                        CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento, vig.TipoCargaHoraria);
                         CalculeHorasTrabalhadas(ref pontoDoDia);
                         CalculeHorasTrabalhadasConsiderandoAbono(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
 
-                        ApliqueToleranciaDsr(ref pontoDoDia, vinculoDeTrabalho.HorarioDeTrabalho, horarioDoDia, eventoNoDia, afastamento);
+                        ApliqueToleranciaDsr(ref pontoDoDia, vig, horarioDoDia, eventoNoDia, afastamento);
 
                         CalculeHorasPositivas(ref pontoDoDia, afastamento);
                         CalculeHorasNegativas(ref pontoDoDia, afastamento);
 
-                        GerarEventosHoraExtraDoDia(organizacaoId, pontoDoDia, vinculoDeTrabalho.HorarioDeTrabalho, eventoNoDia);
+                        ApliqueToleranciaNoSaldo(ref pontoDoDia, vig.ToleranciaDiariaEmMinutos > 0 ? vig.ToleranciaDiariaEmMinutos : 0);
 
-                        int tolerancia = vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos > 0
-                            ? vinculoDeTrabalho.HorarioDeTrabalho.ToleranciaDiariaEmMinutos
-                            : 0;
+                        var resumoAprovada = GerarEventosHoraExtraDoDia(organizacaoId, pontoDoDia, vig, eventoNoDia);
 
-                        ApliqueToleranciaNoSaldo(ref pontoDoDia, tolerancia);
-
-                        CalculeBancoDeHoras(ref pontoDoDia, vinculoDeTrabalho, bancoDeHoras);
+                        var creditosDia = ObtenhaCreditosDiaParaBH(pontoDoDia, vig, resumoAprovada);
+                        saldoBh = CalculeBancoDeHorasComPrioridade(ref pontoDoDia, vig, saldoBh, creditosDia);
                     }
 
-                    bancoDeHoras = new Tuple<TimeSpan?, TimeSpan?>(pontoDoDia.BancoDeHorasCredito, pontoDoDia.BancoDeHorasDebito);
                     dataAuxiliar = dataAuxiliar.AddDays(1);
                 }
 
@@ -1499,9 +1523,15 @@ namespace AriD.Servicos.Servicos
                         c.VinculoDeTrabalhoId == registroAplicativo.VinculoDeTrabalhoId && c.Data >= registroAplicativo.DataInicialAtestado 
                         && c.Data <= registroAplicativo.DataFinalAtestado);
 
-                    var utiliza5Registros = registroAplicativo.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos;
+                    var horarioId = registroAplicativo.VinculoDeTrabalho.HorarioDeTrabalhoId;
+                    var vigs = CarregueVigenciasComDias(registroAplicativo.OrganizacaoId, horarioId, registroAplicativo.DataFinalAtestado.Value);
+                    int idx = 0;
+
                     foreach (var pontoDia in pontosDoPeriodo)
                     {
+                        var vig = ObtenhaVigenciaVigente(vigs, pontoDia.Data, ref idx);
+                        var utiliza5Registros = vig.UtilizaCincoPeriodos;
+
                         pontoDia.JustificativaPeriodo1Id = registroAplicativo.JustificativaDeAusenciaId;
                         pontoDia.JustificativaPeriodo2Id = registroAplicativo.JustificativaDeAusenciaId;
                         pontoDia.JustificativaPeriodo3Id = registroAplicativo.JustificativaDeAusenciaId;
@@ -1672,14 +1702,15 @@ namespace AriD.Servicos.Servicos
             ref PontoDoDia pontoDoDia,
             EventoAnual eventoNoDia,
             HorarioDeTrabalhoDia horarioDia,
-            Afastamento afastamento)
+            Afastamento afastamento,
+            eTipoCargaHoraria tipoCargaHoraria)
         {
             pontoDoDia.CargaHoraria = null;
 
             if (horarioDia == null || (afastamento != null && afastamento.JustificativaDeAusencia.Abono))
                 return;
 
-            if (horarioDia.HorarioDeTrabalho != null && horarioDia.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+            if (tipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
                 return;
 
             pontoDoDia.CargaHoraria = horarioDia.CalculeCargaHorariaTotal(eventoNoDia != null);
@@ -1854,23 +1885,16 @@ namespace AriD.Servicos.Servicos
                 pontoDoDia.HorasNegativas = cargaHorariaDoDia.Value.Subtract((pontoDoDia.HorasTrabalhadasConsiderandoAbono ?? TimeSpan.Zero) + (pontoDoDia.Abono ?? TimeSpan.Zero));
         }
 
-        private Tuple<TimeSpan?, TimeSpan?> ObtenhaCreditoDebitoDoPeriodoAnterior(
-            bool bancoDeHorasHabilitado,
-            int vinculoDeTrabalhoId, 
-            DateTime inicioPeriodo)
+        private Tuple<TimeSpan?, TimeSpan?> ObtenhaCreditoDebitoDoPeriodoAnterior(int vinculoDeTrabalhoId, DateTime inicioPeriodo)
         {
-            if (!bancoDeHorasHabilitado)
-                return new Tuple<TimeSpan?, TimeSpan?>(null, null);
-
             var query = @"select
-	                        BancoDeHorasCredito as 'Item1',
-                            BancoDeHorasDebito as 'Item2'
-                        from pontododia
-                        where
-	                        VinculoDeTrabalhoId = @VINCULODETRABALHOID
-                            and Data < @INICIO
-                        order by Data desc
-                        limit 1";
+	                    BancoDeHorasCredito as 'Item1',
+                        BancoDeHorasDebito as 'Item2'
+                  from pontododia
+                  where VinculoDeTrabalhoId = @VINCULODETRABALHOID
+                    and Data < @INICIO
+                  order by Data desc
+                  limit 1";
 
             return _repositorio.ConsultaDapper<Tuple<TimeSpan?, TimeSpan?>>(query, new
             {
@@ -1879,41 +1903,101 @@ namespace AriD.Servicos.Servicos
             }).FirstOrDefault();
         }
 
+        private BancoDeHorasSaldo ObtenhaSaldoBancoDeHorasAnterior(int vinculoId, DateTime inicioPeriodo)
+        {
+            var sql = @"
+                select BancoDeHorasCredito, BancoDeHorasDebito, BancoDeHorasCreditosJson
+                from PontoDoDia
+                where VinculoDeTrabalhoId = @V
+                  and Data < @INI
+                order by Data desc
+                limit 1;";
+
+            var row = _repositorio.ConsultaDapper<dynamic>(sql, new { @V = vinculoId, @INI = inicioPeriodo.Date }).FirstOrDefault();
+            var saldo = new BancoDeHorasSaldo();
+
+            if (row == null) return saldo;
+
+            // tenta json
+            try
+            {
+                string json = row.BancoDeHorasCreditosJson as string;
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    saldo.CreditosPorPercentual =
+                        System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(json)
+                        ?? new Dictionary<int, int>();
+                }
+            }
+            catch { /* ignora */ }
+
+            // fallback legado: se não tem JSON, joga o crédito como bucket 0
+            try
+            {
+                TimeSpan? cred = row.BancoDeHorasCredito as TimeSpan?;
+                TimeSpan? deb = row.BancoDeHorasDebito as TimeSpan?;
+
+                if ((saldo.CreditosPorPercentual == null || saldo.CreditosPorPercentual.Count == 0) && cred.HasValue && cred.Value > TimeSpan.Zero)
+                    saldo.CreditosPorPercentual[0] = (int)Math.Round(cred.Value.TotalMinutes);
+
+                if (deb.HasValue && deb.Value > TimeSpan.Zero)
+                    saldo.DebitoMinutos = (int)Math.Round(deb.Value.TotalMinutes);
+            }
+            catch { }
+
+            return saldo;
+        }
+
+        private static List<int> ParsePrioridade(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return new List<int> { 100, 70, 50 };
+
+            return texto.Split(',')
+                .Select(x => x.Trim())
+                .Where(x => int.TryParse(x, out _))
+                .Select(int.Parse)
+                .Distinct()
+                .ToList();
+        }
+
         private void CalculeBancoDeHoras(
             ref PontoDoDia pontoDoDia,
-            VinculoDeTrabalho vinculoDeTrabalho,
+            HorarioDeTrabalhoVigencia vigencia,
             Tuple<TimeSpan?, TimeSpan?> bancoDeHorasDiaAnterior)
         {
             pontoDoDia.BancoDeHorasCredito = null;
             pontoDoDia.BancoDeHorasDebito = null;
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.InicioBancoDeHoras <= pontoDoDia.Data)
+            var inicioBh = vigencia.InicioBancoDeHoras?.Date ?? DateTime.MinValue.Date;
+
+            if (!vigencia.UtilizaBancoDeHoras || inicioBh > pontoDoDia.Data.Date)
+                return;
+
+            var saldoAnterior = (bancoDeHorasDiaAnterior.Item1 ?? TimeSpan.Zero)
+                              - (bancoDeHorasDiaAnterior.Item2 ?? TimeSpan.Zero);
+
+            var saldoDia = (pontoDoDia.HorasPositivas ?? TimeSpan.Zero)
+                         - (pontoDoDia.HorasNegativas ?? TimeSpan.Zero);
+
+            var ajusteManual = pontoDoDia.BancoDeHorasAjuste ?? TimeSpan.Zero;
+
+            var saldoFinal = saldoAnterior + saldoDia + ajusteManual;
+
+            if (saldoFinal > TimeSpan.Zero)
             {
-                var saldoAnterior = (bancoDeHorasDiaAnterior.Item1 ?? TimeSpan.Zero)
-                                  - (bancoDeHorasDiaAnterior.Item2 ?? TimeSpan.Zero);
-
-                var saldoDia = (pontoDoDia.HorasPositivas ?? TimeSpan.Zero)
-                             - (pontoDoDia.HorasNegativas ?? TimeSpan.Zero);
-
-                var ajusteManual = pontoDoDia.BancoDeHorasAjuste ?? TimeSpan.Zero;
-
-                var saldoFinal = saldoAnterior + saldoDia + ajusteManual;
-
-                if (saldoFinal > TimeSpan.Zero)
-                {
-                    pontoDoDia.BancoDeHorasCredito = saldoFinal;
-                    pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
-                }
-                else if (saldoFinal < TimeSpan.Zero)
-                {
-                    pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
-                    pontoDoDia.BancoDeHorasDebito = saldoFinal.Duration();
-                }
-                else
-                {
-                    pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
-                    pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
-                }
+                pontoDoDia.BancoDeHorasCredito = saldoFinal;
+                pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
+            }
+            else if (saldoFinal < TimeSpan.Zero)
+            {
+                pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
+                pontoDoDia.BancoDeHorasDebito = saldoFinal.Duration();
+            }
+            else
+            {
+                pontoDoDia.BancoDeHorasCredito = TimeSpan.Zero;
+                pontoDoDia.BancoDeHorasDebito = TimeSpan.Zero;
             }
         }
 
@@ -2433,24 +2517,27 @@ namespace AriD.Servicos.Servicos
             return saida;
         }
 
-        private eTipoDiaHoraExtra ClassificarTipoDiaHoraExtra(PontoDoDia pontoDoDia, EventoAnual eventoNoDia, HorarioDeTrabalho horario)
+        private eTipoDiaHoraExtra ClassificarTipoDiaHoraExtra(
+            PontoDoDia pontoDoDia,
+            EventoAnual eventoNoDia,
+            HorarioDeTrabalhoVigencia vigencia)
         {
             var ehFeriado = eventoNoDia?.Tipo == eTipoDeEvento.Feriado;
             var ehFacultativo = eventoNoDia?.Tipo == eTipoDeEvento.Facultativo;
 
             if (ehFeriado) return eTipoDiaHoraExtra.Feriado;
 
-            if (ehFacultativo && horario.ConsiderarFacultativoComoFeriadoHoraExtra)
+            if (ehFacultativo && vigencia.ConsiderarFacultativoComoFeriadoHoraExtra)
                 return eTipoDiaHoraExtra.Feriado;
 
             bool temCarga = pontoDoDia.CargaHoraria.HasValue && pontoDoDia.CargaHoraria.Value > TimeSpan.Zero;
             return temCarga ? eTipoDiaHoraExtra.DiaTrabalho : eTipoDiaHoraExtra.DiaFolga;
         }
 
-        private void GerarEventosHoraExtraDoDia(
+        private Dictionary<int, int> GerarEventosHoraExtraDoDia(
             int organizacaoId,
             PontoDoDia pontoDoDia,
-            HorarioDeTrabalho horario,
+            HorarioDeTrabalhoVigencia vigencia,
             EventoAnual eventoNoDia)
         {
             // Se não tem trabalho, zera eventos
@@ -2459,16 +2546,16 @@ namespace AriD.Servicos.Servicos
             {
                 var antigosZero = _repositorioPontoDoDiaHoraExtra.ObtenhaLista(e => e.PontoDoDiaId == pontoDoDia.Id);
                 antigosZero.ForEach(_repositorioPontoDoDiaHoraExtra.Remover);
-                return;
+                return new Dictionary<int, int>();
             }
 
-            var tipoDia = ClassificarTipoDiaHoraExtra(pontoDoDia, eventoNoDia, horario);
+            var tipoDia = ClassificarTipoDiaHoraExtra(pontoDoDia, eventoNoDia, vigencia);
 
-            // Busca regra do horário p/ este tipo de dia.
+            // Busca regra da VIGÊNCIA p/ este tipo de dia.
             // (Se não existir, fallback pra DiaTrabalho)
             var regra = _repositorioRegraHoraExtra.Obtenha(r =>
                 r.OrganizacaoId == organizacaoId &&
-                r.HorarioDeTrabalhoId == horario.Id &&
+                r.HorarioDeTrabalhoVigenciaId == vigencia.Id &&
                 r.TipoDia == tipoDia &&
                 r.Ativo);
 
@@ -2476,15 +2563,15 @@ namespace AriD.Servicos.Servicos
             {
                 regra = _repositorioRegraHoraExtra.Obtenha(r =>
                     r.OrganizacaoId == organizacaoId &&
-                    r.HorarioDeTrabalhoId == horario.Id &&
+                    r.HorarioDeTrabalhoVigenciaId == vigencia.Id &&
                     r.TipoDia == eTipoDiaHoraExtra.DiaTrabalho &&
                     r.Ativo);
             }
 
             if (regra == null)
             {
-                // Sem regra -> não gera detalhamento (mas seu HorasPositivas continua existindo)
-                return;
+                // Sem regra -> não gera detalhamento (mas HorasPositivas continua existindo)
+                return new Dictionary<int, int>();
             }
 
             var statusPadrao = regra.AprovarAutomaticamente
@@ -2553,6 +2640,7 @@ namespace AriD.Servicos.Servicos
 
             var antigos = _repositorioPontoDoDiaHoraExtra.ObtenhaLista(e => e.PontoDoDiaId == pontoDoDia.Id);
 
+            // preserva status e minutos aprovados anteriores quando possível
             foreach (var n in novos)
             {
                 var match = antigos.FirstOrDefault(a =>
@@ -2572,20 +2660,31 @@ namespace AriD.Servicos.Servicos
 
             antigos.ForEach(_repositorioPontoDoDiaHoraExtra.Remover);
             novos.ForEach(_repositorioPontoDoDiaHoraExtra.Add);
+
+            return ResumoAprovadoPorPercentual(novos);
         }
+
+        private Dictionary<int, int> ResumoAprovadoPorPercentual(List<PontoDoDiaHoraExtra> eventos)
+        {
+            return eventos
+                .Where(x => x.Status == eStatusAprovacaoHoraExtra.Aprovado && x.MinutosAprovados > 0)
+                .GroupBy(x => (int)x.Percentual)
+                .ToDictionary(g => g.Key, g => g.Sum(x => x.MinutosAprovados));
+        }   
 
         private void ApliqueToleranciaDsr(
             ref PontoDoDia pontoDoDia,
-            HorarioDeTrabalho horario,
+            HorarioDeTrabalhoVigencia vigencia,
             HorarioDeTrabalhoDia horarioDoDia,
             EventoAnual eventoNoDia,
             Afastamento afastamento)
         {
-            var tolerancia = horario.ToleranciaDsrEmMinutos;
+            var tolerancia = vigencia.ToleranciaDsrEmMinutos;
             if (tolerancia <= 0)
                 return;
 
             // DSR aqui = dia de descanso do servidor (sem carga) e NÃO é feriado/facultativo.
+            // Se tem evento anual (feriado/facultativo), sai.
             if (eventoNoDia != null)
                 return;
 
@@ -2594,7 +2693,7 @@ namespace AriD.Servicos.Servicos
                 return;
 
             // Mensal fixa não usa carga diária, então ignore DSR
-            if (horario.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+            if (vigencia.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
                 return;
 
             bool diaSemCarga = horarioDoDia == null
@@ -2614,7 +2713,7 @@ namespace AriD.Servicos.Servicos
                 pontoDoDia.HorasTrabalhadas = null;
                 pontoDoDia.HorasTrabalhadasConsiderandoAbono = null;
 
-                // (opcional) Se você quiser também limpar o saldo:
+                // Limpa saldos do dia (evita HE/saldo e BH indevido)
                 pontoDoDia.HorasPositivas = null;
                 pontoDoDia.HorasNegativas = null;
             }
@@ -2641,6 +2740,185 @@ namespace AriD.Servicos.Servicos
             });
 
             _repositorioAuditoriaPonto.Commit();
+        }
+
+        private List<HorarioDeTrabalhoVigencia> CarregueVigenciasComDias(int organizacaoId, int horarioDeTrabalhoId, DateTime fim)
+        {
+            var vigencias = _repositorioHorarioVigencia
+                .ObtenhaLista(v =>
+                    v.OrganizacaoId == organizacaoId &&
+                    v.HorarioDeTrabalhoId == horarioDeTrabalhoId &&
+                    v.VigenciaInicio.Date <= fim.Date)
+                .OrderBy(v => v.VigenciaInicio)
+                .ToList();
+
+            if (!vigencias.Any())
+                throw new ApplicationException("Horário sem vigência cadastrada. Execute o backfill.");
+
+            var ids = vigencias.Select(v => v.Id).ToList();
+
+            var dias = _repositorioHorarioDia
+                .ObtenhaLista(d => d.OrganizacaoId == organizacaoId && ids.Contains(d.HorarioDeTrabalhoVigenciaId))
+                .ToList();
+
+            var diasPorVig = dias
+                .GroupBy(d => d.HorarioDeTrabalhoVigenciaId)
+                .ToDictionary(g => g.Key, g => g.OrderBy(x => x.DiaDaSemana).ToList());
+
+            foreach (var v in vigencias)
+                v.Dias = diasPorVig.TryGetValue(v.Id, out var lst) ? lst : new List<HorarioDeTrabalhoDia>();
+
+            return vigencias;
+        }
+
+        private static HorarioDeTrabalhoVigencia ObtenhaVigenciaVigente(List<HorarioDeTrabalhoVigencia> vigenciasOrdenadas, DateTime data, ref int idx)
+        {
+            while (idx + 1 < vigenciasOrdenadas.Count &&
+                   vigenciasOrdenadas[idx + 1].VigenciaInicio.Date <= data.Date)
+            {
+                idx++;
+            }
+
+            return vigenciasOrdenadas[idx];
+        }
+
+        private static int? TryGetIntProp(object obj, string propName)
+        {
+            if (obj == null) return null;
+            var p = obj.GetType().GetProperty(propName);
+            if (p == null) return null;
+            var val = p.GetValue(obj);
+            if (val == null) return null;
+            if (val is int i) return i;
+            if (val is int ni) return ni;
+            return null;
+        }
+
+        private HorarioDeTrabalhoVigencia CarregueVigenciaPorIdComDias(int organizacaoId, int vigenciaId)
+        {
+            var vig = _repositorioHorarioVigencia.Obtenha(v => v.OrganizacaoId == organizacaoId && v.Id == vigenciaId);
+            if (vig == null) throw new ApplicationException("Vigência inválida.");
+
+            vig.Dias = _repositorioHorarioDia
+                .ObtenhaLista(d => d.OrganizacaoId == organizacaoId && d.HorarioDeTrabalhoVigenciaId == vigenciaId)
+                .OrderBy(d => d.DiaDaSemana)
+                .ToList();
+
+            return vig;
+        }
+
+        private Dictionary<int, int> ObtenhaCreditosDiaParaBH(
+            PontoDoDia pontoDoDia,
+            HorarioDeTrabalhoVigencia vig,
+            Dictionary<int, int> resumoAprovadoHePorPercentual)
+        {
+            var totalPositivos = (int)Math.Round((pontoDoDia.HorasPositivas ?? TimeSpan.Zero).TotalMinutes);
+            if (totalPositivos <= 0) totalPositivos = 0;
+
+            resumoAprovadoHePorPercentual ??= new Dictionary<int, int>();
+
+            if (vig.BancoDeHorasSomenteHorasExtrasAprovadas)
+            {
+                // Só HE aprovadas (por percentual)
+                return resumoAprovadoHePorPercentual
+                    .Where(k => k.Value > 0)
+                    .ToDictionary(k => k.Key, k => k.Value);
+            }
+
+            var dict = resumoAprovadoHePorPercentual
+                .Where(k => k.Value > 0)
+                .ToDictionary(k => k.Key, k => k.Value);
+
+            var somaAprovadas = dict.Values.Sum();
+            var resto = Math.Max(0, totalPositivos - somaAprovadas);
+
+            if (resto > 0)
+                dict[0] = (dict.TryGetValue(0, out var cur) ? cur : 0) + resto;
+
+            if (dict.Count == 0 && totalPositivos > 0)
+                dict[0] = totalPositivos;
+
+            return dict;
+        }
+
+        private BancoDeHorasSaldo CalculeBancoDeHorasComPrioridade(
+            ref PontoDoDia pontoDoDia,
+            HorarioDeTrabalhoVigencia vig,
+            BancoDeHorasSaldo saldoAnterior,
+            Dictionary<int, int> creditosDia)
+        {
+            pontoDoDia.BancoDeHorasCredito = null;
+            pontoDoDia.BancoDeHorasDebito = null;
+            pontoDoDia.BancoDeHorasCreditosJson = null;
+
+            var inicioBh = vig.InicioBancoDeHoras?.Date ?? DateTime.MinValue.Date;
+            if (!vig.UtilizaBancoDeHoras || inicioBh > pontoDoDia.Data.Date)
+                return new BancoDeHorasSaldo();
+
+            // base
+            var creditos = new Dictionary<int, int>(saldoAnterior.CreditosPorPercentual ?? new Dictionary<int, int>());
+            var debito = saldoAnterior.DebitoMinutos;
+
+            // debito do dia (horas negativas)
+            debito += (int)Math.Round((pontoDoDia.HorasNegativas ?? TimeSpan.Zero).TotalMinutes);
+
+            // ajuste manual
+            var ajuste = (int)Math.Round((pontoDoDia.BancoDeHorasAjuste ?? TimeSpan.Zero).TotalMinutes);
+            if (ajuste > 0)
+                creditos[0] = (creditos.TryGetValue(0, out var c0) ? c0 : 0) + ajuste;
+            else if (ajuste < 0)
+                debito += Math.Abs(ajuste);
+
+            // soma créditos do dia
+            creditosDia ??= new Dictionary<int, int>();
+            foreach (var kv in creditosDia)
+                creditos[kv.Key] = (creditos.TryGetValue(kv.Key, out var cur) ? cur : 0) + kv.Value;
+
+            // prioridade
+            var prioridade = ParsePrioridade(vig.BancoDeHorasPrioridadePercentuais);
+
+            // monta ordem final: prioridade + restantes (bucket 0 sempre por último)
+            var restantes = creditos.Keys
+                .Where(k => !prioridade.Contains(k) && k != 0)
+                .OrderBy(k => k)
+                .ToList();
+
+            var ordem = prioridade
+                .Where(p => p != 0)
+                .Concat(restantes)
+                .Concat(creditos.ContainsKey(0) ? new[] { 0 } : Array.Empty<int>())
+                .ToList();
+
+            // consome crédito para compensar débito
+            foreach (var perc in ordem)
+            {
+                if (debito <= 0) break;
+                if (!creditos.TryGetValue(perc, out var disponivel) || disponivel <= 0) continue;
+
+                var consumir = Math.Min(disponivel, debito);
+                creditos[perc] = disponivel - consumir;
+                debito -= consumir;
+            }
+
+            // limpa zero
+            var creditosFinal = creditos.Where(kv => kv.Value > 0).ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            var totalCred = creditosFinal.Values.Sum();
+            pontoDoDia.BancoDeHorasCredito = TimeSpan.FromMinutes(totalCred);
+            pontoDoDia.BancoDeHorasDebito = TimeSpan.FromMinutes(Math.Max(0, debito));
+            pontoDoDia.BancoDeHorasCreditosJson = System.Text.Json.JsonSerializer.Serialize(creditosFinal);
+
+            return new BancoDeHorasSaldo
+            {
+                CreditosPorPercentual = creditosFinal,
+                DebitoMinutos = Math.Max(0, debito)
+            };
+        }
+
+        private sealed class BancoDeHorasSaldo
+        {
+            public Dictionary<int, int> CreditosPorPercentual { get; set; } = new();
+            public int DebitoMinutos { get; set; } = 0;
         }
     }
 }

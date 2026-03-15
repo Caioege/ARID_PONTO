@@ -1,6 +1,6 @@
 ﻿@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
-@model HorarioDeTrabalho
+@model HorarioDeTrabalhoCadastroVM
 
 @{
     var podeRemover = Context.PossuiPermissao(eItemDePermissao_HorarioDeTrabalho.Excluir);
@@ -29,6 +29,41 @@
     <div class="card-body">
         <form id="formulario-horario-trabalho">
             @Html.HiddenFor(model => model.Id)
+
+            @Html.HiddenFor(model => model.VigenciaId)
+            @Html.HiddenFor(model => model.VigenciaInicio)
+
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-lg-4">
+                    <label class="form-label obrigatorio">Vigência selecionada</label>
+                    <select class="form-select" id="VigenciaSelect">
+                        @foreach (var v in (dynamic)ViewBag.Vigencias)
+                        {
+                            <option value="@v.Id" selected="@(v.Id == Model.VigenciaId ? "selected" : null)">@v.Texto</option>
+                        }
+                    </select>
+                    <div class="form-text">
+                        Esta página edita <b>somente</b> a vigência selecionada.
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-outline-secondary w-100" id="btn-nova-vigencia">
+                        Nova Vigência
+                    </button>
+                </div>
+
+                <div class="col-12 col-lg-5">
+                    <div class="alert alert-primary mb-0">
+                        <b>Atenção:</b> alterações feitas aqui valem para esta vigência.
+                        Para mudar regras a partir de uma data nova, use <b>Nova Vigência</b> (o sistema clona a atual).
+                        Folhas já <b>fechadas</b> não são recalculadas automaticamente.
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
             <div class="row">
                 <div class="col col-lg-3 col-md-6 col-sm-12">
                     <label class="form-label obrigatorio" for="Sigla">Sigla</label>
@@ -77,6 +112,22 @@
                 <div id="div-data-bh" class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? string.Empty : "display:none")">
                     <label class="form-label">Início do Banco de Horas</label>
                     @Html.TextBox("InicioBancoDeHoras", Model.InicioBancoDeHoras?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? "" : "display:none")" id="div-bh-fonte">
+                    <label class="form-label obrigatorio">Crédito do BH considera</label>
+                    @Html.CheckboxDropDownListFor(m => m.BancoDeHorasSomenteHorasExtrasAprovadas, new { @class = "form-select" })
+                    <div class="form-text">Marcado: só horas extras aprovadas. Desmarcado: todas as horas positivas.</div>
+                </div>
+
+                <div class="col col-lg-4 col-md-6 col-sm-12">
+                    <label class="form-label obrigatorio">Prioridade de compensação (percentuais)</label>
+
+                    @Html.HiddenFor(m => m.BancoDeHorasPrioridadePercentuais, new { id = "BancoDeHorasPrioridadePercentuais" })
+
+                    <select id="sel-bh-prioridade" class="form-select" multiple="multiple" style="width:100%"></select>
+
+                    <div class="form-text">Ex.: 100, 70, 50. A ordem define o consumo do BH para compensar horas negativas.</div>
                 </div>
 
                 <div class="col col-lg-3 col-md-6 col-sm-12">

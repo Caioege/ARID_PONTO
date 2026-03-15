@@ -7,7 +7,8 @@
     ViewBag.ExibirNomeServidor = false;
     var horarioDeTrabalho = (HorarioDeTrabalho)ViewBag.HorarioDeTrabalho;
 
-    var configColunas = horarioDeTrabalho.ColunasVisiveis;
+    var vigencia = horarioDeTrabalho.ObtenhaVigenciaVigente(Model.First().Data);
+    var configColunas = vigencia.ColunasVisiveis;
 
     var observacaoServidor = (string)ViewBag.ObservacaoServidor;
 
@@ -107,7 +108,7 @@
             <th class="text-center" width="@(larguraPeriodo)px">
                 SAI<br />3
             </th>
-            @if (horarioDeTrabalho.UtilizaCincoPeriodos)
+            @if (vigencia.UtilizaCincoPeriodos)
             {
                 <th class="text-center" width="@(larguraPeriodo)px">
                     ENT<br />4
@@ -138,7 +139,7 @@
                 </th>
             }
 
-            @if (horarioDeTrabalho.TipoCargaHoraria != AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa)
+            @if (vigencia.TipoCargaHoraria != AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa)
             {
                 if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
                 {
@@ -160,7 +161,7 @@
                 }
             }
 
-            @if (horarioDeTrabalho.UtilizaBancoDeHoras)
+            @if (vigencia.UtilizaBancoDeHoras)
             {
                 if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
                 {
@@ -206,12 +207,12 @@
                     <b>HOR TRA:</b> @FormatarTimeSpan(horasTrabalhadas)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
                 }
                 @{
-                    var cargaHorariaMensalFixa = horarioDeTrabalho.TipoCargaHoraria == AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa;
+                    var cargaHorariaMensalFixa = vigencia.TipoCargaHoraria == AriD.BibliotecaDeClasses.Enumeradores.eTipoCargaHoraria.MensalFixa;
                     var cargaHoraria = TimeSpan.FromTicks(Model.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
 
                     if (cargaHorariaMensalFixa)
                     {
-                        cargaHoraria = TimeSpan.FromHours(horarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+                        cargaHoraria = TimeSpan.FromHours(vigencia.CargaHorariaMensalFixa ?? 0);
                     }
                 }
                 @if (configColunas.HasFlag(eColunasDaFolha.CargaHoraria))
@@ -266,7 +267,7 @@
                     }
                 }
                 <b>MÊS SALDO:</b> @(FormatarSaldoMes(horasPositivasMes, horasNegativasMes))@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
-                @if (Model.Any(c => c.VinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras))
+                @if (vigencia.UtilizaBancoDeHoras)
                 {
                     var ultimoRegistroBanco = Model.OrderBy(c => c.Data).LastOrDefault(c => !c.DataFutura);
 

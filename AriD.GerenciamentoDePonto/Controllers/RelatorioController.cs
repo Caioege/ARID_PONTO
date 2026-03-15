@@ -1257,14 +1257,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (listaDePonto.Count() == 0)
                     continue;
 
-                var cargaHorariaMensalFixa = vinculo.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
+                var vigencia = vinculo.HorarioDeTrabalho.ObtenhaVigenciaDoMes(mesAno);
+
+                var cargaHorariaMensalFixa = vigencia.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
 
                 var horasTrabalhadas = TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
 
                 var cargaHoraria = TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
                 if (cargaHorariaMensalFixa)
                 {
-                    cargaHoraria = TimeSpan.FromHours(vinculo.HorarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+                    cargaHoraria = TimeSpan.FromHours(vigencia.CargaHorariaMensalFixa ?? 0);
                 }
 
                 var horasPositivas = cargaHorariaMensalFixa ?

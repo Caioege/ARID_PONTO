@@ -6,7 +6,8 @@
     var exibirNomeServidor = (bool?)ViewBag.ExibirNomeServidor ?? true;
     var horarioDeTrabalho = Model.VinculoDeTrabalho.HorarioDeTrabalho;
 
-    var configColunas = horarioDeTrabalho.ColunasVisiveis;
+    var vigDia = horarioDeTrabalho.ObtenhaVigenciaVigente(Model.Data);
+    var configColunas = vigDia.ColunasVisiveis;
 
     var dataString = @Model.Data.ToString("yyyy-MM-dd");
     var dataTicks = Model.Data.Ticks;
@@ -120,7 +121,7 @@
             @Model.DescricaoSaida(3)
         </td>
 
-        @if (horarioDeTrabalho.UtilizaCincoPeriodos)
+        @if (vigDia.UtilizaCincoPeriodos)
         {
             @* PERÍODO 4 *@
             <td class="text-center @classeInteracao entrada4 @(Model.RegistroEntradaApp(4) ? "registro-app" : string.Empty) @(Model.PossuiRegistroNaEntrada(4) ? "executa-movimentacao" : string.Empty)" data-id="@Model.Id" data-acao="entrada4" data-justificativaid="@Model.JustificativaPeriodo4Id" onclick="modalPontoDia(@Model.VinculoDeTrabalhoId, '@dataString', '@dataTicks', 'entrada4')">
@@ -153,7 +154,7 @@
             </td>
         }
 
-        @if (horarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+        @if (vigDia.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
         {
             if (configColunas.HasFlag(eColunasDaFolha.HorasPositivas))
             {
@@ -200,7 +201,7 @@
             }
         }
 
-        @if (horarioDeTrabalho.UtilizaBancoDeHoras)
+        @if (vigDia.UtilizaBancoDeHoras)
         {
             if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
             {

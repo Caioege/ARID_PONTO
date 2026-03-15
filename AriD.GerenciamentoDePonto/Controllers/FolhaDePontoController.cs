@@ -511,6 +511,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
             List<PontoDoDiaHoraExtra> horasExtrasDaFolha,
             bool impressaoDoServidor = false)
         {
+            var vigenciaRelatorio = vinculoDeTrabalho.HorarioDeTrabalho.ObtenhaVigenciaDoMes(mesAno);
+
+            var cfg = vigenciaRelatorio;
+            var colunas = cfg.ColunasVisiveis;
+            var utiliza5 = cfg.UtilizaCincoPeriodos;
+            var utilizaBH = cfg.UtilizaBancoDeHoras;
+            var mensalFixa = cfg.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
+
             var stream = new MemoryStream();
 
             var writer = new PdfWriter(stream);
@@ -557,7 +565,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .SetFixedLeading(9f)
                     .SetFontSize(10f)
                     .Add(new Text("Horário de Trabalho: ").SetBold())
-                    .Add(new Text(vinculoDeTrabalho.HorarioDeTrabalho.SiglaComDescricao))));
+                    .Add(new Text(vinculoDeTrabalho.HorarioDeTrabalho.SiglaComDescricao))
+                    .Add(new Text($" (Vigência: {cfg.VigenciaInicio:dd/MM/yyyy})"))));
 
             var percentuais = horasExtrasDaFolha
                 .Select(x => x.Percentual)
@@ -576,29 +585,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var totalDeColunas = 7;
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+            if (colunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
                 totalDeColunas++;
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.CargaHoraria))
+            if (colunas.HasFlag(eColunasDaFolha.CargaHoraria))
                 totalDeColunas++;
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+            if (vigenciaRelatorio.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
             {
-                if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasPositivas))
+                if (colunas.HasFlag(eColunasDaFolha.HorasPositivas))
                 {
                     totalDeColunas++;
                     if (percentuais.Count > 0)
                         totalDeColunas += percentuais.Count;
                 }
 
-                if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
+                if (colunas.HasFlag(eColunasDaFolha.HorasNegativas))
                     totalDeColunas++;
             }
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.BHSaldo))
+            if (utilizaBH && colunas.HasFlag(eColunasDaFolha.BHSaldo))
                 totalDeColunas++;
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)
+            if (utiliza5)
                 totalDeColunas += 4;
 
             var table = new Table(totalDeColunas).UseAllAvailableWidth();
@@ -661,7 +670,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)
+            if (utiliza5)
             {
                 table
                     .AddCell(new Cell()
@@ -698,7 +707,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
             }
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+            if (colunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
             {
                 table
                     .AddCell(new Cell()
@@ -711,7 +720,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         .SetVerticalAlignment(VerticalAlignment.MIDDLE)));
             }
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.CargaHoraria))
+            if (colunas.HasFlag(eColunasDaFolha.CargaHoraria))
             {
                 table
                     .AddCell(new Cell()
@@ -725,9 +734,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+            if (vigenciaRelatorio.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
             {
-                if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasPositivas))
+                if (colunas.HasFlag(eColunasDaFolha.HorasPositivas))
                 {
                     table
                         .AddCell(new Cell()
@@ -753,7 +762,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     }
                 }
 
-                if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
+                if (colunas.HasFlag(eColunasDaFolha.HorasNegativas))
                 {
                     table
                         .AddCell(new Cell()
@@ -767,7 +776,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
             }
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.BHSaldo))
+            if (utilizaBH && colunas.HasFlag(eColunasDaFolha.BHSaldo))
                 table
                     .AddCell(new Cell()
                         .SetBackgroundColor(ColorConstants.GRAY, 0.25f)
@@ -824,7 +833,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             .Add(new Paragraph()
                             .Add(new Text(dia.DescricaoSaida(3)))));
 
-                    if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaCincoPeriodos)
+                    if (utiliza5)
                     {
                         table
                             .AddCell(new Cell()
@@ -841,7 +850,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 .Add(new Text(dia.DescricaoSaida(5)))));
                     }
 
-                    if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+                    if (colunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
                     {
                         table
                             .AddCell(new Cell()
@@ -849,7 +858,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 .Add(new Text(dia.HorasTrabalhadas?.ToString(@"hh\:mm") ?? string.Empty))));
                     }
 
-                    if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.CargaHoraria))
+                    if (colunas.HasFlag(eColunasDaFolha.CargaHoraria))
                     {
                         table
                             .AddCell(new Cell()
@@ -857,9 +866,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                 .Add(new Text(dia.CargaHoraria?.ToString(@"hh\:mm") ?? string.Empty))));
                     }
 
-                    if (vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
+                    if (vigenciaRelatorio.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa)
                     {
-                        if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasPositivas))
+                        if (colunas.HasFlag(eColunasDaFolha.HorasPositivas))
                         {
                             table
                                 .AddCell(new Cell()
@@ -877,7 +886,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             }
                         }
 
-                        if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
+                        if (colunas.HasFlag(eColunasDaFolha.HorasNegativas))
                         {
                             table
                                 .AddCell(new Cell()
@@ -886,7 +895,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         }
                     }
 
-                    if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.BHSaldo))
+                    if (utilizaBH && colunas.HasFlag(eColunasDaFolha.BHSaldo))
                     {
                         var descricaoBH = string.Empty;
 
@@ -913,14 +922,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 }
             }
 
-            var cargaHorariaMensalFixa = vinculoDeTrabalho.HorarioDeTrabalho.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
+            var cargaHorariaMensalFixa = vigenciaRelatorio.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa;
 
             var horasTrabalhadas = TimeSpan.FromTicks(listaDePonto.Where(c => !c.DataFutura).Sum(c => (c.HorasTrabalhadas ?? TimeSpan.Zero).Ticks));
 
             var cargaHoraria = TimeSpan.FromTicks(listaDePonto.Sum(c => (c.CargaHoraria ?? TimeSpan.Zero).Ticks));
             if (cargaHorariaMensalFixa)
             {
-                cargaHoraria = TimeSpan.FromHours(vinculoDeTrabalho.HorarioDeTrabalho.CargaHorariaMensalFixa ?? 0);
+                cargaHoraria = TimeSpan.FromHours(vigenciaRelatorio.CargaHorariaMensalFixa ?? 0);
             }
 
             var horasPositivas = cargaHorariaMensalFixa ?
@@ -933,21 +942,21 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var paragrafoTotal = new Paragraph();
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasTrabalhadas))
+            if (colunas.HasFlag(eColunasDaFolha.HorasTrabalhadas))
                 paragrafoTotal.Add(new Text("HOR TRA:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasTrabalhadas)}\t\t"));
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.CargaHoraria))
+            if (colunas.HasFlag(eColunasDaFolha.CargaHoraria))
                 paragrafoTotal.Add(new Text("CAR HOR:").SetBold()).Add(new Text($" {FormatarTimeSpan(cargaHoraria)}\t\t"));
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasPositivas))
+            if (colunas.HasFlag(eColunasDaFolha.HorasPositivas))
                 paragrafoTotal.Add(new Text("HOR POS:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasPositivas)}\t\t"));
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.HorasNegativas))
+            if (colunas.HasFlag(eColunasDaFolha.HorasNegativas))
                 paragrafoTotal.Add(new Text("HOR NEG:").SetBold()).Add(new Text($" {FormatarTimeSpan(horasNegativas)}\t\t"));
 
             paragrafoTotal.Add(new Text("MÊS SALDO:").SetBold()).Add(new Text($" {FormatarSaldoMes(horasPositivas, horasNegativas)}"));
 
-            if (vinculoDeTrabalho.HorarioDeTrabalho.UtilizaBancoDeHoras && vinculoDeTrabalho.HorarioDeTrabalho.ColunasVisiveis.HasFlag(eColunasDaFolha.BHSaldo))
+            if (utilizaBH && colunas.HasFlag(eColunasDaFolha.BHSaldo))
             {
                 var ultimoRegistroBanco = listaDePonto.OrderBy(c => c.Data).LastOrDefault(c => !c.DataFutura);
                 paragrafoTotal.Add(new Text("\t\tBH SALDO:").SetBold()).Add(new Text($" {FormatarBancoDeHoras(ultimoRegistroBanco)}"));

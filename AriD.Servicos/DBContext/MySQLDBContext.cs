@@ -75,5 +75,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<LayoutExportacaoFolhaPagamento> LayoutExportacaoFolhaPagamento { get; set; }
         public DbSet<LayoutExportacaoFolhaPagamentoCampo> LayoutExportacaoFolhaPagamentoCampo { get; set; }
         public DbSet<MapeamentoEventoFolhaPagamento> MapeamentoEventoFolhaPagamento { get; set; }
+        public DbSet<HorarioDeTrabalhoVigencia> HorarioDeTrabalhoVigencia { get; set; }
     }
 }
