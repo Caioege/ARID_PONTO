@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
@@ -87,6 +87,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                     ConsiderarFacultativoComoFeriadoHoraExtra = false,
                     ToleranciaDsrEmMinutos = 0,
+
+                    ToleranciaAntesDaEntradaEmMinutos = 0,
+                    ToleranciaAposAEntradaEmMinutos = 0,
+                    ToleranciaAntesDaSaidaEmMinutos = 0,
+                    ToleranciaAposASaidaEmMinutos = 0,
 
                     Dias = DiasPadrao(orgId),
                     RegrasHoraExtra = MonteRegrasPadraoParaTela(new())
@@ -349,7 +354,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     ToleranciaDiariaEmMinutos = baseVig.ToleranciaDiariaEmMinutos,
                     ColunasVisiveis = baseVig.ColunasVisiveis,
                     ConsiderarFacultativoComoFeriadoHoraExtra = baseVig.ConsiderarFacultativoComoFeriadoHoraExtra,
-                    ToleranciaDsrEmMinutos = baseVig.ToleranciaDsrEmMinutos
+                    ToleranciaDsrEmMinutos = baseVig.ToleranciaDsrEmMinutos,
+
+                    ToleranciaAntesDaEntradaEmMinutos = baseVig.ToleranciaAntesDaEntradaEmMinutos,
+                    ToleranciaAposAEntradaEmMinutos = baseVig.ToleranciaAposAEntradaEmMinutos,
+                    ToleranciaAntesDaSaidaEmMinutos = baseVig.ToleranciaAntesDaSaidaEmMinutos,
+                    ToleranciaAposASaidaEmMinutos = baseVig.ToleranciaAposASaidaEmMinutos
                 };
 
                 var novaVigId = _servicoVigencia.Adicionar(nova);
@@ -499,6 +509,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 ConsiderarFacultativoComoFeriadoHoraExtra = vig.ConsiderarFacultativoComoFeriadoHoraExtra,
                 ToleranciaDsrEmMinutos = vig.ToleranciaDsrEmMinutos,
 
+                ToleranciaAntesDaEntradaEmMinutos = vig.ToleranciaAntesDaEntradaEmMinutos,
+                ToleranciaAposAEntradaEmMinutos = vig.ToleranciaAposAEntradaEmMinutos,
+                ToleranciaAntesDaSaidaEmMinutos = vig.ToleranciaAntesDaSaidaEmMinutos,
+                ToleranciaAposASaidaEmMinutos = vig.ToleranciaAposASaidaEmMinutos,
+
                 Dias = dias,
                 RegrasHoraExtra = regrasTela,
 
@@ -523,6 +538,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             vig.ConsiderarFacultativoComoFeriadoHoraExtra = vm.ConsiderarFacultativoComoFeriadoHoraExtra;
             vig.ToleranciaDsrEmMinutos = vm.ToleranciaDsrEmMinutos;
+
+            vig.ToleranciaAntesDaEntradaEmMinutos = vm.ToleranciaAntesDaEntradaEmMinutos;
+            vig.ToleranciaAposAEntradaEmMinutos = vm.ToleranciaAposAEntradaEmMinutos;
+            vig.ToleranciaAntesDaSaidaEmMinutos = vm.ToleranciaAntesDaSaidaEmMinutos;
+            vig.ToleranciaAposASaidaEmMinutos = vm.ToleranciaAposASaidaEmMinutos;
 
             vig.BancoDeHorasSomenteHorasExtrasAprovadas = vm.BancoDeHorasSomenteHorasExtrasAprovadas;
             vig.BancoDeHorasPrioridadePercentuais = vm.BancoDeHorasPrioridadePercentuais;
@@ -601,6 +621,78 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                     _servicoFaixaHE.Adicionar(faixaNova);
                 }
+            }
+        }
+        [HttpGet]
+        public IActionResult BuscarHorariosSimilares(int id)
+        {
+            try
+            {
+                var orgId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+                var horarioOriginal = _servico.ObtenhaLista(h => h.Id == id).FirstOrDefault();
+
+                if (horarioOriginal == null)
+                    return Json(new { erro = true, mensagem = "Horário não encontrado." });
+
+                var vigenciaOriginal = _servicoVigencia.ObtenhaLista(v => v.HorarioDeTrabalhoId == id)
+                    .OrderByDescending(v => v.VigenciaInicio)
+                    .FirstOrDefault();
+
+                if (vigenciaOriginal == null)
+                    return Json(new { erro = true, mensagem = "Horário não possui vigência." });
+
+                var horariosAtivos = _servico.ObtenhaLista(h => h.OrganizacaoId == orgId && h.Ativo && h.Id != id).ToList();
+
+                var resultados = new List<object>();
+
+                int minutosTotaisOriginais = 0;
+                if (vigenciaOriginal.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+                {
+                    minutosTotaisOriginais = (vigenciaOriginal.CargaHorariaMensalFixa ?? 0) * 60;
+                }
+                else
+                {
+                    var diasOriginal = _servicoDia.ObtenhaLista(d => d.HorarioDeTrabalhoVigenciaId == vigenciaOriginal.Id).ToList();
+                    minutosTotaisOriginais = (int)diasOriginal.Sum(d => d.CalculeCargaHorariaTotal(false)?.TotalMinutes ?? 0);
+                }
+
+                foreach (var h in horariosAtivos)
+                {
+                    var vig = _servicoVigencia.ObtenhaLista(v => v.HorarioDeTrabalhoId == h.Id).OrderByDescending(v => v.VigenciaInicio).FirstOrDefault();
+                    if (vig == null || vig.TipoCargaHoraria != vigenciaOriginal.TipoCargaHoraria) continue;
+
+                    int minutosTotais = 0;
+                    if (vig.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
+                    {
+                        minutosTotais = (vig.CargaHorariaMensalFixa ?? 0) * 60;
+                    }
+                    else
+                    {
+                        var dias = _servicoDia.ObtenhaLista(d => d.HorarioDeTrabalhoVigenciaId == vig.Id).ToList();
+                        minutosTotais = (int)dias.Sum(d => d.CalculeCargaHorariaTotal(false)?.TotalMinutes ?? 0);
+                    }
+
+                    // Considera similar se a diferença for até 120 minutos (2 horas)
+                    int diferenca = Math.Abs(minutosTotais - minutosTotaisOriginais);
+                    if (diferenca <= 120)
+                    {
+                        var span = TimeSpan.FromMinutes(minutosTotais);
+                        resultados.Add(new
+                        {
+                            Id = h.Id,
+                            Descricao = h.Descricao,
+                            CargaHoraria = $"{(int)span.TotalHours:00}:{span.Minutes:00}",
+                            Diferenca = diferenca
+                        });
+                    }
+                }
+
+                var dados = resultados.OrderBy(r => (int)((dynamic)r).Diferenca).Take(10).ToList();
+                return Json(new { erro = false, dados });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { erro = true, mensagem = ex.Message });
             }
         }
     }

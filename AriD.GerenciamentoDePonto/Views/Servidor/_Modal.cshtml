@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @model VinculoDeTrabalho
 
 @{
@@ -47,7 +47,12 @@
                             </div>
 
                             <div class="col col-lg-6 col-md-12 col-sm-12">
-                                <label class="form-label obrigatorio" for="HorarioDeTrabalhoId">Horário de Trabalho</label>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label obrigatorio mb-0" for="HorarioDeTrabalhoId">Horário de Trabalho</label>
+                                    <button type="button" class="btn btn-sm btn-link p-0" onclick="buscarHorariosSimilares($('#HorarioDeTrabalhoId').val())" title="Buscar horários similares ao horário selecionado abaixo">
+                                        <i class="bx bx-search-alt"></i> Buscar similares
+                                    </button>
+                                </div>
                                 @Html.DropDownListFor(model => model.HorarioDeTrabalhoId, (SelectList)ViewBag.Horarios, string.Empty, new { @class = "select2" })
                             </div>
                         </div>

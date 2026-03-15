@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -654,6 +654,67 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 tipoDeVinculoDeTrabalhoId);
 
             var nomeArquivo = $"{HttpContext.NomenclaturaServidores()} por Lotação.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult Absenteismo()
+        {
+            try
+            {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ProcessarAbsenteismo(
+            DateTime? inicio,
+            DateTime? fim,
+            int? unidadeId)
+        {
+            if (!inicio.HasValue || !fim.HasValue)
+                throw new ApplicationException("O período inicial e final devem ser informados.");
+
+            if (fim < inicio)
+                throw new ApplicationException("A data final não pode ser menor que a inicial.");
+
+            var sessao = HttpContext.DadosDaSessao();
+            if (sessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeId = sessao.UnidadeOrganizacionais.First();
+
+            var relatorio = ObtenhaRelatorioAbsenteismo(
+                unidadeId,
+                inicio.Value,
+                fim.Value);
+
+            var nomeArquivo = $"Relatório de Absenteísmo.pdf";
 
             return Json(new
             {
@@ -2340,6 +2401,74 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             return dias == 1 ? "1 dia" : $"{dias} dias";
+        }
+
+        private byte[] ObtenhaRelatorioAbsenteismo(
+            int? unidadeId,
+            DateTime inicio,
+            DateTime fim)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+            var absenteismos = _servicoDeRelatorios.ObtenhaRelatorioDeAbsenteismo(
+                dadosDaSessao.OrganizacaoId,
+                unidadeId,
+                inicio,
+                fim,
+                dadosDaSessao.DepartamentoId);
+
+            if (absenteismos.Count == 0)
+                throw new ApplicationException("Nenhum registro de absenteísmo encontrado para o período informado.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document, 
+                dadosDaSessao.OrganizacaoId, 
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(9);
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(5)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(14f)
+                    .SetBold()
+                    .Add("Relatório de Absenteísmo e Atrasos")));
+
+            document.Add(
+                new Paragraph($"Período: {inicio.ToShortDateString()} a {fim.ToShortDateString()}")
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(10f));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[] { 30f, 15f, 20f, 10f, 15f, 10f })).UseAllAvailableWidth();
+
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Servidor")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Matrícula/Vínculo")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Departamento")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Data")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Classificação")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Horas (DB)")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY).SetTextAlignment(TextAlignment.CENTER));
+
+            foreach (var item in absenteismos)
+            {
+                table.AddCell(new Cell().Add(new Paragraph(item.NomeServidor)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Matricula)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Departamento ?? "-")));
+                table.AddCell(new Cell().Add(new Paragraph(item.Data.ToShortDateString())));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoAusencia)));
+                table.AddCell(new Cell().Add(new Paragraph(item.TotalAtrasoOuFalta)).SetTextAlignment(TextAlignment.CENTER));
+            }
+
+            document.Add(new Div().SetMarginTop(10).Add(table));
+
+            document.Close();
+            return stream.ToArray();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -1001,8 +1001,8 @@ namespace AriD.Servicos.Servicos
                         }
 
                         CalculeCargaHorariaDoDia(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento, vig.TipoCargaHoraria);
-                        CalculeHorasTrabalhadas(ref pontoDoDia);
-                        CalculeHorasTrabalhadasConsiderandoAbono(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento);
+                        CalculeHorasTrabalhadas(ref pontoDoDia, horarioDoDia, vig);
+                        CalculeHorasTrabalhadasConsiderandoAbono(ref pontoDoDia, eventoNoDia, horarioDoDia, afastamento, vig);
 
                         ApliqueToleranciaDsr(ref pontoDoDia, vig, horarioDoDia, eventoNoDia, afastamento);
 
@@ -1716,27 +1716,44 @@ namespace AriD.Servicos.Servicos
             pontoDoDia.CargaHoraria = horarioDia.CalculeCargaHorariaTotal(eventoNoDia != null);
         }
 
-        private void CalculeHorasTrabalhadas(ref PontoDoDia pontoDoDia)
-       {
-            TimeSpan? htPeriodo_1 = pontoDoDia.Entrada1.HasValue && pontoDoDia.Saida1.HasValue ?
-                pontoDoDia.Saida1.Value.Subtract(pontoDoDia.Entrada1.Value) :
-                null;
+        private TimeSpan? CalculeDuracaoPeriodo(
+            TimeSpan? entrada, TimeSpan? saida,
+            TimeSpan? entradaEsperada, TimeSpan? saidaEsperada,
+            HorarioDeTrabalhoVigencia vigencia)
+        {
+            if (!entrada.HasValue || !saida.HasValue) return null;
 
-            TimeSpan? htPeriodo_2 = pontoDoDia.Entrada2.HasValue && pontoDoDia.Saida2.HasValue ?
-                pontoDoDia.Saida2.Value.Subtract(pontoDoDia.Entrada2.Value) :
-                null;
+            var entResult = entrada.Value;
+            var saiResult = saida.Value;
 
-            TimeSpan? htPeriodo_3 = pontoDoDia.Entrada3.HasValue && pontoDoDia.Saida3.HasValue ?
-                pontoDoDia.Saida3.Value.Subtract(pontoDoDia.Entrada3.Value) :
-                null;
+            if (vigencia != null && entradaEsperada.HasValue && saidaEsperada.HasValue)
+            {
+                if (entResult < entradaEsperada.Value && entradaEsperada.Value.Subtract(entResult).TotalMinutes <= vigencia.ToleranciaAntesDaEntradaEmMinutos)
+                    entResult = entradaEsperada.Value;
+                
+                if (entResult > entradaEsperada.Value && entResult.Subtract(entradaEsperada.Value).TotalMinutes <= vigencia.ToleranciaAposAEntradaEmMinutos)
+                    entResult = entradaEsperada.Value;
 
-            TimeSpan? htPeriodo_4 = pontoDoDia.Entrada4.HasValue && pontoDoDia.Saida4.HasValue ?
-                pontoDoDia.Saida4.Value.Subtract(pontoDoDia.Entrada4.Value) :
-                null;
+                if (saiResult < saidaEsperada.Value && saidaEsperada.Value.Subtract(saiResult).TotalMinutes <= vigencia.ToleranciaAntesDaSaidaEmMinutos)
+                    saiResult = saidaEsperada.Value;
+                
+                if (saiResult > saidaEsperada.Value && saiResult.Subtract(saidaEsperada.Value).TotalMinutes <= vigencia.ToleranciaAposASaidaEmMinutos)
+                    saiResult = saidaEsperada.Value;
+            }
 
-            TimeSpan? htPeriodo_5 = pontoDoDia.Entrada5.HasValue && pontoDoDia.Saida5.HasValue ?
-                pontoDoDia.Saida5.Value.Subtract(pontoDoDia.Entrada5.Value) :
-                null;
+            return saiResult.Subtract(entResult);
+        }
+
+        private void CalculeHorasTrabalhadas(
+            ref PontoDoDia pontoDoDia,
+            HorarioDeTrabalhoDia horarioDia,
+            HorarioDeTrabalhoVigencia vigencia)
+        {
+            TimeSpan? htPeriodo_1 = CalculeDuracaoPeriodo(pontoDoDia.Entrada1, pontoDoDia.Saida1, horarioDia?.Entrada1, horarioDia?.Saida1, vigencia);
+            TimeSpan? htPeriodo_2 = CalculeDuracaoPeriodo(pontoDoDia.Entrada2, pontoDoDia.Saida2, horarioDia?.Entrada2, horarioDia?.Saida2, vigencia);
+            TimeSpan? htPeriodo_3 = CalculeDuracaoPeriodo(pontoDoDia.Entrada3, pontoDoDia.Saida3, horarioDia?.Entrada3, horarioDia?.Saida3, vigencia);
+            TimeSpan? htPeriodo_4 = CalculeDuracaoPeriodo(pontoDoDia.Entrada4, pontoDoDia.Saida4, horarioDia?.Entrada4, horarioDia?.Saida4, vigencia);
+            TimeSpan? htPeriodo_5 = CalculeDuracaoPeriodo(pontoDoDia.Entrada5, pontoDoDia.Saida5, horarioDia?.Entrada5, horarioDia?.Saida5, vigencia);
 
             TimeSpan? horasTrabalhadas = null;
 
@@ -1748,20 +1765,11 @@ namespace AriD.Servicos.Servicos
             {
                 horasTrabalhadas = TimeSpan.Zero;
 
-                if (htPeriodo_1.HasValue)
-                    horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_1.Value);
-
-                if (htPeriodo_2.HasValue)
-                    horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_2.Value);
-
-                if (htPeriodo_3.HasValue)
-                    horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_3.Value);
-
-                if (htPeriodo_4.HasValue)
-                    horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_4.Value);
-
-                if (htPeriodo_5.HasValue)
-                    horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_5.Value);
+                if (htPeriodo_1.HasValue) horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_1.Value);
+                if (htPeriodo_2.HasValue) horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_2.Value);
+                if (htPeriodo_3.HasValue) horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_3.Value);
+                if (htPeriodo_4.HasValue) horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_4.Value);
+                if (htPeriodo_5.HasValue) horasTrabalhadas = horasTrabalhadas.Value.Add(htPeriodo_5.Value);
             }
 
             pontoDoDia.HorasTrabalhadas = horasTrabalhadas;
@@ -1771,7 +1779,8 @@ namespace AriD.Servicos.Servicos
             ref PontoDoDia pontoDoDia,
             EventoAnual eventoNoDia,
             HorarioDeTrabalhoDia horarioDia,
-            Afastamento afastamento)
+            Afastamento afastamento,
+            HorarioDeTrabalhoVigencia vigencia)
         {
             TimeSpan? htPeriodo_1 = null;
             TimeSpan? htPeriodo_2 = null;
@@ -1781,7 +1790,7 @@ namespace AriD.Servicos.Servicos
 
             if (afastamento != null)
             {
-                if (afastamento.JustificativaDeAusencia.Abono)
+                if (afastamento.JustificativaDeAusencia.Abono && horarioDia != null)
                 {
                     htPeriodo_1 = horarioDia.CargaHorariaPeriodo(1);
                     htPeriodo_2 = horarioDia.CargaHorariaPeriodo(2);
@@ -1793,34 +1802,29 @@ namespace AriD.Servicos.Servicos
             else
             {
                 htPeriodo_1 = pontoDoDia.Entrada1.HasValue && pontoDoDia.Saida1.HasValue ?
-                pontoDoDia.Saida1.Value.Subtract(pontoDoDia.Entrada1.Value) :
-                pontoDoDia.JustificativaPeriodo1Id.HasValue && pontoDoDia.JustificativaPeriodo1.Abono ?
-                    horarioDia.CargaHorariaPeriodo(1) :
-                    null;
+                    CalculeDuracaoPeriodo(pontoDoDia.Entrada1, pontoDoDia.Saida1, horarioDia?.Entrada1, horarioDia?.Saida1, vigencia) :
+                    pontoDoDia.JustificativaPeriodo1Id.HasValue && pontoDoDia.JustificativaPeriodo1.Abono ?
+                        horarioDia?.CargaHorariaPeriodo(1) : null;
 
                 htPeriodo_2 = pontoDoDia.Entrada2.HasValue && pontoDoDia.Saida2.HasValue ?
-                    pontoDoDia.Saida2.Value.Subtract(pontoDoDia.Entrada2.Value) :
+                    CalculeDuracaoPeriodo(pontoDoDia.Entrada2, pontoDoDia.Saida2, horarioDia?.Entrada2, horarioDia?.Saida2, vigencia) :
                     pontoDoDia.JustificativaPeriodo2Id.HasValue && pontoDoDia.JustificativaPeriodo2.Abono ?
-                        horarioDia.CargaHorariaPeriodo(2) :
-                        null;
+                        horarioDia?.CargaHorariaPeriodo(2) : null;
 
                 htPeriodo_3 = pontoDoDia.Entrada3.HasValue && pontoDoDia.Saida3.HasValue ?
-                    pontoDoDia.Saida3.Value.Subtract(pontoDoDia.Entrada3.Value) :
+                    CalculeDuracaoPeriodo(pontoDoDia.Entrada3, pontoDoDia.Saida3, horarioDia?.Entrada3, horarioDia?.Saida3, vigencia) :
                     pontoDoDia.JustificativaPeriodo3Id.HasValue && pontoDoDia.JustificativaPeriodo3.Abono ?
-                        horarioDia.CargaHorariaPeriodo(3) :
-                        null;
+                        horarioDia?.CargaHorariaPeriodo(3) : null;
 
                 htPeriodo_4 = pontoDoDia.Entrada4.HasValue && pontoDoDia.Saida4.HasValue ?
-                    pontoDoDia.Saida4.Value.Subtract(pontoDoDia.Entrada4.Value) :
+                    CalculeDuracaoPeriodo(pontoDoDia.Entrada4, pontoDoDia.Saida4, horarioDia?.Entrada4, horarioDia?.Saida4, vigencia) :
                     pontoDoDia.JustificativaPeriodo4Id.HasValue && pontoDoDia.JustificativaPeriodo4.Abono ?
-                        horarioDia.CargaHorariaPeriodo(4) :
-                        null;
+                        horarioDia?.CargaHorariaPeriodo(4) : null;
 
                 htPeriodo_5 = pontoDoDia.Entrada5.HasValue && pontoDoDia.Saida5.HasValue ?
-                    pontoDoDia.Saida5.Value.Subtract(pontoDoDia.Entrada5.Value) :
+                    CalculeDuracaoPeriodo(pontoDoDia.Entrada5, pontoDoDia.Saida5, horarioDia?.Entrada5, horarioDia?.Saida5, vigencia) :
                     pontoDoDia.JustificativaPeriodo5Id.HasValue && pontoDoDia.JustificativaPeriodo5.Abono ?
-                        horarioDia.CargaHorariaPeriodo(5) :
-                        null;
+                        horarioDia?.CargaHorariaPeriodo(5) : null;
             }
 
             TimeSpan? horasTrabalhadass = null;
@@ -1829,20 +1833,11 @@ namespace AriD.Servicos.Servicos
             {
                 horasTrabalhadass = TimeSpan.Zero;
 
-                if (htPeriodo_1.HasValue)
-                    horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_1.Value);
-
-                if (htPeriodo_2.HasValue)
-                    horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_2.Value);
-
-                if (htPeriodo_3.HasValue)
-                    horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_3.Value);
-
-                if (htPeriodo_4.HasValue)
-                    horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_4.Value);
-
-                if (htPeriodo_5.HasValue)
-                    horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_5.Value);
+                if (htPeriodo_1.HasValue) horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_1.Value);
+                if (htPeriodo_2.HasValue) horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_2.Value);
+                if (htPeriodo_3.HasValue) horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_3.Value);
+                if (htPeriodo_4.HasValue) horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_4.Value);
+                if (htPeriodo_5.HasValue) horasTrabalhadass = horasTrabalhadass.Value.Add(htPeriodo_5.Value);
             }
 
             pontoDoDia.HorasTrabalhadasConsiderandoAbono = horasTrabalhadass;

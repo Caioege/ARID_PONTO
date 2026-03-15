@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
 @model HorarioDeTrabalhoCadastroVM
 
@@ -106,6 +106,30 @@
                     <label class="form-label" for="ToleranciaDsrEmMinutos">Tolerância DSR em Minutos</label>
                     @Html.TextBoxFor(model => model.ToleranciaDsrEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
                     <div class="form-text">Se o dia não tiver carga horária e o trabalho no dia for até esta tolerância, não gera saldo/HE.</div>
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label" for="ToleranciaAntesDaEntradaEmMinutos">Tolerância Antes da Entrada</label>
+                    @Html.TextBoxFor(model => model.ToleranciaAntesDaEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
+                    <div class="form-text">Minutos de tolerância antes do início da jornada</div>
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label" for="ToleranciaAposAEntradaEmMinutos">Tolerância Após a Entrada</label>
+                    @Html.TextBoxFor(model => model.ToleranciaAposAEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
+                    <div class="form-text">Minutos de tolerância ao se atrasar</div>
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label" for="ToleranciaAntesDaSaidaEmMinutos">Tolerância Antes da Saída</label>
+                    @Html.TextBoxFor(model => model.ToleranciaAntesDaSaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
+                    <div class="form-text">Minutos aceitáveis ao sair mais cedo</div>
+                </div>
+
+                <div class="col col-lg-3 col-md-6 col-sm-12">
+                    <label class="form-label" for="ToleranciaAposASaidaEmMinutos">Tolerância Após a Saída</label>
+                    @Html.TextBoxFor(model => model.ToleranciaAposASaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
+                    <div class="form-text">Minutos desconsiderados como Hora Extra após o final do expediente</div>
                 </div>
             </div>
 

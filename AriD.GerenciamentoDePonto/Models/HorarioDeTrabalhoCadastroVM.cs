@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 
 namespace AriD.GerenciamentoDePonto.Models
@@ -26,6 +26,11 @@ namespace AriD.GerenciamentoDePonto.Models
 
         public bool ConsiderarFacultativoComoFeriadoHoraExtra { get; set; }
         public int ToleranciaDsrEmMinutos { get; set; }
+
+        public int ToleranciaAntesDaEntradaEmMinutos { get; set; }
+        public int ToleranciaAposAEntradaEmMinutos { get; set; }
+        public int ToleranciaAntesDaSaidaEmMinutos { get; set; }
+        public int ToleranciaAposASaidaEmMinutos { get; set; }
 
         public bool BancoDeHorasSomenteHorasExtrasAprovadas { get; set; }
         public string BancoDeHorasPrioridadePercentuais { get; set; }

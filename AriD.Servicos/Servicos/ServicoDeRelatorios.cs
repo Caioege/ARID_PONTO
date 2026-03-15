@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
@@ -536,6 +536,61 @@ namespace AriD.Servicos.Servicos
                         @ENTRADA = entrada,
                         @ATIVA = eSituacaoVinculoDeTrabalho.Normal
                     });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<RelatorioAbsenteismoDTO> ObtenhaRelatorioDeAbsenteismo(
+            int organizacaoId,
+            int? unidadeId,
+            DateTime inicio,
+            DateTime fim,
+            int? departamentoId)
+        {
+            try
+            {
+                var query = @"select 
+                                v.Id as VinculoDeTrabalhoId,
+                                v.Matricula,
+                                pe.Nome as NomeServidor,
+                                dep.Descricao as Departamento,
+                                f.Descricao as Funcao,
+                                p.Data,
+                                p.HorasNegativas,
+                                IF(p.HorasTrabalhadasConsiderandoAbono is null or p.HorasTrabalhadasConsiderandoAbono = '00:00:00', 'Falta Integral', 'Falta Parcial/Atraso') as TipoAusencia,
+                                TIME_FORMAT(p.HorasNegativas, '%H:%i') as TotalAtrasoOuFalta
+                            from pontododia p
+                            inner join vinculodetrabalho v on v.Id = p.VinculoDeTrabalhoId
+                            inner join servidor s on s.Id = v.ServidorId
+                            inner join pessoa pe on pe.Id = s.PessoaId
+                            left join departamento dep on dep.Id = v.DepartamentoId
+                            left join funcao f on f.Id = v.FuncaoId
+                            where p.OrganizacaoId = @ORG
+                              and p.Data between @INICIO and @FIM
+                              and p.HorasNegativas is not null and p.HorasNegativas > '00:00:00'";
+
+                if (unidadeId.HasValue)
+                {
+                    query += " and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = v.Id and l.UnidadeOrganizacionalId = @UNIDADEID)";
+                }
+
+                if (departamentoId.HasValue)
+                {
+                    query += " and v.DepartamentoId = @DEPARTAMENTOID";
+                }
+
+                query += " order by pe.Nome, p.Data";
+
+                return _repositorio.ConsultaDapper<RelatorioAbsenteismoDTO>(query, new
+                {
+                    @ORG = organizacaoId,
+                    @INICIO = inicio.Date,
+                    @FIM = fim.Date,
+                    @UNIDADEID = unidadeId,
+                    @DEPARTAMENTOID = departamentoId
+                });
             }
             catch (Exception)
             {

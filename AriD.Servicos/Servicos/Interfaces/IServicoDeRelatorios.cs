@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 
 namespace AriD.Servicos.Servicos.Interfaces
@@ -63,6 +63,13 @@ namespace AriD.Servicos.Servicos.Interfaces
             DateTime? entrada,
             int? horarioDeTrabalhoId,
             int? tipoDeVinculoDeTrabalhoId,
+            int? departamentoId);
+
+        List<RelatorioAbsenteismoDTO> ObtenhaRelatorioDeAbsenteismo(
+            int organizacaoId,
+            int? unidadeId,
+            DateTime inicio,
+            DateTime fim,
             int? departamentoId);
     }
 }
