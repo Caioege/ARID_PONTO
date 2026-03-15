@@ -597,5 +597,51 @@ namespace AriD.Servicos.Servicos
                 throw;
             }
         }
+        
+        public List<RelatorioAuditoriaDeAusenciasDTO> ObtenhaRelatorioDeAuditoriaDeAusencias(
+            int organizacaoId,
+            DateTime? inicioAfastamento,
+            DateTime? fimAfastamento,
+            int? unidadeLotacaoId)
+        {
+            try
+            {
+                var query = $@"
+                    SELECT 
+                        pes.Nome as ServidorNome,
+                        jus.Descricao as Justificativa,
+                        af.Inicio as InicioAfastamento,
+                        af.Fim as FimAfastamento,
+                        log.UsuarioNome as OperadorNome,
+                        log.DataHora as DataHoraAcao,
+                        log.Acao as Acao,
+                        log.Descricao as Descricao
+                    FROM LogAuditoriaPonto log
+                    INNER JOIN VinculoDeTrabalho v ON v.Id = log.VinculoDeTrabalhoId
+                    INNER JOIN Servidor s ON s.Id = v.ServidorId
+                    INNER JOIN Pessoa pes ON pes.Id = s.PessoaId
+                    LEFT JOIN PontoDoDia pd ON pd.Id = log.PontoDoDiaId
+                    LEFT JOIN Afastamento af ON af.Id = pd.AfastamentoId
+                    LEFT JOIN JustificativaDeAusencia jus ON jus.Id = af.JustificativaDeAusenciaId
+                    WHERE log.OrganizacaoId = @ORG
+                    AND (log.Acao LIKE '%Afastamento%' OR log.Acao LIKE '%Ausência%')
+                    {(inicioAfastamento.HasValue ? "AND af.Inicio >= @INICIO" : "")}
+                    {(fimAfastamento.HasValue ? "AND (af.Fim IS NULL OR af.Fim <= @FIM)" : "")}
+                    {(unidadeLotacaoId.HasValue ? "AND EXISTS (SELECT 1 FROM LotacaoUnidadeOrganizacional l WHERE l.VinculoDeTrabalhoId = v.Id AND l.UnidadeOrganizacionalId = @UNID)" : "")}
+                    ORDER BY log.DataHora DESC";
+
+                return _repositorio.ConsultaDapper<RelatorioAuditoriaDeAusenciasDTO>(query, new 
+                { 
+                    @ORG = organizacaoId, 
+                    @INICIO = inicioAfastamento, 
+                    @FIM = fimAfastamento, 
+                    @UNID = unidadeLotacaoId 
+                });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

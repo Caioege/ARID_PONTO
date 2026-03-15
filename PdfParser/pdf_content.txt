@@ -1,0 +1,1686 @@
+﻿=== PÁGINA 1 ===
+ 
+ 
+ 
+ 
+ 
+ 
+ANEXO 
+TERMO DEREFERÊNCIA 
+SOLUÇÃO INTEGRADA DE GESTÃO DE PONTO ELETRÔNICO 
+ 
+ 
+DO OBJETO 
+O presente Termo de Referência tem por objeto a contratação de empresa especializada para prestação de serviços 
+de locação de parque tecnológico, licenciamento de softwares e execução de infraestrutura, de forma integrada, 
+compreendendo: 
+• a) Solução Unificada de Videomonitoramento com Inteligência Artificial: Fornecimento de gravadores e 
+câmeras com analíticos de IA embarcados, constituindo plataforma nativa e indivisível (sendo vedada a oferta 
+de licenças de software de gerenciamento de vídeo apartadas do hardware) 
+• Locação de antenas para conexão via satélite de baixa órbita (LEO) para viabilizar a operação dos sistemas  
+• Gestão de frota, gerenciamento e roteirização da frota em áreas remotas ou de difícil acesso; com terminal de 
+controle. 
+• Controle de Acesso com locação de catracas e terminais com reconhecimento facial, incluindo licenciamento de 
+software de ponto, gestão de acesso; 
+• Infraestrutura de Rede: Execução de serviços de instalação de rede lógica e elétrica dedicada para os 
+equipamentos. 
+A contratação engloba a instalação, configuração, treinamento operacional, suporte técnico e manutenção integral 
+(preventiva e corretiva) com substituição de equipamentos, visando atender às demandas das Secretarias Municipais de 
+Saúde e Educação. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Comentado [ZC1]: RETIRAR ESSA MODULO 
+ 
+Comentado [ZC2]: Suporte das Antenas 
+ 
+Comentado [ZC3]: Nome desse sistema de controle 
+de rota. 
+Comentado [ZC4]: COLOCAR UM DIFERENCIAL EM 
+RELAÇÃO AOS OUTROS SERVIÇOS 
+
+=== PÁGINA 2 ===
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DA JUSTIFICATIVA 
+A presente justificativa tem como objetivo embasar a contratação de empresa especializada para o fornecimento de 
+solução tecnológica completa destinada às Secretarias de Saúde e de Educação da Prefeitura Municipal de Padre 
+Bernardo, em estrito cumprimento aos princípios constitucionais da administração pública, notadamente o da Eficiência 
+e da Economicidade. 
+A demanda fundamenta-se nos seguintes pilares estratégicos: 
+• Da Necessidade de Conectividade em Áreas Remotas para Gestão de Frotas O município possui vasta extensão 
+territorial, com diversas unidades de saúde e escolas situadas em zonas rurais e distritos onde a cobertura de 
+telefonia móvel (4G/5G) e fibra óptica é precária ou inexistente. A locação de antenas de conexão via satélite de 
+baixa órbita (Item 08) é a única solução técnica viável para garantir a comunicação de dados nessas localidades. 
+Esta conectividade é requisito indispensável para a operação eficiente do Sistema de Roteirização e Gestão de 
+Frotas (Item 09). Sem a internet via satélite nas bases de apoio, torna-se impossível o monitoramento em tempo 
+real do transporte escolar e das ambulâncias, comprometendo o controle de combustível, a segurança dos 
+passageiros e a agilidade nos atendimentos de urgência. 
+• Da Segurança Eletrônica com Inteligência Artificial Unificada Diante da necessidade de proteger o patrimônio 
+público (equipamentos médicos, computadores, medicamentos) e, principalmente, a integridade física de alunos, 
+pacientes e servidores, faz-se necessária a implantação de um sistema de videomonitoramento avançado. A 
+exigência de uma solução unificada (hardware e software nativos) justifica-se para garantir a aplicação efetiva 
+de analíticos de Inteligência Artificial (reconhecimento facial e invasão de perímetro) sem falhas de integração. 
+Soluções fragmentadas (câmeras de uma marca e software de outra) historicamente geram instabilidade, latência 
+no processamento de imagens e "conflito de responsabilidade" entre fornecedores, o que é inadmissível para a 
+segurança crítica de escolas e hospitais. 
+• Do Controle de Acesso e Assiduidade A implantação de catracas e terminais de reconhecimento facial, 
+integrados a um software de gestão de ponto em nuvem, visa modernizar o controle de frequência dos 
+servidores. Isso garante o cumprimento das jornadas de trabalho, elimina fraudes no registro de ponto e, no caso 
+da Educação e Saúde, aumenta a segurança ao controlar rigorosamente quem entra e sai das unidades escolares 
+e áreas restritas de saúde (como farmácias e almoxarifados). 
+• Da Economicidade e Modalidade de Locação A opção pela locação dos equipamentos ("As a Service"), em 
+detrimento da aquisição, mostra-se mais vantajosa para a Administração Pública, pois elimina os custos com 
+depreciação tecnológica e transfere para a CONTRATADA a responsabilidade pela manutenção corretiva, 
+substituição imediata de peças e atualização constante de softwares, garantindo que o parque tecnológico do 
+município esteja sempre operacional sem custos adicionais imprevistos 
+ 
+CONTEXTUALIZAÇÃO DA NECESSIDADE ADMINISTRATIVA 
+ 
+A gestão pública municipal, notadamente nas pastas de Saúde e Educação, enfrenta desafios complexos que não podem 
+mais ser solucionados por processos manuais ou tecnologias obsoletas. O cenário atual apresenta quatro gargalos 
+críticos que fundamentam esta contratação: 
+Da Precariedade no Controle de Frequência: O controle de assiduidade dos servidores realizado de forma manual ou por 
+sistemas desconectados compromete a fidedignidade dos dados, gerando pagamentos indevidos, dificuldade na apuração 
+de horas extras e uma carga de trabalho administrativo excessiva para a conferência de folhas de ponto, ferindo o 
+princípio da Eficiência. 
+Comentado [ZC5]: RETIRAR E VINCULAR COM 
+TERMINAL  
+
+=== PÁGINA 3 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Da Vulnerabilidade Patrimonial e Pessoal: A ausência de um sistema de videomonitoramento inteligente (com IA) 
+expõe as unidades escolares e postos de saúde a atos de vandalismo, furtos e invasões. A segurança reativa (sem alertas 
+automáticos) mostrou-se ineficaz para proteger o patrimônio público e a integridade física de alunos e pacientes. 
+Do Isolamento Digital (Zonas Rurais): Diversas unidades de atendimento e escolas estão situadas em "sombras de 
+conectividade", onde não há fibra óptica ou sinal 4G. Isso obriga o uso de processos em papel, impede o lançamento de 
+dados em tempo real nos sistemas governamentais e isola as equipes em casos de emergência. 
+Da Falta de Controle Logístico: A inexistência de rastreamento e telemetria na frota municipal (transporte escolar e 
+ambulâncias) impossibilita a gestão de rotas e o controle de combustível, resultando em desperdício de recursos 
+públicos e uso indevido dos veículos oficiais. 
+Diante do exposto, a locação de um parque tecnológico integrado torna-se imperativa para assegurar a transparência, a 
+economicidade e a modernização administrativa exigida pelos órgãos de controle. 
+ 
+FUNDAMENTAÇÃO LEGAL E TÉCNICA 
+ 
+A presente contratação encontra amparo na legislação vigente, fundamentando-se nos princípios da legalidade, 
+eficiência e economicidade, conforme detalhado a seguir: 
+Base Constitucional e Eficiência Administrativa 
+• Art. 37, caput, da Constituição Federal: Que impõe à Administração Pública o dever de Eficiência. A locação de 
+tecnologias de monitoramento e conectividade visa justamente substituir processos manuais e morosos por 
+gestão em tempo real. 
+Do Controle Eletrônico de Frequência (Ponto) 
+• Recomendação e Decreto nº 8.485 do Estado de Goiás: Em consonância com o Processo nº 201500013002998, 
+que orienta expressamente a implantação de sistema eletrônico de controle de frequência para maior segurança 
+jurídica e fiscalização de jornadas. 
+• Portaria MTP nº 671/2021: Atual regulamentação que disciplina o controle de ponto eletrônico (REP-A e REP-
+P), substituindo a antiga Portaria 1510/2009, garantindo que o software e os equipamentos contratados estejam 
+aderentes às normas mais modernas do Ministério do Trabalho e Previdência. 
+• Resolução 004/2017 e Portaria 15/2023: Normativas que regulam a jornada de trabalho dos servidores e 
+respaldam a necessidade de comprovação auditável das atividades. 
+Do Videomonitoramento e Proteção de Dados (LGPD) 
+• Lei nº 13.709/2018.  A contratação de solução de videomonitoramento e controle de acesso 
+com reconhecimento facial observa as diretrizes de segurança da informação, sendo ferramenta legítima para a 
+proteção da vida e da incolumidade física dos titulares (alunos, pacientes e servidores), conforme Art. 7º e Art. 
+11 da referida lei. 
+Da Conectividade e Gestão de Ativos (Satélite e Frota) 
+• Lei nº 14.133/2021. Que incentiva a inovação e a busca pela melhor solução técnica. A escolha 
+pela conectividade via satélite fundamenta-se na necessidade técnica de superar barreiras geográficas (zonas 
+rurais) para garantir a continuidade do serviço público essencial (Saúde e Educação) e o monitoramento 
+eficiente do patrimônio móvel. 
+ 
+ 
+Comentado [ZC6]: ALTERAR NILTON 
+
+=== PÁGINA 4 ===
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DAS CONDIÇÕES GERAIS E DO JULGAMENTO 
+Do Critério de Julgamento, o certame será regido pela Lei Federal nº 14.133/2021, adotando-se o critério de julgamento 
+pelo MENOR PREÇO GLOBAL por lote único. A proposta vencedora será aquela que, atendendo a todas as 
+especificações técnicas deste Termo, apresentar o menor somatório de valores para a execução integral do objeto. 
+Da Justificativa para a Vedação ao Parcelamento (Lote Único) Embora a regra geral das licitações seja o parcelamento 
+do objeto, neste caso específico, a adjudicação global justifica-se tecnicamente pelos seguintes motivos: 
+A) Interdependência Tecnológica Crítica: A eficácia do sistema de Gestão de Frotas (Item 09) em áreas rurais 
+depende intrinsecamente da infraestrutura de Conectividade via Satélite (Item 08). A fragmentação destes 
+serviços entre fornecedores distintos criaria um "vácuo de responsabilidade", onde falhas de comunicação 
+poderiam ser atribuídas à operadora de internet ou à desenvolvedora do software, prejudicando a continuidade 
+do serviço público. 
+B) Integridade da Solução de IA: Conforme detalhado nas especificações técnicas, o sistema de 
+videomonitoramento exige integração nativa (proprietária) entre hardware e software para garantir o 
+funcionamento dos analíticos de Inteligência Artificial sem latência. 
+C) Unicidade da Gestão Contratual: A administração simultânea de múltiplos contratos para manter um único 
+ecossistema tecnológico (segurança, acesso e conectividade) geraria custos administrativos desproporcionais e 
+complexidade fiscalizatória, ferindo o princípio da eficiência. 
+Da Qualificação e Conformidade. A licitante deverá comprovar capacidade técnica para o fornecimento simultâneo de 
+todas as frentes (conectividade, segurança e software), sendo vedada a subcontratação total do objeto. 
+A CONTRATADA deverá atender rigorosamente a todos os requisitos definidos neste Termo de Referência, sob pena 
+de desclassificação ou sanções administrativas 
+ 
+DO JULGAMENTO E CRITÉRIOS DE ACEITAÇÃO 
+Critério de Julgamento. O presente certame será regido pela Lei Federal nº 14.133/2021, adotando-se o critério de 
+julgamento pelo MENOR PREÇO GLOBAL por lote único. Sagrar-se-á vencedora a licitante que apresentar o menor 
+valor total para o fornecimento integrado de todos os itens. 
+Justificativa Técnica para o Agrupamento (Lote Único) A opção pela adjudicação global, em detrimento do 
+parcelamento do objeto, fundamenta-se na indivisibilidade técnica e lógica da solução, conforme os riscos abaixo: 
+• A) Interdependência de Conectividade e Aplicação: O sistema de Gestão de Frotas (Item 09) depende, para 
+sua operação em zonas rurais, da estabilidade da conexão via Satélite (Item 08). A contratação de fornecedores 
+distintos geraria um vácuo de responsabilidade técnica em caso de falhas de transmissão, prejudicando o 
+monitoramento de ambulâncias e transporte escolar. 
+• B) Integridade da Segurança Eletrônica: A solução de Videomonitoramento com IA (Item 06) exige 
+compatibilidade nativa entre hardware e software. A fragmentação dos itens inviabilizaria a aplicação de 
+garantias unificadas e aumentaria o risco de incompatibilidade de protocolos (firmwares). 
+• C) Eficiência Administrativa: A centralização da gestão contratual em um único fornecedor reduz custos de 
+fiscalização e agiliza o tempo de resposta (SLA) para manutenção corretiva. 
+Comentado [ZC7]: ALTERAR NILTON 
+
+=== PÁGINA 5 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Da Prova de Conceito (POC) – Amostra Técnica Obrigatória Visando assegurar a qualidade dos equipamentos e 
+impedir a contratação de soluções incompatíveis, a licitante classificada provisoriamente em primeiro lugar será 
+convocada a realizar, no prazo de 02 (doias), a Prova de Conceito (POC), demonstrando em ambiente real ou 
+simulado: 
+1. Integração Nativa de IA: O funcionamento dos analíticos de inteligência artificial (reconhecimento facial) 
+operando diretamente no hardware do DVR, sem uso de softwares ou servidores externos (vedada a 
+"montagem" de soluções paliativas). 
+2. Latência Satelital: A conexão ativa da antena via satélite (Starlink ou similar de baixa órbita) com latência 
+adequada para suportar o envio de dados telemétricos. 
+3. Sincronização de Ponto: O registro biométrico facial no terminal e sua imediata disponibilização na plataforma 
+web de gestão. 
+A falha na demonstração de qualquer funcionalidade exigida na POC acarretará a desclassificação imediata da 
+proposta, convocando-se a próxima colocada, independentemente das sanções cabíveis. 
+DAS ESPECIFICAÇÕES TÉCNICAS 
+ 
+SISTEMA DE GESTÃO DE PONTO ELETRÔNICO  
+• Aplicação deverá rodar integralmente em nuvem pública e privada da empresa, com acesso via web browser 
+onde a CONTRATADA ficará responsável pelo monitoramento do backup e hospedagem do banco de dados, 
+em data center próprio ou terceirizado; 
+• O software de gestão de ponto eletrônico deve ser 100% em nuvem; 
+• O proponente deve conter um certificado de licença como detentor, revendedor ou sublicenciado de software; 
+• Usar banco de dados Open Source, funcionar em servidor que utilize o sistema operacional Windows ou 
+GNU/Linux; 
+• Deve manter integridade do banco de dados em casos de queda de energia, falhas de software ou hardware; 
+• Permitir de forma simultânea um número ilimitado de operadores conectados no sistema; 
+• Oferecer aplicativo com possibilidade de instalação em smartphones com sistemas operacionais ANDROID e 
+iOS em número ilimitado de dispositivos; 
+• Cadastros ilimitados: 
+o Operadores (gerenciamento do sistema); 
+o Secretarias e setores; 
+o Servidores Públicos; 
+o Grupos de operadores; 
+o Lotações e Locais de trabalho; 
+o Cargos com seus respectivos números de CBO; 
+o Médicos do município com respectivo número de CRM e especialidade médica; 
+• Cadastro de servidores públicos com: 
+o Possibilidade de separação de contrato; 
+Comentado [ZC8]: CAIO ANALISAR:  
+Comentado [ZC9R8]: ESPECIFICAR FOLHA DE 
+PAGAMENTO DE ACORDO COM PREFEITURA 
+Comentado [CO10]: ATENDE 
+Comentado [CO11]: ATENDE 
+Comentado [CO12]: Nilton verificar.  
+Não sei se o certificado se refere ao registro br 
+(arid.com.br), se for, ATENDE. 
+Comentado [CO13]: ATENDE 
+Utiliza MySql (OpenSource, mantido pela Oracle sobre 
+a licença GLP).Hospedagem na nuvem utiliza 
+máquinas em Windows ou Linux. 
+Comentado [CO14]: ATENDE 
+Garantido pela própria hospedagem. Eles que 
+gerenciam as máquinas. 
+Comentado [CO15]: ATENDE 
+Não há limitação de usuários no sistema. 
+Comentado [CO16]: ATENDE 
+Existe aplicativo de ARID PONTO nas lojas da Apple e 
+da Google.Também haverá o aplicativo para os 
+motoristas de frotas. 
+Comentado [CO17]: ATENDE 
+Não há limitação quanto a quantidade de cadastros no 
+sistema 
+Comentado [CO18]: ATENDE 
+No sistema: usuários 
+Comentado [CO19]: ATENDE 
+No sistema: unidades e departamentos ou 
+cargos/funções 
+Comentado [CO20]: ATENDE 
+Comentado [CO21]: ATENDE 
+No sistema: grupo de permissões 
+Comentado [CO22]: ATENDE 
+Comentado [CO23]: ATENDE 
+Feito no orçamento ⅓ 
+No sistema: cadastro de cargo/função 
+Comentado [CO24]: ATENDE 
+Feito no orçamento ⅓ 
+No sistema: cadastro de servidor 
+Comentado [CO25]: ATENDE 
+
+=== PÁGINA 6 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Disponibilidade para incluir o local de trabalho do servidor independente da lotação oficial, podendo 
+estar lotado em um local e exercendo suas funções em outro; 
+o Opção de informar quais servidores terão liberação para registrar o ponto, justificar registros e lançar 
+ausências por meio do aplicativo para smartphone; 
+o Possibilidade de informar o turno de trabalho em casos em que existem mais de um contrato, sendo 
+possível visualização em pesquisas de servidores no sistema; 
+o Opção para informar quais servidores terão permissão para lançar ausências e justificar registros através 
+do portal servidor, o qual deve ser responsivo para uso em computadores e celulares; 
+o Disponibilidade de informar quais servidores cujo saldos podem ser exportados para o sistema da folha 
+de pagamento da prefeitura; 
+o Opção de incluir a categorização do servidor público quanto ao seu contrato. (efetivo, estatutário, 
+comissionado, celetista, estagiário, etc.); 
+o Opção para cadastro de senha (para acessarem o portal do servidor e o aplicativo para smartphone); 
+o Registrar uma observação no cadastro do servidor e possibilidade de imprimir relatório listando as 
+observações cadastradas; 
+o Disponibilizar demonstrativo anual de ausências, incluindo calendário e legenda que informe as 
+ausências descriminadas dia a dia dos 12 meses do ano; 
+o Opção de imprimir o espelho ponto em um modelo que conste os registros de controle de ronda; 
+o Possibilidade de cadastro de lista personalizada para filtros em relatórios e exportações, onde ao criar a 
+lista a mesma fique salva para futuros usos, e que permita liberar a lista por operador; 
+• O sistema deverá possibilitar ainda: 
+o Realizar ajustes nos cadastros dos servidores por demanda, por exemplo ativar o registro no aplicativo 
+para todos os servidores; 
+o Cadastrar motivos de demissão, e ao realizar a demissão de um funcionário realizar o lançamento do 
+motivo e uma observação; 
+o Fazer ajustes nos cadastros dos operadores por demanda, por exemplo bloquear a inclusão de registro 
+manual para todos os operadores; 
+o Gerar relatório dos funcionários demitidos, listando a data da demissão, tipo de demissão e observação; 
+o Cadastro e visualização de recados entre os operadores do sistema; 
+o Cadastro de equipamentos, com possibilidade para envio automático de e-mails em casos de problemas 
+com a conectividade dele; 
+o Cadastro de atestados e declarações, com potencial de informar o médico responsável; 
+o Cadastro de ausências, com possibilidade de informar o tipo da ausência: sobreaviso, abono, ponto 
+facultativo, folga e bloqueio; 
+o Cadastro de ausências, com a opção para limitar o quantitativo de lançamentos por servidor em 
+determinado período; 
+o Cadastro de horários, com a possibilidade de definir tolerância para o descanso semanal remunerado 
+(DSR), para o não comprometimento do DSR; 
+Comentado [CO26]: ATENDE 
+Comentado [CO27]: ATENDE 
+No sistema: cadastro de servidor 
+Comentado [CO28]: Verificar se atende. 
+Hoje no cadastro do sistema você pode criar o horário 
+de trabalho e então definir para o contrato de trabalho 
+do servidor.É possivel especificar o turno na descrição 
+(está disponível em consultas do sistema e relatórios). 
+ 
+Na minha visão, ATENDE. 
+Comentado [CO29]: ATENDE 
+No sistema: Utiliza as mesmas permissões definidas 
+para o aplicativo. 
+Comentado [CO30]: ATENDE 
+Feito no orçamento: 1/3 
+Comentado [CO31]: ATENDE 
+No sistema: cadastro de tipo de vínculo de trabalho 
+Comentado [CO32]: ATENDE 
+No sistema: ao habilitar o acesso ao aplicativo/portal o 
+servidor pode acessar com o cadastro padrão (CPF e 
+número de telefone) e depois alterar a senha para 
+alguma outra que ele desejar. 
+Comentado [CO33]: ATENDE 
+Feito no orçamento: 1/3 
+Comentado [CO34]: NÃO ATENDE 
+Comentado [CO35]: NÃO ATENDE 
+Não há controle de ronda e nem definição de como 
+isso irá funcionar. 
+Comentado [CO36]: NÃO ATENDE 
+Comentado [CO37R36]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO38]: ATENDE 
+Feito no orçamento 1/3 
+No sistema: na listagem de servidores existe uma 
+funcionalidade de "Ações em Lote" 
+Comentado [CO39]: ATENDE 
+Feito no orçamento ⅓ 
+Comentado [CO40]: ATENDE 
+No sistema: grupo de permissão, permissões de 
+...
+Comentado [CO41]: ATENDE 
+Feito no orçamento 1/3 
+Comentado [CO42]: ATENDE 
+Feito no orçamento: 1/3 
+Comentado [CO43]: ATENDE 
+Feito no orçamento: 1/3 
+...
+Comentado [CO44]: ATENDE 
+O servidor pode registrar seu ATESTADO médico e 
+...
+Comentado [CO45]: ATENDE 
+No sistema: cadastro de justificativas de ausência. 
+Comentado [CO46]: ATENDE 
+No sistema: cadastro de justificativas de ausência 
+...
+Comentado [CO47]: ATENDE 
+Feito no orçamento: 2/3 
+
+=== PÁGINA 7 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Cadastro de horários, jornada diária com opção de adicionar um número ilimitado de turnos; 
+o Cadastro de horários, disponibilidade de turnos intercalados como 12x24, 12x36, 24x72, etc.; 
+o Cadastro de horários, com opção de habilitar intervalo automático; 
+o Cadastro de horários, por data de vigência. Proporcionando separação dos horários por data de vigência, 
+podendo o horário sofrer alterações a partir de uma nova data de vigência; 
+o Cadastro de cálculo de horas, com possibilidade de parametrização de separação das horas para 
+qualquer tipo de hora cadastrada (exemplo: opção para informar a separação das horas no mínimo de 05 
+níveis, 02 primeiras horas extras do dia, jornada ou período, 50%, restante 70%); 
+o Definir qual tipo de horas deve ser gerado ao lançar uma ausência, podendo gerar por exemplo toda a 
+jornada como horas extras 100%, mesmo não sendo um feriado; 
+o Cadastro de regras de cálculo, com opção de definir o tipo de cálculo: diário, semanal, período, horista, 
+mensal; 
+o Cadastro de regras de cálculo por Secretaria e seu respectivo CNPJ; 
+o Cadastro de tolerância, com a possibilidade de informar tolerância antes da entrada, após a entrada, 
+antes da saída e após a saída, aplicável para todas as jornadas do turno; 
+o Cadastro de tipo de horas, com a opção de listar no espelho ponto (possibilidade de parametrizar se a 
+hora será exibida no espelho do ponto ou não); 
+o Cadastro de tipo de horas, com possibilidade de informar o código da folha de pagamento; 
+o Flexibilidade de horários, disponibilizando jornada de trabalho em horários divergentes; 
+o Configuração de diversos tipos de horários possibilitando compensação dentro do período; 
+o Busca automática de horários alternativos, pré configurados, entre os horários disponíveis para o 
+servidor; 
+o Separação das horas por dia, incluindo sábado, domingo e feriados para qualquer tipo de hora 
+cadastrada (opção para diferenciar as horas do: domingo, feriado, segunda a sexta e sábado); 
+o Cadastro de uma regra mensal digitada por servidor, com potencial para lançar jornadas ilimitadas em 
+uma única tela; 
+o Que os gestores monitorem os registros de seus subordinados, através de aplicativo ou portal responsivo 
+para uso em smartphone, com o intuito de identificar possíveis inconsistências de marcações; 
+o Cadastrar um alerta por servidor para ser visualizado durante a manutenção dos registros; 
+o Registros ilimitados em um mesmo dia sem que sejam consideradas horas extras. (exemplo: o servidor 
+público poderá registrar o ponto, entrar e sair no local de trabalho mais de 12 vezes ao dia e o sistema 
+deverá entender que as batidas serão da jornada do dia. Se a soma das batidas (horas trabalhadas) 
+fecharem com a jornada a ser cumprida no dia, não poderá em hipótese alguma ser considerada ou 
+vinculadas com horas extras; 
+o Configuração de geração de hora extra para turnos intercalados quando for feriado, sábado, domingo ou 
+ambos; 
+o Integração via API, seja ela REST, SOAP ou outro padrão disponibilizado pelo sistema de folha de 
+pagamento do município, para sincronização, captura e despacho de dados, seguindo os padrões do 
+sistema da folha de pagamento; 
+Comentado [CO48]: Verificar se atende. 
+Como explicado anteriormente, não há "turno" no 
+sistema, mas também não há limitação quanto ao 
+horário de trabalho, então o operador pode cadastrar 
+múltiplos horários com as descrições que seriam os 
+"turnos". 
+ 
+Na minha visão, ATENDE. 
+Comentado [CO49]: ATENDE 
+No sistema: escala 
+Comentado [CO50]: ATENDE 
+No sistema: cadastro de horário de trabalho (intervalo 
+automático) 
+Comentado [CO51]: NÃO ATENDE 
+Comentado [CO52R51]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO53]: ATENDE 
+Feito no orçamento: 2/3 
+Comentado [CO54]: NÃO ATENDE 
+Comentado [CO55]: ATENDE 
+No sistema: cadastro de horário de trabalho (tipo da 
+carga horária) 
+Comentado [CO56]: ATENDE 
+No sistema: cadastro de unidades organizacionais 
+Comentado [CO57]: NÃO ATENDE 
+Só existe uma tolerância única para o dia. 
+Comentado [CO58R57]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO59]: ATENDE 
+No sistema: cadastro de horário de trabalho 
+(configurações de exibição) 
+Comentado [CO60]: NÃO ATENDE 
+Nilton, preciso do modelo da folha de pagamento. 
+Comentado [CO61R60]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO62]: ATENDE 
+No sistema: escala mensal 
+Comentado [CO63]: NÃO ATENDE 
+Nilton, especificar melhor o que essa funcionalidade 
+quer dizer. 
+Comentado [CO64]: NÃO ATENDE 
+Comentado [CO65R64]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO66]: ATENDE 
+...
+Comentado [CO67]: NÃO ATENDE 
+...
+Comentado [CO68]: ATENDE 
+...
+Comentado [CO69]: ATENDE 
+...
+Comentado [CO70]: NÃO ATENDE 
+...
+Comentado [CO71]: NÃO ATENDE 
+Comentado [CO72R71]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO73]: NÃO ATENDE 
+...
+
+=== PÁGINA 8 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Ajustar número de CPF dos servidores públicos, adicionando pontuação; 
+o Ajustar número do PIS dos servidores públicos, removendo pontuação e incluindo o “0” zero para 
+completar “12” caracteres; 
+o Lançamento de justificativas de faltas e ausências, para aprovação ou reprovação do operador 
+supervisor; 
+o Consulta do espelho ponto pelos próprios servidores públicos; 
+o Acerto de ponto por meio de um processo que permita delegar o ajuste mediante justificativa. Esse 
+processo deve conter possibilidade de anexar arquivos e realizar a validação do gestor; 
+o Parametrizar quais colunas devem ser exibidas ou não na consulta web do espelho ponto (exemplo: 
+Horas Devedoras e Horas Extras); 
+o Parametrizar uma agenda para o envio de e-mails automáticos para servidor público ou operador 
+contendo valores de saldos, espelhos, espelhos sem registros, inconsistências ou com ocorrências para 
+serem corrigidas. Podendo ser enviados de forma diária, semanal, mensal ou no fechamento; 
+o Envio automático de comprovante de registro por e-mail e WhatsApp; 
+o Que o servidor público solicite por Whatsapp o envio do comprovante de registro do dia ou de datas 
+específicas; 
+o Cadastro dos períodos de apuração do ponto; 
+o Emissão de espelho ponto contendo uma descrição no rodapé de ocorrências cadastradas; 
+o  Monitoramento de saldo de horas extras; 
+o Aprovação de horas extras, parcial e total; 
+o Fechamento do período de apuração para todos operadores, exceto, para operador supervisor; 
+o Acompanhamento de revezamento de período diariamente, semanalmente ou mensalmente; 
+o Cadastro de jornada semanal, exemplo 30h30min, o que o servidor gerar a menos que esse valor deve 
+contar como horas devedoras, o que gerar a mais deve contar como horas extras, e possibilitar a hora 
+extra ser autorizada ou não; 
+o Cadastro de horário alternado, onde seja possível definir por exemplo que a escala do servidor alterne a 
+cada “x” dias, por exemplo trabalhe 12 horas e folgue 24 horas, depois trabalhe 12 horas e folgue 48 
+horas, após isso o ciclo continua se repetindo, 12x24, 12x48, 12x24, 12x48, ...;| 
+o Quando for necessário excluir um registro original equivocado, no lugar de excluir o registro original, o 
+sistema deve conter o recurso para desconsiderar a marcação da apuração, sem excluí-la; 
+o Disponibilizar uma fórmula de cálculo individual para as ocorrências do ponto, permitindo ajustes na 
+jornada de trabalho da entidade; 
+o Parametrização de feriados fixos, móveis e de ponto facultativo; 
+o Parametrização de horas noturnas, período de intervalo mínimo entre batidas e intrajornada; 
+o Incluir ou ocultar ocorrências no cálculo do ponto (ocorrências a calcular); 
+o Acessar o dia para inserir a marcação faltante ou desconsiderar uma marcação equivocada, 
+possibilitando reparar o dia e fechá-lo; 
+Comentado [CO74]: ATENDE 
+Comentado [CO75]: ATENDE 
+Comentado [CO76]: Verificar se atende. 
+Hoje o servidor pode fazer seus próprios registros e 
+eles vão para a moderação de um operador. Mas um 
+operador não pode adicionar registro para que outro 
+operador avalie. 
+Comentado [CO77]: ATENDE 
+No sistema: os servidores podem consultar através do 
+aplicativo. 
+Comentado [CO78]: Verificar se atende. 
+Como dito anteriormente, o próprio servidor pode 
+solicitar o ajuste. Mas um operador não pode solicitar 
+para outro. 
+Comentado [CO79]: ATENDE 
+No sistema: cadastro de horário de trabalho 
+(configuração de exibição) 
+Comentado [CO80]: NÃO ATENDE 
+Precisa de sistema de terceiros (com custo) para envio 
+de emails. Exemplo: SENDGRID 
+Comentado [CO81R80]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO82]: ATENDE 
+Feito no orçamento: 1/3 
+Fiz um disparo de envio por WhatsApp com um 
+sistema de terceiros. Combinei isso com o Alyson, ele 
+disse que vai tentar fazer o cadastro da META e 
+...
+Comentado [ZC83]: CUSTO DESSE SERVIÇO 
+Comentado [ZC84R83]: MODIFICAR PARA APP 
+Comentado [CO85R83]: Precisa de sistema de 
+...
+Comentado [CO86]: Verificar se atende. 
+...
+Comentado [CO87]: NÃO ATENDE 
+Comentado [CO88R87]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO89]: ATENDE 
+Comentado [CO90]: ATENDE 
+...
+Comentado [CO91]: ATENDE 
+Comentado [CO92]: Verificar se atende. 
+...
+Comentado [CO93]: NÃO ATENDE 
+...
+Comentado [CO94R93]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO95]: ATENDE 
+...
+Comentado [CO96]: ATENDE 
+...
+Comentado [CO97]: NÃO ATENDE 
+...
+Comentado [CO98]: ATENDE 
+...
+Comentado [CO99]: NÃO ATENDE 
+Comentado [CO100R99]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO101]: NÃO ATENDE 
+...
+Comentado [CO102R101]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO103]: ATENDE 
+
+=== PÁGINA 9 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o O fechamento do período de apuração do ponto, indisponibilizando novos lançamentos de ausências e 
+não contabilizando mais valores para este período; 
+o Apresentar os eventos originais do dia, acompanhado da informação se os mesmos foram validados ou 
+não; 
+o Opção de imprimir o espelho ponto com a possibilidade de auditar registros que foram inseridos de 
+forma original e manual; 
+o Auditoria nas marcações apuradas no dia, acompanhada da informação se é original (equipamento), 
+inserida manualmente ou através do aplicativo para o smartphone; 
+o Troca de horário para um período especifico, e após o término do período retornar para o horário 
+original; 
+o Verificação de PIS e CPF verídicos para realizar cadastro do servidor público; 
+o Aprovação e rejeição de marcações fora da tolerância através de filtros por funcionário, empresa, local 
+de trabalho, lotação, cargo ou categoria; 
+o Movimentação em massa de local de trabalho, lotação, cargo e categoria por funcionário; 
+o Movimentação em massa de regra de horários e data de vigência por servidor, local de trabalho, lotação, 
+categoria e cargo; 
+o Desconsideração automática de registros duplicadas em um determinado período de tempo; 
+o Cadastro de regras de compensação de horas com opção para informar dias de compensação anteriores à 
+data de compensação (opção para incluir um tempo de compensação limite para compensação de uma 
+hora); 
+o Habilitar banco de horas e compensação de horas por fechamento ou diariamente; 
+o Opção de definir regras de compensação para banco de horas no vínculo/cadastro de regra de horário de 
+servidores públicos; 
+o Realizar compensação de bancos de horas definido por período de apuração, compensando todo o saldo 
+do banco de horas; 
+o Realizar compensação do banco de horas definido por dia, de forma parcial e total; 
+o Definir uma ordem de prioridade das horas que vão ser compensadas do banco de horas (exemplo: 
+utilizar primeiro as horas extras 100% para compensar as horas negativas, para depois utilizar as horas 
+extras 50%); 
+o Apenas as horas extras autorizadas por chefias imediatas poderão ser consideradas para banco de horas; 
+o Opção de arrastar saldos negativos ou positivos de meses posteriores para futuras compensações ou 
+pagamentos; 
+o Opção para criação de parâmetro individual ou coletivo para definir valores a serem integrados com a 
+folha de pagamento, para futuros pagamentos ou descontos, por quantidade máxima e percentual; 
+o Após gerar a integração do banco de horas, as horas positivas devem gerar um código novo de evento 
+para realizar a exportação para o sistema de folha de pagamento utilizado pelo município; 
+o Disponibilizar opção de especificar o tipo de crédito de horas positivas no banco, com e sem acréscimo 
+de adicionais; 
+Comentado [CO104]: ATENDE 
+No sistema: fechamento da folha de ponto. 
+Comentado [CO105]: ATENDE 
+No sistema: o operador pode verificar os registros do 
+servidor e validar ou não. 
+Comentado [CO106]: ATENDE 
+No sistema: cada tipo de registro possui uma 
+identificação diferente no espelho. 
+Comentado [CO107]: ATENDE 
+No sistema: cada tipo de registro possui uma 
+identificação diferente no espelho. 
+Comentado [CO108]: ATENDE 
+No sistema: escala mensal. 
+Comentado [CO109]: ATENDE 
+No sistema: faz verificação se o número informado 
+está de acordo com as regras nacionais de cadastro. 
+Comentado [CO110]: NÃO ATENDE 
+Comentado [CO111R110]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO112]: NÃO ATENDE 
+Comentado [CO113]: NÃO ATENDE 
+Comentado [CO114]: ATENDE 
+O sistema desconsidera registros no espelho com 
+menos de 5 minutos de diferença. 
+Comentado [CO115]: NÃO ATENDE 
+Comentado [CO116]: ATENDE 
+Comentado [CO117]: NÃO ATENDE 
+Nilton, o que seriam essas "regras de compensação"? 
+Comentado [CO118]: ATENDE 
+No sistema: o operador pode compensar qualquer 
+período que possua banco de horas, dessa forma 
+podendo compensar um horário especifico ou todo o 
+período de trabalho/saldo. 
+Comentado [CO119]: ATENDE 
+No sistema: o operador pode compensar qualquer 
+período que possua banco de horas, dessa forma 
+podendo compensar um horário especifico ou todo o 
+período de trabalho/saldo. 
+Comentado [CO120]: NÃO ATENDE 
+Comentado [CO121R120]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO122]: NÃO ATENDE 
+Comentado [CO123R122]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO124]: ATENDE 
+...
+Comentado [CO125]: NÃO ATENDE 
+...
+Comentado [CO126R125]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO127]: NÃO ATENDE 
+Comentado [CO128R127]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO129]: NÃO ATENDE 
+...
+
+=== PÁGINA 10 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Ajustar as marcações de entradas e saídas somente em um clique de todos os funcionários de uma 
+lotação; 
+o Permitir remoção e consulta de compensação, validando qual data de crédito foi utilizado para 
+compensação; 
+o Opção para horas negativas serem compensadas por horas positivas ou justificadas para novo tipo de 
+evento: horas justificadas. Caso não forem compensadas ou justificadas deve ser gerado um evento: 
+horas injustificadas. Ambas devem disponibilizar de exportação para sistema de folha de pagamento 
+utilizado pelo município; 
+o Potencial de excluir compensação por funcionário, empresa, lotação, local de trabalho e fechamento; 
+o Opção de gerar compensação se baseando em funcionário, empresa, lotação, local de trabalho, cargo e 
+regra de compensação; 
+o Permitir emissão de um espelho de ponto com grid que informe: saldo do banco atual, saldo realizado 
+no período, horas pagas em folha, horas compensadas e saldo restante; 
+o Exportação de relatórios para os formatos PDF, TXT e XLS; 
+o Deve possuir manutenção de saldo com inclusão de justificativa; 
+o Disponibilizar mais de um layout pré configurado para impressão do espelho ponto dos servidores de 
+forma que possa ser selecionado de acordo com a necessidade do município; 
+o Opção para anexar arquivos no cadastro do servidor (exemplo: acordo de banco de horas); 
+ 
+• O sistema deve possuir relatórios que possibilitem: 
+o Exibir resumo através de um relatório de absenteísmo; 
+o Auditoria das manutenções realizados pelo servidor, que estejam nos estágios de avaliação, já avaliados 
+e recusados; 
+o Auditoria de ausências justificadas realizadas pelo servidor, que esteja pendente de avaliação, já 
+avaliados e recusados; 
+o Auditoria de fechamentos que aponte quais operadores abriram e fecharam determinado período de 
+apuração, com filtro por data de alteração; 
+o Verificar os registros que estão fora da tolerância de jornada do servidor; 
+o Exibir os servidores por lotação e respectivo local de trabalho; 
+o AVerificar o extrato de compensação de horas e o saldo de horas do dia; 
+o Visualizar os saldos do banco de horas, que informem na mesma tela: saldo do banco atual, saldo 
+realizado no período, horas pagas em folha, horas compensadas e saldo restante. Disponibilizando ainda 
+possibilidade de filtro por: data, tipo da hora (exemplo devedoras e extras), funcionário, empresa, 
+lotação, local de trabalho e categoria; 
+o Verificar os saldos de horas disponível para compensação e pagamento para determinados períodos; 
+o Verificação de horas extras autorizadas e compensadas; 
+Comentado [CO130]: NÃO ATENDE 
+Nilton, especificar essa funcionalidade. 
+Comentado [CO131]: NÃO ATENDE 
+Comentado [CO132]: NÃO ATENDE 
+Comentado [CO133R132]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO134]: NÃO ATENDE 
+Comentado [CO135]: NÃO ATENDE 
+Comentado [CO136]: NÃO ATENDE 
+Comentado [CO137R136]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO138]: ATENDE 
+Comentado [CO139]: ATENDE 
+Comentado [CO140]: NÃO ATENDE 
+Nilton, especificar outros layouts necessários. 
+Comentado [CO141]: ATENDE 
+Comentado [CO142]: NÃO ATENDE 
+Comentado [CO143R142]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO144]: ATENDE 
+Feito no orçamento: 1/3 
+No sistema: o relatório de conferência de ponto diário 
+traz a listagem de registros feitos pelo servidor através 
+do aplicativo, com as respectivas situações e 
+localização. 
+Também dá pra consultar pelo gerenciamento do 
+espelho de ponto os que já foram aprovados e os que 
+estão aguardando análise. 
+Comentado [CO145]: NÃO ATENDE 
+Comentado [CO146R145]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO147]: NÃO ATENDE 
+Comentado [CO148R147]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO149]: NÃO ATENDE 
+Comentado [CO150R149]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO151]: ATENDE 
+Feito no orçamento: 1/3 
+Comentado [CO152]: NÃO ATENDE 
+Comentado [CO153]: NÃO ATENDE 
+Comentado [CO154R153]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO155]: NÃO ATENDE 
+Comentado [CO156]: NÃO ATENDE 
+Comentado [CO157R156]: SERÁ ATENDIDO EM 30 
+DIAS 
+
+=== PÁGINA 11 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Auditoria do ponto, disponibilizando a informação de quais operadores e mudanças foram realizadas na 
+manutenção dos registros, inclusões ou desconsideração de registros; 
+o Auditoria de ausências, constando as informações de qual operador inseriu, alterou e excluiu ausências 
+no sistema; 
+o Auditoria do cálculo, constando o operador que realizou o cálculo do ponto; 
+o Auditoria de jornadas, constando a inclusão, alteração e exclusão de jornadas e escalas que foram 
+vinculadas aos servidores públicos; 
+o Verificar o totalizador de turnover; 
+o Identificar servidores com mais de uma matrícula, podendo ser filtrado por PIS ou CPF; 
+o Averiguação dos servidores que estão presentes e ausentes na prefeitura em determinado período; 
+o Verificar horas apuradas, por servidor e por tipo de hora; 
+o Verificar as ocorrências lançadas pelos operadores; 
+o Exibir os aniversariantes de um determinado período; 
+o Verificar informações de interjornada e intrajornada com filtros por período de tempo e data; 
+o Visualizar os pontos dos servidores públicos que necessitem de manutenção nos registros; 
+o Apresente as horas excedentes da jornada diária; 
+o Verificar quais servidores que não possuem registros em um período especifico de datas com opção de 
+realizar filtros por: funcionário, empresa, lotação, local de trabalho ou cargo; 
+o Verificar os feriados cadastrados no sistema. O relatório deve exibir a data e descrição do feriado; 
+o AVerificar as ausências dos servidores públicos, com possibilidade de filtro por data e tipo de ausência; 
+o Verificar a jornada do servidor público, contendo o total de horas semanal ou mensal; 9.1.11.28. 
+o Discriminar quais servidores públicos que registraram o ponto em um ou mais equipamentos de ponto 
+eletrônico em determinado período; 
+o Exibição em gráficos das ausências, com filtro semanal a partir da data informada ou trimestral a partir 
+da data informada; 
+o Exibição em gráficos de servidores presentes, ausentes e faltantes, com filtro semanal a partir da data 
+informada ou trimestral a partir da data informada; 
+o Indicadores gráficos que possibilitem o acompanhamento da quantidade de servidores com faltas nos 
+últimos 12 meses; 
+o Indicadores gráficos que possibilitem o acompanhamento dos saldos positivos e negativos nos últimos 
+12 meses; 
+o Exibição em gráficos (dashboard), informações de total de ausências, tipos de horas do dia vigente e do 
+período de apuração; 
+o Verificar o demonstrativo anual de ausências com calendário e legenda informando as ausências diárias 
+dos 12 meses do ano; 
+Comentado [CO158]: NÃO ATENDE 
+Comentado [CO159R158]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO160]: NÃO ATENDE 
+Comentado [CO161R160]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO162]: NÃO ATENDE 
+Comentado [CO163R162]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO164]: NÃO ATENDE 
+Comentado [CO165R164]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO166]: NÃO ATENDE 
+Nilton, o que seria o "totalizador do turnover"? 
+Comentado [CO167]: NÃO ATENDE 
+Comentado [CO168R167]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO169]: NÃO ATENDE 
+Comentado [CO170R169]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO171]: NÃO ATENDE 
+Comentado [CO172R171]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO173]: NÃO ATENDE 
+Comentado [CO174R173]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO175]: ATENDE 
+Comentado [CO176]: NÃO ATENDE 
+Comentado [CO177]: NÃO ATENDE 
+Comentado [CO178]: NÃO ATENDE 
+Comentado [CO179R178]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO180]: NÃO ATENDE 
+Comentado [CO181R180]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO182]: ATENDE 
+Comentado [CO183]: ATENDE 
+...
+Comentado [CO184]: ATEDE 
+...
+Comentado [CO185]: ATENDE 
+...
+Comentado [CO186]: NÃO ATENDE 
+Comentado [CO187R186]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO188]: NÃO ATENDE 
+Comentado [CO189R188]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO190]: NÃO ATENDE 
+Comentado [CO191]: NÃO ATENDE 
+Comentado [CO192]: NÃO ATENDE 
+Comentado [CO193]: NÃO ATENDE 
+
+=== PÁGINA 12 ===
+ 
+ 
+ 
+ 
+ 
+ 
+o Exibição em gráficos do tipo de horas, com filtro semanal a partir da data informada ou trimestral a 
+partir da data informada; 
+o Auditoria de registros, apontando a falta de registros não realizados em um local determinado; 
+o Disponibilizar de relatórios que contenham os registros com suas respectivas localizações informando a 
+latitude e longitude; 
+o Visualizar o tempo de contratação de todos os servidores; 
+o Gerar uma consulta de saldos decimal, podendo escolher a quantidade de casas decimais e possibilidade 
+de exportar o relatório para Excel; 
+• Cadastro de operadores com a possibilidade de: 
+o Copiar as definições de um operador para outro operador, com a possibilidade de selecionar as 
+configurações que deseja copiar; 
+o Parametrizar o nível de acesso ao sistema, funcionalidades e telas; 
+o Customização de grupos de operadores, de acordo com a necessidade da entidade pública; 
+o Parametrizar quais ausências o operador poderá lançar; 
+o O gestor de lotação tenha acesso ao sistema podendo visualizar e fazer manutenção dos registros apenas 
+para a sua própria lotação; 
+o Bloquear funções para determinados operadores no processo de manutenção de registros de entrada e 
+saída; 
+• Deve conter opção de exportação de eventos para o sistema da folha de pagamento utilizado pelo município 
+através de filtros: funcionário, empresa, local de trabalho, lotação, cargo e categoria; 
+• O sistema deve, de forma obrigatória integrar com o sistema de folha de pagamento do município, permitindo 
+importar os servidores públicos cadastrados no sistema da Folha de pagamento, incluindo os com data de 
+rescisão; 
+• O sistema deve, de forma obrigatória integrar com o sistema de folha de pagamento do município, com 
+potencial para exportar as ausências cadastradas no sistema da folha de pagamento; 
+• O sistema deve garantir a sincronização dos registros conforme agenda programada, sem intervenção do 
+usuário; 
+• O sistema deve ser capaz de recuperar-se automaticamente quando existir alguma queda da rede ou de sistemas, 
+incluindo as atualizações eventuais no cadastro das faces; 
+• Potencial para realizar o envio da face de um ou mais servidores públicos, através do sistema, para um único 
+coletor ou grupo de coletores; 
+• Possibilidade de cadastro de bônus (vale transporte, vale alimentação), para servidores com jornada diária, o 
+valor pode ser definido mensal ou diário; 
+• Possibilidade de cadastro de bônus (vale transporte, vale alimentação), para servidores com turno intercalado, a 
+cada “x” horas de trabalho deve gerar o bônus, com cadastro de uma tolerância para gerar o bônus; 
+• Possibilidade de emitir um relatório dos bônus gerados, informando os servidores com direito e sem direito ao 
+bônus; 
+ 
+Comentado [CO194]: NÃO ATENDE 
+Comentado [CO195]: NÃO ATENDE 
+Comentado [CO196R195]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO197]: ATENDE 
+Feito no orçamento: 1/3 
+No sistema: o relatório de conferência de ponto diário 
+traz os registros que o servidor fez em determinado 
+dia, juntamente com a origem (aplicativo ou 
+equipamento) e, se for aplicativo, com a latitude e 
+longitude do registro. 
+Comentado [CO198]: ATENDE 
+Feito no orçamento: 1/3 
+No sistema: o relatório de servidores por lotação traz o 
+registros dos servidores, com seus contratos de 
+trabalho, lotação e respectivo tempo de trabalho desde 
+a sua admissão. 
+Comentado [CO199]: NÃO ATENDE 
+Comentado [CO200R199]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO201]: NÃO ATENDE 
+Comentado [CO202]: ATENDE 
+No sistema: cadastro de grupo de permissão 
+Comentado [CO203]: ATENDE 
+No sistema: cadastro de grupo de permissão 
+Comentado [CO204]: NÃO ATENDE 
+Comentado [CO205]: ATENDE 
+No sistema: usuário de departamento 
+Comentado [CO206]: ATENDE 
+No sistema: cadastro de grupo de permissão 
+Comentado [CO207]: NÃO ATENDE 
+Comentado [CO208R207]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO209]: NÃO ATENDE 
+Nilton, especificar folha de pagamento. 
+Comentado [CO210R209]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO211]: NÃO ATENDE 
+Comentado [CO212R211]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO213]: ATENDE 
+...
+Comentado [CO214]: ATENDE 
+Comentado [CO215]: NÃO ATENDE 
+...
+Comentado [CO216]: NÃO ATENDE 
+Comentado [CO217R216]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO218]: NÃO ATENDE 
+Comentado [CO219R218]: SERÁ ATENDIDO EM 30 
+...
+Comentado [CO220]: NÃO ATENDE 
+Comentado [CO221R220]: SERÁ ATENDIDO EM 30 
+...
+
+=== PÁGINA 13 ===
+ 
+ 
+ 
+ 
+ 
+ 
+SOLUÇÃO UNIFICADA DE VIDEOMONITORAMENTO COM IA . 
+Requisito de Unicidade (Solução Proprietária): 
+• O sistema de videomonitoramento deve ser fornecido na modalidade "Appliance", onde as câmeras, o gravador 
+(NVR/DVR) e o software de gestão de vídeo (VMS) e analíticos de IA pertençam ao mesmo fabricante ou 
+possuam integração nativa de fábrica. 
+• VEDAÇÃO: Não serão aceitas licenças de software VMS de terceiros que exijam integração via API/ONVIF 
+para funcionalidades de inteligência artificial, visando garantir baixa latência e estabilidade. 
+Gravador Digital com Inteligência Artificial (NVR/DVR): 
+• Capacidade mínima para 32 canais de vídeo IP/Analógico. 
+• Processador dedicado para Inteligência Artificial com funções de: Reconhecimento Facial (banco de dados para 
+no mínimo 10.000 faces), Detecção de Intrusão de Perímetro, Leitura de Placas (LPR) e Busca Forense (buscar 
+vídeo por cor de roupa, gênero, etc.). 
+• Armazenamento: HD purpura/surveillance com capacidade mínima para 30 dias de gravação contínua. 
+9.2.3. Câmeras de Monitoramento: 
+• Resolução mínima: Full HD (1080p) ou superior. 
+• Tecnologia: IP ou Analógica HD, com visão noturna (Infravermelho) de no mínimo 30 metros. 
+• Proteção: Grau de proteção IP66 ou IP67 (resistente a água e poeira) e proteção contra surtos elétricos. 
+SOLUÇÃO UNIFICADA DE VIDEOMONITORAMENTO COM IA  
+Requisito de Unicidade : 
+• O sistema de videomonitoramento deve ser fornecido na modalidade "Appliance", onde as câmeras, o gravador 
+(NVR/DVR) e o software de gestão de vídeo (VMS) e analíticos de IA pertençam ao mesmo fabricante ou 
+possuam integração nativa de fábrica. 
+• VEDAÇÃO: Não serão aceitas licenças de software VMS de terceiros que exijam integração via API/ONVIF 
+para funcionalidades de inteligência artificial, visando garantir baixa latência e estabilidade. 
+Gravador Digital com Inteligência Artificial (NVR/DVR): 
+• Capacidade mínima para 32 canais de vídeo IP/Analógico. 
+• Processador dedicado para Inteligência Artificial com funções de: Reconhecimento Facial (banco de dados para 
+no mínimo 10.000 faces), Detecção de Intrusão de Perímetro, Leitura de Placas (LPR) e Busca Forense (buscar 
+vídeo por cor de roupa, gênero, etc.). 
+• Armazenamento: HD purpura/surveillance com capacidade mínima para 30 dias de gravação contínua. 
+Câmeras de Monitoramento: 
+• Resolução mínima: Full HD (1080p) ou superior. 
+• Tecnologia: IP ou Analógica HD, com visão noturna (Infravermelho) de no mínimo 30 metros. 
+• Proteção: Grau de proteção IP66 ou IP67 (resistente a água e poeira) e proteção contra surtos elétricos. 
+ 
+Comentado [ZC222]: RETIRAR... 
+Comentado [ZC223]: VERIFICAR SISTEMA 
+SEMELHANTE. 
+
+=== PÁGINA 14 ===
+ 
+ 
+ 
+ 
+ 
+ 
+CONECTIVIDADE VIA SATÉLITE DE BAIXA ÓRBITA (LEO) 
+Antena e Conexão: 
+• Tecnologia: Constelação de satélites de baixa órbita (LEO - Low Earth Orbit) para garantir baixa latência. 
+• Velocidade de Download: Mínimo de 100 Mbps. 
+• Latência: Mínimo aceitável abaixo de 50ms (milissegundos), essencial para operação de sistemas em tempo real 
+(VoIP, Vídeo, Sistemas Web). 
+• Roteador Wi-Fi incluso com capacidade para múltiplas conexões simultâneas. 
+• Finalidade: O link deve suportar tráfego de dados do sistema de frotas, câmeras de segurança e sistema de 
+ponto nas unidades rurais. 
+ 
+SISTEMA DE GESTÃO DE FROTAS E ROTEIRIZAÇÃO 
+Plataforma de Rastreamento: 
+• Sistema web para monitoramento em tempo real de veículos (ambulâncias, transporte escolar, maquinário). 
+• Módulo de Roteirização Inteligente: Criação de rotas otimizadas para o transporte escolar, com alertas de 
+desvio de trajeto. 
+• Telemetria: Controle de velocidade, ignição (ligado/desligado), odômetro e consumo estimado de combustível. 
+• Aplicativo para Motorista: App para registro de início/fim de viagem e checklist digital do veículo. 
+• Integração: O sistema deve ser capaz de operar e sincronizar dados através da conexão via satélite. 
+ 
+DOS OBJETIVOS E BENEFÍCIOS ESPERADOS 
+A contratação desta solução integrada visa atingir os seguintes objetivos estratégicos e operacionais para a 
+Administração Municipal: 
+Objetivo Geral. Promover a transformação digital das Secretarias de Saúde e Educação, implementando um 
+ecossistema tecnológico capaz de unificar a segurança patrimonial, o controle de assiduidade dos servidores, a gestão 
+logística da frota e a inclusão digital de unidades em zonas rurais. 
+Objetivos Específicos A solução contratada deverá entregar os seguintes resultados práticos: 
+• No Controle de Pessoal: Garantir a fidedignidade do registro de ponto através de biometria facial (antifraude), 
+eliminando divergências na folha de pagamento, horas extras indevidas e passivos trabalhistas, em total 
+conformidade com a Portaria MTP 671/2021. 
+• Na Segurança Pública: Migrar do modelo de "segurança reativa" (apenas gravação) para "segurança 
+preventiva", utilizando Inteligência Artificial para identificar invasões, depredações e pessoas não autorizadas 
+nas escolas e postos de saúde em tempo real. 
+• Na Conectividade (Satélite): Eliminar o "apagão de dados" nas unidades rurais, provendo internet de alta 
+velocidade e baixa latência para permitir que escolas e postos de saúde afastados utilizem os mesmos sistemas 
+de gestão da sede. 
+• Na Gestão de Frotas: Assegurar o monitoramento ininterrupto do transporte escolar e ambulâncias, permitindo 
+auditoria de rotas e consumo de combustível mesmo em trajetos por áreas sem cobertura de celular. 
+Comentado [ZC224]: VERIFICAR SISTEMA 
+Comentado [ZC225]: FAZER AJUSTES 
+Comentado [CO226]: EM DESENVOLVIMENTO 
+Comentado [CO227R226]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [CO228]: NÃO ATENDE 
+Para roteirização inteligente precisamos de sistema de 
+terceiros (como acesso a API do Google Maps). 
+Preciso também de uma definição de como vai ser 
+essa roteirização para verificar a possibilidade do 
+desenvolvimento. 
+Comentado [CO229]: EM DESENVOLVIMENTO 
+Comentado [CO230R229]: SERÁ ATENDIDO EM 30 
+DIAS 
+Comentado [ZC231]: NILTON AJUSTAR 
+Comentado [CO232]: Para auditoria de rotas em 
+zonas rurais, o aplicativo do motorista precisa contar 
+com internet o tempo todo para enviar a localização 
+atual do veículo. 
+Vocês precisarão pensar em uma forma de instalar a 
+conectividade via satélite no carro de alguma forma se 
+não houver sinal. 
+
+=== PÁGINA 15 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Vantagens e Ganhos para a Administração. A implementação deste projeto trará os seguintes benefícios diretos, 
+conforme levantamento técnico: 
+1. Economicidade e Recuperação de Ativos: Redução drástica de custos com horas não trabalhadas, desperdício 
+de combustível e reposição de equipamentos furtados (devido ao monitoramento inteligente). 
+2. Transparência e Rastreabilidade: Todos os atos (entrada de servidor, trajeto de veículo, acesso de visitante) 
+ficarão registrados digitalmente, auditáveis a qualquer momento pelos órgãos de controle. 
+3. Agilidade na Tomada de Decisão: A centralização das informações em nuvem permitirá aos gestores 
+visualizar faltas, quebras de veículos ou incidentes de segurança em tempo real, via aplicativo mobile ou web. 
+4. Modernização Administrativa: Atendimento pleno às recomendações ministeriais e decretos estaduais de 
+Goiás sobre controle de frequência e modernização da gestão pública. 
+5. Padronização Tecnológica: Eliminação de "ilhas de sistemas" (vários softwares que não conversam), adotando 
+uma solução unificada onde a conectividade via satélite viabiliza a operação de todas as outras pontas (ponto e 
+frota). 
+ 
+DO SUPORTE TÉCNICO E CENTRAL DE CHAMADOS (SERVICE DESK) 
+A CONTRATADA deverá disponibilizar estrutura de atendimento técnico unificada (Central de Chamados) para 
+registro, gerenciamento e solução de incidentes relacionados a todo o parque tecnológico locado (Câmeras, Software, 
+Satélite e Hardware). 
+Canais de Atendimento A abertura de chamados deverá ser disponibilizada através dos seguintes canais, de forma 
+simultânea: 
+• 0800 ou Número Local: Atendimento telefônico gratuito para as unidades. 
+• WhatsApp Business: Canal oficial para agilidade na comunicação com diretores de escola e gestores de frota. 
+• Portal Web/App: Plataforma online para abertura de tickets, onde o fiscal do contrato possa acompanhar o 
+status de cada atendimento (aberto, em andamento, concluído) e visualizar relatórios de performance. 
+Horário de Funcionamento 
+• Suporte Nível 1 (Help Desk/Remoto): Disponibilidade 24 horas por dia, 07 dias por semana, considerando a 
+natureza ininterrupta dos serviços de segurança e saúde (ambulâncias). 
+• Suporte Nível 2 (Field Service/Presencial): Atendimento técnico no local para reparos físicos ou substituição 
+de equipamentos, de segunda a sexta-feira das 08h às 18h, e em regime de PLANTÃO aos finais de semana e 
+feriados para chamados classificados como "Críticos". 
+Sistemática de Atendimento 
+1. Todo chamado deverá gerar um Número de Protocolo único. 
+2. O prazo de atendimento começa a contar a partir da geração do protocolo. 
+3. A CONTRATADA deve prover manutenção preventiva e corretiva, incluindo a substituição de equipamentos 
+defeituosos (câmeras queimadas, antenas danificadas, catracas travadas) sem custos adicionais para o 
+Município (on-site). 
+Acordo de Nível de Serviço (SLA - Service Level Agreement) Os prazos máximos para solução de problemas 
+deverão obedecer à tabela de severidade abaixo 
+ 
+Comentado [ZC233]: CAIO VERIFICAR DEPOIS 
+Comentado [CO234]: NÃO ATENDE 
+Não existe um sistema de service desk, mas vocês 
+podem contratar algum de terceiro para agilizar o 
+processo. 
+Exemplos (VERIFICAR PREÇOS E 
+FUNCIONALIDADES): 
+Movidesk (ZENVIA) 
+Tiflux  
+Desk Manager 
+
+=== PÁGINA 16 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Severidade Definição do Problema 
+Prazo de Resposta 
+(Início do 
+Atendimento) 
+Prazo de Solução 
+(Reparo/Troca) 
+CRÍTICA 
+Parada Total: Queda do link de satélite em unidade de saúde; 
+Falha no servidor de gravação (DVR) ou perda de imagens; 
+Sistema de frota fora do ar impedindo rastreio. 
+Até 30 minutos Até 06 horas úteis 
+ALTA 
+Parada Parcial: Uma câmera específica inoperante; Catraca 
+travada (mas com outra funcionando); Terminal de 
+reconhecimento facial lento. 
+Até 01 hora 
+Até 24 horas 
+corridas 
+MÉDIA 
+Falha de Software/Config: Dificuldade de login; Necessidade 
+de cadastro de novos usuários; Ajuste de relógio ou 
+parametrização de sistema. 
+Até 02 horas Até 48 horas úteis 
+BAIXA 
+Dúvidas/Solicitações: Pedidos de treinamento, dúvidas 
+operacionais, emissão de relatórios específicos. 
+Até 024horas Até 72 horas úteis 
+ 
+Penalidades por Descumprimento de SLA 
+• O não cumprimento dos prazos de solução estabelecidos acima acarretará multas conforme seção de sanções 
+deste contrato. 
+• Caso o equipamento (Ex: Antena Starlink ou DVR) precise ser retirado para laboratório, a CONTRATADA 
+deverá instalar um equipamento de backup (sobressalente) imediatamente, garantindo a continuidade do 
+serviço público. 
+Gerente de Contas. A CONTRATADA deverá indicar formalmente um Gerente de Projeto/Preposto, com poderes de 
+decisão, para ser o ponto focal de contato com a Secretaria de Administração, responsável por participar de reuniões de 
+alinhamento e apresentar relatórios mensais de indicadores de chamados (SLA). 
+DA GESTÃO DE SERVIÇOS, SUPORTE TÉCNICO E MANUTENÇÃO (SLA) 
+A CONTRATADA deverá prover uma estrutura completa de Service Desk e Field Service (atendimento de campo) 
+para assegurar a disponibilidade integral da solução, operando sob as seguintes diretrizes: 
+Do Monitoramento Ativo (NOC - Network Operations Center). A CONTRATADA deverá possuir sistema de 
+monitoramento ativo dos links de satélite e do status dos DVRs/Câmeras. 
+• Obrigação: A empresa deve identificar proativamente quedas de conexão ou falhas de gravação e iniciar o 
+reparo antes mesmo da abertura do chamado pela Prefeitura. 
+Canais e Regime de Atendimento. Deverá ser disponibilizada uma Central de Atendimento Unificada, acessível via: 
+• Plataforma Web (Sistema de Tickets): Para registro oficial, auditoria de prazos e acompanhamento de status 
+em tempo real. 
+• Telefone 0800 e WhatsApp Business: Para abertura ágil de incidentes por diretores de escola e gestores de 
+unidade. 
+Regime de Disponibilidade: 
+• Para Softwares e Conectividade (Satélite/Frota): Suporte 24x7 (24 horas por dia, 7 dias por semana), 
+inclusive feriados, devido à natureza crítica do monitoramento de ambulâncias. 
+• Para Manutenção Física (Câmeras/Catracas): Dias úteis das 08h às 18h. Aos finais de semana e feriados, 
+deverá haver equipe de PLANTÃO para atendimento de ocorrências classificadas como "Críticas". 
+Comentado [ZC235]: CAIO VERIFICAR 
+Comentado [CO236R235]: Não é comigo. Só trabalho 
+com a parte de desenvolvimento de funcionalidades. 
+Suporte e manutenção tem de ser visto diretamente 
+com a ARID. 
+
+=== PÁGINA 17 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Acordo de Nível de Serviço (SLA) e Prazos de Solução. O tempo de atendimento será contabilizado a partir do 
+registro do chamado (Ticket) até a efetiva normalização do serviço, conforme tabela abaixo: 
+Severidade Descrição da Ocorrência 
+Tempo de 
+Resposta 
+(Diagnóstico) 
+Tempo de 
+Solução (Reparo 
+Definitivo) 
+CRÍTICA 
+Parada Total ou Risco à Vida: Queda de link satélite em unidade 
+de saúde; Sistema de Frota fora do ar (cegueira logística); Falha no 
+DVR (perda de imagens); Catraca travada bloqueando acesso. 
+30 minutos 06 horas corridas 
+ALTA 
+Degradação Severa: Falha em 1 ou mais câmeras estratégicas 
+(entradas/saídas); Leitor biométrico inoperante (mas com 
+alternativa manual); Lentidão severa no sistema. 
+01 hora 12 horas úteis 
+MÉDIA 
+Falha Parcial: Câmera interna secundária fora do ar; Dificuldade 
+de login de usuário específico; Erro na emissão de relatório. 
+02 horas 24 horas úteis 
+BAIXA 
+Requisições: Dúvidas de operação, solicitação de cadastro de 
+usuário, agendamento de treinamento ou manutenção preventiva. 
+04 horas 48 horas úteis 
+Do Atendimento em Zona Rural e "Backup" 
+• Considerando a extensão territorial do município, a CONTRATADA não poderá alegar "distância" para 
+descumprir prazos. A logística de deslocamento deve estar inclusa no preço global. 
+• Em caso de necessidade de remoção de qualquer equipamento (Antena, DVR, Catraca) para reparo em 
+laboratório, a CONTRATADA é obrigada a instalar um equipamento similar ou superior provisório no ato 
+da retirada, garantindo a continuidade do serviço público. 
+Independentemente de chamados, a CONTRATADA deverá realizar visitas trimestrais em todas as unidades para: 
+• Limpeza de lentes de câmeras e domus; 
+• Reaperto de conexões e verificação de cabeamento; 
+• Testes de bateria e nobreaks; 
+• Atualização de firmware e correções de segurança (patches). 
+O descumprimento reiterado dos prazos de SLA (atraso superior a 20% do tempo estipulado) em mais de 10% dos 
+chamados mensais sujeitará a CONTRATADA à glosa (desconto) na fatura mensal, conforme tabela de sanções deste 
+contrato, sem prejuízo de outras penalidades legais. 
+ 
+DO APLICATIVO MOBILE  
+A solução deverá contemplar aplicativo móvel (App) nativo, homologado nas lojas oficiais (Google Play e Apple App 
+Store), com as seguintes funcionalidades obrigatórias: 
+Compatibilidade e Acesso: 
+• Compatibilidade total com sistemas operacionais Android e iOS. 
+• Licenciamento ilimitado de dispositivos móveis (Instalação permitida em dispositivos pessoais dos servidores - 
+BYOD - ou corporativos). 
+• Login seguro via CPF/Matrícula e Senha individual. 
+ 
+Comentado [ZC237]: ANALISAR E PREENCHER DE 
+ACORDO COM QUE PRECISAMOS  
+Comentado [CO238R237]: ATENDE 
+O app está disponível nas lojas, acesso via CPF e data 
+de nascimento (mas pode ser alterada pelo servidor) 
+para uma individual. 
+
+=== PÁGINA 18 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Segurança e Geolocalização (Anti-Fraude): 
+• O aplicativo deve capturar obrigatoriamente as coordenadas geográficas (latitude e longitude) no momento do 
+registro do ponto. 
+• O sistema deve permitir a criação de perímetros permitidos para marcação (Ex: Raio de 50 metros da Escola X). 
+Caso o servidor tente marcar o ponto fora desse raio, o aplicativo deve bloquear o registro ou alertar a chefia 
+imediatamente. 
+• O aplicativo deve possuir tecnologia capaz de detectar e bloquear o uso de softwares simuladores de localização 
+("Mock Locations"), impedindo fraudes de localização. 
+Biometria Facial no Smartphone: 
+• O registro de ponto no aplicativo deve exigir, obrigatoriamente, a captura de uma foto (selfie) com 
+reconhecimento facial integrado. 
+• Tecnologia de detecção de vivacidade para impedir que o servidor registre o ponto tirando foto de outra foto ou 
+da tela de um computador. 
+Operação em Modo Offline (Store and Forward): 
+• Considerando o atendimento em zonas rurais e áreas de sombra, o aplicativo deve permitir o registro do ponto 
+(com foto e geolocalização) mesmo sem conexão com a internet. 
+• Os dados devem ser armazenados criptografados no dispositivo e sincronizados automaticamente com o 
+servidor em nuvem assim que o dispositivo recuperar a conexão (Wi-Fi ou 4G/Satélite). 
+Funcionalidades do Servidor (Self-Service): 
+• Visualização do espelho de ponto diário e mensal pelo próprio servidor. 
+• Funcionalidade que permita ao servidor tirar foto de atestados médicos ou declarações e enviá-los diretamente 
+pelo App para justificar ausências, eliminando fluxo de papel. 
+• Possibilidade de o servidor assinar eletronicamente o espelho de ponto ao final do mês diretamente na tela do 
+celular. 
+ESPECIFICAÇÕES DO SOFTWARE DE GESTÃO DE PONTO (WEB) 
+O sistema deverá ser fornecido na modalidade SaaS (Software as a Service), acessível via navegador web, atendendo 
+integralmente à Portaria MTP nº 671/2021, com as seguintes características: 
+Arquitetura, Hospedagem e Segurança: 
+• O software deve ser 100% Web (Nuvem), dispensando instalação de clientes locais nas estações de trabalho da 
+Prefeitura. 
+• A CONTRATADA será integralmente responsável pela hospedagem em Data Center seguro (com 
+redundância de energia e links), monitoramento 24x7, rotinas de backup diário e garantia de integridade do 
+banco de dados. 
+• O banco de dados deve ser robusto (padrão SQL), garantindo a recuperação automática em caso de falhas de 
+comunicação. 
+• Segurança da Informação: O acesso deve ser via protocolo seguro (HTTPS) com criptografia ponta a ponta, 
+em conformidade com a Lei Geral de Proteção de Dados (LGPD). 
+Capacidade e Licenciamento (Ilimitado): 
+Comentado [CO239]: ATENDE 
+Os registros pelo aplicativo enviam a lat e long no 
+momento do registro de ponto. 
+Comentado [CO240]: ATENDE 
+Comentado [CO241]: Verificar se atende 
+Comentado [CO242]: NÃO ATENDE 
+O aplicativo exige uma foto, mas não tem vinculo com 
+reconhecimento facial. 
+É um tecnologia cara e complexa de se instalar. 
+Recomendo a remoção dessa parte. 
+Comentado [CO243]: NÃO ATENDE 
+Mesma situação do comentário anterior. 
+Comentado [CO244]: NÃO ATENDE 
+O aplicativo de ponto não funciona sem conexão com 
+a internet. 
+Comentado [CO245]: NÃO ATENDE 
+O aplicativo não funciona offline. 
+Comentado [CO246]: NÃO ATENDE 
+O aplicativo não funciona offline. 
+Comentado [CO247]: ATENDE 
+O servidor pode baixar seu espelho de ponto e verificar 
+seus registros através do aplicativo. 
+Comentado [CO248]: Verificar se atende 
+Comentado [CO249]: NÃO ATENDE 
+Comentado [CO250]: ATENDE 
+Mas a manutenção é responsabilidade da ARID, não 
+minha. 
+Comentado [CO251]: ATENDE 
+
+=== PÁGINA 19 ===
+ 
+ 
+ 
+ 
+ 
+ 
+• O sistema deve permitir o cadastro ILIMITADO de: 
+o Servidores públicos (ativos e inativos/histórico); 
+o Operadores do sistema (gestores de RH e chefias); 
+o Secretarias, departamentos, lotações e locais de trabalho; 
+o Escalas de trabalho e horários. 
+• A licença deve abranger o uso simultâneo por múltiplos operadores sem "queda" de performance. 
+Regras de Negócio e Parametrização: 
+• Deve permitir a configuração de múltiplas regras de cálculo (celetistas, estatutários, estagiários, plantonistas 
+12x36, 24x48) simultaneamente. 
+• Controle automático de saldo de horas (crédito/débito) com regras de prescrição configuráveis. 
+• Cálculo automatizado de dias úteis trabalhados para concessão de Vale Transporte e Vale Alimentação, 
+permitindo parametrização de valores diários ou mensais e regras de desconto por falta. 
+• O sistema deve possuir "Dashboard" que alerte os gestores sobre faltas, atrasos excessivos ou horas extras não 
+autorizadas. 
+Integração Obrigatória com Folha de Pagamento: 
+• O software deve possuir API (Interface de Programação de Aplicações) ou layout de troca de arquivos 
+compatível com o Sistema de Folha de Pagamento utilizado pelo Município. 
+• Funcionalidade Bidirecional: 
+1. Receber automaticamente os dados cadastrais dos servidores (admissões, demissões, trocas de setor). 
+2. Enviar automaticamente os eventos de frequência (faltas, atrasos, horas extras 50%/100%, adicional 
+noturno) para o fechamento da folha, eliminando a digitação manual. 
+Funcionalidades de Comando Centralizado: 
+• Capacidade de enviar comandos remotos para os relógios/terminais faciais (coletores), como: atualização de 
+data/hora, bloqueio de usuário demitido e envio de lista de faces (biometria) para um grupo específico de 
+equipamentos, sem necessidade de ir até o local físico. 
+• O sistema deve registrar em "Log de Auditoria" todas as alterações manuais feitas no ponto do servidor (quem 
+alterou, quando alterou e a justificativa), garantindo rastreabilidade jurídica. 
+ 
+ESPECIFICAÇÕES DO SOFTWARE DE GESTÃO DE PONTO (SaaS) 
+O sistema deverá ser fornecido na modalidade 100% Web (Nuvem), acessível via navegador, sem limites de usuários ou 
+cadastros, atendendo aos seguintes requisitos: 
+Arquitetura, Hospedagem e Disponibilidade: 
+• A aplicação deve rodar integralmente em ambiente Web (Cloud Computing), sendo a CONTRATADA 
+responsável pelo hosting, backup diário, segurança dos dados e monitoramento 24x7. 
+• O sistema deve possuir rotinas de recuperação automática (failover) em caso de falhas de hardware ou quedas 
+de rede, garantindo a integridade total do banco de dados (Item 9.1.5 e 9.1.18 do anexo). 
+Comentado [CO252]: ATENDE 
+Comentado [CO253]: NÃO ATENDE 
+Comentado [CO254]: NÃO ATENDE 
+Comentado [CO255]: NÃO ATENDE 
+Comentado [CO256]: NÃO ATENDE 
+Precisa dos modelos da folha de pagamento do 
+municipio. 
+Comentado [CO257]: NÃO ATENDE 
+Nilton, preciso de especificações disso aqui. 
+Essa integração será feita pelo municipio usando a API 
+de integração da ARID ou o inverso? 
+Se for o inverso, não há definição alguma de como 
+será feito... 
+Precisa definir a estrutura, tipo de conexão com o outro 
+sistema, de quanto em quanto tempo a integração será 
+executada e as regras de negócio. 
+Comentado [ZC258]: VINCULAR COM TR QUE 
+PARTICIPAMOS E MELHORAR. 
+Comentado [CO259]: ATENDE 
+Mas o backup diário é responsabilidade da ARID e de 
+seus funcionários. 
+Eu só faço backup semanal (por segurança). 
+Comentado [CO260]: ATENDE 
+
+=== PÁGINA 20 ===
+ 
+ 
+ 
+ 
+ 
+ 
+• O acesso deve ser compatível com os principais navegadores do mercado (Chrome, Firefox, Edge), 
+independente do sistema operacional da estação de trabalho. 
+Capacidade e Licenciamento (Ilimitado): 
+• O licenciamento deve contemplar o cadastro e uso ILIMITADO para: 
+o Servidores Públicos (ativos e inativos); 
+o Operadores/Gestores do sistema (RH e Chefias); 
+o Secretarias, Departamentos, Lotações e Locais de Trabalho; 
+o Regras de horários, turnos e escalas. 
+• A CONTRATADA deverá apresentar declaração de que é detentora dos direitos intelectuais do software ou 
+revenda autorizada com garantia de suporte de fábrica (Ref. Item 9.1.3 do anexo). 
+Gestão de Benefícios e Auxílios (Vouchers): O sistema deve automatizar o cálculo de benefícios para evitar 
+pagamentos indevidos: 
+• O software deve permitir a configuração de regras para concessão automática de Vale Transporte e Vale 
+Alimentação baseada na assiduidade efetiva. 
+• Regras Parametrizáveis: 
+o Definição de valor fixo diário ou mensal, com desconto automático em caso de falta ou atraso superior à 
+tolerância configurada. 
+o Possibilidade de gerar o benefício a cada "X" horas trabalhadas, com configuração de tolerâncias 
+específicas. 
+• Emissão de relatórios sintéticos e analíticos dos benefícios gerados, segregando servidores com direito e sem 
+direito no período, para conferência antes do pagamento (Ref. Itens 9.1.20 a 9.1.22 do anexo). 
+Integração Bidirecional: 
+• O sistema deve possuir API ou layout de arquivos para: 
+o Cadastros de novos servidores, rescisões e transferências vindas do sistema de RH. 
+o Eventos de frequência apurados (Faltas, Atrasos, Horas Extras, Adicional Noturno) diretamente para a 
+folha. 
+• Capacidade de enviar comandos remotos para os relógios de ponto (coletores), permitindo o envio (distribuição) 
+da face de um ou mais servidores para um grupo específico de equipamentos via sistema web, sem necessidade 
+de coleta local (Ref. Item 9.1.19 do anexo). 
+• O sistema deve garantir a sincronização dos registros de ponto e templates faciais conforme agenda programada, 
+sem intervenção humana (Ref. Item 9.1.17 do anexo). 
+ 
+ 
+ 
+ 
+Comentado [CO261]: ATENDE 
+Comentado [CO262]: NÃO ATENDE 
+Comentado [CO263]: NÃO ATENDE 
+Comentado [CO264]: NÃO ATENDE 
+Comentado [CO265]: NÃO ATENDE 
+Comentado [CO266]: Verificar se atende 
+Atualmente os coletores possuem um sistema web 
+embarcado, mas não está embarcado. 
+Isso deve ser visto com o Alyson. 
+Comentado [CO267]: ATENDE 
+Se, devidamente configurado, os registros chegam de 
+forma automática. 
+
+=== PÁGINA 21 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Filtros e Relatórios Gerenciais: 
+• O sistema deve permitir a geração de relatórios e consultas em tela com filtros combinados por: Funcionário, 
+Empresa/Secretaria, Local de Trabalho, Lotação, Cargo e Categoria, permitindo visão macro e micro da 
+frequência (Ref. Item do anexo). 
+ESPECIFICAÇÕES MÍNIMAS DO HARDWARE  
+A CONTRATADA deverá fornecer equipamentos novos ou seminovos (em perfeito estado), homologados pela 
+ANATEL, atendendo às seguintes características técnicas mínimas: 
+DO SISTEMA DE VIDEOMONITORAMENTO  
+• Equipamento com processador dedicado e tecnologia Deep Learning embarcada para execução de analíticos de 
+vídeo nativos. 
+• Suporte para no mínimo 32 canais de vídeo (IP ou Híbrido). 
+• Deverá ser fornecido com Disco Rígido (HDD) específico para vigilância (linha Surveillanceou Purple), 
+dimensionado para retenção mínima de 30 dias de gravação contínua (24h). 
+• O hardware deve processar nativamente: Reconhecimento Facial, Detecção de Intrusão (Linha/Cerca Virtual), 
+Detecção de Humanos e Veículos (classificação de alvos). 
+• Porta Ethernet Gigabit (10/100/1000 Mbps). 
+• H.265+ (para otimização de banda e armazenamento). 
+Câmeras de Segurança (Bullet/Dome) 
+• Full HD (1080p / 2 Megapixels) ou superior. 
+• 2.8mm ou 3.6mm (grande angular) para cobertura ampla de pátios e corredores. 
+• Infravermelho (IR) inteligente com alcance mínimo de 30 metros (ambiente breu total). 
+• Grau de proteção IP67 (à prova d’água e poeira) e proteção contra surtos de tensão. 
+• DWDR ou True WDR (para compensação de luz de fundo em entradas/saídas). 
+Monitor de Visualização (Estação de Trabalho) 
+• Smart TV ou Monitor Profissional LED. 
+• Mínimo de 32 polegadas. 
+• Full HD, com entradas HDMI. 
+DO CONTROLE DE ACESSO E PONTO 
+Terminal de Reconhecimento Facial (Ponto e Acesso) 
+• Algoritmo de reconhecimento facial com Detecção de Vivacidade (Liveness Check - anti-spoofing), capaz de 
+distinguir um rosto real de uma foto ou vídeo em celular. 
+• Mínimo de 3.000 faces e 150.000 registros de eventos em modo offline. 
+• Reconhecimento em tempo inferior a 0,5 segundos. 
+Comentado [CO268]: ATENDE 
+Comentado [ZC269]: VERIFICAR 
+
+=== PÁGINA 22 ===
+ 
+ 
+ 
+ 
+ 
+ 
+• Tela: Display Touch Screen colorido de no mínimo 4 polegadas. 
+• Conectividade: Porta Ethernet (TCP/IP), Wi-Fi integrado e USB. 
+• Funcionamento Híbrido: Deve operar conectado ao servidor (online) e possuir autonomia para registrar ponto 
+mesmo sem internet (offline), sincronizando posteriormente. 
+Catraca Eletrônica (Controle Físico) 
+• Tipo: Pedestal ou Balcão, com braços em aço inox. 
+• Mecanismo: Sistema de giro suave com amortecimento, bidirecional. 
+• Integração: Deve possuir suporte nativo ou adaptador para fixação do Terminal de Reconhecimento Facial 
+descrito no item 9.2.1. 
+• Acionamento de Emergência: Sistema "Braço que cai" (Drop Arm) ou liberação de giro livre em caso de corte 
+de energia (pânico/incêndio). 
+ 
+DA CONECTIVIDADE VIA SATÉLITE (LEO) 
+Kit de Antena Satelital de Baixa Órbita 
+• Tecnologia: Antena do tipo Phased Array Eletrônica, com motorização para auto-orientação. 
+• Constelação: Deve operar em constelação de satélites de baixa órbita (LEO) para garantir baixa latência. 
+• Desempenho de Rede: 
+o Latência: Inferior a 50ms (milissegundos). 
+o Velocidade de Download: Mínimo de 100 Mbps (nominal). 
+• Resistência: A antena deve possuir grau de proteção IP54 ou superior (uso externo chuva/sol) e capacidade de 
+derretimento de neve/granizo (aquecimento automático). 
+• Roteador Wi-Fi: Incluso no kit, padrão IEEE 802.11ac (Wi-Fi 5) ou superior (Wi-Fi 6), Dual Band (2.4GHz e 
+5GHz). 
+ 
+DA GESTÃO DE FROTAS (RASTREADORES) 
+Módulo Rastreador Veicular (Hardware) 
+• Tecnologia de Comunicação: GPRS/4G com chip de dados multi-operadora (M2M). 
+• Localização: GPS/GLONASS de alta precisão. 
+• Memória Interna: Capacidade de armazenamento de posições em "áreas de sombra" (black spots) para 
+transmissão posterior (Store and Forward). 
+• Telemetria: Entradas para detecção de ignição (pós-chave), voltagem da bateria e odômetro virtual. 
+• Bateria de Backup: Bateria interna para manter o rastreamento por no mínimo 4 horas em caso de corte da 
+bateria do veículo. 
+ 
+
+=== PÁGINA 23 ===
+ 
+ 
+ 
+ 
+ 
+ 
+DA INFRAESTRUTURA ELÉTRICA E LÓGICA 
+Proteção Elétrica (Nobreak/UPS) 
+• Para garantir a segurança das imagens e do registro de ponto mesmo em quedas de energia: 
+• Potência: Mínimo de 600VA ou 1200VA (dimensionado conforme a carga do rack). 
+• Bateria: Bateria selada interna com autonomia mínima de 15 minutos para desligamento seguro ou manutenção 
+da gravação. 
+Cabeamento e Conectividade 
+• Cabo de Rede: Categoria CAT.5e ou CAT.6, homologado pela ANATEL, 100% cobre. 
+• Organização: Rack organizador de parede (Mini Rack) para acondicionamento do DVR, Nobreak e Fontes, 
+com chave de segurança, evitando acesso indevido aos equipamentos. 
+ 
+DOS DOCUMENTOS COMPLEMENTARES E QUALIFICAÇÃO TÉCNICA 
+Além dos documentos de habilitação jurídica e fiscal padrão, a licitante deverá apresentar, sob pena de inabilitação, os 
+documentos técnicos abaixo relacionados, visando comprovar a aptidão para desempenho de atividade pertinente e 
+compatível com o objeto: 
+Atestados de Capacidade Técnica 
+A licitante deverá apresentar 01 (um) ou mais Atestados de Capacidade Técnica, expedidos por pessoa jurídica de 
+direito público ou privado, que comprovem a execução de serviços de características semelhantes, contendo 
+minimamente: 
+• a) Comprovação de experiência em instalação e manutenção de equipamentos tecnológicos em múltiplas 
+unidades descentralizadas simultaneamente (rede de filiais, escolas ou postos de saúde). 
+• b) Experiência em fornecimento ou locação de sistema de CFTV IP/Digital com, no mínimo, 50% (cinquenta 
+por cento) dos quantitativos de câmeras solicitados neste TR. 
+• c) Experiência em implantação de infraestrutura de rede lógica e/ou links de comunicação de dados. 
+• d) Atestado que comprove o fornecimento de licença de uso de software de gestão (Ponto, Frota ou ERP) em 
+nuvem (SaaS). 
+Da Vistoria Técnica Obrigatória  
+Considerando que a execução do objeto envolve instalações em zonas rurais, distritos afastados e áreas de difícil 
+acesso, onde a infraestrutura elétrica e lógica é precária ou inexistente, o conhecimento prévio do local 
+é obrigatória para a correta precificação dos custos logísticos e de insumos (cabos, postes, conectores). 
+A Vistoria Técnica deverá ser agendada junto às Secretarias solicitantes e realizada por responsável técnico da empresa 
+até o último dia útil anterior à abertura da sessão.  
+A não realização da vistoria técnica ou a não apresentação da Declaração de Vistoria assinada pelo servidor responsável 
+acarretará a inabilitação da licitante. 
+Documentação Técnica dos Equipamentos 
+Para fins de análise da proposta e Prova de Conceito, a licitante deve anexar: 
+
+=== PÁGINA 24 ===
+ 
+ 
+ 
+ 
+ 
+ 
+• a) Dos equipamentos ofertados (Câmeras, DVR, Catracas, Antenas), em língua portuguesa, contendo as 
+especificações detalhadas que comprovem o atendimento aos requisitos mínimos deste TR (ex: latência do 
+satélite, resolução da câmera, analíticos de IA). 
+• b) Documento oficial de homologação das antenas de transmissão via satélite e roteadores Wi-Fi, garantindo a 
+legalidade do uso do espectro de radiofrequência no Brasil. 
+Declarações de Propriedade e Parceria 
+• a) Caso a licitante não seja a fabricante dos softwares ou equipamentos de IA, deverá apresentar declaração 
+oficial do fabricante (Vendor) atestando que a empresa é revenda autorizada e possui capacidade para prestar 
+suporte técnico e garantia (RMA) no Brasil. 
+• b) Documento onde a licitante garante que os softwares de reconhecimento facial e armazenamento de dados 
+biométricos possuem criptografia e estão adequados à Lei 13.709/2018 
+DA PROVA DE CONCEITO (POC) E AMOSTRA TÉCNICA PRESENCIAL 
+Como condição indispensável para a adjudicação, a licitante classificada provisoriamente em primeiro lugar deverá 
+realizar a POC Presencial demonstrando 100% de aderência técnica aos itens descritos neste Termo de Referência e na 
+Tabela de Especificações. 
+• A falha em demonstrar qualquer funcionalidade, ou a entrega de equipamento com especificação inferior à 
+solicitada, resultará na reprovação imediata, não sendo aceitas justificativas de "ajustes futuros" ou "promessa 
+de atualização". 
+A POC deve ser iniciada em até 02 (dois) dias corridos após a convocação, de forma presencial nas dependências da 
+Prefeitura ou em local técnico designado pela comissão. Todas as despesas de logística, equipamentos e pessoal são de 
+responsabilidade da licitante. 
+Validação de Hardware e IA Nativa (Segurança): 
+• Teste: Montagem e operação do sistema de vídeo (DVR + Câmeras). 
+• Verificação: Comprovação de que o processamento analítico (Reconhecimento Facial e Cerca Virtual) 
+ocorre integralmente dentro do hardware do DVR. 
+• Bloqueio: Se a licitante utilizar qualquer software externo ou PC auxiliar para rodar a inteligência, será 
+reprovada por descumprimento do requisito de solução unificada. 
+Validação de Conectividade Satelital (Starlink/LEO): 
+• Teste: Ativação da antena em ambiente externo e teste de tráfego. 
+• Verificação: Medição de latência (Ping) e velocidade. 
+• Requisito: Latência máxima de 50ms e download de 100 Mbps. Qualquer resultado fora destes parâmetros 
+desclassifica a proposta por incompatibilidade tecnológica com as necessidades de frotas e sistemas web. 
+Validação de Software e Anti-Fraude (Ponto/App): 
+• Tentar registrar o ponto utilizando aplicativo de "Fake GPS". O sistema deve detectar e bloqueara marcação. 
+• Tentar registrar o ponto usando uma foto impressa ou vídeo no celular. O sistema deve acusar "Falha" pelo 
+sensor de Liveness Check. 
+• Realizar o cadastro de uma face no Software Web e verificar se o comando chega ao Terminal Facial em tempo 
+real (IoT), sem necessidade de pendrive ou intervenção manual. 
+Comentado [ZC270]: VERIFICAR 
+
+=== PÁGINA 25 ===
+ 
+ 
+ 
+ 
+ 
+ 
+Validação de Integração e Benefícios (Vale Transporte/Alimentação): 
+• Teste: Simular o fechamento de um espelho de ponto com faltas e atrasos. 
+• Verificação: O sistema deve demonstrar o cálculo automático dos descontos de benefícios conforme as regras 
+parametrizadas, provando a eficiência na geração do arquivo para a folha de pagamento. 
+Ao final da POC, a Comissão Técnica emitirá um Laudo Conclusivo. A aprovação exige o status de "ATENDIDO" em 
+100% dos itens testados. O status "Parcialmente Atendido" equivale à reprovação e imediata convocação da próxima 
+licitante classificada. 
+ 
+ 
+

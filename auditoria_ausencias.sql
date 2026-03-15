@@ -1,0 +1,3 @@
+-- A feature de Auditoria de Ausências não exige alteração nas estruturas do banco de dados (DDL),
+-- pois ela consome as tabelas de log já existentes (LogAuditoriaPonto, Afastamento, JustificativaDeAusencia).
+-- Nenhuma tabela ou coluna precisou ser adicionada.

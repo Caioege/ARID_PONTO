@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 
 @{
     var dadosDaSessao = Context.DadosDaSessao();
@@ -113,6 +113,10 @@
                 {
                     <button id="btn-gerenciar-app" type="button" class="btn btn-secondary btn-acao-ponto float-end" onclick="abrirModalGerenciarRegistrosApp()" style="display:none; margin-right: 5px;">
                         <i class='bx bx-mobile-alt'></i> Solicitações App
+                    </button>
+                    
+                    <button id="btn-ocorrencias-espelho" type="button" class="btn btn-warning btn-acao-ponto float-end" onclick="abrirModalOcorrenciasEspelho()" style="display:none; margin-right: 5px; color: #fff;">
+                        <i class='bx bx-message-square-detail'></i> Ocorrências Espelho
                     </button>
                 }
 

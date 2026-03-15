@@ -153,7 +153,7 @@
             <li class="menu-item menu-group">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-slider-alt"></i>
-                    <div data-i18n="Administração">Administração</div>
+                    <div data-i18n="AdministraÃ§Ã£o">AdministraÃ§Ã£o</div>
                 </a>
                 <ul class="menu-sub">
                     @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
@@ -161,7 +161,7 @@
                         <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
                                 <i class='menu-icon bx bx-buildings'></i>
-                                <div class="menu-text-content">Organizações</div>
+                                <div class="menu-text-content">OrganizaÃ§Ãµes</div>
                             </a>
                         </li>
                     }
@@ -172,7 +172,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "Funcao")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-bookmark-alt'></i>
-                                    <div class="menu-text-content">Cargo/Função</div>
+                                    <div class="menu-text-content">Cargo/FunÃ§Ã£o</div>
                                 </a>
                             </li>
                         }
@@ -208,7 +208,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-timer'></i>
-                                    <div class="menu-text-content">Horário de Trabalho</div>
+                                    <div class="menu-text-content">HorÃ¡rio de Trabalho</div>
                                 </a>
                             </li>
                         }
@@ -226,7 +226,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "JustificativaDeAusencia")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-bookmark-minus'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">Justificativa de Ausência</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Justificativa de AusÃªncia</div>
                                 </a>
                             </li>
                         }
@@ -235,7 +235,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = dadosDaSessao.OrganizacaoId })')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bx-buildings'></i>
-                                    <div class="menu-text-content">Minha Organização</div>
+                                    <div class="menu-text-content">Minha OrganizaÃ§Ã£o</div>
                                 </a>
                             </li>
                         }
@@ -244,19 +244,21 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "MotivoDeDemissao")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bx-task-x'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">Motivo de Demissão</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Motivo de DemissÃ£o</div>
                                 </a>
                             </li>
+                        }
                         }
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_TipoDeVinculoDeTrabalho.Visualizar, usuarioAdm))
                         {
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("Index", "TipoDoVinculoDeTrabalho")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-bookmarks'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">Tipo do Vínculo de Trabalho</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Tipo do VÃ­nculo de Trabalho</div>
                                 </a>
                             </li>
                         }
+
                     }
                 </ul>
             </li>
@@ -311,7 +313,7 @@
                 <li class="menu-item menu-group">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class='menu-icon tf-icons bx bxs-report'></i>
-                        <div data-i18n="Relatórios">Relatórios</div>
+                        <div data-i18n="RelatÃ³rios">RelatÃ³rios</div>
                     </a>
                     <ul class="menu-sub">
                         @if (listaDePermissao.PossuiPermissao(eItemDePermissao_RelatorioAniversariantesDoPeriodo.Visualizar, usuarioAdm))
@@ -319,7 +321,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("AniversariantesDoPeriodo", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-calendar'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">Aniversariantes do Período</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">Aniversariantes do PerÃ­odo</div>
                                 </a>
                             </li>
                         }
@@ -328,7 +330,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ConferenciaDePontoDiario", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                                     <i class='bx bxs-calendar-check'></i> 
-                                    <div class="menu-text-content" style="white-space: normal !important;">Conferência de Ponto Diário</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">ConferÃªncia de Ponto DiÃ¡rio</div>
                                 </a>
                             </li>
                         }
@@ -373,7 +375,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresPorHorarioDeTrabalho", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-timer'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Horário de Trabalho</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por HorÃ¡rio de Trabalho</div>
                                 </a>
                             </li>
                         }
@@ -382,7 +384,7 @@
                             <li class='menu-item searchable-item'>
                                 <a onclick="CarregarPagina('@Url.Action("ServidoresPorLotacao", "Relatorio")')" href="javascript:void(0)" class="menu-link">
                                     <i class='bx bx-list-ol'></i>
-                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por Lotação</div>
+                                    <div class="menu-text-content" style="white-space: normal !important;">@nomenclaturaServidores por LotaÃ§Ã£o</div>
                                 </a>
                             </li>
                         }
@@ -402,7 +404,7 @@
             <li class="menu-item menu-group">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class='menu-icon tf-icons bx bxs-user-badge'></i>
-                    <div data-i18n="Usuários">Usuários</div>
+                    <div data-i18n="UsuÃ¡rios">UsuÃ¡rios</div>
                 </a>
                 <ul class="menu-sub">
                     @if ((dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao || dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema) && listaDePermissao.PossuiPermissao(eItemDePermissao_Usuarios.Visualizar, usuarioAdm))
@@ -410,7 +412,7 @@
                         <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
                                 <i class='menu-icon bx bxs-user-account'></i>
-                                <div class="menu-text-content" style="white-space: normal !important;">Cadastro de Usuários</div>
+                                <div class="menu-text-content" style="white-space: normal !important;">Cadastro de UsuÃ¡rios</div>
                             </a>
                         </li>
                     }
@@ -419,7 +421,7 @@
                         <li class='menu-item searchable-item'>
                             <a onclick="CarregarPagina('@Url.Action("Index", "GrupoDePermissao")')" href="javascript:void(0)" class="menu-link">
                                 <i class='menu-icon bx bxs-user-check'></i>
-                                <div class="menu-text-content" style="white-space: normal !important;">Grupo de Permissão</div>
+                                <div class="menu-text-content" style="white-space: normal !important;">Grupo de PermissÃ£o</div>
                             </a>
                         </li>
                     }
@@ -444,9 +446,9 @@
 
         function criarRegexParaHighlight(termo) {
             const mapaAcentos = {
-                'a': '[aáàâãä]', 'e': '[eéèêë]', 'i': '[iíìîï]',
-                'o': '[oóòôõö]', 'u': '[uúùûü]', 'c': '[cç]',
-                'n': '[nñ]', 'y': '[yýÿ]'
+                'a': '[aÃ¡Ã Ã¢Ã£Ã¤]', 'e': '[eÃ©Ã¨ÃªÃ«]', 'i': '[iÃ­Ã¬Ã®Ã¯]',
+                'o': '[oÃ³Ã²Ã´ÃµÃ¶]', 'u': '[uÃºÃ¹Ã»Ã¼]', 'c': '[cÃ§]',
+                'n': '[nÃ±]', 'y': '[yÃ½Ã¿]'
             };
 
             let termoSeguro = termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

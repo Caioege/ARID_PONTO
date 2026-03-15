@@ -33,6 +33,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServicoDeFolhaDePonto _servicoDeFolhaDePonto;
         private readonly IServico<Servidor> _servicoServidor;
 
+
+
         public RelatorioController(
             IServicoDeRelatorios servicoDeRelatorios,
             IServico<JustificativaDeAusencia> servicoJustificativa,
@@ -262,6 +264,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 "Id",
                 "SiglaComDescricao");
 
+
+
             return View();
         }
 
@@ -269,12 +273,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public ActionResult ProcessarListaDeServidores(
             int? unidadeId,
             int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId)
+            int? tipoDeVinculoDeTrabalhoId,
+            int? listaPersonalizadaId)
         {
             var relatorio = RelatorioListaDeServidores(
                 unidadeId,
                 horarioDeTrabalhoId,
-                tipoDeVinculoDeTrabalhoId);
+                tipoDeVinculoDeTrabalhoId,
+                listaPersonalizadaId);
 
             var nomeArquivo = $"Lista de {HttpContext.NomenclaturaServidores()}.pdf";
 
@@ -715,6 +721,57 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 fim.Value);
 
             var nomeArquivo = $"Relatório de Absenteísmo.pdf";
+
+            return Json(new
+            {
+                sucesso = true,
+                fileName = nomeArquivo,
+                base64 = Convert.ToBase64String(relatorio),
+                mimeType = GetMimeType(nomeArquivo)
+            });
+        }
+
+        [HttpGet]
+        public IActionResult AuditoriaDeAusencias()
+        {
+            try
+            {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId).OrderBy(c => c.Nome),
+                        "Id", "Nome");
+                }
+                else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento)
+                {
+                    ViewBag.Unidades = new SelectList(
+                        _servicoDeFolhaDePonto.ObtenhaListaDeUnidadesLotadasNoDepartamento(organizacaoId, dadosDaSessao.DepartamentoId.Value),
+                        "Id", "Nome");
+                }
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ProcessarAuditoriaDeAusencias(
+            int? unidadeLotacaoId,
+            DateTime? inicio,
+            DateTime? fim)
+        {
+            var relatorio = ObtenhaRelatorioDeAuditoriaDeAusencias(
+                    unidadeLotacaoId,
+                    inicio,
+                    fim);
+
+            var nomeArquivo = "Auditoria de Ausências.pdf";
 
             return Json(new
             {
@@ -1191,7 +1248,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private byte[] RelatorioListaDeServidores(
             int? unidadeId,
             int? horarioDeTrabalhoId,
-            int? tipoDeVinculoDeTrabalhoId)
+            int? tipoDeVinculoDeTrabalhoId,
+            int? listaPersonalizadaId)
         {
             var dadosDaSessao = this.DadosDaSessao();
             if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
@@ -1203,6 +1261,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 horarioDeTrabalhoId,
                 tipoDeVinculoDeTrabalhoId,
                 dadosDaSessao.DepartamentoId);
+
+
 
             if (servidores.Count == 0)
                 throw new ApplicationException($"Nenhum {HttpContext.NomenclaturaServidor().ToLower()} encontrado para os filtros informados.");
@@ -2468,6 +2528,85 @@ namespace AriD.GerenciamentoDePonto.Controllers
             document.Add(new Div().SetMarginTop(10).Add(table));
 
             document.Close();
+            return stream.ToArray();
+        }
+
+        private byte[] ObtenhaRelatorioDeAuditoriaDeAusencias(
+            int? unidadeLotacaoId,
+            DateTime? inicio,
+            DateTime? fim)
+        {
+            var dadosDaSessao = HttpContext.DadosDaSessao();
+
+            if (dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional)
+                unidadeLotacaoId = dadosDaSessao.UnidadeOrganizacionais.First();
+
+            var registros = _servicoDeRelatorios.ObtenhaRelatorioDeAuditoriaDeAusencias(
+                dadosDaSessao.OrganizacaoId,
+                inicio,
+                fim,
+                unidadeLotacaoId);
+
+            if (registros.Count == 0)
+                throw new ApplicationException("Nenhum registro de auditoria encontrado para os filtros informados.");
+
+            var stream = new MemoryStream();
+
+            var writer = new PdfWriter(stream);
+            var pdf = new PdfDocument(writer);
+            var document = new Document(pdf);
+
+            AdicioneCabecalho(
+                document,
+                dadosDaSessao.OrganizacaoId,
+                dadosDaSessao.OrganizacaoNome);
+
+            document.SetFontSize(9);
+
+            var subTitulo = inicio.HasValue && fim.HasValue
+                ? $"Período Analisado: {inicio.Value.ToShortDateString()} a {fim.Value.ToShortDateString()}"
+                : "Período Analisado: Completo";
+
+            document.Add(
+                new Div()
+                .SetMarginBottom(10)
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(15f)
+                    .SetBold()
+                    .Add("Auditoria de Ausências / Afastamentos"))
+                .Add(new Paragraph()
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontSize(10f)
+                    .Add(subTitulo)));
+
+            var table = new Table(UnitValue.CreatePercentArray(new[] { 15f, 15f, 10f, 10f, 15f, 15f, 20f })).UseAllAvailableWidth();
+
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Servidor")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Justificativa")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Início")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY).SetTextAlignment(TextAlignment.CENTER));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Fim")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY).SetTextAlignment(TextAlignment.CENTER));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Ação")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Data/Hora (Log)")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY).SetTextAlignment(TextAlignment.CENTER));
+            table.AddHeaderCell(new Cell().Add(new Paragraph("Operador")).SetBold().SetBackgroundColor(ColorConstants.LIGHT_GRAY));
+
+            foreach (var item in registros)
+            {
+                table.AddCell(new Cell().Add(new Paragraph(item.ServidorNome ?? string.Empty)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Justificativa ?? string.Empty)));
+                table.AddCell(new Cell().Add(new Paragraph(item.InicioAfastamento.ToShortDateString())).SetTextAlignment(TextAlignment.CENTER));
+                table.AddCell(new Cell().Add(new Paragraph(item.FimAfastamento?.ToShortDateString() ?? "-")).SetTextAlignment(TextAlignment.CENTER));
+                
+                var descFormatada = string.IsNullOrWhiteSpace(item.Descricao) ? item.Acao : $"{item.Acao} ({item.Descricao})";
+                table.AddCell(new Cell().Add(new Paragraph(descFormatada)));
+                
+                table.AddCell(new Cell().Add(new Paragraph(item.DataHoraAcao.ToString("dd/MM/yyyy HH:mm"))).SetTextAlignment(TextAlignment.CENTER));
+                table.AddCell(new Cell().Add(new Paragraph(item.OperadorNome ?? string.Empty)));
+            }
+
+            document.Add(table);
+            document.Close();
+
             return stream.ToArray();
         }
     }

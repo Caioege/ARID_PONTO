@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -296,13 +296,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var horasExtrasDaFolha = _servicoDeFolhaDePonto
                 .HorasExtrasDaFolhaDePonto(organizacaoId, vinculoDeTrabalhoId, mesAno.Inicio, mesAno.Fim);
 
+            var ocorrenciasDoEspelho = _servicoDeFolhaDePonto
+                .ObtenhaOcorrenciasDoEspelhoPonto(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia);
+
             var relatorio = RelatorioFolhaDePonto(
                 HttpContext.DadosDaSessao(),
                 vinculoDeTrabalho,
                 mesAno,
                 eventos,
                 listaDePonto,
-                horasExtrasDaFolha);
+                horasExtrasDaFolha,
+                ocorrenciasDoEspelho);
 
             var nomeArquivo = $"Folha de Ponto {mesAno.ToString().Replace("/", "-")}.pdf";
 
@@ -481,6 +485,63 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Json(new { sucesso = true, html });
         }
 
+        [HttpGet]
+        public IActionResult CarregarOcorrenciasRodape(int vinculoDeTrabalhoId, string mesAno)
+        {
+            try
+            {
+                var organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
+                var ocorrencias = _servicoDeFolhaDePonto.ObtenhaOcorrenciasDoEspelhoPonto(organizacaoId, vinculoDeTrabalhoId, mesAno);
+
+                return Json(new { sucesso = true, ocorrencias });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult SalvarOcorrenciaRodape(int vinculoDeTrabalhoId, string mesAno, string descricao)
+        {
+            try
+            {
+                var sessao = HttpContext.DadosDaSessao();
+                var orgId = sessao.OrganizacaoId;
+                var usuarioId = sessao.UsuarioId; // Pode vir do token
+                var usuarioNome = sessao.UsuarioNome ?? "Sistema";
+
+                var novaOcorrencia = _servicoDeFolhaDePonto.SalvarOcorrenciaDoEspelhoPonto(
+                    orgId,
+                    vinculoDeTrabalhoId,
+                    mesAno,
+                    descricao,
+                    usuarioId,
+                    usuarioNome
+                );
+
+                return Json(new { sucesso = true, ocorrencia = novaOcorrencia });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ExcluirOcorrenciaRodape(int id)
+        {
+            try
+            {
+                _servicoDeFolhaDePonto.ExcluirOcorrenciaDoEspelhoPonto(id);
+                return Json(new { sucesso = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
         private void ContextoPontoDoDia()
         {
             var dadosDaSessao = HttpContext.DadosDaSessao();
@@ -509,6 +570,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             List<EventoAnual> eventos,
             List<PontoDoDia> listaDePonto,
             List<PontoDoDiaHoraExtra> horasExtrasDaFolha,
+            List<OcorrenciaDoEspelhoPonto> ocorrencias = null,
             bool impressaoDoServidor = false)
         {
             var vigenciaRelatorio = vinculoDeTrabalho.HorarioDeTrabalho.ObtenhaVigenciaDoMes(mesAno);
@@ -1010,6 +1072,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 tabela.AddCell(nome2);
 
                 document.Add(new Div().SetMarginTop(30f).Add(tabela));
+            }
+
+            if (ocorrencias != null && ocorrencias.Count > 0)
+            {
+                var blockOcorrencias = new Div().SetMarginTop(15f);
+
+                blockOcorrencias.Add(new Paragraph("Ocorrências / Observações Adicionais:")
+                    .SetBold()
+                    .SetFontSize(9f));
+
+                var tableOcorrencias = new Table(1).UseAllAvailableWidth().SetBorder(new SolidBorder(ColorConstants.GRAY, 0.5f));
+
+                foreach (var oc in ocorrencias.OrderBy(c => c.DataHoraCadastro))
+                {
+                    tableOcorrencias.AddCell(new Cell()
+                        .SetPadding(4f)
+                        .SetBorderBottom(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .SetFontSize(8f)
+                        .Add(new Paragraph(oc.Descricao)));
+                }
+
+                blockOcorrencias.Add(tableOcorrencias);
+                document.Add(blockOcorrencias);
             }
 
             document.Close();

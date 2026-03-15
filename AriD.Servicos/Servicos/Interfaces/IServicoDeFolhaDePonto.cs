@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 
@@ -91,5 +91,9 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<LogAuditoriaPonto> ObtenhaAuditoriaDoDia(int organizacaoId, int pontoDoDiaId);
 
         void ReconsiderarRegistroDePonto(int organizacaoId, int pontoDoDiaId, int registroDePontoId);
+
+        List<OcorrenciaDoEspelhoPonto> ObtenhaOcorrenciasDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia);
+        OcorrenciaDoEspelhoPonto SalvarOcorrenciaDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia, string descricao, int usuarioCadastroId, string usuarioCadastroNome);
+        void ExcluirOcorrenciaDoEspelhoPonto(int id);
     }
 }

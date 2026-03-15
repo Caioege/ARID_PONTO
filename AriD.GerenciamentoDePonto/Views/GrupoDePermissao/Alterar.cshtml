@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
 @using AriD.BibliotecaDeClasses.Enumeradores.Permissao
 @model GrupoDePermissao
@@ -141,6 +141,8 @@
                     new Tuple<string, Type, GrupoDePermissao>("Justificativa de Ausência", typeof(eItemDePermissao_JustificativaDeAusencia), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelJustificativa)
 
+
+
                 var modelMotivoDeDemissao =
                     new Tuple<string, Type, GrupoDePermissao>("Motivo de Demissão", typeof(eItemDePermissao_MotivoDeDemissao), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelMotivoDeDemissao)
@@ -148,9 +150,9 @@
                 var modelTipoDeVinculo =
                     new Tuple<string, Type, GrupoDePermissao>("Tipo de Vínculo de Trabalho", typeof(eItemDePermissao_TipoDeVinculoDeTrabalho), Model);
                 @await Html.PartialAsync("_PartialItemPermissao", modelTipoDeVinculo)
-            }
 
-            <br />
+                <br />
+            }
             <table class="table-titulo">
                 <tr>
                     <td class="text-center">
@@ -198,6 +200,12 @@
                     new Tuple<string, Type, GrupoDePermissao>($"Aniversariantes do Período", typeof(eItemDePermissao_RelatorioAniversariantesDoPeriodo), Model);
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelRelAniversariantes)
+
+            @{
+                var modelRelAuditoriaAusencias =
+                    new Tuple<string, Type, GrupoDePermissao>($"Auditoria de Ausências", typeof(eItemDePermissao_RelatorioAuditoriaDeAusencias), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelRelAuditoriaAusencias)
 
             @{
                 var modelRelConferenciaDePonto =

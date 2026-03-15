@@ -6,6 +6,7 @@ using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
+using Dapper;
 
 namespace AriD.Servicos.Servicos
 {
@@ -110,6 +111,7 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<LogAuditoriaPonto> _repositorioAuditoriaPonto;
         private readonly IRepositorio<HorarioDeTrabalhoVigencia> _repositorioHorarioVigencia;
         private readonly IRepositorio<HorarioDeTrabalhoDia> _repositorioHorarioDia;
+        private readonly IRepositorio<OcorrenciaDoEspelhoPonto> _repositorioOcorrencia;
 
         public ServicoDeFolhaDePonto(
             IRepositorio<PontoDoDia> repositorio,
@@ -127,7 +129,8 @@ namespace AriD.Servicos.Servicos
             IRepositorio<LogAuditoriaPonto> repositorioAuditoriaPonto,
             IUsuarioAtual usuarioAtual,
             IRepositorio<HorarioDeTrabalhoVigencia> repositorioHorarioVigencia,
-            IRepositorio<HorarioDeTrabalhoDia> repositorioHorarioDia)
+            IRepositorio<HorarioDeTrabalhoDia> repositorioHorarioDia,
+            IRepositorio<OcorrenciaDoEspelhoPonto> repositorioOcorrencia)
             : base(repositorio)
         {
             _repositorio = repositorio;
@@ -146,6 +149,7 @@ namespace AriD.Servicos.Servicos
             _usuarioAtual = usuarioAtual;
             _repositorioHorarioVigencia = repositorioHorarioVigencia;
             _repositorioHorarioDia = repositorioHorarioDia;
+            _repositorioOcorrencia = repositorioOcorrencia;
         }
 
         public (List<CodigoDescricaoDTO> Horarios, List<CodigoDescricaoDTO> Funcoes, List<CodigoDescricaoDTO> Departamentos) ObtenhaFiltrosPontoDia(
@@ -2329,6 +2333,41 @@ namespace AriD.Servicos.Servicos
             _repositorioRegistroDePonto.Commit();
 
             Auditar(organizacaoId, pontoDoDia.VinculoDeTrabalhoId, new MesAno(pontoDoDia.Data), pontoDoDiaId, "RECONSIDERAR_BATIDA", $"Reconsideração de marcação {r.DataHoraRegistro:dd/MM/yyyy HH:mm}.");
+        }
+
+        public List<OcorrenciaDoEspelhoPonto> ObtenhaOcorrenciasDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia)
+        {
+            var sql = @"
+                SELECT * FROM OcorrenciaDoEspelhoPonto 
+                WHERE OrganizacaoId = @OrgId 
+                  AND VinculoDeTrabalhoId = @VincId 
+                  AND MesReferencia = @MesAno
+                ORDER BY DataHoraCadastro DESC";
+
+            return _repositorio.ConsultaDapper<OcorrenciaDoEspelhoPonto>(sql, new { OrgId = organizacaoId, VincId = vinculoId, MesAno = mesReferencia });
+        }
+
+        public OcorrenciaDoEspelhoPonto SalvarOcorrenciaDoEspelhoPonto(int organizacaoId, int vinculoId, string mesReferencia, string descricao, int usuarioCadastroId, string usuarioCadastroNome)
+        {
+            var ocorrencia = new OcorrenciaDoEspelhoPonto(organizacaoId, vinculoId, mesReferencia, descricao, usuarioCadastroId, usuarioCadastroNome);
+            
+            _repositorioOcorrencia.Add(ocorrencia);
+            _repositorioOcorrencia.Commit();
+
+            Auditar(organizacaoId, vinculoId, new MesAno(mesReferencia), null, "SALVAR_OCORRENCIA_ESPELHO", $"Inclusão de ocorrência no espelho: {descricao}");
+
+            return ocorrencia;
+        }
+
+        public void ExcluirOcorrenciaDoEspelhoPonto(int id)
+        {
+            var ocorrencia = _repositorioOcorrencia.Obtenha(id);
+            if (ocorrencia == null) return;
+
+            Auditar(ocorrencia.OrganizacaoId, ocorrencia.VinculoDeTrabalhoId, new MesAno(ocorrencia.MesReferencia), null, "EXCLUIR_OCORRENCIA_ESPELHO", $"Exclusão de ocorrência no espelho: {ocorrencia.Descricao}");
+
+            _repositorioOcorrencia.Remover(ocorrencia);
+            _repositorioOcorrencia.Commit();
         }
 
         private void DesconsiderarRegistroDePonto(int organizacaoId, int pontoDoDiaId, int registroDePontoId, string motivo)

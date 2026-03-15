@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -61,6 +61,7 @@ namespace AriD.Servicos.DBContext
         public DbSet<EscalaDoServidor> EscalaDoServidor { get; set; }
         public DbSet<EquipamentoDePonto> EquipamentoDePonto { get; set; }
         public DbSet<RegistroDePonto> RegistroDePonto { get; set; }
+        public DbSet<OcorrenciaDoEspelhoPonto> OcorrenciaDoEspelhoPonto { get; set; }
         public DbSet<GrupoDePermissao> GrupoDePermissao { get; set; }
         public DbSet<ItemDoGrupoDePermissao> ItemDoGrupoDePermissao { get; set; }
         public DbSet<RegistroAplicativo> RegistroAplicativo { get; set; }
@@ -75,6 +76,6 @@ namespace AriD.Servicos.DBContext
         public DbSet<LayoutExportacaoFolhaPagamento> LayoutExportacaoFolhaPagamento { get; set; }
         public DbSet<LayoutExportacaoFolhaPagamentoCampo> LayoutExportacaoFolhaPagamentoCampo { get; set; }
         public DbSet<MapeamentoEventoFolhaPagamento> MapeamentoEventoFolhaPagamento { get; set; }
-        public DbSet<HorarioDeTrabalhoVigencia> HorarioDeTrabalhoVigencia { get; set; }
+        public DbSet<FiltroRelatorio> FiltroRelatorio { get; set; }
     }
 }

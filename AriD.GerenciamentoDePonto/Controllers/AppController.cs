@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.Entidades;
@@ -148,6 +148,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 mesAno,
                 eventos,
                 listaDePonto,
+                null,
                 null,
                 true);
 

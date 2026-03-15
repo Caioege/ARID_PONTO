@@ -8,6 +8,14 @@
         <h5 class="mb-0">
             <i class='bx bx-user-x'></i> Relatório de Absenteísmo e Atrasos
         </h5>
+        <div class="d-flex align-items-center">
+            <select id="TemplateFiltros" class="form-select form-select-sm me-2" style="width: 200px;" onchange="FiltrosPersonalizados.aplicar()">
+                <option value="">-- Templates Salvos --</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm" onclick="FiltrosPersonalizados.salvar()" title="Salvar Filtro Atual">
+                <i class='bx bx-star'></i>
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
@@ -41,7 +49,12 @@
     </div>
 </div>
 
+<script src="/Scripts/Comum/filtros_personalizados.js"></script>
 <script>
+    $(document).ready(function() {
+        FiltrosPersonalizados.init('.card-body', '#TemplateFiltros');
+    });
+
     function processarRelatorio() {
         let parametros = {
             unidadeId: $('#UnidadeId').val(),

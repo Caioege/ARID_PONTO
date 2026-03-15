@@ -71,5 +71,11 @@ namespace AriD.Servicos.Servicos.Interfaces
             DateTime inicio,
             DateTime fim,
             int? departamentoId);
+
+        List<RelatorioAuditoriaDeAusenciasDTO> ObtenhaRelatorioDeAuditoriaDeAusencias(
+            int organizacaoId,
+            DateTime? inicio,
+            DateTime? fim,
+            int? unidadeLotacaoId);
     }
 }

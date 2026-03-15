@@ -53,6 +53,7 @@ function assineChangeServidor() {
 		$('#btn-imprimir').attr("style", "display: none !important; margin-right: 5px;");
 		$('#btn-gerenciar-app').attr("style", "display: none !important; margin-right: 5px;");
 		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-ocorrencias-espelho').attr("style", "display: none !important; margin-right: 5px;");
 		$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
 		$('#btn-fechar-ponto').attr("style", "display: none !important");
 
@@ -103,6 +104,7 @@ function carregarFolhaDePonto(mensagem) {
 				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
 				$('#btn-gerenciar-app').attr("style", "display: inline !important; margin-right: 5px;");
 				$('#btn-visualizarhistoricofolha').attr("style", "display: inline !important; margin-right: 5px;");
+				$('#btn-ocorrencias-espelho').attr("style", "display: inline !important; margin-right: 5px; color: #fff;");
 
 				if (!data.exibirAbrir) {
 					$('#btn-resetar').attr("style", "display: inline !important; margin-right: 5px;");
@@ -243,4 +245,124 @@ function abrirModalGerenciarRegistrosApp() {
 				MensagemRodape('warning', data.mensagem);
 			}
 		});
+}
+
+function abrirModalOcorrenciasEspelho() {
+	RequisicaoAjaxComCarregamento('/FolhaDePonto/CarregarOcorrenciasRodape', 'GET', {
+		vinculoDeTrabalhoId: $('#VinculoDeTrabalhoId').val(),
+		mesAno: $('#MesDeReferencia').val()
+	}, function (data) {
+		if (data.sucesso) {
+			var html = `
+				<div class="modal fade" id="modalOcorrenciasEspelho" tabindex="-1" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Ocorrências do Espelho (Rodapé do PDF)</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+							</div>
+							<div class="modal-body">
+								<div class="mb-3">
+									<label class="form-label">Nova Ocorrência</label>
+									<textarea id="txtNovaOcorrencia" class="form-control" rows="3" placeholder="Digite uma ocorrência para adicionar ao rodapé do espelho e clique em Salvar"></textarea>
+									<div class="mt-2 text-end">
+										<button type="button" class="btn btn-primary" onclick="salvarOcorrenciaEspelho()">Adicionar Ocorrência</button>
+									</div>
+								</div>
+								
+								<hr />
+								<h6 class="mb-3">Ocorrências Cadastradas no Período</h6>
+								<div class="table-responsive">
+									<table class="table table-bordered table-striped" id="tabelaOcorrenciasEspelho">
+										<thead>
+											<tr>
+												<th>Data Cadastro</th>
+												<th>Usuário</th>
+												<th>Ocorrência</th>
+												<th width="80" class="text-center">Ações</th>
+											</tr>
+										</thead>
+										<tbody>`;
+
+			if (data.ocorrencias && data.ocorrencias.length > 0) {
+				data.ocorrencias.forEach(function (oc) {
+					var dataFormatada = new Date(oc.dataHoraCadastro).toLocaleString('pt-BR');
+					html += `
+											<tr>
+												<td>${dataFormatada}</td>
+												<td>${oc.usuarioCadastroNome}</td>
+												<td>${oc.descricao}</td>
+												<td class="text-center">
+													<button type="button" class="btn btn-sm btn-danger" onclick="excluirOcorrenciaEspelho(${oc.id})" title="Excluir Ocorrência">
+														<i class='bx bx-trash'></i>
+													</button>
+												</td>
+											</tr>`;
+				});
+			} else {
+				html += `<tr><td colspan="4" class="text-center">Nenhuma ocorrência cadastrada.</td></tr>`;
+			}
+
+			html += `
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>`;
+
+			$('#div-modal').html(html);
+			$('#modalOcorrenciasEspelho').modal('show');
+		} else {
+			MensagemRodape('warning', data.mensagem);
+		}
+	});
+}
+
+function salvarOcorrenciaEspelho() {
+	var descricao = $('#txtNovaOcorrencia').val();
+
+	if (!descricao || descricao.trim() === '') {
+		MensagemRodape('warning', 'Digite a ocorrência antes de salvar.');
+		return;
+	}
+
+	RequisicaoAjaxComCarregamento('/FolhaDePonto/SalvarOcorrenciaRodape', 'POST', {
+		vinculoDeTrabalhoId: $('#VinculoDeTrabalhoId').val(),
+		mesAno: $('#MesDeReferencia').val(),
+		descricao: descricao
+	}, function (data) {
+		if (data.sucesso) {
+			$('#modalOcorrenciasEspelho').modal('hide');
+			abrirModalOcorrenciasEspelho();
+			MensagemRodape('success', 'Ocorrência inserida com sucesso.');
+		} else {
+			MensagemRodape('warning', data.mensagem);
+		}
+	});
+}
+
+function excluirOcorrenciaEspelho(id) {
+	Swal.fire({
+		text: "Tem certeza que deseja remover esta ocorrência do espelho?",
+		icon: "question",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "SIM",
+		cancelButtonText: 'NÃO'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			RequisicaoAjaxComCarregamento('/FolhaDePonto/ExcluirOcorrenciaRodape', 'POST', { id: id }, function (data) {
+				if (data.sucesso) {
+					$('#modalOcorrenciasEspelho').modal('hide');
+					abrirModalOcorrenciasEspelho();
+					MensagemRodape('success', 'Ocorrência removida com sucesso.');
+				} else {
+					MensagemRodape('warning', data.mensagem);
+				}
+			});
+		}
+	});
 }
