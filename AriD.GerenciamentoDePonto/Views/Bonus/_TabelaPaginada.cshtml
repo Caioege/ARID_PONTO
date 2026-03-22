@@ -1,0 +1,27 @@
+@model ListaPaginada<ConfiguracaoBonus>
+
+@{
+    var tabela = new WebGrid<ConfiguracaoBonus>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Descricao", "Descrição", width: 40f),
+        tabela.Column("ValorDiario", "Valor Diário", format: (item) => item.ValorDiario.ToString("C"), width: 15f),
+        tabela.Column("PagaEmFinaisDeSemanaEFeriados", "FDS/Feriado", format: (item) => item.PagaEmFinaisDeSemanaEFeriados ? "Sim" : "Não", width: 10f),
+        tabela.Column("TurnoIntercaladoPagaDobrado", "Intercalado Dobro", format: (item) => item.TurnoIntercaladoPagaDobrado ? "Sim" : "Não", width: 10f),
+        tabela.Column("MinutosIntervaloTurnoIntercalado", "Tolerância (min)", width: 10f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Cadastrar", "Bonus", new { id = item.Id })')" title="Editar">
+                        <i class='bx bxs-edit-alt'></i>
+                    </button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="abrirModalApuracao(@item.Id, '@item.Descricao')" title="Apurar Mês">
+                        <i class='bx bx-calculator'></i>
+                    </button>
+                </div>
+            </text>, width: 15f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

@@ -1,97 +1,91 @@
-@using AriD.BibliotecaDeClasses.Entidades
-@model AriD.GerenciamentoDePonto.WebGrid.ListaPaginada<ConfiguracaoBonus>
-@{
-    ViewBag.Title = "Configurações de Bônus (VT/VA)";
-    Layout = "~/Views/Shared/_LayoutListagem.cshtml";
-}
+@using AriD.Servicos.Extensao
+@model ListaPaginada<ConfiguracaoBonus>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-        <h1 class="page-title txt-color-blueDark">
-            <i class="fa fa-fw fa-money"></i> Bônus (VT/VA) <span>> Configurações</span>
-        </h1>
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bx bx-money"></i> Configurações de Bônus (VT/VA)
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 col-sm-6 col-xs-12">
+                <div class="input-group">
+                    @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Digite para buscar", @style = "background: white" })
+                    <button class="btn btn-primary" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginada")')">
+                        <i class='bx bx-search-alt'></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-7 col-sm-6 col-xs-12">
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" onclick="CarregarPagina('@Url.Action("Relatorio")')" class="btn btn-outline-secondary">
+                        <i class="bx bx-list-ul"></i> Ver Bônus Calculados
+                    </button>
+                    @if (Context.PossuiPermissao(eItemDePermissao_Bonus.CadastrarOuAlterar))
+                    {
+                        <button type="button" onclick="CarregarPagina('@Url.Action("Cadastrar")')" class="btn btn-primary">
+                            <i class="bx bx-plus"></i> Adicionar
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <div id="grid">
+            @await Html.PartialAsync("_TabelaPaginada")
+        </div>
     </div>
 </div>
 
-<section id="widget-grid" class="">
-    <div class="row">
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div class="jarviswidget jarviswidget-color-blueDark">
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                    <h2>Lista de Regras e Bônus</h2>
-                    <div class="widget-toolbar">
-                        <a href="@Url.Action("Cadastrar", "Bonus")" class="btn btn-success"><i class="fa fa-plus"></i> Novo Bônus</a>
-                    </div>
-                </header>
-                <div>
-                    <div class="widget-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th>Descrição</th>
-                                        <th>Valor Diário</th>
-                                        <th>Paga em FDS/Feriado?</th>
-                                        <th>Turno Intercalado Dobrado?</th>
-                                        <th>Status</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null && Model.Itens.Count > 0)
-                                    {
-                                        foreach (var item in Model.Itens)
-                                        {
-                                            <tr>
-                                                <td>@item.Descricao</td>
-                                                <td>@item.ValorDiario.ToString("C")</td>
-                                                <td>@(item.PagaEmFinaisDeSemanaEFeriados ? "Sim" : "Não")</td>
-                                                <td>@(item.TurnoIntercaladoPagaDobrado ? "Sim" : "Não")</td>
-                                                <td>@(item.Ativo ? "Ativo" : "Inativo")</td>
-                                                <td>
-                                                    <button class="btn btn-primary btn-xs" onclick="ApurarMes(@item.Id)"><i class="fa fa-calculator"></i> Apurar Mês Atual</button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr><td colspan="6" class="text-center">Nenhuma configuração de bônus encontrada.</td></tr>
-                                    }
-                                </tbody>
-                            </table>
-                            @await Html.PartialAsync("_PaginacaoWebGrid", Model)
-                        </div>
-                    </div>
-                </div>
+<div class="modal fade" id="modalApuracao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apurar Bônus: <span id="apuracaoDesc"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </article>
+            <div class="modal-body">
+                <p>Escolha o mês de referência para o cálculo:</p>
+                <input type="text" id="mesReferencia" class="form-control" placeholder="MM/AAAA" value="@DateTime.Now.ToString("MM/yyyy")" />
+                <input type="hidden" id="apuracaoId" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="executarApuracao()">Calcular Agora</button>
+            </div>
+        </div>
     </div>
-</section>
+</div>
 
-@section pagespecific {
-    <script>
-        function ApurarMes(id) {
-            Swal.fire({
-                title: 'Apurar Bônus Mês Atual?',
-                text: "Isso vai calcular as presenças e gerar relatórios de recebimento para cada servidor da instituição.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sim, calcular!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var mesAnoStr = new Date().getMonth() + 1 + "/" + new Date().getFullYear();
-                    $.post('/Bonus/ProcessarCalculoDoMes', { configuracaoBonusId: id, mesReferencia: mesAnoStr }, function(res) {
-                        if(res.sucesso){
-                            Swal.fire('Processado', res.mensagem, 'success');
-                        }else{
-                            Swal.fire('Erro', res.mensagem, 'error');
-                        }
-                    });
-                }
-            });
+<script>
+    function abrirModalApuracao(id, desc) {
+        $('#apuracaoId').val(id);
+        $('#apuracaoDesc').text(desc);
+        $('#modalApuracao').modal('show');
+    }
+
+    function executarApuracao() {
+        let id = $('#apuracaoId').val();
+        let mes = $('#mesReferencia').val();
+
+        if (!mes || !/^\d{2}\/\d{4}$/.test(mes)) {
+            Swal.fire('Atenção', 'Informe o mês no formato MM/AAAA', 'warning');
+            return;
         }
-    </script>
-}
+
+        $.post('@Url.Action("ProcessarCalculoDoMes")', { configuracaoBonusId: id, mesReferencia: mes }, function (res) {
+            $('#modalApuracao').modal('hide');
+            if (res.sucesso) {
+                Swal.fire('Sucesso', res.mensagem, 'success').then(() => {
+                    CarregarPagina('@Url.Action("Relatorio")');
+                });
+            } else {
+                Swal.fire('Erro', res.mensagem, 'error');
+            }
+        });
+    }
+</script>

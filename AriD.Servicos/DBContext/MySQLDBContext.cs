@@ -79,6 +79,7 @@ namespace AriD.Servicos.DBContext
         public DbSet<FiltroRelatorio> FiltroRelatorio { get; set; }
         public DbSet<LogAuditoriaEscala> LogAuditoriaEscala { get; set; }
         public DbSet<ConfiguracaoBonus> ConfiguracaoBonus { get; set; }
+        public DbSet<ConfiguracaoBonusFuncao> ConfiguracaoBonusFuncao { get; set; }
         public DbSet<BonusCalculado> BonusCalculado { get; set; }
     }
 }

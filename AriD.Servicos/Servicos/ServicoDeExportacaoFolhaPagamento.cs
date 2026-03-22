@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -20,6 +20,7 @@ namespace AriD.Servicos.Servicos
         private readonly IRepositorio<UnidadeOrganizacional> _repoUnidade;
         private readonly IRepositorio<PontoDoDia> _repoPontoDoDia;
         private readonly IServicoDeFolhaDePonto _servicoFolha;
+        private readonly IRepositorio<BonusCalculado> _repoBonus;
 
         public ServicoDeExportacaoFolhaPagamento(
             IRepositorio<LayoutExportacaoFolhaPagamento> repoLayout,
@@ -29,7 +30,8 @@ namespace AriD.Servicos.Servicos
             IRepositorio<VinculoDeTrabalho> repoVinculo,
             IRepositorio<UnidadeOrganizacional> repoUnidade,
             IServicoDeFolhaDePonto servicoFolha,
-            IRepositorio<PontoDoDia> repoPontoDoDia)
+            IRepositorio<PontoDoDia> repoPontoDoDia,
+            IRepositorio<BonusCalculado> repoBonus)
         {
             _repoLayout = repoLayout;
             _repoCampos = repoCampos;
@@ -39,6 +41,7 @@ namespace AriD.Servicos.Servicos
             _repoUnidade = repoUnidade;
             _servicoFolha = servicoFolha;
             _repoPontoDoDia = repoPontoDoDia;
+            _repoBonus = repoBonus;
         }
 
         public List<CodigoDescricaoDTO> ObtenhaLayouts(int organizacaoId)
@@ -308,6 +311,21 @@ namespace AriD.Servicos.Servicos
                 heAprovadas = new List<HeAprovadaRow>();
             }
 
+            var strMes = mesAno.ToString();
+            var sqlBonus = @"
+                select VinculoDeTrabalhoId, ValorTotal
+                from BonusCalculado
+                where OrganizacaoId = @ORG
+                  and VinculoDeTrabalhoId in @IDS
+                  and MesReferencia = @MES;
+            ";
+            var bonusCalculados = _repoPontoDoDia.ConsultaDapper<BonusRow>(sqlBonus, new
+            {
+                @ORG = organizacaoId,
+                @IDS = idsExportaveis,
+                @MES = strMes
+            }) ?? new List<BonusRow>();
+
             // 5) códigos mapeados
             var mapeamentos = ObtenhaMapeamentos(organizacaoId).Where(m => m.Ativo).ToList();
             var mapDict = mapeamentos.ToDictionary(m => (m.TipoEvento, m.Percentual), m => m.Codigo);
@@ -366,6 +384,9 @@ namespace AriD.Servicos.Servicos
                 if (abono > 0) eventos.Add((eTipoEventoFolhaPagamento.Abono, null, abono));
                 if (bhc > 0) eventos.Add((eTipoEventoFolhaPagamento.BancoHorasCredito, null, bhc));
                 if (bhd > 0) eventos.Add((eTipoEventoFolhaPagamento.BancoHorasDebito, null, bhd));
+
+                var bonusV = bonusCalculados.Where(x => x.VinculoDeTrabalhoId == v.VinculoId).Sum(x => x.ValorTotal);
+                if (bonusV > 0) eventos.Add((eTipoEventoFolhaPagamento.Bonus, null, (int)(bonusV * 100)));
 
                 foreach (var ev in eventos)
                 {
@@ -448,7 +469,7 @@ namespace AriD.Servicos.Servicos
                     eCampoExportacaoFolhaPagamento.NomeServidor => v.NomeServidor ?? "",
                     eCampoExportacaoFolhaPagamento.Competencia => mesAno.ToString(),
                     eCampoExportacaoFolhaPagamento.CodigoEvento => codigoEvento,
-                    eCampoExportacaoFolhaPagamento.Quantidade => FormatarQuantidade(minutos, layout),
+                    eCampoExportacaoFolhaPagamento.Quantidade => FormatarQuantidade(minutos, layout, tipoEvento),
                     eCampoExportacaoFolhaPagamento.Unidade => unidadeNome ?? "",
                     eCampoExportacaoFolhaPagamento.TipoEvento => tipoEvento.DescricaoDoEnumerador(),
                     eCampoExportacaoFolhaPagamento.Percentual => percentual?.ToString(CultureInfo.InvariantCulture) ?? "",
@@ -467,8 +488,15 @@ namespace AriD.Servicos.Servicos
             return string.Join(delimiter, linha);
         }
 
-        private static string FormatarQuantidade(int minutos, LayoutExportacaoFolhaPagamento layout)
+        private static string FormatarQuantidade(int minutos, LayoutExportacaoFolhaPagamento layout, eTipoEventoFolhaPagamento tipoEvento)
         {
+            if (tipoEvento == eTipoEventoFolhaPagamento.Bonus)
+            {
+                decimal valorDec = minutos / 100m;
+                var fmtMoeda = "0." + new string('0', Math.Max(0, layout.CasasDecimais));
+                return valorDec.ToString(fmtMoeda, CultureInfo.InvariantCulture).Replace(".", ",");
+            }
+
             switch (layout.FormatoQuantidade)
             {
                 case eFormatoQuantidadeExportacao.Minutos:
@@ -526,6 +554,12 @@ namespace AriD.Servicos.Servicos
             public DateTime Data { get; set; }
             public decimal Percentual { get; set; }
             public int MinutosAprovados { get; set; }
+        }
+
+        private sealed class BonusRow
+        {
+            public int VinculoDeTrabalhoId { get; set; }
+            public decimal ValorTotal { get; set; }
         }
 
         private void GarantaLayoutPadrao(int organizacaoId)

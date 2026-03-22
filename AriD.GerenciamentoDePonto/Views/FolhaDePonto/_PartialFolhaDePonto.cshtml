@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
 @model List<PontoDoDia>
 
@@ -289,6 +289,8 @@
                         return string.Empty;
                     }
 
+                    }
+
                     @Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
 
                     if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
@@ -298,6 +300,21 @@
                 }
             </td>
         </tr>
+        @if (ViewBag.BonusCalculados != null && ((List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>)ViewBag.BonusCalculados).Any())
+        {
+            <tr>
+                <td colspan="99" style="background-color: #d1ecf1; text-align: center">
+                    <b>RESUMO DE BÔNUS E ASSIDUIDADE:</b>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    @foreach (var bonus in (List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>)ViewBag.BonusCalculados)
+                    {
+                        var descricaoBonus = bonus.ConfiguracaoBonus?.Descricao ?? "Bônus";
+                        <span>@descricaoBonus: <b>@bonus.ValorTotal.ToString("C")</b></span>
+                        @Html.Raw("&nbsp;&nbsp;|&nbsp;&nbsp;")
+                    }
+                </td>
+            </tr>
+        }
         <tr>
             <td colspan="99" style="background-color: lightyellow; text-align: center">
                 <b>LEGENDA:</b>

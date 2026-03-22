@@ -1,0 +1,65 @@
+@using AriD.Servicos.Extensao
+@model ListaPaginada<BonusCalculado>
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bx bx-list-ul"></i> Bônus Calculados (VT/VA)
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-5 col-sm-6 col-xs-12">
+                <div class="input-group">
+                    @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Buscar por servidor ou mês (MM/AAAA)", @style = "background: white" })
+                    <button class="btn btn-primary" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginadaRelatorio")')">
+                        <i class='bx bx-search-alt'></i> Pesquisar
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-7 col-sm-6 col-xs-12 text-end">
+                <button type="button" onclick="CarregarPagina('@Url.Action("Index")')" class="btn btn-outline-secondary">
+                    <i class="bx bx-arrow-back"></i> Voltar para Configurações
+                </button>
+            </div>
+        </div>
+
+        <br />
+
+        <div id="grid">
+            @await Html.PartialAsync("_TabelaPaginadaRelatorio")
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalhes do Cálculo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="detalhesContent">
+                <!-- Conteúdo preenchido via script -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function verDetalhesCalculo(id) {
+        // Como o JSON está na model do grid, podemos pegar se estiver serializado ou fazer um fetch.
+        // Por simplicidade técnica neste ambiente:
+        $.get('@Url.Action("ObtenhaDetalhes", "Bonus")', { id: id }, function(res) {
+            if(res.sucesso) {
+                let html = '<ul>';
+                let logs = JSON.parse(res.logs);
+                logs.forEach(l => html += '<li>' + l + '</li>');
+                html += '</ul>';
+                $('#detalhesContent').html(html);
+                $('#modalDetalhes').modal('show');
+            }
+        });
+    }
+</script>

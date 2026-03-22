@@ -1,0 +1,556 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-03-21T20:30:03.921Z",
+  "stack": {
+    "primaryLanguage": "javascript",
+    "languages": [
+      "csharp",
+      "javascript"
+    ],
+    "frameworks": [],
+    "buildTools": [],
+    "testFrameworks": [],
+    "packageManager": null,
+    "isMonorepo": false,
+    "hasDocker": false,
+    "hasCI": true
+  },
+  "structure": {
+    "totalFiles": 1202,
+    "rootPath": ".",
+    "topDirectories": [
+      {
+        "name": "AriD.BibliotecaDeClasses",
+        "fileCount": 191,
+        "description": "Arid.bibliotecadeclasse definitions"
+      },
+      {
+        "name": "AriD.GerenciamentoDePonto",
+        "fileCount": 869,
+        "description": "Module directory"
+      },
+      {
+        "name": "AriD.Servicos",
+        "fileCount": 77,
+        "description": "Arid.servico definitions"
+      },
+      {
+        "name": "MD",
+        "fileCount": 6,
+        "description": "Module directory"
+      },
+      {
+        "name": "PdfParser",
+        "fileCount": 49,
+        "description": "Module directory"
+      }
+    ],
+    "languageDistribution": [
+      {
+        "extension": ".cs",
+        "count": 248
+      },
+      {
+        "extension": ".dll",
+        "count": 207
+      },
+      {
+        "extension": ".js",
+        "count": 139
+      },
+      {
+        "extension": ".cshtml",
+        "count": 127
+      },
+      {
+        "extension": ".png",
+        "count": 82
+      },
+      {
+        "extension": ".css",
+        "count": 72
+      },
+      {
+        "extension": ".json",
+        "count": 58
+      },
+      {
+        "extension": ".map",
+        "count": 46
+      },
+      {
+        "extension": ".cache",
+        "count": 44
+      },
+      {
+        "extension": ".jpg",
+        "count": 36
+      }
+    ]
+  },
+  "architecture": {
+    "layers": [
+      {
+        "name": "Utils",
+        "description": "Shared utilities and helpers",
+        "directories": [
+          "AriD.GerenciamentoDePonto\\wwwroot\\lib\\sweetalert2",
+          "AriD.GerenciamentoDePonto\\wwwroot\\lib\\jquery-validation-unobtrusive",
+          "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\lib\\sweetalert2",
+          "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\lib\\jquery-validation-unobtrusive"
+        ],
+        "symbolCount": 34,
+        "dependsOn": []
+      }
+    ],
+    "patterns": [],
+    "entryPoints": [
+      "AriD.GerenciamentoDePonto\\wwwroot\\js\\main.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\js\\main.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js"
+    ],
+    "mainEntryPoints": [
+      "AriD.GerenciamentoDePonto\\wwwroot\\js\\main.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\js\\main.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js"
+    ],
+    "moduleExports": []
+  },
+  "symbols": {
+    "classes": [],
+    "interfaces": [],
+    "functions": [
+      {
+        "name": "a",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\js\\jquery.loading.min.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "a",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+        "line": 8,
+        "exported": false
+      },
+      {
+        "name": "a",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\js\\jquery.loading.min.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "a",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+        "line": 8,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "AbrirModal",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAcaoEmLote",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAcaoEmLote",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+        "line": 1,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAdicionarCiclo",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+        "line": 64,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAdicionarCiclo",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Escala\\alterar.js",
+        "line": 64,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAdicionarRecado",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\js\\site.js",
+        "line": 502,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAdicionarRecado",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\js\\site.js",
+        "line": 502,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAfastamento",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
+        "line": 269,
+        "exported": false
+      },
+      {
+        "name": "abrirModalAfastamento",
+        "kind": "function",
+        "file": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Servidor\\alterar.js",
+        "line": 269,
+        "exported": false
+      }
+    ],
+    "types": [],
+    "enums": []
+  },
+  "publicAPI": [],
+  "dependencies": {
+    "mostImported": []
+  },
+  "stats": {
+    "totalSymbols": 419,
+    "exportedSymbols": 0,
+    "analysisTimeMs": 502
+  },
+  "keyFiles": [
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\js\\main.js",
+      "description": "Entry point",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\js\\main.js",
+      "description": "Entry point",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Dashboard\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Departamento\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EquipamentoDePonto\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\EventoAnual\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ExportacaoFolhaPagamento\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Funcao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\GrupoDePermissao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\JustificativaDeAusencia\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\ListaPersonalizada\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\MotivoDeDemissao\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Servidor\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\TipoDoVinculoDeTrabalho\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\wwwroot\\Scripts\\Paginas\\Usuario\\index.js",
+      "description": "Module exports",
+      "category": "entrypoint"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\webpack.config.js",
+      "description": "Tool configuration",
+      "category": "config"
+    },
+    {
+      "path": "AriD.GerenciamentoDePonto\\obj\\Release\\net8.0\\PubTmp\\Out\\wwwroot\\vendor\\js\\helpers.js",
+      "description": "Helper functions",
+      "category": "util"
+    }
+  ],
+  "navigation": {
+    "tests": "src/**/*.test.ts",
+    "config": [],
+    "types": [],
+    "mainLogic": [
+      "src"
+    ]
+  }
+}

@@ -27,19 +27,22 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<JustificativaDeAusencia> _servicoJustificativa;
         private readonly IServico<VinculoDeTrabalho> _servicoVinculoDeTrabalho;
         private readonly IServico<PontoDoDia> _servicoPontoDoDia;
+        private readonly IServicoBonus _servicoBonus;
 
         public FolhaDePontoController(
             IServicoDeFolhaDePonto servicoDeFolhaDePonto,
             IServico<UnidadeOrganizacional> servicoUnidade,
             IServico<JustificativaDeAusencia> servicoJustificativa,
             IServico<VinculoDeTrabalho> servicoVinculoDeTrabalho,
-            IServico<PontoDoDia> servicoPontoDoDia)
+            IServico<PontoDoDia> servicoPontoDoDia,
+            IServicoBonus servicoBonus)
         {
             _servicoDeFolhaDePonto = servicoDeFolhaDePonto;
             _servicoUnidade = servicoUnidade;
             _servicoJustificativa = servicoJustificativa;
             _servicoVinculoDeTrabalho = servicoVinculoDeTrabalho;
             _servicoPontoDoDia = servicoPontoDoDia;
+            _servicoBonus = servicoBonus;
         }
 
         [HttpGet]
@@ -232,6 +235,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             ViewBag.ExtMapa = mapaAprovados;
             ViewBag.ExtPendenciasPorDia = pendenciasPorDia;
 
+            var fecharFolha = listaDePonto.All(c => c.PontoFechado);
+            ViewBag.BonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia, false);
+
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
             return Json(new
             {
@@ -263,6 +269,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 mesAno,
                 unidadeId,
                 fechar);
+
+            if (fechar)
+            {
+                _servicoBonus.ObterOuCalcularBonusFolha(HttpContext.DadosDaSessao().OrganizacaoId, vinculoDeTrabalhoId, mesDeReferencia, true);
+            }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
         }
@@ -301,6 +312,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var ocorrenciasDoEspelho = _servicoDeFolhaDePonto
                 .ObtenhaOcorrenciasDoEspelhoPonto(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia);
 
+            var bonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia, false);
+
             var relatorio = RelatorioFolhaDePonto(
                 HttpContext.DadosDaSessao(),
                 vinculoDeTrabalho,
@@ -308,7 +321,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 eventos,
                 listaDePonto,
                 horasExtrasDaFolha,
-                ocorrenciasDoEspelho);
+                ocorrenciasDoEspelho,
+                bonusCalculados);
 
             var nomeArquivo = $"Folha de Ponto {mesAno.ToString().Replace("/", "-")}.pdf";
 
@@ -573,6 +587,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             List<PontoDoDia> listaDePonto,
             List<PontoDoDiaHoraExtra> horasExtrasDaFolha,
             List<OcorrenciaDoEspelhoPonto> ocorrencias = null,
+            List<BonusCalculado> bonusCalculados = null,
             bool impressaoDoServidor = false)
         {
             var vigenciaRelatorio = vinculoDeTrabalho.HorarioDeTrabalho.ObtenhaVigenciaDoMes(mesAno);
@@ -1045,6 +1060,32 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .Add(paragrafoLegenda));
 
             document.Add(new Div().Add(table));
+
+            if (bonusCalculados != null && bonusCalculados.Any())
+            {
+                var blockBonus = new Div().SetMarginTop(10f);
+                var tableBonus = new Table(2);
+
+                tableBonus.AddCell(new Cell(1, 2)
+                    .SetBackgroundColor(ColorConstants.LIGHT_GRAY, 0.5f)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .Add(new Paragraph("RESUMO DE BÔNUS E ASSIDUIDADE").SetBold().SetFontSize(9f)));
+
+                foreach (var bonus in bonusCalculados)
+                {
+                    tableBonus.AddCell(new Cell()
+                        .SetPadding(4f)
+                        .Add(new Paragraph(bonus.ConfiguracaoBonus?.Descricao ?? "Bônus").SetFontSize(8f)));
+                    
+                    tableBonus.AddCell(new Cell()
+                        .SetPadding(4f)
+                        .SetTextAlignment(TextAlignment.RIGHT)
+                        .Add(new Paragraph(bonus.ValorTotal.ToString("C")).SetBold().SetFontSize(8f)));
+                }
+
+                blockBonus.Add(tableBonus);
+                document.Add(blockBonus);
+            }
 
             if (!impressaoDoServidor)
             {

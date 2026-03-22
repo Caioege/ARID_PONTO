@@ -1,0 +1,24 @@
+@model ListaPaginada<BonusCalculado>
+
+@{
+    var tabela = new WebGrid<BonusCalculado>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("VinculoDeTrabalho.Servidor.Nome", "Servidor", width: 30f),
+        tabela.Column("ConfiguracaoBonus.Descricao", "Benefício", width: 20f),
+        tabela.Column("MesReferencia", "Mês/Ano", width: 10f),
+        tabela.Column("DiasEfetivosTrabalhados", "Dias Trab.", width: 8f),
+        tabela.Column("DiasTurnoIntercalado", "Intercalados", width: 8f),
+        tabela.Column("ValorTotal", "Total", format: (item) => item.ValorTotal.ToString("C"), width: 12f),
+        tabela.Column("DataCalculo", "Calculado em", format: (item) => item.DataCalculo.ToString("dd/MM/yyyy HH:mm"), width: 12f),
+        tabela.Column(string.Empty, "Detalhes", format:
+            @<text>
+                <button type="button" class="btn btn-info btn-sm" onclick="verDetalhesCalculo(@item.Id)" title="Ver Memória de Cálculo">
+                    <i class='bx bx-search'></i>
+                </button>
+            </text>, width: 5f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

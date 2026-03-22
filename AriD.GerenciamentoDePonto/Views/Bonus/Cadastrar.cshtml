@@ -1,70 +1,110 @@
-@using AriD.BibliotecaDeClasses.Entidades
 @model ConfiguracaoBonus
-@{
-    ViewBag.Title = "Cadastrar Bônus";
-    Layout = "~/Views/Shared/_LayoutListagem.cshtml";
-}
 
-<div class="row">
-    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-        <h1 class="page-title txt-color-blueDark">
-            <i class="fa fa-money fa-fw "></i> Bônus <span>> Cadastrar </span>
-        </h1>
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bx bx-edit"></i> @(Model.Id > 0 ? "Alterar" : "Cadastrar") Configuração de Bônus
+        </h5>
     </div>
-</div>
+    <div class="card-body">
+        @using (Html.BeginForm("Cadastrar", "Bonus", FormMethod.Post, new { id = "formBonus" }))
+        {
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Ativo)
 
-<section id="widget-grid" class="">
-    <div class="row">
-        <article class="col-sm-12 col-md-12 col-lg-12">
-            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false">
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>Formulário de Bônus</h2>
-                </header>
-
-                <div>
-                    <div class="widget-body no-padding">
-                        <form id="smart-form-register" action="@Url.Action("Cadastrar", "Bonus")" method="post" class="smart-form">
-                            <fieldset>
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="label">Descrição (Ex: Vale Transporte) <span style="color: red">*</span></label>
-                                        <label class="input">
-                                            <input type="text" name="Descricao" required value="@Model.Descricao" placeholder="Digite a descrição">
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="label">Valor Diário (R$) <span style="color: red">*</span></label>
-                                        <label class="input">
-                                            <input type="number" step="0.01" name="ValorDiario" required value="@Model.ValorDiario" placeholder="Ex: 30.50">
-                                        </label>
-                                    </section>
-                                </div>
-
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="checkbox">
-                                            <input type="checkbox" name="PagaEmFinaisDeSemanaEFeriados" value="true" @(Model.PagaEmFinaisDeSemanaEFeriados ? "checked" : "")>
-                                            <i></i> Paga bônus aos Finais de Semana e Feriados?
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="checkbox">
-                                            <input type="checkbox" name="TurnoIntercaladoPagaDobrado" value="true" @(Model.TurnoIntercaladoPagaDobrado ? "checked" : "")>
-                                            <i></i> Turno Intercalado (intervalo &gt; 2h) paga bônus em dobro no dia?
-                                        </label>
-                                    </section>
-                                </div>
-                            </fieldset>
-
-                            <footer>
-                                <button type="submit" class="btn btn-primary">Salvar</button>
-                                <a href="@Url.Action("Index", "Bonus")" class="btn btn-default">Voltar</a>
-                            </footer>
-                        </form>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Descrição</label>
+                    @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", @required = "required", @placeholder = "Ex: Vale Alimentação" })
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de Bônus</label>
+                    @Html.DropDownListFor(m => m.TipoBonus, Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eTipoBonus>(), new { @class = "form-select", @onchange = "toggleTipos()" })
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Valor (Diário ou Total)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">R$</span>
+                        @Html.TextBoxFor(m => m.ValorDiario, new { @class = "form-control", @required = "required", @type = "number", @step = "0.01", @min = "0.01" })
                     </div>
                 </div>
             </div>
-        </article>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label">Limitar as Funções (Cargos)? (Deixe nulo para aplicar a todos)</label>
+                    <select name="FuncoesIds" id="FuncoesIds" class="form-select select2" multiple="multiple" data-placeholder="Selecione as funções elegíveis">
+                        @foreach (var funcao in ViewBag.Funcoes as List<AriD.BibliotecaDeClasses.Entidades.Funcao>)
+                        {
+                            var selected = Model.Funcoes.Any(f => f.FuncaoId == funcao.Id) ? "selected" : "";
+                            <option value="@funcao.Id" @selected>@funcao.Descricao</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 divDiario">
+                    <div class="form-check form-switch mt-4">
+                        @Html.CheckBoxFor(m => m.PagaEmFinaisDeSemanaEFeriados, new { @class = "form-check-input" })
+                        <label class="form-check-label">Paga em FDS e Feriados?</label>
+                    </div>
+                </div>
+                <div class="col-md-4 divDiario">
+                    <div class="form-check form-switch mt-4">
+                        @Html.CheckBoxFor(m => m.TurnoIntercaladoPagaDobrado, new { @class = "form-check-input", onchange = "toggleTolerancia()" })
+                        <label class="form-check-label">Turno Intercalado (Dobro)?</label>
+                    </div>
+                </div>
+                <div id="divTolerancia" class="col-md-4 divDiario" style="display: @(Model.TurnoIntercaladoPagaDobrado ? "block" : "none")">
+                    <label class="form-label">Min. Intervalo p/ Dobro</label>
+                    @Html.TextBoxFor(m => m.MinutosIntervaloTurnoIntercalado, new { @class = "form-control", @type = "number", @min = "1" })
+                </div>
+                <div class="col-md-4 divMensal" style="display: none;">
+                    <div class="form-check form-switch mt-4">
+                        @Html.CheckBoxFor(m => m.PerdeIntegralmenteComFalta, new { @class = "form-check-input" })
+                        <label class="form-check-label">Perde TUDO com 1 Falta?</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="CarregarPagina('@Url.Action("Index")')">
+                    <i class="bx bx-x"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bx bx-save"></i> Salvar
+                </button>
+            </div>
+        }
     </div>
-</section>
+</div>
+
+<script>
+    function toggleTolerancia() {
+        if ($('#TurnoIntercaladoPagaDobrado').is(':checked')) {
+            $('#divTolerancia').fadeIn();
+        } else {
+            $('#divTolerancia').fadeOut();
+        }
+    }
+
+    function toggleTipos() {
+        if ($('#TipoBonus').val() == '1') { // Diario
+            $('.divDiario').fadeIn();
+            $('.divMensal').hide();
+        } else {
+            $('.divDiario').hide();
+            $('.divMensal').fadeIn();
+        }
+    }
+
+    $(document).ready(function() {
+        toggleTipos();
+        $('.select2').select2({
+            width: '100%'
+        });
+    });
+</script>

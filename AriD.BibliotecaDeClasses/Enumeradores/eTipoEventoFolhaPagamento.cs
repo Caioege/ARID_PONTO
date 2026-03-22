@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace AriD.BibliotecaDeClasses.Enumeradores
 {
@@ -17,6 +17,9 @@ namespace AriD.BibliotecaDeClasses.Enumeradores
         BancoHorasCredito = 4,
 
         [Description("Banco de Horas (Débito)")]
-        BancoHorasDebito = 5
+        BancoHorasDebito = 5,
+
+        [Description("Bônus (VT/VA) em Dinheiro")]
+        Bonus = 6
     }
 }
