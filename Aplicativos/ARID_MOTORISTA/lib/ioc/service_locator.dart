@@ -1,0 +1,77 @@
+import 'package:arid_motorista/core/service/rota_background_service.dart';
+import 'package:arid_motorista/modules/login/services/login_service.dart';
+import 'package:arid_motorista/modules/motorista/checklist/controller/checklist_controller.dart';
+import 'package:arid_motorista/modules/motorista/checklist/service/checklist_service.dart';
+import 'package:arid_motorista/modules/motorista/menu/controller/motorista_menu_controller.dart';
+import 'package:arid_motorista/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
+import 'package:arid_motorista/modules/motorista/rotas/service/motorista_rotas_service.dart';
+import 'package:arid_motorista/modules/motorista/splash/controller/motorista_splash_controller.dart';
+import 'package:get_it/get_it.dart';
+import 'package:arid_motorista/shared/layout/drawer/controller/drawer_navegacao_controller.dart';
+import '../core/auth/session_manager.dart';
+import '../core/http/http_client.dart';
+
+final locator = GetIt.instance;
+
+void setupLocator() {
+  // INFRA
+  if (!locator.isRegistered<SessionManager>()) {
+    locator.registerLazySingleton<SessionManager>(() => SessionManager());
+  }
+
+  if (!locator.isRegistered<AppHttpClient>()) {
+    locator.registerLazySingleton<AppHttpClient>(() => AppHttpClient());
+  }
+
+  // SERVICES
+  if (!locator.isRegistered<LoginService>()) {
+    locator.registerLazySingleton<LoginService>(() => LoginService());
+  }
+
+  if (!locator.isRegistered<ChecklistService>()) {
+    locator.registerLazySingleton<ChecklistService>(() => ChecklistService());
+  }
+
+  if (!locator.isRegistered<MotoristaRotasService>()) {
+    locator.registerLazySingleton<MotoristaRotasService>(
+      () => MotoristaRotasService(),
+    );
+  }
+
+  if (!locator.isRegistered<RotaBackgroundService>()) {
+    locator.registerLazySingleton<RotaBackgroundService>(
+      () => RotaBackgroundService(locator<MotoristaRotasService>()),
+    );
+  }
+
+  // CONTROLLERS
+  if (!locator.isRegistered<ChecklistController>()) {
+    locator.registerLazySingleton<ChecklistController>(
+      () => ChecklistController(),
+    );
+  }
+
+  if (!locator.isRegistered<MotoristaMenuController>()) {
+    locator.registerLazySingleton<MotoristaMenuController>(
+      () => MotoristaMenuController(),
+    );
+  }
+
+  if (!locator.isRegistered<MotoristaRotasController>()) {
+    locator.registerLazySingleton<MotoristaRotasController>(
+      () => MotoristaRotasController(),
+    );
+  }
+
+  if (!locator.isRegistered<MotoristaSplashController>()) {
+    locator.registerLazySingleton<MotoristaSplashController>(
+      () => MotoristaSplashController(),
+    );
+  }
+
+  if (!locator.isRegistered<DrawerNavegacaoController>()) {
+    locator.registerLazySingleton<DrawerNavegacaoController>(
+      () => DrawerNavegacaoController(),
+    );
+  }
+}

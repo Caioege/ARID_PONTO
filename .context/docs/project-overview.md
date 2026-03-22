@@ -22,14 +22,17 @@ ARID_PONTO is a comprehensive management system for employee time tracking (Pont
 - **Primary Framework**: ASP.NET Core MVC.
 - **Entry Points**: 
     - [Program.cs](file:///c:/src/ARID_PONTO/AriD.GerenciamentoDePonto/Program.cs) (Backend)
-    - [main.js](file:///c:/src/ARID_PONTO/AriD.GerenciamentoDePonto/wwwroot/js/main.js) (Frontend)
+    - [main.js](file:///c:/src/ARID_PONTO/AriD.GerenciamentoDePonto/wwwroot/js/main.js) (Web Frontend)
+    - `Aplicativos/ARID_PONTO_APP` (Flutter - Ponto App)
+    - `Aplicativos/ARID_MOTORISTA` (Flutter - Motoristas App)
 
 ## File Structure & Code Organization
 
-- `AriD.GerenciamentoDePonto/` — The main MVC web application.
+- `AriD.GerenciamentoDePonto/` — The main MVC web application and API endpoints for apps.
 - `AriD.Servicos/` — Business logic and data processing services.
 - `AriD.BibliotecaDeClasses/` — Shared domain models and entities.
 - `PdfParser/` — Utility for extracting data from PDF reports.
+- `Aplicativos/` — Flutter mobile applications interconnected with the backend APIs.
 - Root SQL Files — Database schema and versioned migration scripts (e.g., `alteracoes_20260315.sql`).
 
 ## Technology Stack Summary

@@ -12,6 +12,7 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 - [Data Flow & Integrations](./data-flow.md)
 - [Security & Compliance Notes](./security.md)
 - [Tooling & Productivity Guide](./tooling.md)
+- [Mobile Apps Architecture](./mobile-apps.md)
 
 ## Repository Snapshot
 - `alteracoes_20260315.sql/`
@@ -29,6 +30,7 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 - `ocorrencia_espelho.sql/`
 - `PdfParser/`
 - `template_filtros.sql/`
+- `Aplicativos/`
 
 ## Document Map
 | Guide | File | Primary Inputs |
@@ -41,3 +43,4 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 | Data Flow & Integrations | `data-flow.md` | System diagrams, integration specs, queue topics |
 | Security & Compliance Notes | `security.md` | Auth model, secrets management, compliance requirements |
 | Tooling & Productivity Guide | `tooling.md` | CLI scripts, IDE configs, automation workflows |
+| Mobile Apps Architecture | `mobile-apps.md` | Architecture and APIs for the Flutter mobile apps |

@@ -15,15 +15,16 @@ The ARID_PONTO system is a time management and human resources application built
 
 The application is structured as a traditional N-Tier architecture:
 1.  **Presentation Layer (`AriD.GerenciamentoDePonto`)**: An ASP.NET Core MVC application providing the user interface and API endpoints.
-2.  **Service Layer (`AriD.Servicos`)**: Encapsulates business rules and orchestrates data movement between the presentation and data layers.
-3.  **Domain/Class Library (`AriD.BibliotecaDeClasses`)**: Contains the core entities, domain logic, and shared contracts.
-4.  **Support Tools (`PdfParser`)**: Specialized modules for document processing.
+2.  **Mobile Presentation Layer (`Aplicativos/`)**: Flutter-based mobile applications providing specialized tools for employees (Ponto and Motoristas apps).
+3.  **Service Layer (`AriD.Servicos`)**: Encapsulates business rules and orchestrates data movement between the presentation and data layers.
+4.  **Domain/Class Library (`AriD.BibliotecaDeClasses`)**: Contains the core entities, domain logic, and shared contracts.
+5.  **Support Tools (`PdfParser`)**: Specialized modules for document processing.
 
-Requests typically flow from the browser through the MVC Controllers in `AriD.GerenciamentoDePonto`, which call services in `AriD.Servicos`. These services interact with the database (managed via SQL scripts in the root) and return domain objects from `AriD.BibliotecaDeClasses`.
+Requests typically flow from the browser or mobile apps through the MVC Controllers and API Controllers in `AriD.GerenciamentoDePonto`, which call services in `AriD.Servicos`. These services interact with the database (managed via SQL scripts in the root) and return domain objects from `AriD.BibliotecaDeClasses`.
 
 ## Architectural Layers
 
-- **Presentation**: ASP.NET Core MVC (`AriD.GerenciamentoDePonto`)
+- **Presentation**: ASP.NET Core MVC (`AriD.GerenciamentoDePonto`) and Flutter Mobile Apps (`Aplicativos/`)
 - **Business Logic**: Service implementation (`AriD.Servicos`)
 - **Domain**: Entities and shared logic (`AriD.BibliotecaDeClasses`)
 - **Utilities**: PDF parsing and other helpers (`PdfParser`)
@@ -48,7 +49,11 @@ Requests typically flow from the browser through the MVC Controllers in `AriD.Ge
 
 ## Public API
 
-The system exposes its functionality through MVC Controllers and potentially Web API endpoints.
+The system exposes its functionality through MVC Controllers for the web interface and API Controllers for the mobile apps.
+- **PONTO App API**: `AppController.cs` handles endpoints for employee authentication, obtaining work schedules, events, justifications, recording time punch, and generating timesheets.
+- **Motoristas App API**: `RotaAppController.cs` handles endpoints for drivers, starting with authentication, background location tracking, and route checklists.
+- **Equipamentos API**: `RegistroApiController.cs` handles time punch reception from physical clocks.
+
 _See codebase-map.json for a complete list of exported symbols._
 
 ## Internal System Boundaries

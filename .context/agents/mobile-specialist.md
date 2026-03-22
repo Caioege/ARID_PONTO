@@ -14,10 +14,11 @@ The Mobile Specialist agent ensures that the ARID_PONTO experience is seamless o
 
 ## Responsibilities
 
-- Optimizing the MVC Views for mobile browser compatibility.
-- Ensuring touch interactions in the Ponto Dashboard are intuitive.
-- Advising on mobile-specific capabilities like location services for remote clock-ins.
-- Researching cross-platform frameworks (like MAUI or Flutter) for future native growth.
+- Developing and maintaining the Flutter mobile applications located in the `Aplicativos/` folder.
+- Managing the **PONTO App**, ensuring employees can register their times (punching in/out) remotely with photo capture and geolocation, view their time records, justify absences and view timesheets.
+- Managing the **Motoristas App**, ensuring drivers can execute routes with background location tracking and start-of-route checklists.
+- Coordinating with Backend Specialists to define and consume API contracts (such as `AppController` and `RotaAppController`).
+- Optimizing the MVC Views for mobile browser compatibility where relevant.
 
 ## Best Practices
 
@@ -33,18 +34,22 @@ The Mobile Specialist agent ensures that the ARID_PONTO experience is seamless o
 
 ## Repository Starting Points
 
-- `AriD.GerenciamentoDePonto/wwwroot/` — Reviewing CSS and layout responsiveness.
-- `AriD.GerenciamentoDePonto/Views/` — Adjusting Razor views for mobile layouting.
+- `Aplicativos/ARID_PONTO_APP/` — The main Flutter project for the Ponto App.
+- `Aplicativos/ARID_MOTORISTA/` — The main Flutter project for the Drivers App.
+- `AriD.GerenciamentoDePonto/Controllers/AppController.cs` — The API interactions for PONTO App.
+- `AriD.GerenciamentoDePonto/Controllers/RotaAppController.cs` — The API interactions for Motoristas App.
 
 ## Key Files
 
-- [main.js](../../AriD.GerenciamentoDePonto/wwwroot/js/main.js) — Ensuring shared JS works across different browsers.
-- `site.css` — Core styles for responsive adjustments.
+- `Aplicativos/ARID_PONTO_APP/lib/main.dart` — Entry point for the Ponto App.
+- `Aplicativos/ARID_MOTORISTA/lib/main.dart` — Entry point for the Motoristas App.
+- [AppController.cs](../../AriD.GerenciamentoDePonto/Controllers/AppController.cs) — Endpoints for Ponto app.
+- [RotaAppController.cs](../../AriD.GerenciamentoDePonto/Controllers/RotaAppController.cs) — Endpoints for Drivers app.
 
 ## Documentation Touchpoints
 
 - Refer to `docs/project-overview.md` to understand the user base's typical device usage.
-- Refer to `docs/tooling.md` for the asset pipeline details.
+- Refer to `docs/mobile-apps.md` for details on the Flutter applications logic and API dependencies.
 
 ## Collaboration Checklist
 
