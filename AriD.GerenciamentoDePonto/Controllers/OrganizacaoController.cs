@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Entidades;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -90,6 +90,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 persistido.NomenclaturaServidor = organizacao.NomenclaturaServidor;
                 persistido.Nome = organizacao.Nome;
                 persistido.Endereco = organizacao.Endereco;
+                persistido.GestaoMobileAtivo = organizacao.GestaoMobileAtivo;
 
                 if (this.HttpContext.DadosDaSessao().Perfil == ePerfilDeAcesso.AdministradorDeSistema)
                 {
@@ -117,6 +118,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             dadosDaSessao.OrganizacaoNome = organizacao.Nome;
             dadosDaSessao.Perfil = ePerfilDeAcesso.Organizacao;
             dadosDaSessao.NomenclaturaServidor = organizacao.NomenclaturaServidor;
+            dadosDaSessao.GestaoMobileAtivo = organizacao.GestaoMobileAtivo;
             this.Autenticar(dadosDaSessao);
 
             return Json(new { sucesso = true });

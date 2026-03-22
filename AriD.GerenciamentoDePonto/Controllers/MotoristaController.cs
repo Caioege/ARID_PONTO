@@ -8,6 +8,8 @@ using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+using AriD.Servicos.Extensao;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -15,13 +17,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
     {
         private readonly IServico<Motorista> _motoristaServico;
         private readonly IServico<Servidor> _servidorServico;
+        private readonly IServico<MotoristaHistoricoSituacao> _motoristaHistoricoServico;
 
         public MotoristaController(
             IServico<Motorista> motoristaServico,
-            IServico<Servidor> servidorServico)
+            IServico<Servidor> servidorServico,
+            IServico<MotoristaHistoricoSituacao> motoristaHistoricoServico)
         {
             _motoristaServico = motoristaServico;
             _servidorServico = servidorServico;
+            _motoristaHistoricoServico = motoristaHistoricoServico;
         }
 
         [HttpGet]
@@ -59,7 +64,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public async Task<IActionResult> Modal(int motoristaId)
         {
             var model = motoristaId == 0 ?
-                    new Motorista { Status = AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo, EmissaoCNH = DateTime.Today, VencimentoCNH = DateTime.Today.AddYears(5) } :
+                    new Motorista { Situacao = AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo, EmissaoCNH = DateTime.Today, VencimentoCNH = DateTime.Today.AddYears(5) } :
                     _motoristaServico.Obtenha(motoristaId);
 
             var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
@@ -84,17 +89,46 @@ namespace AriD.GerenciamentoDePonto.Controllers
             else
             {
                 var original = _motoristaServico.Obtenha(motorista.Id);
+                var situacaoAnterior = original.Situacao;
+
                 original.ServidorId = motorista.ServidorId;
                 original.NumeroCNH = motorista.NumeroCNH;
                 original.CategoriaCNH = motorista.CategoriaCNH;
                 original.EmissaoCNH = motorista.EmissaoCNH;
                 original.VencimentoCNH = motorista.VencimentoCNH;
-                original.Status = motorista.Status;
+                original.Situacao = motorista.Situacao;
                 original.Observacoes = motorista.Observacoes;
                 _motoristaServico.Atualizar(original);
+
+                if (situacaoAnterior != original.Situacao)
+                {
+                    _motoristaHistoricoServico.Adicionar(new MotoristaHistoricoSituacao
+                    {
+                        OrganizacaoId = motorista.OrganizacaoId,
+                        MotoristaId = motorista.Id,
+                        UsuarioId = this.HttpContext.DadosDaSessao().UsuarioId,
+                        SituacaoAnterior = situacaoAnterior,
+                        SituacaoNova = original.Situacao,
+                        DataAlteracao = DateTime.Now
+                    });
+                }
             }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
+        }
+
+        [HttpGet]
+        public IActionResult ObtenhaHistoricoSituacao(int motoristaId)
+        {
+            var historico = _motoristaHistoricoServico.ObtenhaLista(h => h.MotoristaId == motoristaId)
+                .OrderByDescending(h => h.DataAlteracao)
+                .Select(h => new {
+                    DataAlteracao = h.DataAlteracao.ToString("dd/MM/yyyy HH:mm"),
+                    SituacaoAnterior = h.SituacaoAnterior.DescricaoDoEnumerador(),
+                    SituacaoNova = h.SituacaoNova.DescricaoDoEnumerador(),
+                    Usuario = h.Usuario?.NomeDaPessoa ?? "-"
+                });
+            return Json(new { sucesso = true, historico = historico });
         }
 
         [HttpPost]
@@ -111,11 +145,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Motorista> listaPaginada)
         {
-            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
+            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaMotorista>(listaPaginada.Adicional);
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
             Expression<Func<Motorista, bool>> filtro =
                 c => c.OrganizacaoId == parametros.OrganizacaoId;
+
+            if (parametros.Situacao.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.Situacao == parametros.Situacao.Value);
+
+            if (parametros.CategoriaCNH.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.CategoriaCNH == parametros.CategoriaCNH.Value);
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
             {

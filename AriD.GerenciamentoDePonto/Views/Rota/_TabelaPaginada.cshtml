@@ -13,21 +13,17 @@
         tabela.Column("Motorista.Servidor.Pessoa.Nome", "Motorista", width: 30f),
         tabela.Column("Status", "Status", format:
             @<text>
-                @if (item.Status == eStatusRota.Pendente)
+                @if (item.Status == eStatusRota.Inativa)
             {
-                <span class="badge bg-label-secondary">Pendente</span>
+                <span class="badge bg-label-secondary">Inativa</span>
             }
-            else if (item.Status == eStatusRota.EmAndamento)
+            else if (item.Status == eStatusRota.Ativa)
             {
-                <span class="badge bg-label-primary">Em Andamento</span>
+                <span class="badge bg-label-primary">Ativa</span>
             }
             else if (item.Status == eStatusRota.Concluida)
             {
                 <span class="badge bg-label-success">Concluída</span>
-            }
-            else
-            {
-                <span class="badge bg-label-danger">Cancelada</span>
             }
             </text>, width: 20f),
         tabela.Column(string.Empty, "Ação", format:

@@ -16,39 +16,51 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formulario-rota">
-                    @Html.HiddenFor(model => model.Id)
-                    
-                    <div class="row">
-                        <div class="col col-lg-5 col-md-12 col-sm-12">
-                            <label class="form-label obrigatorio" for="Descricao">Descrição / Titulo da Rota</label>
-                            @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
-                        </div>
-                        <div class="col col-lg-4 col-md-12 col-sm-12">
-                            <label class="form-label obrigatorio" for="MotoristaId">Motorista</label>
-                            @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, "Selecione o Motorista", new { @class = "form-select select2" })
-                        </div>
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                  <li class="nav-item">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados" aria-controls="tab-dados" aria-selected="true">Dados Principais</button>
+                  </li>
+                  @if(!adicionar)
+                  {
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-execucoes" aria-controls="tab-execucoes" aria-selected="false" onclick="carregarHistoricoExecucoes()">Histórico de Execuções</button>
+                      </li>
+                  }
+                </ul>
 
-                        <div class="col col-lg-3 col-md-12 col-sm-12 float-end">
-                            <label class="form-label obrigatorio" for="Status">Status</label>
-                            @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
-                        </div>
-                    </div>
+                <div class="tab-content" style="padding: 0; box-shadow: none; border: none; background: transparent;">
+                    <div class="tab-pane fade show active" id="tab-dados" role="tabpanel">
+                        <form id="formulario-rota">
+                            @Html.HiddenFor(model => model.Id)
+                            
+                            <div class="row">
+                                <div class="col col-lg-5 col-md-12 col-sm-12">
+                                    <label class="form-label obrigatorio" for="Descricao">Descrição / Titulo da Rota</label>
+                                    @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                                </div>
+                                <div class="col col-lg-4 col-md-12 col-sm-12">
+                                    <label class="form-label obrigatorio" for="MotoristaId">Motorista</label>
+                                    @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, "Selecione o Motorista", new { @class = "form-select select2" })
+                                </div>
 
-                    <div class="row mt-2">
-                        <div class="col col-lg-4 col-md-12 col-sm-12">
-                            <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
-                            @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, "Selecione o Veículo", new { @class = "form-select select2" })
-                        </div>
-                        <div class="col col-lg-4 col-md-6 col-sm-12">
-                            <label class="form-label" for="DataHoraInicio">Início Realizado Em</label>
-                            @Html.TextBoxFor(model => model.DataHoraInicio, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", @disabled="disabled" })
-                        </div>
-                        <div class="col col-lg-4 col-md-6 col-sm-12">
-                            <label class="form-label" for="DataHoraFim">Concluído Em</label>
-                            @Html.TextBoxFor(model => model.DataHoraFim, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", @disabled="disabled" })
-                        </div>
-                    </div>
+                                <div class="col col-lg-3 col-md-12 col-sm-12 float-end">
+                                    <label class="form-label obrigatorio" for="Situacao">Situação</label>
+                                    @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col col-lg-4 col-md-12 col-sm-12">
+                                    <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
+                                    @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, "Selecione o Veículo", new { @class = "form-select select2" })
+                                </div>
+                                <div class="col col-lg-4 col-md-12 col-sm-12 align-self-end text-center p-2 border rounded" style="background-color: #f8f9fa;">
+                                    <div class="form-check form-switch d-inline-block">
+                                        @Html.CheckBoxFor(model => model.Recorrente, new { @class = "form-check-input" })
+                                        <label class="form-check-label ms-2 font-weight-bold" for="Recorrente">Rota Recorrente?</label>
+                                    </div>
+                                </div>
+                            </div>
 
                     <hr />
                     <h6>Pontos de Parada</h6>
@@ -107,7 +119,30 @@
                         </table>
                     </div>
 
-                </form>
+                        </form>
+                    </div>
+
+                    @if(!adicionar)
+                    {
+                        <div class="tab-pane fade" id="tab-execucoes" role="tabpanel">
+                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered" id="tabela-historico-execucoes">
+                                    <thead>
+                                        <tr>
+                                            <th>Início</th>
+                                            <th>Usr. Início</th>
+                                            <th>Fim</th>
+                                            <th>Usr. Fim</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td colspan="4" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
             <div class="modal-footer mt-3">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

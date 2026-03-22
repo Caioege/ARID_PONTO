@@ -39,7 +39,7 @@ CREATE TABLE `arid_ponto`.`motorista` (
   `CategoriaCNH` INT NOT NULL,
   `EmissaoCNH` DATETIME NOT NULL,
   `VencimentoCNH` DATETIME NOT NULL,
-  `Status` INT NOT NULL,
+  `Situacao` INT NOT NULL,
   `Observacoes` VARCHAR(500) NULL,
   PRIMARY KEY (`Id`),
   INDEX `FK_Motorista_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
@@ -62,9 +62,8 @@ CREATE TABLE `arid_ponto`.`rota` (
   `MotoristaId` INT NOT NULL,
   `VeiculoId` INT NULL,
   `Descricao` VARCHAR(100) NOT NULL,
-  `Status` INT NOT NULL DEFAULT 0,
-  `DataHoraInicio` DATETIME NULL,
-  `DataHoraFim` DATETIME NULL,
+  `Situacao` INT NOT NULL DEFAULT 0,
+  `Recorrente` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`Id`),
   INDEX `FK_Rota_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
   INDEX `FK_Rota_Motorista_idx` (`MotoristaId` ASC) VISIBLE,
@@ -136,3 +135,68 @@ CREATE TABLE `arid_ponto`.`localizacaorota` (
 -- Nota: Os Enumeradores de Permissão (eItemDePermissao_Motorista, eItemDePermissao_Veiculo, etc.)
 -- são definidos em código (C#) e salvos na tabela `itemdogrupodepermissao` pelo sistema através 
 -- da interface de controle de acesso de forma dinâmica.
+
+
+-- 7. Tabela Motorista Historico Situação
+CREATE TABLE `arid_ponto`.`motoristahistoricosituacao` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `MotoristaId` INT NOT NULL,
+  `UsuarioId` INT NOT NULL,
+  `SituacaoAnterior` INT NOT NULL,
+  `SituacaoNova` INT NOT NULL,
+  `DataAlteracao` DATETIME NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_MHistSituacao_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_MHistSituacao_Motorista_idx` (`MotoristaId` ASC) VISIBLE,
+  INDEX `FK_MHistSituacao_Usuario_idx` (`UsuarioId` ASC) VISIBLE,
+  CONSTRAINT `FK_MHistSituacao_Organizacao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_MHistSituacao_Motorista`
+    FOREIGN KEY (`MotoristaId`)
+    REFERENCES `arid_ponto`.`motorista` (`Id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_MHistSituacao_Usuario`
+    FOREIGN KEY (`UsuarioId`)
+    REFERENCES `arid_ponto`.`usuario` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+-- 8. Tabela Rota Execução
+CREATE TABLE `arid_ponto`.`rotaexecucao` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `RotaId` INT NOT NULL,
+  `DataHoraInicio` DATETIME NOT NULL,
+  `DataHoraFim` DATETIME NULL,
+  `UsuarioIdInicio` INT NOT NULL,
+  `UsuarioIdFim` INT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_RotaExecucao_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_RotaExecucao_Rota_idx` (`RotaId` ASC) VISIBLE,
+  INDEX `FK_RotaExecucao_UsuarioInicio_idx` (`UsuarioIdInicio` ASC) VISIBLE,
+  INDEX `FK_RotaExecucao_UsuarioFim_idx` (`UsuarioIdFim` ASC) VISIBLE,
+  CONSTRAINT `FK_RotaExecucao_Organizacao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RotaExecucao_Rota`
+    FOREIGN KEY (`RotaId`)
+    REFERENCES `arid_ponto`.`rota` (`Id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_RotaExecucao_UsuarioInicio`
+    FOREIGN KEY (`UsuarioIdInicio`)
+    REFERENCES `arid_ponto`.`usuario` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RotaExecucao_UsuarioFim`
+    FOREIGN KEY (`UsuarioIdFim`)
+    REFERENCES `arid_ponto`.`usuario` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);

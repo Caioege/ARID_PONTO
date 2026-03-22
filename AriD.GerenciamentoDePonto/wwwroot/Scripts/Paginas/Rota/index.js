@@ -131,3 +131,41 @@ function removerRegistro() {
         }
     });
 }
+
+function carregarHistoricoExecucoes() {
+    let id = $('#_Modal').find('#Id').val();
+    $.ajax({
+        url: '/Rota/ObtenhaHistoricoExecucoes',
+        type: 'GET',
+        data: { rotaId: id },
+        success: function(data) {
+            if (data.sucesso && data.historico) {
+                let tbody = $('#tabela-historico-execucoes tbody');
+                tbody.empty();
+                if (data.historico.length === 0) {
+                    tbody.append('<tr><td colspan="4" class="text-center">Nenhuma execução registrada.</td></tr>');
+                    return;
+                }
+                data.historico.forEach(function(h) {
+                    tbody.append(`<tr><td>${h.dataHoraInicio}</td><td>${h.usuarioInicio}</td><td>${h.dataHoraFim}</td><td>${h.usuarioFim}</td></tr>`);
+                });
+            }
+        }
+    });
+}
+
+// Filtros
+$(function () {
+    $('#FiltroSituacao, #FiltroRecorrente').on('change', function () {
+        aplicarFiltrosRota();
+    });
+
+    function aplicarFiltrosRota() {
+        var params = {
+            Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
+            Recorrente: $('#FiltroRecorrente').val() !== "" ? ($('#FiltroRecorrente').val() === "true") : null
+        };
+        $('#Adicional').val(JSON.stringify(params));
+        carregarTabelaPaginadaComPesquisa('/Rota/TabelaPaginada');
+    }
+});

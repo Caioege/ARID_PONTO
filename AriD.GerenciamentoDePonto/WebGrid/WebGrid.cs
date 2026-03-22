@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Html;
 
 namespace AriD.GerenciamentoDePonto.WebGrid
 {
@@ -33,7 +33,7 @@ namespace AriD.GerenciamentoDePonto.WebGrid
         {
             var builder = new HtmlContentBuilder();
 
-            builder.AppendHtmlLine($"<table class=\"table table-bordered {tableStyle}\">");
+            builder.AppendHtmlLine($"<table class=\"table table-bordered webgrid-table {tableStyle}\">");
             builder.AppendHtmlLine("<thead style=\"background-color: whitesmoke;\">");
             builder.AppendHtmlLine("<tr>");
             foreach (var column in columns)
@@ -64,7 +64,8 @@ namespace AriD.GerenciamentoDePonto.WebGrid
                     builder.AppendHtmlLine("<tr>");
                     foreach (var column in columns)
                     {
-                        builder.AppendHtmlLine("<td>");
+                        var label = (column.Header ?? column.ColumnName ?? string.Empty).Replace("\"", "&quot;");
+                        builder.AppendHtmlLine($"<td data-label=\"{label}\">");
                         if (column.Format != null)
                             builder.AppendLine(Format(column.Format, item));
                         else

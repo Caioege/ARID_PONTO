@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,7 +14,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public eCategoriaCNH CategoriaCNH { get; set; }
         public DateTime EmissaoCNH { get; set; }
         public DateTime VencimentoCNH { get; set; }
-        public eStatusMotorista Status { get; set; }
+        public eStatusMotorista Situacao { get; set; }
         public string Observacoes { get; set; }
     }
 }

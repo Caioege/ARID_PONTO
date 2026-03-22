@@ -26,15 +26,37 @@
 
 <div class="card mb-6 mb-3 p-4">
     <div class="row">
-        <label class="form-label">&nbsp;</label>
-        <div class="input-group input-group-merge">
-            <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
-            <input type="text"
-                   class="form-control"
-                   placeholder="Pesquisar por placa, marca ou modelo..."
-                   aria-label="Pesquisar..."
-                   aria-describedby="basic-addon-search31"
-                   id="TermoDeBusca" />
+        <div class="col-lg-3 col-md-4">
+            <label class="form-label" for="FiltroSituacao">Situação</label>
+            <select id="FiltroSituacao" class="form-select filter-trigger">
+                <option value="">Todas</option>
+                @foreach(var opt in Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eStatusVeiculo>())
+                {
+                    <option value="@opt.Value">@opt.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-md-4">
+            <label class="form-label" for="FiltroTipoCombustivel">Combustível</label>
+            <select id="FiltroTipoCombustivel" class="form-select filter-trigger">
+                <option value="">Todos</option>
+                @foreach(var opt in Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eTipoCombustivel>())
+                {
+                    <option value="@opt.Value">@opt.Text</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <label class="form-label">&nbsp;</label>
+            <div class="input-group input-group-merge">
+                <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+                <input type="text"
+                       class="form-control filter-trigger"
+                       placeholder="Pesquisar por placa, marca ou modelo..."
+                       aria-label="Pesquisar..."
+                       aria-describedby="basic-addon-search31"
+                       id="TermoDeBusca" />
+            </div>
         </div>
     </div>
 </div>

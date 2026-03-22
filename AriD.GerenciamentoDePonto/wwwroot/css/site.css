@@ -97,3 +97,61 @@
     border: 1px solid red;
     background-color: #ffe6e6;
 }
+
+/* ===================================================
+   WebGrid — Layout responsivo: cards em telas mobile
+   =================================================== */
+@media (max-width: 768px) {
+    .webgrid-table thead {
+        display: none;
+    }
+
+    .webgrid-table,
+    .webgrid-table tbody,
+    .webgrid-table tr,
+    .webgrid-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .webgrid-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+    }
+
+    .webgrid-table td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 0.55rem 0.85rem;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: right;
+        gap: 0.5rem;
+    }
+
+    .webgrid-table td:last-child {
+        border-bottom: none;
+    }
+
+    .webgrid-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #5a6a7a;
+        flex-shrink: 0;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .webgrid-table td:last-child {
+        justify-content: flex-end;
+    }
+
+    .webgrid-table td:last-child::before {
+        display: none;
+    }
+}

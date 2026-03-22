@@ -71,3 +71,41 @@ function removerRegistro() {
         }
     });
 }
+
+function carregarHistoricoSituacao() {
+    let id = $('#_Modal').find('#Id').val();
+    $.ajax({
+        url: '/Motorista/ObtenhaHistoricoSituacao',
+        type: 'GET',
+        data: { motoristaId: id },
+        success: function(data) {
+            if (data.sucesso && data.historico) {
+                let tbody = $('#tabela-historico-situacao tbody');
+                tbody.empty();
+                if (data.historico.length === 0) {
+                    tbody.append('<tr><td colspan="4" class="text-center">Nenhum histórico encontrado.</td></tr>');
+                    return;
+                }
+                data.historico.forEach(function(h) {
+                    tbody.append(`<tr><td>${h.dataAlteracao}</td><td>${h.situacaoAnterior}</td><td>${h.situacaoNova}</td><td>${h.usuario}</td></tr>`);
+                });
+            }
+        }
+    });
+}
+
+// Filtros
+$(function () {
+    $('#FiltroSituacao, #FiltroCategoriaCNH').on('change', function () {
+        aplicarFiltrosMotorista();
+    });
+
+    function aplicarFiltrosMotorista() {
+        var params = {
+            Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
+            CategoriaCNH: $('#FiltroCategoriaCNH').val() !== "" ? parseInt($('#FiltroCategoriaCNH').val()) : null
+        };
+        $('#Adicional').val(JSON.stringify(params));
+        carregarTabelaPaginadaComPesquisa('/Motorista/TabelaPaginada');
+    }
+});

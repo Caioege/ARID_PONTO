@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -24,17 +25,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<Motorista> _motoristaServico;
         private readonly IServico<Veiculo> _veiculoServico;
         private readonly IServico<ParadaRota> _paradaRotaServico;
+        private readonly IServico<RotaExecucao> _rotaExecucaoServico;
 
         public RotaController(
             IServico<Rota> rotaServico,
             IServico<Motorista> motoristaServico,
             IServico<Veiculo> veiculoServico,
-            IServico<ParadaRota> paradaRotaServico)
+            IServico<ParadaRota> paradaRotaServico,
+            IServico<RotaExecucao> rotaExecucaoServico)
         {
             _rotaServico = rotaServico;
             _motoristaServico = motoristaServico;
             _veiculoServico = veiculoServico;
             _paradaRotaServico = paradaRotaServico;
+            _rotaExecucaoServico = rotaExecucaoServico;
         }
 
         [HttpGet]
@@ -72,13 +76,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public async Task<IActionResult> Modal(int rotaId)
         {
             var model = rotaId == 0 ?
-                    new Rota { Status = AriD.BibliotecaDeClasses.Enumeradores.eStatusRota.Pendente } :
+                    new Rota { Situacao = AriD.BibliotecaDeClasses.Enumeradores.eStatusRota.Ativa } :
                     _rotaServico.Obtenha(c => c.Id == rotaId);
 
             var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
             
             var motoristas = _motoristaServico.ObtenhaLista(m => m.OrganizacaoId == organizacaoId)
-                .Where(m => m.Status == AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo)
+                .Where(m => m.Situacao == AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo)
                 .OrderBy(m => m.Servidor.Pessoa.Nome)
                 .Select(m => new { m.Id, Nome = m.Servidor.Pessoa.Nome })
                 .ToList();
@@ -125,7 +129,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 original.MotoristaId = rota.MotoristaId;
                 original.VeiculoId = rota.VeiculoId;
                 original.Descricao = rota.Descricao;
-                original.Status = rota.Status;
+                original.Situacao = rota.Situacao;
+                original.Recorrente = rota.Recorrente;
 
                 // Update paradas
                 if (paradas != null)
@@ -174,6 +179,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Json(new { sucesso = true, mensagem = "Os dados da rota foram salvos.", id = id });
         }
 
+        [HttpGet]
+        public IActionResult ObtenhaHistoricoExecucoes(int rotaId)
+        {
+            var historico = _rotaExecucaoServico.ObtenhaLista(h => h.RotaId == rotaId)
+                .OrderByDescending(h => h.DataHoraInicio)
+                .Select(h => new {
+                    DataHoraInicio = h.DataHoraInicio.ToString("dd/MM/yyyy HH:mm"),
+                    DataHoraFim = h.DataHoraFim.HasValue ? h.DataHoraFim.Value.ToString("dd/MM/yyyy HH:mm") : "Em andamento",
+                    UsuarioInicio = h.UsuarioInicio?.NomeDaPessoa ?? "-",
+                    UsuarioFim = h.UsuarioFim?.NomeDaPessoa ?? "-"
+                });
+            return Json(new { sucesso = true, historico = historico });
+        }
+
         [HttpPost]
         public IActionResult Remova(int rotaId)
         {
@@ -195,11 +214,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Rota> listaPaginada)
         {
-            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
+            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaRota>(listaPaginada.Adicional);
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
             Expression<Func<Rota, bool>> filtro =
                 c => c.OrganizacaoId == parametros.OrganizacaoId;
+
+            if (parametros.Situacao.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.Situacao == parametros.Situacao.Value);
+
+            if (parametros.Recorrente.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.Recorrente == parametros.Recorrente.Value);
+
+            if (parametros.MotoristaId.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.MotoristaId == parametros.MotoristaId.Value);
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
             {

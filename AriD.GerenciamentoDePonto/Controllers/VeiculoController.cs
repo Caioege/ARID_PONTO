@@ -93,11 +93,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Veiculo> listaPaginada)
         {
-            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
+            var parametros = JsonConvert.DeserializeObject<ParametrosConsultaVeiculo>(listaPaginada.Adicional);
             parametros.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
             Expression<Func<Veiculo, bool>> filtro =
                 c => c.OrganizacaoId == parametros.OrganizacaoId;
+
+            if (parametros.Situacao.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.Status == parametros.Situacao.Value);
+
+            if (parametros.TipoCombustivel.HasValue)
+                filtro = ConcatenadorDeExpressao.Concatenar(filtro, c => c.TipoCombustivel == parametros.TipoCombustivel.Value);
 
             if (!string.IsNullOrEmpty(listaPaginada.TermoDeBusca))
             {

@@ -16,46 +16,82 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formulario-motorista">
-                    @Html.HiddenFor(model => model.Id)
-                    <div class="row">
-                        <div class="col col-lg-8 col-md-12 col-sm-12">
-                            <label class="form-label obrigatorio" for="ServidorId">Servidor / Pessoa</label>
-                            @Html.DropDownListFor(model => model.ServidorId, (SelectList)ViewBag.Servidores, "Selecione o Servidor", new { @class = "form-select select2" })
-                        </div>
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                  <li class="nav-item">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados" aria-controls="tab-dados" aria-selected="true">Dados Básicos</button>
+                  </li>
+                  @if(!adicionar)
+                  {
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-historico" aria-controls="tab-historico" aria-selected="false" onclick="carregarHistoricoSituacao()">Histórico de Situação</button>
+                      </li>
+                  }
+                </ul>
+                
+                <div class="tab-content" style="padding: 0; box-shadow: none; border: none; background: transparent;">
+                    <div class="tab-pane fade show active" id="tab-dados" role="tabpanel">
+                        <form id="formulario-motorista">
+                            @Html.HiddenFor(model => model.Id)
+                            <div class="row">
+                                <div class="col col-lg-8 col-md-12 col-sm-12">
+                                    <label class="form-label obrigatorio" for="ServidorId">Servidor / Pessoa</label>
+                                    @Html.DropDownListFor(model => model.ServidorId, (SelectList)ViewBag.Servidores, "Selecione o Servidor", new { @class = "form-select select2" })
+                                </div>
 
-                        <div class="col col-lg-4 col-md-12 col-sm-12 float-end">
-                            <label class="form-label obrigatorio" for="Status">Status</label>
-                            @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
-                        </div>
-                    </div>
+                                <div class="col col-lg-4 col-md-12 col-sm-12 float-end">
+                                    <label class="form-label obrigatorio" for="Situacao">Situação</label>
+                                    @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
+                                </div>
+                            </div>
 
-                    <div class="row mt-2">
-                        <div class="col col-lg-4 col-md-4">
-                            <label class="form-label obrigatorio" for="NumeroCNH">Número CNH</label>
-                            @Html.TextBoxFor(model => model.NumeroCNH, new { @class = "form-control", @maxlength = "20" })
-                        </div>
-                        <div class="col col-lg-2 col-md-2">
-                            <label class="form-label obrigatorio" for="CategoriaCNH">Categoria CNH</label>
-                            @Html.EnumDropDownListFor(model => model.CategoriaCNH, new { @class = "form-select" })
-                        </div>
-                        <div class="col col-lg-3 col-md-3">
-                            <label class="form-label obrigatorio" for="EmissaoCNH">Emissão CNH</label>
-                            @Html.TextBoxFor(model => model.EmissaoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                        </div>
-                        <div class="col col-lg-3 col-md-3">
-                            <label class="form-label obrigatorio" for="VencimentoCNH">Vencimento CNH</label>
-                            @Html.TextBoxFor(model => model.VencimentoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                        </div>
-                    </div>
+                            <div class="row mt-2">
+                                <div class="col col-lg-4 col-md-4">
+                                    <label class="form-label obrigatorio" for="NumeroCNH">Número CNH</label>
+                                    @Html.TextBoxFor(model => model.NumeroCNH, new { @class = "form-control", @maxlength = "20" })
+                                </div>
+                                <div class="col col-lg-2 col-md-2">
+                                    <label class="form-label obrigatorio" for="CategoriaCNH">Categoria CNH</label>
+                                    @Html.EnumDropDownListFor(model => model.CategoriaCNH, new { @class = "form-select" })
+                                </div>
+                                <div class="col col-lg-3 col-md-3">
+                                    <label class="form-label obrigatorio" for="EmissaoCNH">Emissão CNH</label>
+                                    @Html.TextBoxFor(model => model.EmissaoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                </div>
+                                <div class="col col-lg-3 col-md-3">
+                                    <label class="form-label obrigatorio" for="VencimentoCNH">Vencimento CNH</label>
+                                    @Html.TextBoxFor(model => model.VencimentoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                </div>
+                            </div>
 
-                    <div class="row mt-2">
-                        <div class="col col-md-12">
-                            <label class="form-label" for="Observacoes">Observações</label>
-                            @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control", @rows = "3", @maxlength = "500" })
-                        </div>
+                            <div class="row mt-2">
+                                <div class="col col-md-12">
+                                    <label class="form-label" for="Observacoes">Observações</label>
+                                    @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control", @rows = "3", @maxlength = "500" })
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                    @if(!adicionar)
+                    {
+                        <div class="tab-pane fade" id="tab-historico" role="tabpanel">
+                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered" id="tabela-historico-situacao">
+                                    <thead>
+                                        <tr>
+                                            <th>Data/Hora</th>
+                                            <th>De</th>
+                                            <th>Para</th>
+                                            <th>Usuário</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td colspan="4" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
             <div class="modal-footer mt-3">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
