@@ -289,13 +289,11 @@
                         return string.Empty;
                     }
 
-                    }
+                    <text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
 
-                    @Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
-
-                    if (configColunas.HasFlag(eColunasDaFolha.BHSaldo))
+                    if (configColunas.HasFlag(eColunasDaFolha.BHSaldo) && ultimoRegistroBanco != null)
                     {
-                        <b>BH SALDO:</b> @FormatarBancoDeHoras(ultimoRegistroBanco)@Html.Raw("&nbsp;&nbsp;&nbsp;&nbsp;")
+                        <b>BH SALDO:</b> @FormatarBancoDeHoras(ultimoRegistroBanco)<text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
                     }
                 }
             </td>

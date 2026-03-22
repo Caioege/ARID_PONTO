@@ -81,5 +81,8 @@ namespace AriD.Servicos.DBContext
         public DbSet<ConfiguracaoBonus> ConfiguracaoBonus { get; set; }
         public DbSet<ConfiguracaoBonusFuncao> ConfiguracaoBonusFuncao { get; set; }
         public DbSet<BonusCalculado> BonusCalculado { get; set; }
+        public DbSet<Rota> Rota { get; set; }
+        public DbSet<ParadaRota> ParadaRota { get; set; }
+        public DbSet<LocalizacaoRota> LocalizacaoRota { get; set; }
     }
 }

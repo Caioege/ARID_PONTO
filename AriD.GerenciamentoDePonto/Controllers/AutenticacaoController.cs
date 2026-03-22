@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.GerenciamentoDePonto.Helpers;
@@ -51,7 +51,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     usuarioAcesso.DepartamentoId,
                     ObtenhaListaDePermissoes(usuarioAcesso),
                     usuarioAcesso.Organizacao?.NomenclaturaServidor ?? eNomenclaturaServidor.Servidores,
-                    usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema));
+                    usuarioAcesso.PerfilDeAcesso == ePerfilDeAcesso.AdministradorDeSistema,
+                    usuarioAcesso.Organizacao?.GestaoMobileAtivo ?? false));
 
                 return Json(new { sucesso = true, mensagem = "O acesso foi feito com sucesso." });
             }

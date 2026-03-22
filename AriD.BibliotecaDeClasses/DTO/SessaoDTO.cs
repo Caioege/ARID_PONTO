@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Enumeradores;
+using AriD.BibliotecaDeClasses.Enumeradores;
 
 namespace AriD.BibliotecaDeClasses.DTO
 {
@@ -16,7 +16,8 @@ namespace AriD.BibliotecaDeClasses.DTO
             int? departamentoId,
             List<KeyValuePair<string, int>> permissoes,
             eNomenclaturaServidor nomenclaturaServidor,
-            bool usuarioAdministradorAutenticado = false)
+            bool usuarioAdministradorAutenticado = false,
+            bool gestaoMobileAtivo = false)
         {
             UsuarioId = usuarioId;
             UsuarioNome = usuarioNome;
@@ -28,6 +29,7 @@ namespace AriD.BibliotecaDeClasses.DTO
             DepartamentoId = departamentoId;
             NomenclaturaServidor = nomenclaturaServidor;
             UsuarioAdministradorAutenticado = usuarioAdministradorAutenticado;
+            GestaoMobileAtivo = gestaoMobileAtivo;
         }
 
         public int UsuarioId { get; set; }
@@ -46,5 +48,6 @@ namespace AriD.BibliotecaDeClasses.DTO
         public List<KeyValuePair<string, int>> Permissoes { get; set; } = new();
 
         public eNomenclaturaServidor NomenclaturaServidor { get; set; }
+        public bool GestaoMobileAtivo { get; set; }
     }
 }

@@ -423,6 +423,54 @@
                 </li>
             }
 
+            @if (dadosDaSessao.GestaoMobileAtivo)
+            {
+                <li class="menu-item menu-group">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class='menu-icon tf-icons bx bx-mobile'></i>
+                        <div data-i18n="Gestão Mobile">Gestão Mobile</div>
+                    </a>
+                    <ul class="menu-sub">
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Motorista.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Motorista")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='menu-icon bx bxs-user-circle'></i>
+                                    <div class="menu-text-content">Motoristas</div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Veiculo.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Veiculo")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='menu-icon bx bxs-car'></i>
+                                    <div class="menu-text-content">Veículos</div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Rota.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "Rota")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='menu-icon bx bxs-map-alt'></i>
+                                    <div class="menu-text-content">Rotas</div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_MonitoramentoMobile.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Monitoramento", "Rota")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='menu-icon bx bx-map'></i>
+                                    <div class="menu-text-content">Monitoramento</div>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+
             <li class="menu-item menu-group">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class='menu-icon tf-icons bx bxs-user-badge'></i>

@@ -1,0 +1,39 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.GerenciamentoDePonto.WebGrid
+
+@model ListaPaginada<Veiculo>
+
+@{
+    var tabela = new WebGrid<Veiculo>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Placa", "Placa", width: 15f),
+        tabela.Column("Marca", "Marca", width: 25f),
+        tabela.Column("Modelo", "Modelo", width: 30f),
+        tabela.Column("Status", "Status", format:
+            @<text>
+                @if (item.Status == eStatusVeiculo.Disponivel)
+            {
+                <span class="badge bg-label-success">Ativo</span>
+            }
+            else if (item.Status == eStatusVeiculo.EmManutencao)
+            {
+                <span class="badge bg-label-warning">Manutenção</span>
+            }
+            else
+            {
+                <span class="badge bg-label-danger">Inativo</span>
+            }
+            </text>, width: 20f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                    <i class='bx bxs-edit-alt'></i>
+                </button>
+            </text>, width: 10f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

@@ -1,4 +1,6 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
     public class RotaAppController : Controller
     {
         private readonly IServicoDeAplicativo _servicoDeAplicativo;
+        private readonly IServico<Rota> _servicoRota;
+        private readonly IServico<LocalizacaoRota> _servicoLocalizacao;
 
-        public RotaAppController(IServicoDeAplicativo servicoDeAplicativo)
+        public RotaAppController(
+            IServicoDeAplicativo servicoDeAplicativo,
+            IServico<Rota> servicoRota,
+            IServico<LocalizacaoRota> servicoLocalizacao)
         {
             _servicoDeAplicativo = servicoDeAplicativo;
+            _servicoRota = servicoRota;
+            _servicoLocalizacao = servicoLocalizacao;
         }
 
         [HttpPost("autentique")]
@@ -38,6 +47,33 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 return Ok(acesso);
             }
             catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("receber-localizacao")]
+        public IActionResult ReceberLocalizacao([FromBody] PostLocalizacaoRotaDTO dto)
+        {
+            try
+            {
+                var rota = _servicoRota.Obtenha(dto.RotaId);
+                if (rota == null)
+                    return BadRequest(new { message = "Rota não encontrada." });
+
+                var localizacao = new LocalizacaoRota
+                {
+                    RotaId = dto.RotaId,
+                    Latitude = dto.Latitude,
+                    Longitude = dto.Longitude,
+                    DataHora = dto.DataHora,
+                    OrganizacaoId = rota.OrganizacaoId
+                };
+
+                _servicoLocalizacao.Adicionar(localizacao);
+                return Ok(new { sucesso = true });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }

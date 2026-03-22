@@ -15,21 +15,14 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 - [Mobile Apps Architecture](./mobile-apps.md)
 
 ## Repository Snapshot
-- `alteracoes_20260315.sql/`
-- `alteracoes.sql/`
-- `aprovacao_tolerancia.sql/`
+- `ScriptsSQL/`
 - `AriD.BibliotecaDeClasses/`
 - `AriD.GerenciamentoDePonto/`
 - `AriD.GerenciamentoDePonto.sln/`
 - `AriD.Servicos/`
-- `auditoria_ausencias.sql/`
-- `auditoria_escala.sql/`
-- `bonus_tabelas.sql/`
 - `DOC - PADRE BERNADO - Com Anotações (2).pdf/`
-- `MD/`
-- `ocorrencia_espelho.sql/`
+- `Documentação de Melhorias/`
 - `PdfParser/`
-- `template_filtros.sql/`
 - `Aplicativos/`
 
 ## Document Map

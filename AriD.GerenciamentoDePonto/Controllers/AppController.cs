@@ -150,7 +150,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 listaDePonto,
                 null,
                 null,
-                true);
+                new List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>());
 
             return File(relatorio, "application/pdf");
         }

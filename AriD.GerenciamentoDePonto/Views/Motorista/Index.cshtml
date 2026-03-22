@@ -1,0 +1,51 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.ParametrosDeConsulta
+@using AriD.GerenciamentoDePonto.WebGrid
+@using Newtonsoft.Json
+@using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+
+@model ListaPaginada<Motorista>
+@{
+    var additionalParams = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(Model.Adicional);
+}
+
+<div class="row">
+    <div class="col col-lg-8 col-md-10 mt-1 col-xs-9">
+        <h5>Motoristas</h5>
+    </div>
+    <div class="col col-lg-4 col-md-2 mt-1 col-xs-3 float-end">
+        @if (Context.PossuiPermissao(eItemDePermissao_Motorista.CadastrarOuAlterar))
+        {
+            <button type="button" class="btn btn-primary float-end" onclick="abrirModal(0)">
+                <i class='bx bxs-user-plus'></i> 
+                <span class="d-none d-sm-inline">&nbsp;Adicionar</span>
+            </button>
+        }
+    </div>
+</div>
+
+<div class="card mb-6 mb-3 p-4">
+    <div class="row">
+        <label class="form-label">&nbsp;</label>
+        <div class="input-group input-group-merge">
+            <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
+            <input type="text"
+                   class="form-control"
+                   placeholder="Pesquisar por nome ou CNH..."
+                   aria-label="Pesquisar..."
+                   aria-describedby="basic-addon-search31"
+                   id="TermoDeBusca" />
+        </div>
+    </div>
+</div>
+
+<div class="card mb-6">
+    @Html.Hidden("Adicional", Model.Adicional)
+    <div id="grid">
+        @await Html.PartialAsync("_TabelaPaginada", Model)
+    </div>
+</div>
+
+<div id="div-modal"></div>
+
+<script src="/Scripts/Paginas/Motorista/index.js"></script>

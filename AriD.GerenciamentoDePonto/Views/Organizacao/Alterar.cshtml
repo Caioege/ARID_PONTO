@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @model Organizacao
 
 @{
@@ -71,6 +71,18 @@
                         else
                         {
                             @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
+                        }
+                    </div>
+
+                    <div class="col col-lg-2 col-md-4 col-xs-12">
+                        <label class="form-label obrigatorio" for="GestaoMobileAtivo">Gestão Mobile</label>
+                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select" })
+                        }
+                        else
+                        {
+                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
                         }
                     </div>
 

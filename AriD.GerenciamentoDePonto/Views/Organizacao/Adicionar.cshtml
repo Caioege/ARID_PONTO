@@ -1,4 +1,4 @@
-﻿@model Organizacao
+@model Organizacao
 
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -14,14 +14,19 @@
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.EnderecoId)
             <div class="row">
-                <div class="col col-lg-10 col-md-8 col-xs-12">
+                <div class="col col-lg-8 col-md-6 col-xs-12">
                     <label class="form-label obrigatorio" for="Nome">Nome</label>
                     @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
                 </div>
 
-                <div class="col col-lg-2 col-md-4 col-xs-12">
+                <div class="col col-lg-2 col-md-3 col-xs-12">
                     <label class="form-label obrigatorio" for="Ativa">Ativa</label>
                     @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                </div>
+
+                <div class="col col-lg-2 col-md-3 col-xs-12">
+                    <label class="form-label obrigatorio" for="GestaoMobileAtivo">Gestão Mobile</label>
+                    @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select" })
                 </div>
             </div>
             <br />

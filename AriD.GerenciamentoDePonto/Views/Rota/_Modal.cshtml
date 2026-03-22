@@ -1,0 +1,139 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@model Rota
+
+@{
+    var adicionar = Model.Id == 0;
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Rota.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Rota.CadastrarOuAlterar);
+}
+
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Rota</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-rota">
+                    @Html.HiddenFor(model => model.Id)
+                    
+                    <div class="row">
+                        <div class="col col-lg-5 col-md-12 col-sm-12">
+                            <label class="form-label obrigatorio" for="Descricao">Descrição / Titulo da Rota</label>
+                            @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
+                        </div>
+                        <div class="col col-lg-4 col-md-12 col-sm-12">
+                            <label class="form-label obrigatorio" for="MotoristaId">Motorista</label>
+                            @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, "Selecione o Motorista", new { @class = "form-select select2" })
+                        </div>
+
+                        <div class="col col-lg-3 col-md-12 col-sm-12 float-end">
+                            <label class="form-label obrigatorio" for="Status">Status</label>
+                            @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col col-lg-4 col-md-12 col-sm-12">
+                            <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
+                            @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, "Selecione o Veículo", new { @class = "form-select select2" })
+                        </div>
+                        <div class="col col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label" for="DataHoraInicio">Início Realizado Em</label>
+                            @Html.TextBoxFor(model => model.DataHoraInicio, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", @disabled="disabled" })
+                        </div>
+                        <div class="col col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label" for="DataHoraFim">Concluído Em</label>
+                            @Html.TextBoxFor(model => model.DataHoraFim, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", @disabled="disabled" })
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h6>Pontos de Parada</h6>
+                    
+                    <div class="row mt-2 mb-3 align-items-end">
+                        <div class="col col-lg-4">
+                            <label class="form-label" for="novaParadaEndereco">Endereço/Local</label>
+                            <input type="text" class="form-control" id="novaParadaEndereco" placeholder="Ex: Rua A, 123" />
+                        </div>
+                        <div class="col col-lg-3">
+                            <label class="form-label" for="novaParadaLink">Geo Link (Opcional)</label>
+                            <input type="text" class="form-control" id="novaParadaLink" placeholder="Google maps link..." />
+                        </div>
+                        <div class="col col-lg-3">
+                            <label class="form-label" for="novaParadaObs">Observação (Opcional)</label>
+                            <input type="text" class="form-control" id="novaParadaObs" placeholder="Ex: Cuidado com o cachorro" />
+                        </div>
+                        <div class="col col-lg-2">
+                           <button type="button" class="btn btn-primary w-100" id="btn-adicionar-parada">
+                               <i class='bx bx-plus'></i> Adicionar
+                           </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive text-nowrap mt-2" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-bordered table-sm" id="tabela-paradas">
+                            <thead>
+                                <tr>
+                                    <th>Endereço/Local</th>
+                                    <th>Link Mapa</th>
+                                    <th>Observação</th>
+                                    <th>Situação</th>
+                                    <th width="50px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Model.Paradas != null)
+                                {
+                                    foreach(var p in Model.Paradas)
+                                    {
+                                        <tr data-id="@p.Id" data-entregue="@(p.Entregue ? "true" : "false")"
+                                            data-endereco="@p.Endereco" data-link="@p.Link" data-obs="@p.Observacao">
+                                            <td>@p.Endereco</td>
+                                            <td>@p.Link</td>
+                                            <td>@p.Observacao</td>
+                                            <td>
+                                                @if(p.Entregue) { <span class="badge bg-success">Entregue/Concluído</span> } else { <span class="badge bg-secondary">Pendente</span> }
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-icon btn-danger btn-remover-parada" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer mt-3">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (Model.Id > 0 && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerRegistro()">
+                        <i class='bx bx-trash'></i> Remover
+                    </button>
+                }
+
+                @if (podeAlterar)
+                {
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (typeof inicializarSelects === 'function') {
+        inicializarSelects();
+    }
+</script>

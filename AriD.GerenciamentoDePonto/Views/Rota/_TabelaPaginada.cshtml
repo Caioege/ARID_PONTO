@@ -1,0 +1,42 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.GerenciamentoDePonto.WebGrid
+
+@model ListaPaginada<Rota>
+
+@{
+    var tabela = new WebGrid<Rota>(Model, "grid", null);
+
+    var listaDeColunas = new List<WebGridColumn>
+    {
+        tabela.Column("Descricao", "Descrição", width: 30f),
+        tabela.Column("Motorista.Servidor.Pessoa.Nome", "Motorista", width: 30f),
+        tabela.Column("Status", "Status", format:
+            @<text>
+                @if (item.Status == eStatusRota.Pendente)
+            {
+                <span class="badge bg-label-secondary">Pendente</span>
+            }
+            else if (item.Status == eStatusRota.EmAndamento)
+            {
+                <span class="badge bg-label-primary">Em Andamento</span>
+            }
+            else if (item.Status == eStatusRota.Concluida)
+            {
+                <span class="badge bg-label-success">Concluída</span>
+            }
+            else
+            {
+                <span class="badge bg-label-danger">Cancelada</span>
+            }
+            </text>, width: 20f),
+        tabela.Column(string.Empty, "Ação", format:
+            @<text>
+                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                    <i class='bx bxs-edit-alt'></i> Detalhes
+                </button>
+            </text>, width: 10f)
+    };
+}
+
+@(await tabela.Table(listaDeColunas, string.Empty, Html.PartialAsync("_PaginacaoWebGrid")))

@@ -1,0 +1,87 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@model Motorista
+
+@{
+    var adicionar = Model.Id == 0;
+    var podeRemover = Context.PossuiPermissao(eItemDePermissao_Motorista.Excluir);
+    var podeAlterar = Context.PossuiPermissao(eItemDePermissao_Motorista.CadastrarOuAlterar);
+}
+
+<div class="modal" tabindex="-1" id="_Modal" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(adicionar ? "Adicionar" : "Alterar") Motorista</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formulario-motorista">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="row">
+                        <div class="col col-lg-8 col-md-12 col-sm-12">
+                            <label class="form-label obrigatorio" for="ServidorId">Servidor / Pessoa</label>
+                            @Html.DropDownListFor(model => model.ServidorId, (SelectList)ViewBag.Servidores, "Selecione o Servidor", new { @class = "form-select select2" })
+                        </div>
+
+                        <div class="col col-lg-4 col-md-12 col-sm-12 float-end">
+                            <label class="form-label obrigatorio" for="Status">Status</label>
+                            @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col col-lg-4 col-md-4">
+                            <label class="form-label obrigatorio" for="NumeroCNH">Número CNH</label>
+                            @Html.TextBoxFor(model => model.NumeroCNH, new { @class = "form-control", @maxlength = "20" })
+                        </div>
+                        <div class="col col-lg-2 col-md-2">
+                            <label class="form-label obrigatorio" for="CategoriaCNH">Categoria CNH</label>
+                            @Html.EnumDropDownListFor(model => model.CategoriaCNH, new { @class = "form-select" })
+                        </div>
+                        <div class="col col-lg-3 col-md-3">
+                            <label class="form-label obrigatorio" for="EmissaoCNH">Emissão CNH</label>
+                            @Html.TextBoxFor(model => model.EmissaoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                        <div class="col col-lg-3 col-md-3">
+                            <label class="form-label obrigatorio" for="VencimentoCNH">Vencimento CNH</label>
+                            @Html.TextBoxFor(model => model.VencimentoCNH, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col col-md-12">
+                            <label class="form-label" for="Observacoes">Observações</label>
+                            @Html.TextAreaFor(model => model.Observacoes, new { @class = "form-control", @rows = "3", @maxlength = "500" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer mt-3">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class='bx bx-window-close'></i> Fechar
+                </button>
+
+                @if (Model.Id > 0 && podeRemover)
+                {
+                    <button type="button" class="btn btn-danger" onclick="removerRegistro()">
+                        <i class='bx bx-trash'></i> Remover
+                    </button> //
+                }
+
+                @if (podeAlterar)
+                {
+                    <button type="button" class="btn btn-primary" id="btn-salvar-modal">
+                        <i class='bx bxs-save'></i> Salvar
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (typeof inicializarSelects === 'function') {
+        inicializarSelects();
+    }
+</script>

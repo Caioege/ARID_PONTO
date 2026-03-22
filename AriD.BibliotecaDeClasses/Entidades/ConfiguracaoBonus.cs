@@ -1,6 +1,7 @@
 using AriD.BibliotecaDeClasses.Entidades.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AriD.BibliotecaDeClasses.Enumeradores;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {

@@ -2,7 +2,7 @@ using AriD.BibliotecaDeClasses.Entidades.Base;
 
 namespace AriD.BibliotecaDeClasses.Entidades
 {
-    public class ConfiguracaoBonusFuncao : EntidadeIdentityBase
+    public class ConfiguracaoBonusFuncao : EntidadeBase
     {
         public int ConfiguracaoBonusId { get; set; }
         public virtual ConfiguracaoBonus ConfiguracaoBonus { get; set; }

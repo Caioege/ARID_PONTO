@@ -36,8 +36,14 @@
                     <select name="FuncoesIds" id="FuncoesIds" class="form-select select2" multiple="multiple" data-placeholder="Selecione as funções elegíveis">
                         @foreach (var funcao in ViewBag.Funcoes as List<AriD.BibliotecaDeClasses.Entidades.Funcao>)
                         {
-                            var selected = Model.Funcoes.Any(f => f.FuncaoId == funcao.Id) ? "selected" : "";
-                            <option value="@funcao.Id" @selected>@funcao.Descricao</option>
+                            @if (Model.Funcoes.Any(f => f.FuncaoId == funcao.Id))
+                            {
+                                <option value="@funcao.Id" selected="selected">@funcao.Descricao</option>
+                            }
+                            else
+                            {
+                                <option value="@funcao.Id">@funcao.Descricao</option>
+                            }
                         }
                     </select>
                 </div>
