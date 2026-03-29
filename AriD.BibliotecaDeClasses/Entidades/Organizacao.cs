@@ -23,5 +23,8 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public bool EnvioDeMensagemWhatsAppExperimental { get; set; }
 
         public bool GestaoMobileAtivo { get; set; }
+
+        public string? LatitudeCentroide { get; set; }
+        public string? LongitudeCentroide { get; set; }
     }
 }

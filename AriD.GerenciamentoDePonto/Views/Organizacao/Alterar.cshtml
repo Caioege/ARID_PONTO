@@ -99,6 +99,17 @@
                         </div>
                     }
                 </div>
+                <!-- Gestao Mobile Configuration -->
+                <div class="row mt-2">
+                    <div class="col col-lg-3 col-md-4 col-xs-12">
+                        <label class="form-label" for="LatitudeCentroide">Latitude Central (Gestão Mobile)</label>
+                        @Html.TextBoxFor(model => model.LatitudeCentroide, new { @class = "form-control", placeholder = "Ex: -15.7942" })
+                    </div>
+                    <div class="col col-lg-3 col-md-4 col-xs-12">
+                        <label class="form-label" for="LongitudeCentroide">Longitude Central (Gestão Mobile)</label>
+                        @Html.TextBoxFor(model => model.LongitudeCentroide, new { @class = "form-control", placeholder = "Ex: -47.8821" })
+                    </div>
+                </div>
             </div>
 
             <br />
