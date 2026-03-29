@@ -2,6 +2,17 @@ let map;
 let allRoutesData = [];
 let routeLayers = {};
 
+$(document).ready(function() {
+    if ($.fn.select2) {
+        $('#M_FiltroRota, #M_FiltroMotorista, #M_FiltroVeiculo').select2({
+            width: '100%',
+            placeholder: 'Escolha uma opção',
+            allowClear: true,
+            dropdownParent: $('#filtros-overlay')
+        });
+    }
+});
+
 function initMap() {
     let lat = typeof mapLatCentro !== 'undefined' ? mapLatCentro : -15.7942;
     let lon = typeof mapLonCentro !== 'undefined' ? mapLonCentro : -47.8821;
@@ -20,7 +31,10 @@ function initMap() {
 }
 
 function obterDadosMonitoramento() {
-    $.getJSON('/Rota/ObterDadosMonitoramento', function(response) {
+    let dataFiltro = $("#M_FiltroData").length ? $("#M_FiltroData").val() : "";
+    let finalizadas = $("#M_FiltroFinalizadas").length ? $("#M_FiltroFinalizadas").is(":checked") : false;
+
+    $.getJSON(`/Rota/ObterDadosMonitoramento?dataFiltro=${dataFiltro}&exibirFinalizadas=${finalizadas}`, function(response) {
         if (response.sucesso) {
             allRoutesData = response.dados;
             
@@ -53,6 +67,22 @@ function getPredefinedColor(id) {
     return colors[id % colors.length];
 }
 
+function hexToGrayscale(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+    
+    // Calculate luminance and push it safely to a gray range
+    let gray = Math.round(r * 0.299 + g * 0.587 + b * 0.114);
+    // Make sure it doesn't get too white or too black to be visible
+    gray = Math.min(Math.max(gray, 80), 180);
+    
+    let grayHex = gray.toString(16).padStart(2, '0');
+    return `#${grayHex}${grayHex}${grayHex}`;
+}
+
 function renderizarRotasNoMapa() {
     let filtroMotorista = $("#M_FiltroMotorista").val();
     let filtroVeiculo = $("#M_FiltroVeiculo").val();
@@ -77,16 +107,29 @@ function renderizarRotasNoMapa() {
 
     let group = new L.featureGroup();
 
+    dadosFiltrados.sort((a, b) => {
+        let aFin = (a.finalizada === true || String(a.finalizada).toLowerCase() === 'true');
+        let bFin = (b.finalizada === true || String(b.finalizada).toLowerCase() === 'true');
+        if (aFin === bFin) return 0;
+        return aFin ? -1 : 1; // True comes first (under)
+    });
+
     dadosFiltrados.forEach(rota => {
-        let cor = getPredefinedColor(rota.rotaId);
+        let isFinalizada = (rota.finalizada === true || String(rota.finalizada).toLowerCase() === 'true');
+        let layerId = rota.execucaoId || (rota.rotaId.toString() + (isFinalizada ? '_fin' : '_act'));
+        
+        let corViva = getPredefinedColor(rota.rotaId);
+        let cor = isFinalizada ? hexToGrayscale(corViva) : corViva;
+        let lineOpacity = isFinalizada ? 0.5 : 0.8;
+        let lineClass = isFinalizada ? 'route-path' : 'route-path animated-route';
         
         // Polyline drawing the path
         let pathLine = L.polyline(rota.historicoLocalizacoes, {
             color: cor,
             weight: 5,
-            opacity: 0.8,
+            opacity: lineOpacity,
             smoothFactor: 1,
-            className: 'animated-route'
+            className: lineClass
         }).addTo(map);
 
         // Calcula o "rumo" (heading) para rotacionar o carro na direção correta
@@ -105,10 +148,13 @@ function renderizarRotasNoMapa() {
         }
 
         // SVG Premium (Carro vista superior, dinâmico e sombreado)
+        let strokeColor = isFinalizada ? "#999" : "white";
+        let shadowColor = isFinalizada ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.5)";
+        let opacityCar = isFinalizada ? "0.7" : "1";
         let carSvg = `
-            <div style="transform: rotate(${heading}deg); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.5));">
+            <div style="transform: rotate(${heading}deg); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 3px 5px ${shadowColor}); opacity: ${opacityCar};">
                 <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="5" y="2" width="14" height="20" rx="4" fill="${cor}" stroke="white" stroke-width="1.5"/>
+                    <rect x="5" y="2" width="14" height="20" rx="4" fill="${cor}" stroke="${strokeColor}" stroke-width="1.5"/>
                     <rect x="7" y="5" width="10" height="4" fill="rgba(0,0,0,0.7)" rx="1"/>
                     <rect x="7" y="15" width="10" height="4" fill="rgba(0,0,0,0.6)" rx="1"/>
                     <rect x="4" y="8" width="2" height="4" rx="1" fill="${cor}" />
@@ -141,11 +187,11 @@ function renderizarRotasNoMapa() {
                 if (p.entregue) {
                     statusText = `<span style="color:#2ecc71;">✔ ${p.concluidoEm}</span>`;
                     bgStyle = `border: 2px solid #2ecc71; color: #fff; background: #2ecc71;`;
-                } else if (!proximaEncontrada) {
+                } else if (!proximaEncontrada && !isFinalizada) {
                     statusText = `<span style="font-weight:bold; color:#f39c12;">⏳ Próxima</span>`;
                     proximaEncontrada = true;
                     // Proxima: Usa a cor da rota e destaca com pulso do CSS (se quisesse adicionar uma classe)
-                    bgStyle = `border: 2px solid ${cor}; color: ${cor}; background: #fff; border-width: 3px;`;
+                    bgStyle = `border: 2px solid ${corViva}; color: ${corViva}; background: #fff; border-width: 3px;`;
                 } else {
                     statusText = `<span style="color:#7f8c8d;">Pendente</span>`;
                     // Pendentes posteriores: usa a cor da rota mas mais "lavado" ou padrão
@@ -169,8 +215,13 @@ function renderizarRotasNoMapa() {
                 
                 pMarker.bindPopup(`
                     <div style="min-width: 150px; font-size: 0.9em; padding: 4px;">
-                        <h6 style="margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 5px;"><strong>${p.nome}</strong></h6>
-                        <div>Status: ${statusText}</div>
+                        <h6 style="margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 5px; color: #2c3e50;"><strong>Parada: ${p.nome}</strong></h6>
+                        <div style="margin-bottom: 6px;"><strong>Rota:</strong> <span style="color:#555;">${rota.descricao}</span></div>
+                        <div style="font-size: 0.85em; margin-bottom: 6px; padding: 4px; background: #f8f9fa; border-radius: 4px; border: 1px solid #eee;">
+                            <div><i class="bx bx-play-circle" style="color: #27ae60;"></i> Início: <strong>${rota.horaInicio || '--/--/--'}</strong></div>
+                            <div><i class="bx bx-stop-circle" style="color: #c0392b;"></i> Fim: <strong>${rota.horaFim || '--/--/--'}</strong></div>
+                        </div>
+                        <div style="margin-top: 5px;">Status: ${statusText}</div>
                     </div>
                 `, { closeButton: false });
 
@@ -180,14 +231,24 @@ function renderizarRotasNoMapa() {
             paradasListHtml += '</ul></div>';
         }
 
+        let tempoLabel = isFinalizada ? `<span style="color: #c0392b"><i class="bx bx-check-double"></i> Finalizada</span> às` : `<i class="bx bx-time"></i> Atual. às`;
+        let pacienteHtml = rota.nomePaciente ? `<div><strong>Paciente:</strong> <span style="color: #2980b9;">${rota.nomePaciente}</span></div>` : "";
+        let medicoHtml = rota.medicoResponsavel ? `<div><strong>Médico Resp.:</strong> ${rota.medicoResponsavel}</div>` : "";
+        let dataExecucaoHtml = rota.dataParaExecucao ? `<div><strong>Data Agendada:</strong> ${rota.dataParaExecucao}</div>` : "";
+
         let popupContent = `
             <div class="popup-content" style="min-width: 200px;">
-                <h6 class="mb-2 pb-2" style="border-bottom: 1px solid #eee; margin-top: 5px;"><strong>Rota:</strong> <br/>${rota.descricao}</h6>
+                <h6 class="mb-1 pb-1" style="border-bottom: 1px solid #eee; margin-top: 5px;"><strong>Rota:</strong> <br/>${rota.descricao}</h6>
                 <div class="small" style="line-height:1.6;">
-                    <div><strong>Motorista:</strong> ${rota.motoristaNome}</div>
-                    <div><strong>Veículo:</strong> ${rota.placaModelo}</div>
+                    ${dataExecucaoHtml}
+                    ${pacienteHtml}
+                    ${medicoHtml}
+                    <div style="${(rota.nomePaciente || rota.medicoResponsavel) ? "margin-top: 5px; border-top: 1px dashed #ddd; padding-top: 4px;" : ""}">
+                        <div><strong>Motorista:</strong> ${rota.motoristaNome}</div>
+                        <div><strong>Veículo:</strong> ${rota.placaModelo}</div>
+                    </div>
                     <div class="mt-2 text-muted" style="font-size: 0.85em;">
-                        <i class="bx bx-time"></i> Atual. às ${rota.ultimaAtualizacao.substring(11, 19)}
+                        ${tempoLabel} ${rota.ultimaAtualizacao.substring(11, 19)}
                     </div>
                 </div>
                 ${paradasListHtml}
@@ -199,7 +260,7 @@ function renderizarRotasNoMapa() {
             closeButton: false
         });
 
-        routeLayers[rota.rotaId] = {
+        routeLayers[layerId] = {
             polyline: pathLine,
             marker: marker,
             paradas: paradasMarkers

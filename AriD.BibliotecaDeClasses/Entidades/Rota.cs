@@ -10,14 +10,16 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(MotoristaId))]
         public virtual Motorista Motorista { get; set; }
 
-        public int? VeiculoId { get; set; }
-        [ForeignKey(nameof(VeiculoId))]
-        public virtual Veiculo Veiculo { get; set; }
+        public virtual ICollection<RotaVeiculo> VeiculosDaRota { get; set; } = new List<RotaVeiculo>();
 
         public string Descricao { get; set; }
         
         public eStatusRota Situacao { get; set; }
         public bool Recorrente { get; set; }
+
+        public DateTime? DataParaExecucao { get; set; }
+        public string? NomePaciente { get; set; }
+        public string? MedicoResponsavel { get; set; }
 
         public virtual ICollection<ParadaRota> Paradas { get; set; } = new List<ParadaRota>();
         public virtual ICollection<RotaExecucao> Execucoes { get; set; } = new List<RotaExecucao>();

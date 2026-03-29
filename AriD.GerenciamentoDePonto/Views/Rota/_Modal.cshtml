@@ -57,8 +57,38 @@
                                 </div>
 
                                 <div class="col col-lg-6 col-md-12 col-sm-12">
-                                    <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
-                                    @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, string.Empty, new { @class = "select2" })
+                                    <label class="form-label" for="veiculosSelecionados">Veículos Associados (Opcional)</label>
+                                    @Html.ListBox("veiculosSelecionados", (MultiSelectList)ViewBag.Veiculos, new { @class = "select2", multiple = "multiple", data_placeholder = "Selecione os veículos..." })
+                                </div>
+                            </div>
+
+                            <div class="row mt-2" id="box-rota-especifica" style="display:none; padding:10px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #eee;">
+                                <div class="col col-lg-3 col-md-12 col-sm-12">
+                                    <label class="form-label obrigatorio" for="DataParaExecucao">Data da Execução</label>
+                                    @Html.TextBoxFor(model => model.DataParaExecucao, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                </div>
+                                <div class="col col-lg-4 col-md-12 col-sm-12">
+                                    <label class="form-label" for="NomePaciente">Nome do Paciente</label>
+                                    @Html.TextBoxFor(model => model.NomePaciente, new { @class = "form-control", placeholder = "Opcional" })
+                                </div>
+                                <div class="col col-lg-5 col-md-12 col-sm-12">
+                                    <label class="form-label" for="MedicoResponsavel">Médico Responsável (CRM)</label>
+                                    <select class="form-select select2-tags" id="MedicoResponsavel" name="MedicoResponsavel" style="width: 100%;">
+                                        <option value="">Selecione ou digite...</option>
+                                        @if (!string.IsNullOrEmpty(Model.MedicoResponsavel) && (ViewBag.Medicos == null || !((IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Medicos).Any(x => x.Value == Model.MedicoResponsavel)))
+                                        {
+                                            <option value="@Model.MedicoResponsavel" selected="selected">@Model.MedicoResponsavel</option>
+                                        }
+                                        @if (ViewBag.Medicos != null) {
+                                            foreach (var med in (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Medicos) {
+                                                if (med.Value == Model.MedicoResponsavel) {
+                                                    <option value="@med.Value" selected="selected">@med.Text</option>
+                                                } else {
+                                                    <option value="@med.Value">@med.Text</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
                                 </div>
                             </div>
 
@@ -90,9 +120,11 @@
                             <thead>
                                 <tr>
                                     <th>Endereço/Local</th>
-                                    <th>Link Mapa</th>
-                                    <th>Observação</th>
-                                    <th>Situação</th>
+                                    <th width="15%">Observação</th>
+                                    @if (Model.Recorrente)
+                                    {
+                                        <th width="10%">Situação</th>
+                                    }
                                     <th width="50px"></th>
                                 </tr>
                             </thead>
@@ -103,12 +135,18 @@
                                     {
                                         <tr data-id="@p.Id" data-entregue="@(p.Entregue ? "true" : "false")"
                                             data-endereco="@p.Endereco" data-link="@p.Link" data-obs="@p.Observacao">
-                                            <td>@p.Endereco</td>
-                                            <td>@p.Link</td>
-                                            <td>@p.Observacao</td>
                                             <td>
-                                                @if(p.Entregue) { <span class="badge bg-success">Entregue/Concluído</span> } else { <span class="badge bg-secondary">Pendente</span> }
+                                                @p.Endereco
+                                                <br />
+                                                <a target="_blank" href="@p.Link" style="color: #0000ffb5; text-decoration: underline;">@p.Link</a>
                                             </td>
+                                            <td>@p.Observacao</td>
+                                            @if (Model.Recorrente)
+                                            {
+                                                <td>
+                                                    @if(p.Entregue) { <span class="badge bg-success">Entregue/Concluído</span> } else { <span class="badge bg-secondary">Pendente</span> }
+                                                </td>
+                                            }
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-icon btn-danger btn-remover-parada" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
                                             </td>
@@ -125,7 +163,7 @@
                     @if(!adicionar)
                     {
                         <div class="tab-pane fade" id="tab-execucoes" role="tabpanel">
-                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                            <div class="table-responsive" id="tabela-execucoes-container" style="max-height: 250px; overflow-y: auto;">
                                 <table class="table table-sm table-bordered" id="tabela-historico-execucoes">
                                     <thead>
                                         <tr>
@@ -133,12 +171,23 @@
                                             <th>Usr. Início</th>
                                             <th>Fim</th>
                                             <th>Usr. Fim</th>
+                                            <th width="100px">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td colspan="4" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
+                                        <tr><td colspan="5" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
                                     </tbody>
                                 </table>
+                            </div>
+                            
+                            <div id="map-historico-container" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-primary"><i class="bx bx-map"></i> Rota Executada</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="voltarParaHistorico()">
+                                        <i class="bx bx-arrow-back"></i> Voltar p/ Lista
+                                    </button>
+                                </div>
+                                <div id="map-historico" style="height: 350px; width: 100%; border-radius: 8px; border: 1px solid #ddd;"></div>
                             </div>
                         </div>
                     }
@@ -171,4 +220,38 @@
     if (typeof inicializarSelects === 'function') {
         inicializarSelects();
     }
+
+    $(document).ready(function() {
+        if ($.fn.select2) {
+            $('.select2-tags').select2({
+                tags: true,
+                dropdownParent: $('#_Modal'),
+                placeholder: 'Selecione ou digite...'
+            });
+        }
+
+        function toggleSpecificBox(isManualChange = false) {
+            var val = String($('#Recorrente').val() || '').toLowerCase();
+            var isNaoRecorrente = (val === 'false' || ($('#Recorrente').is('input[type=checkbox]') && !$('#Recorrente').is(':checked')));
+            
+            if (isNaoRecorrente) {
+                if (isManualChange) {
+                    $('#box-rota-especifica').slideDown();
+                } else {
+                    $('#box-rota-especifica').show();
+                }
+            } else {
+                if (isManualChange) {
+                    $('#box-rota-especifica').slideUp();
+                    $('#DataParaExecucao').val('');
+                    $('#NomePaciente').val('');
+                    $('#MedicoResponsavel').val('');
+                } else {
+                    $('#box-rota-especifica').hide();
+                }
+            }
+        }
+        $('#Recorrente').on('change', function() { toggleSpecificBox(true); });
+        setTimeout(function() { toggleSpecificBox(false); }, 200);
+    });
 </script>

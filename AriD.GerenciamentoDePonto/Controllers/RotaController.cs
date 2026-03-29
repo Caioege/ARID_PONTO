@@ -1,4 +1,5 @@
 using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores.Permissao;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
@@ -28,6 +29,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<RotaExecucao> _rotaExecucaoServico;
         private readonly IServico<LocalizacaoRota> _localizacaoRotaServico;
         private readonly IServico<Organizacao> _organizacaoServico;
+        private readonly IServicoMonitoramentoRotas _servicoMonitoramentoRotas;
+        private readonly IServico<Servidor> _servidorServico;
+        private readonly IServico<RotaVeiculo> _rotaVeiculoServico;
 
         public RotaController(
             IServico<Rota> rotaServico,
@@ -36,7 +40,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<ParadaRota> paradaRotaServico,
             IServico<RotaExecucao> rotaExecucaoServico,
             IServico<LocalizacaoRota> localizacaoRotaServico,
-            IServico<Organizacao> organizacaoServico)
+            IServico<Organizacao> organizacaoServico,
+            IServicoMonitoramentoRotas servicoMonitoramentoRotas,
+            IServico<Servidor> servidorServico,
+            IServico<RotaVeiculo> rotaVeiculoServico)
         {
             _rotaServico = rotaServico;
             _motoristaServico = motoristaServico;
@@ -45,6 +52,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _rotaExecucaoServico = rotaExecucaoServico;
             _localizacaoRotaServico = localizacaoRotaServico;
             _organizacaoServico = organizacaoServico;
+            _servicoMonitoramentoRotas = servicoMonitoramentoRotas;
+            _servidorServico = servidorServico;
+            _rotaVeiculoServico = rotaVeiculoServico;
         }
 
         [HttpGet]
@@ -99,14 +109,25 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 .OrderBy(v => v.Placa)
                 .Select(v => new { v.Id, Descricao = $"{v.Placa} - {v.Modelo}" })
                 .ToList();
-            ViewBag.Veiculos = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(veiculos, "Id", "Descricao", model.VeiculoId);
+            
+            var veiculosSelecionados = model.Id != 0 ? _rotaVeiculoServico.ObtenhaLista(rv => rv.RotaId == model.Id).Select(rv => rv.VeiculoId).ToList() : new List<int>();
+            ViewBag.Veiculos = new Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList(veiculos, "Id", "Descricao", veiculosSelecionados);
+
+            var medicos = _servidorServico.ObtenhaLista(s => s.OrganizacaoId == organizacaoId && !string.IsNullOrEmpty(s.CodigoCRM))
+                .OrderBy(s => s.Pessoa.Nome)
+                .Select(s => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem 
+                { 
+                    Text = $"{s.Pessoa.Nome} - CRM: {s.CodigoCRM}", 
+                    Value = $"{s.Pessoa.Nome} - CRM: {s.CodigoCRM}" 
+                }).ToList();
+            ViewBag.Medicos = medicos;
 
             var html = await RenderizarComoString("_Modal", model);
             return Json(new { sucesso = true, html = html });
         }
 
         [HttpPost]
-        public IActionResult Salvar(Rota rota, List<ParadaRota> paradas)
+        public IActionResult Salvar(Rota rota, List<ParadaRota> paradas, List<int> veiculosSelecionados)
         {
             if (!HttpContext.PossuiPermissao(eItemDePermissao_Rota.CadastrarOuAlterar))
                 throw new ApplicationException("Você não tem permissão para salvar.");
@@ -125,16 +146,28 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         rota.Paradas.Add(p);
                     }
                 }
+                
+                if (veiculosSelecionados != null)
+                {
+                    rota.VeiculosDaRota = new List<RotaVeiculo>();
+                    foreach (var v in veiculosSelecionados)
+                    {
+                        rota.VeiculosDaRota.Add(new RotaVeiculo { VeiculoId = v, OrganizacaoId = rota.OrganizacaoId });
+                    }
+                }
+
                 id = _rotaServico.Adicionar(rota);
             }
             else
             {
                 var original = _rotaServico.Obtenha(c => c.Id == rota.Id);
                 original.MotoristaId = rota.MotoristaId;
-                original.VeiculoId = rota.VeiculoId;
                 original.Descricao = rota.Descricao;
                 original.Situacao = rota.Situacao;
                 original.Recorrente = rota.Recorrente;
+                original.DataParaExecucao = rota.DataParaExecucao;
+                original.NomePaciente = rota.NomePaciente;
+                original.MedicoResponsavel = rota.MedicoResponsavel;
 
                 // Update paradas
                 if (paradas != null)
@@ -177,6 +210,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     }
                 }
 
+                // Update Veiculos
+                var veiculosAtuais = _rotaVeiculoServico.ObtenhaLista(rv => rv.RotaId == original.Id).ToList();
+                var veiculosSelecionadosSeguro = veiculosSelecionados ?? new List<int>();
+
+                var paraRemover = veiculosAtuais.Where(v => !veiculosSelecionadosSeguro.Contains(v.VeiculoId)).ToList();
+                foreach (var rv in paraRemover) { _rotaVeiculoServico.Remover(rv); }
+
+                var paraAdicionar = veiculosSelecionadosSeguro.Where(v => !veiculosAtuais.Any(va => va.VeiculoId == v)).ToList();
+                foreach (var nv in paraAdicionar) { _rotaVeiculoServico.Adicionar(new RotaVeiculo { RotaId = original.Id, VeiculoId = nv, OrganizacaoId = original.OrganizacaoId }); }
+
                 _rotaServico.Atualizar(original);
             }
 
@@ -209,6 +252,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
             foreach(var parada in item.Paradas.ToList())
             {
                 _paradaRotaServico.Remover(parada);
+            }
+
+            var veiculos = _rotaVeiculoServico.ObtenhaLista(rv => rv.RotaId == rotaId).ToList();
+            foreach(var rv in veiculos)
+            {
+                _rotaVeiculoServico.Remover(rv);
             }
 
             _rotaServico.Remover(item);
@@ -264,55 +313,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public IActionResult ObterDadosMonitoramento()
+        public IActionResult ObterDadosMonitoramento(string dataFiltro, bool exibirFinalizadas = false)
         {
             try
             {
                 int organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
-                var execucoesAtivas = _rotaExecucaoServico.ObtenhaLista(re => re.OrganizacaoId == organizacaoId && re.DataHoraFim == null);
-
-                var resultado = new List<object>();
-                foreach (var exec in execucoesAtivas)
+                DateTime dataBase = DateTime.Now.Date;
+                if (!string.IsNullOrEmpty(dataFiltro) && DateTime.TryParse(dataFiltro, out DateTime pt))
                 {
-                    var localizacoes = _localizacaoRotaServico.ObtenhaLista(loc => loc.RotaId == exec.RotaId && loc.DataHora >= exec.DataHoraInicio)
-                        .OrderBy(loc => loc.DataHora)
-                        .ToList();
-
-                    if (localizacoes.Any())
-                    {
-                        var ultima = localizacoes.Last();
-                        double lat = ParseCoord(ultima.Latitude);
-                        double lon = ParseCoord(ultima.Longitude);
-
-                        var historico = localizacoes.Select(l => new double[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
-
-                        var paradasDoBanco = _paradaRotaServico.ObtenhaLista(p => p.RotaId == exec.RotaId).ToList();
-                        var paradasArray = paradasDoBanco.Where(p => !string.IsNullOrEmpty(p.Latitude) && !string.IsNullOrEmpty(p.Longitude))
-                            .Select(p => new {
-                                nome = p.Endereco,
-                                link = p.Link,
-                                latitude = ParseCoord(p.Latitude),
-                                longitude = ParseCoord(p.Longitude),
-                                entregue = p.Entregue,
-                                concluidoEm = p.ConcluidoEm?.ToString("dd/MM/yy HH:mm")
-                            }).ToList();
-
-                        resultado.Add(new
-                        {
-                            RotaId = exec.RotaId,
-                            Descricao = exec.Rota.Descricao,
-                            MotoristaId = exec.Rota.MotoristaId,
-                            MotoristaNome = exec.Rota.Motorista.Servidor.Pessoa.Nome,
-                            VeiculoId = exec.Rota.VeiculoId,
-                            PlacaModelo = $"{exec.Rota.Veiculo.Placa} - {exec.Rota.Veiculo.Modelo}",
-                            UltimaLocalizacao = new[] { lat, lon },
-                            HistoricoLocalizacoes = historico,
-                            UltimaAtualizacao = ultima.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
-                            Paradas = paradasArray
-                        });
-                    }
+                    dataBase = pt.Date;
                 }
+
+                var resultado = _servicoMonitoramentoRotas.ObtenhaMonitoramento(organizacaoId, dataBase, exibirFinalizadas)
+                                    .ToList();
 
                 // MOCK LOGIC for Org 7 as requested for visual tracking
                 if (organizacaoId == 7)
@@ -335,7 +349,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                        if (!jaExisteReal)
                        {
-                           var historico = new List<object>();
+                           var historico = new List<double[]>();
                            int routeIndex = Array.IndexOf(servidorIds, sId);
                            var mockArray = rotasReaisMock[routeIndex % rotasReaisMock.Count];
                            
@@ -344,42 +358,122 @@ namespace AriD.GerenciamentoDePonto.Controllers
                            int endStep = Math.Max(2, timeStepIdx + 1); // at least 2 points for a line
                            if (endStep >= mockArray.Length) endStep = mockArray.Length - 1;
 
+                           bool isFinished = false;
+                           // Se for data anterior, o mock é sempre finalizado. Se for hoje, mock é híbrido caso exibirFinalizadas=true
+                           if (dataBase < DateTime.Now.Date || (dataBase == DateTime.Now.Date && exibirFinalizadas && sId % 2 == 0)) 
+                           {
+                               isFinished = true;
+                               timeStepIdx = mockArray.Length - 1; 
+                               endStep = mockArray.Length - 1;
+                           }
+                           else if (!exibirFinalizadas && (sId % 2 == 0) && dataBase == DateTime.Now.Date)
+                           {
+                               // Se não pediu pra exibir finalizadas, e o side é par, ele estaria finalizado então a gente pula
+                               continue;
+                           }
+
                            for (int i = 0; i <= endStep; i++)
                            {
                                historico.Add(new[] { mockArray[i][0], mockArray[i][1] });
                            }
 
-                           var mockParadas = new List<object>();
+                           var mockParadas = new List<MonitoramentoParadaDTO>();
                            int p1Limit = mockArray.Length / 3;
                            int p2Limit = (mockArray.Length / 3) * 2;
                            
                            if (mockArray.Length > p1Limit) {
                                bool ent = endStep >= p1Limit;
-                               mockParadas.Add(new { nome = "Escola A", link = "https://maps.google.com/?q=escola+a", latitude = mockArray[p1Limit][0], longitude = mockArray[p1Limit][1], entregue = ent, concluidoEm = ent ? DateTime.Now.AddHours(-1).ToString("dd/MM/yy HH:mm") : null });
+                               mockParadas.Add(new MonitoramentoParadaDTO { Nome = "Escola A", Link = "https://maps.google.com/?q=escola+a", Latitude = mockArray[p1Limit][0], Longitude = mockArray[p1Limit][1], Entregue = ent, ConcluidoEm = ent ? dataBase.AddHours(8).ToString("dd/MM/yy HH:mm") : null });
                            }
                            if (mockArray.Length > p2Limit) {
                                bool ent = endStep >= p2Limit;
-                               mockParadas.Add(new { nome = "Escola B", link = "https://maps.google.com/?q=escola+b", latitude = mockArray[p2Limit][0], longitude = mockArray[p2Limit][1], entregue = ent, concluidoEm = ent ? DateTime.Now.AddHours(-3).ToString("dd/MM/yy HH:mm") : null });
+                               mockParadas.Add(new MonitoramentoParadaDTO { Nome = "Escola B", Link = "https://maps.google.com/?q=escola+b", Latitude = mockArray[p2Limit][0], Longitude = mockArray[p2Limit][1], Entregue = ent, ConcluidoEm = ent ? dataBase.AddHours(9).ToString("dd/MM/yy HH:mm") : null });
                            }
 
-                           resultado.Add(new
+                           resultado.Add(new MonitoramentoRotaDTO
                            {
                                RotaId = 1000 + sId,
-                               Descricao = $"Rota Escolar (Mock) - ID {sId}",
+                               Descricao = $"Rota Especial (Mock) - ID {sId}",
+                               DataParaExecucao = sId % 2 == 0 ? dataBase.ToString("dd/MM/yyyy") : "",
+                               NomePaciente = sId % 2 == 0 ? $"Sr./Sra. Silva {sId}" : null,
+                               MedicoResponsavel = sId % 2 == 0 ? $"Dr. Especialista {sId} - CRM {random.Next(1000,9999)}" : null,
+                               HoraInicio = dataBase.AddHours(7).ToString("dd/MM/yy HH:mm"),
+                               HoraFim = isFinished ? dataBase.AddHours(18).ToString("dd/MM/yy HH:mm") : "Em Execução",
                                MotoristaId = sId,
                                MotoristaNome = $"Motorista Teste {sId}",
                                VeiculoId = 500 + sId,
-                               PlacaModelo = $"MOC-{random.Next(1000, 9999)} - VAN",
+                               PlacaModelo = $"MOC-{random.Next(1000, 9999)} - AMBULÂNCIA",
                                UltimaLocalizacao = new[] { mockArray[endStep][0], mockArray[endStep][1] },
                                HistoricoLocalizacoes = historico,
-                               UltimaAtualizacao = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
-                               Paradas = mockParadas
+                               UltimaAtualizacao = isFinished ? dataBase.AddHours(18).ToString("dd/MM/yyyy HH:mm:ss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                               Paradas = mockParadas,
+                               Finalizada = isFinished
                            });
                        }
                    }
                 }
 
                 return Json(new { sucesso = true, dados = resultado });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ObterDadosExecucaoUnica(int execucaoId)
+        {
+            try
+            {
+                int organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+                var exec = _rotaExecucaoServico.Obtenha(execucaoId);
+                
+                if (exec == null || exec.OrganizacaoId != organizacaoId)
+                    return Json(new { sucesso = false, mensagem = "Execução não encontrada." });
+
+                var localizacoes = _localizacaoRotaServico.ObtenhaLista(loc => loc.RotaId == exec.RotaId && loc.DataHora >= exec.DataHoraInicio)
+                    .OrderBy(loc => loc.DataHora)
+                    .ToList();
+
+                if (exec.DataHoraFim.HasValue)
+                {
+                    localizacoes = localizacoes.Where(loc => loc.DataHora <= exec.DataHoraFim.Value).ToList();
+                }
+
+                if (!localizacoes.Any())
+                    return Json(new { sucesso = false, mensagem = "Nenhum trajeto registrado nesta execução." });
+
+                var ultima = localizacoes.Last();
+                var historico = localizacoes.Select(l => new double[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
+
+                var paradasDoBanco = _paradaRotaServico.ObtenhaLista(p => p.RotaId == exec.RotaId).ToList();
+                var paradasArray = paradasDoBanco.Where(p => !string.IsNullOrEmpty(p.Latitude) && !string.IsNullOrEmpty(p.Longitude))
+                    .Select(p => new {
+                        nome = p.Endereco,
+                        link = p.Link,
+                        latitude = ParseCoord(p.Latitude),
+                        longitude = ParseCoord(p.Longitude),
+                        entregue = p.Entregue,
+                        concluidoEm = p.ConcluidoEm?.ToString("dd/MM/yy HH:mm")
+                    }).ToList();
+
+                var resultado = new
+                {
+                    RotaId = exec.RotaId,
+                    Descricao = exec.Rota.Descricao,
+                    MotoristaId = exec.MotoristaId ?? exec.Rota.MotoristaId,
+                    MotoristaNome = exec.Motorista?.Servidor.Pessoa.Nome ?? exec.Rota.Motorista.Servidor.Pessoa.Nome,
+                    VeiculoId = exec.VeiculoId ?? 0,
+                    PlacaModelo = exec.Veiculo != null ? $"{exec.Veiculo.Placa} - {exec.Veiculo.Modelo}" : "",
+                    UltimaLocalizacao = new[] { ParseCoord(ultima.Latitude), ParseCoord(ultima.Longitude) },
+                    HistoricoLocalizacoes = historico,
+                    UltimaAtualizacao = ultima.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
+                    Paradas = paradasArray,
+                    Finalizada = exec.DataHoraFim.HasValue
+                };
+
+                return Json(new { sucesso = true, dados = new[] { resultado } });
             }
             catch (Exception ex)
             {

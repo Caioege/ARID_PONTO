@@ -9,7 +9,8 @@
     body, html { margin: 0; padding: 0; height: 100%; }
     #monitoramento-wrapper {
         position: relative;
-        height: calc(100vh - 120px); 
+        height: calc(100vh - 300px);
+        min-height: 500px;
         width: 100%;
         border-radius: 8px;
         overflow: hidden;
@@ -165,6 +166,15 @@
                         </div>
                         <div id="filtros-content">
                             <div class="filter-group">
+                                <label for="M_FiltroData">Data da Rota *</label>
+                                <input type="date" id="M_FiltroData" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="filter-group form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="M_FiltroFinalizadas">
+                                <label class="form-check-label" for="M_FiltroFinalizadas" style="position:relative; top:1px;">Exibir finalizadas</label>
+                            </div>
+                            <hr style="margin: 10px 0; border-color: #ddd;">
+                            <div class="filter-group mt-2">
                                 <label for="M_FiltroRota">Rota</label>
                                 @Html.DropDownList("M_FiltroRota", ViewBag.Rotas as SelectList, "Todas", new { @class = "form-select form-select-sm" })
                             </div>

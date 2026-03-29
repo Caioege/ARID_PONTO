@@ -289,3 +289,57 @@ ALTER TABLE `arid_ponto`.`escaladoservidor`
 ADD CONSTRAINT `FK_CicloDaEscala_EscalaDoServidor`
   FOREIGN KEY (`CicloDaEscalaId`)
   REFERENCES `arid_ponto`.`ciclodaescala` (`Id`);
+
+-- ALTERACOES ROTA APP MObile N:N
+
+ALTER TABLE `arid_ponto`.`rota`
+DROP FOREIGN KEY `FK_Rota_Veiculo`;
+
+ALTER TABLE `arid_ponto`.`rota`
+DROP INDEX `FK_Rota_Veiculo_idx`;
+
+ALTER TABLE `arid_ponto`.`rota`
+DROP COLUMN `VeiculoId`;
+
+CREATE TABLE `arid_ponto`.`rotaveiculo` (
+  `Id` INT NOT NULL AUTO_INCREMENT,
+  `OrganizacaoId` INT NOT NULL,
+  `RotaId` INT NOT NULL,
+  `VeiculoId` INT NOT NULL,
+  PRIMARY KEY (`Id`),
+  INDEX `FK_RotaVeiculo_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
+  INDEX `FK_RotaVeiculo_Rota_idx` (`RotaId` ASC) VISIBLE,
+  INDEX `FK_RotaVeiculo_Veiculo_idx` (`VeiculoId` ASC) VISIBLE,
+  CONSTRAINT `FK_RotaVeiculo_Organizacao`
+    FOREIGN KEY (`OrganizacaoId`)
+    REFERENCES `arid_ponto`.`organizacao` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RotaVeiculo_Rota`
+    FOREIGN KEY (`RotaId`)
+    REFERENCES `arid_ponto`.`rota` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_RotaVeiculo_Veiculo`
+    FOREIGN KEY (`VeiculoId`)
+    REFERENCES `arid_ponto`.`veiculo` (`Id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+ALTER TABLE `arid_ponto`.`rotaexecucao` 
+ADD COLUMN `MotoristaId` INT NULL AFTER `RotaId`,
+ADD COLUMN `VeiculoId` INT NULL AFTER `MotoristaId`,
+ADD INDEX `FK_RotaExecucao_Motorista_idx` (`MotoristaId` ASC) VISIBLE,
+ADD INDEX `FK_RotaExecucao_Veiculo_idx` (`VeiculoId` ASC) VISIBLE;
+
+ALTER TABLE `arid_ponto`.`rotaexecucao` 
+ADD CONSTRAINT `FK_RotaExecucao_Motorista`
+  FOREIGN KEY (`MotoristaId`)
+  REFERENCES `arid_ponto`.`motorista` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `FK_RotaExecucao_Veiculo`
+  FOREIGN KEY (`VeiculoId`)
+  REFERENCES `arid_ponto`.`veiculo` (`Id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;

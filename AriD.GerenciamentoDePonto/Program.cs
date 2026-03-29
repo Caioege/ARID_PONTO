@@ -67,6 +67,7 @@ builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
 builder.Services.AddScoped(typeof(IServicoDeServidor), typeof(ServicoDeServidor));
 builder.Services.AddScoped(typeof(IServicoDeExportacaoFolhaPagamento), typeof(ServicoDeExportacaoFolhaPagamento));
 builder.Services.AddScoped(typeof(IServicoBonus), typeof(ServicoBonus));
+builder.Services.AddScoped(typeof(IServicoMonitoramentoRotas), typeof(ServicoMonitoramentoRotas));
 
 var app = builder.Build();
 

@@ -12,6 +12,15 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public DateTime DataHoraInicio { get; set; }
         public DateTime? DataHoraFim { get; set; }
 
+        public int? VeiculoId { get; set; }
+        [ForeignKey(nameof(VeiculoId))]
+        public virtual Veiculo Veiculo { get; set; }
+
+        public int? MotoristaId { get; set; }
+        [ForeignKey(nameof(MotoristaId))]
+        public virtual Motorista Motorista { get; set; }
+
+
         public int UsuarioIdInicio { get; set; }
         [ForeignKey(nameof(UsuarioIdInicio))]
         public virtual Usuario UsuarioInicio { get; set; }
