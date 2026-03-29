@@ -7,6 +7,7 @@ function abrirModal(id) {
             if (data.sucesso) {
                 $('#div-modal').html(data.html);
                 assineSalvarCadastroModal();
+                assineMascarasDoComponente($('#_Modal'));
                 $('#_Modal').modal('show');
             }
         }
@@ -72,17 +73,18 @@ function removerRegistro() {
 }
 
 // Filtros
+function aplicarFiltrosVeiculo() {
+    var params = {
+        Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
+        TipoCombustivel: $('#FiltroTipoCombustivel').val() !== "" ? parseInt($('#FiltroTipoCombustivel').val()) : null
+    };
+    $('#Adicional').val(JSON.stringify(params));
+    carregarTabelaPaginadaComPesquisa('/Veiculo/TabelaPaginada');
+}
+
 $(function () {
     $('#FiltroSituacao, #FiltroTipoCombustivel').on('change', function () {
         aplicarFiltrosVeiculo();
     });
-
-    function aplicarFiltrosVeiculo() {
-        var params = {
-            Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
-            TipoCombustivel: $('#FiltroTipoCombustivel').val() !== "" ? parseInt($('#FiltroTipoCombustivel').val()) : null
-        };
-        $('#Adicional').val(JSON.stringify(params));
-        carregarTabelaPaginadaComPesquisa('/Veiculo/TabelaPaginada');
-    }
 });
+

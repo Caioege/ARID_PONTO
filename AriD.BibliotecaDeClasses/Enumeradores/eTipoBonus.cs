@@ -4,9 +4,9 @@ namespace AriD.BibliotecaDeClasses.Enumeradores
 {
     public enum eTipoBonus
     {
-        [Description("Diário (VR/VA)")]
+        [Description("Diário")]
         Diario = 1,
-        [Description("Mensal Fixo (Assiduidade)")]
+        [Description("Mensal Fixo")]
         Mensal = 2
     }
 }

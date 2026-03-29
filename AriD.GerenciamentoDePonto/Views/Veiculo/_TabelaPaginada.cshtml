@@ -12,7 +12,7 @@
         tabela.Column("Placa", "Placa", width: 15f),
         tabela.Column("Marca", "Marca", width: 25f),
         tabela.Column("Modelo", "Modelo", width: 30f),
-        tabela.Column("Status", "Status", format:
+        tabela.Column("Status", "Situação", format:
             @<text>
                 @if (item.Status == eStatusVeiculo.Disponivel)
             {
@@ -29,7 +29,7 @@
             </text>, width: 20f),
         tabela.Column(string.Empty, "Ação", format:
             @<text>
-                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
+                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(@item.Id)">
                     <i class='bx bxs-edit-alt'></i>
                 </button>
             </text>, width: 10f)

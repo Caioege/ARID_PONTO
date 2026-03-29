@@ -38,9 +38,10 @@
                                     <label class="form-label obrigatorio" for="Descricao">Descrição / Titulo da Rota</label>
                                     @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
                                 </div>
+
                                 <div class="col col-lg-4 col-md-12 col-sm-12">
-                                    <label class="form-label obrigatorio" for="MotoristaId">Motorista</label>
-                                    @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, "Selecione o Motorista", new { @class = "form-select select2" })
+                                    <label class="form-label obrigatorio" for="Recorrente">Recorrente</label>
+                                    @Html.CheckboxDropDownListFor(model => model.Recorrente, new { @class = "form-select" })
                                 </div>
 
                                 <div class="col col-lg-3 col-md-12 col-sm-12 float-end">
@@ -50,15 +51,14 @@
                             </div>
 
                             <div class="row mt-2">
-                                <div class="col col-lg-4 col-md-12 col-sm-12">
-                                    <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
-                                    @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, "Selecione o Veículo", new { @class = "form-select select2" })
+                                <div class="col col-lg-6 col-md-12 col-sm-12">
+                                    <label class="form-label obrigatorio" for="MotoristaId">Motorista</label>
+                                    @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, string.Empty, new { @class = "select2" })
                                 </div>
-                                <div class="col col-lg-4 col-md-12 col-sm-12 align-self-end text-center p-2 border rounded" style="background-color: #f8f9fa;">
-                                    <div class="form-check form-switch d-inline-block">
-                                        @Html.CheckBoxFor(model => model.Recorrente, new { @class = "form-check-input" })
-                                        <label class="form-check-label ms-2 font-weight-bold" for="Recorrente">Rota Recorrente?</label>
-                                    </div>
+
+                                <div class="col col-lg-6 col-md-12 col-sm-12">
+                                    <label class="form-label" for="VeiculoId">Veículo (Opcional)</label>
+                                    @Html.DropDownListFor(model => model.VeiculoId, (SelectList)ViewBag.Veiculos, string.Empty, new { @class = "select2" })
                                 </div>
                             </div>
 

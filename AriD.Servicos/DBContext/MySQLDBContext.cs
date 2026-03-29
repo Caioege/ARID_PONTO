@@ -84,5 +84,8 @@ namespace AriD.Servicos.DBContext
         public DbSet<Rota> Rota { get; set; }
         public DbSet<ParadaRota> ParadaRota { get; set; }
         public DbSet<LocalizacaoRota> LocalizacaoRota { get; set; }
+        public DbSet<Motorista> Motorista { get; set; }
+        public DbSet<Veiculo> Veiculo { get; set; }
+        public DbSet<MotoristaHistoricoSituacao> MotoristaHistoricoSituacao { get; set; }
     }
 }

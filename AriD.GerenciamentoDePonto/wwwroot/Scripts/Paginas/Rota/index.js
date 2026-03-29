@@ -7,6 +7,7 @@ function abrirModal(id) {
             if (data.sucesso) {
                 $('#div-modal').html(data.html);
                 assineEventosModal();
+                assineMascarasDoComponente($('#_Modal'));
                 $('#_Modal').modal('show');
             }
         }
@@ -55,34 +56,22 @@ function assineEventosModal() {
             return;
         }
 
-        // Colher as paradas
-        let paradas = [];
-        $('#tabela-paradas tbody tr').each(function() {
+        let payload = dadosFormulario.dados;
+
+        $('#tabela-paradas tbody tr').each(function(index) {
             let row = $(this);
-            paradas.push({
-                Id: parseInt(row.attr('data-id')),
-                Endereco: row.attr('data-endereco'),
-                Link: row.attr('data-link'),
-                Observacao: row.attr('data-obs'),
-                Entregue: row.attr('data-entregue') === "true"
-            });
+            payload[`paradas[${index}].Id`] = row.attr('data-id');
+            payload[`paradas[${index}].Endereco`] = row.attr('data-endereco');
+            payload[`paradas[${index}].Link`] = row.attr('data-link');
+            payload[`paradas[${index}].Observacao`] = row.attr('data-obs');
+            payload[`paradas[${index}].Entregue`] = row.attr('data-entregue');
         });
 
-        // Montar payload final
-        let payload = {
-            rota: dadosFormulario.dados,
-            paradas: paradas
-        };
-
-        // Necessário JSON POST para mandar objeto complexo com lista
-        $.ajax({
-            url: '/Rota/Salvar/',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(payload),
-            beforeSend: function () { BloquearTela(); },
-            complete: function () { DesbloquearTela(); },
-            success: function (data) {
+        RequisicaoAjaxComCarregamento(
+            '/Rota/Salvar/',
+            'POST',
+            payload,
+            function (data) {
                 if (data.sucesso) {
                     $('#_Modal').modal('hide');
                     MensagemRodape('success', data.mensagem);
@@ -90,11 +79,8 @@ function assineEventosModal() {
                 } else {
                     MensagemRodape('warning', data.mensagem);
                 }
-            },
-            error: function (xhr) {
-                MensagemAviso('Erro ao salvar os dados.', 'Tente novamente.', 'error');
             }
-        });
+        );
     });
 }
 
@@ -155,17 +141,18 @@ function carregarHistoricoExecucoes() {
 }
 
 // Filtros
+function aplicarFiltrosRota() {
+    var params = {
+        Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
+        Recorrente: $('#FiltroRecorrente').val() !== "" ? ($('#FiltroRecorrente').val() === "true") : null
+    };
+    $('#Adicional').val(JSON.stringify(params));
+    carregarTabelaPaginadaComPesquisa('/Rota/TabelaPaginada');
+}
+
 $(function () {
     $('#FiltroSituacao, #FiltroRecorrente').on('change', function () {
         aplicarFiltrosRota();
     });
-
-    function aplicarFiltrosRota() {
-        var params = {
-            Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
-            Recorrente: $('#FiltroRecorrente').val() !== "" ? ($('#FiltroRecorrente').val() === "true") : null
-        };
-        $('#Adicional').val(JSON.stringify(params));
-        carregarTabelaPaginadaComPesquisa('/Rota/TabelaPaginada');
-    }
 });
+

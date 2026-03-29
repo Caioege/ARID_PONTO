@@ -236,7 +236,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             ViewBag.ExtPendenciasPorDia = pendenciasPorDia;
 
             var fecharFolha = listaDePonto.All(c => c.PontoFechado);
-            ViewBag.BonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia, false);
+            ViewBag.BonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesAno.ToString(), false);
 
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
             return Json(new
@@ -272,7 +272,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             if (fechar)
             {
-                _servicoBonus.ObterOuCalcularBonusFolha(HttpContext.DadosDaSessao().OrganizacaoId, vinculoDeTrabalhoId, mesDeReferencia, true);
+                _servicoBonus.ObterOuCalcularBonusFolha(HttpContext.DadosDaSessao().OrganizacaoId, vinculoDeTrabalhoId, mesAno.ToString(), true, true);
             }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos." });
@@ -312,7 +312,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var ocorrenciasDoEspelho = _servicoDeFolhaDePonto
                 .ObtenhaOcorrenciasDoEspelhoPonto(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia);
 
-            var bonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesDeReferencia, false);
+            var bonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesAno.ToString(), false);
 
             var relatorio = RelatorioFolhaDePonto(
                 HttpContext.DadosDaSessao(),
@@ -1069,7 +1069,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 tableBonus.AddCell(new Cell(1, 2)
                     .SetBackgroundColor(ColorConstants.LIGHT_GRAY, 0.5f)
                     .SetTextAlignment(TextAlignment.CENTER)
-                    .Add(new Paragraph("RESUMO DE BÔNUS E ASSIDUIDADE").SetBold().SetFontSize(9f)));
+                    .Add(new Paragraph("RESUMO DE BÔNUS").SetBold().SetFontSize(9f)));
 
                 foreach (var bonus in bonusCalculados)
                 {

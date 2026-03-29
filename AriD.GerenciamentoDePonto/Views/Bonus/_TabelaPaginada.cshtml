@@ -1,3 +1,5 @@
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model ListaPaginada<ConfiguracaoBonus>
 
 @{
@@ -6,14 +8,12 @@
     var listaDeColunas = new List<WebGridColumn>
     {
         tabela.Column("Descricao", "Descrição", width: 40f),
-        tabela.Column("ValorDiario", "Valor Diário", format: (item) => item.ValorDiario.ToString("C"), width: 15f),
-        tabela.Column("PagaEmFinaisDeSemanaEFeriados", "FDS/Feriado", format: (item) => item.PagaEmFinaisDeSemanaEFeriados ? "Sim" : "Não", width: 10f),
-        tabela.Column("TurnoIntercaladoPagaDobrado", "Intercalado Dobro", format: (item) => item.TurnoIntercaladoPagaDobrado ? "Sim" : "Não", width: 10f),
-        tabela.Column("MinutosIntervaloTurnoIntercalado", "Tolerância (min)", width: 10f),
+        tabela.Column("TipoBonus", "Tipo", format: (item) => ((eTipoBonus)item.TipoBonus).DescricaoDoEnumerador(), width: 30f),
+        tabela.Column("ValorDiario", "Valor", format: (item) => item.ValorDiario.ToString("C"), width: 15f),
         tabela.Column(string.Empty, "Ação", format:
             @<text>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Cadastrar", "Bonus", new { id = item.Id })')" title="Editar">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="CarregarPagina('@Url.Action("Alterar", "Bonus", new { id = item.Id })')" title="Editar">
                         <i class='bx bxs-edit-alt'></i>
                     </button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="abrirModalApuracao(@item.Id, '@item.Descricao')" title="Apurar Mês">

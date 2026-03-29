@@ -9,22 +9,26 @@ namespace AriD.BibliotecaDeClasses.Entidades
     {
         [Required]
         [MaxLength(100)]
-        public string Descricao { get; set; } // Ex: Vale Alimentação R$ 30, Vale Transporte R$ 10
+        public string Descricao { get; set; }
 
         [Required(ErrorMessage = "O valor diário/total é obrigatório.")]
         [Range(0.01, 99999.99, ErrorMessage = "O valor deve ser maior que zero.")]
-        public decimal ValorDiario { get; set; } // Representa Valor Diário ou Valor Mensal (Total) dependendo do TipoBonus
+        public decimal ValorDiario { get; set; } 
 
         [Required]
         public eTipoBonus TipoBonus { get; set; } = eTipoBonus.Diario;
 
-        public bool PerdeIntegralmenteComFalta { get; set; } = true;
+        public bool PerdeIntegralmenteComFalta { get; set; }
+        
+        public bool ApenasDiasComCargaHoraria { get; set; }
 
-        public bool PagaEmFinaisDeSemanaEFeriados { get; set; }
+        public int? MinutosFaltaDesconto { get; set; }
+
+        public int? MinutosFaltaDescontoMensal { get; set; }
         
-        public bool TurnoIntercaladoPagaDobrado { get; set; } // Regra customizada do turno intercalado
+        public bool TurnoIntercaladoPagaDobrado { get; set; }
         
-        public int MinutosIntervaloTurnoIntercalado { get; set; } = 120; // Padrão 120 (2h)
+        public int MinutosIntervaloTurnoIntercalado { get; set; } = 120;
 
         public bool Ativo { get; set; } = true;
 

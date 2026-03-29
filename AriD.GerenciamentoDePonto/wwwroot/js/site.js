@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
     verificarNotificacoes();
     setInterval(verificarNotificacoes, 300000);
 
@@ -258,6 +258,17 @@ function assineMascarasDoComponente(componente) {
 
     componente.find('.numeroAte999').mask('000');
     componente.find('.celular').mask('(00) 00000-0000');
+    componente.find('.decimal').mask('000.000.000.000.000,00', { reverse: true });
+
+    componente.find('.placa').mask('SSS-0A00', {
+        translation: {
+            'S': { pattern: /[a-zA-Z]/ },
+            'A': { pattern: /[a-zA-Z0-9]/ }
+        },
+        onKeyPress: function (value, event, currentField, options) {
+            currentField.val(value.toUpperCase());
+        }
+    });
 }
 
 function dataValida(dateString) {

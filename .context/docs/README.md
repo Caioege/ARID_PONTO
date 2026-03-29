@@ -13,6 +13,7 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 - [Security & Compliance Notes](./security.md)
 - [Tooling & Productivity Guide](./tooling.md)
 - [Mobile Apps Architecture](./mobile-apps.md)
+- [Naming Conventions & UI Patterns](./conventions.md)
 
 ## Repository Snapshot
 - `ScriptsSQL/`

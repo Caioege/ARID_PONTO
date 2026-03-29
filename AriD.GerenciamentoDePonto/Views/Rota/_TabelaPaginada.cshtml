@@ -11,25 +11,25 @@
     {
         tabela.Column("Descricao", "Descrição", width: 30f),
         tabela.Column("Motorista.Servidor.Pessoa.Nome", "Motorista", width: 30f),
-        tabela.Column("Status", "Status", format:
+        tabela.Column("Situacao", "Situação", format:
             @<text>
-                @if (item.Status == eStatusRota.Inativa)
+                @if (item.Situacao == eStatusRota.Inativa)
             {
                 <span class="badge bg-label-secondary">Inativa</span>
             }
-            else if (item.Status == eStatusRota.Ativa)
+            else if (item.Situacao == eStatusRota.Ativa)
             {
                 <span class="badge bg-label-primary">Ativa</span>
             }
-            else if (item.Status == eStatusRota.Concluida)
+            else if (item.Situacao == eStatusRota.Concluida)
             {
                 <span class="badge bg-label-success">Concluída</span>
             }
             </text>, width: 20f),
         tabela.Column(string.Empty, "Ação", format:
             @<text>
-                <button type="button" class="btn btn-primary btn-sm" onclick="AbrirModal(@item.Id)">
-                    <i class='bx bxs-edit-alt'></i> Detalhes
+                <button type="button" class="btn btn-primary btn-sm" onclick="abrirModal(@item.Id)">
+                    <i class='bx bxs-edit-alt'></i>
                 </button>
             </text>, width: 10f)
     };

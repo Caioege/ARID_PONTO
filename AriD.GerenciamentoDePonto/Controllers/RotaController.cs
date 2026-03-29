@@ -100,13 +100,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar([FromBody] RotaSaveDTO payload)
+        public IActionResult Salvar(Rota rota, List<ParadaRota> paradas)
         {
             if (!HttpContext.PossuiPermissao(eItemDePermissao_Rota.CadastrarOuAlterar))
                 throw new ApplicationException("Você não tem permissão para salvar.");
-
-            var rota = payload.Rota;
-            var paradas = payload.Paradas;
 
             int id = rota.Id;
             rota.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
@@ -115,6 +112,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 if (paradas != null)
                 {
+                    rota.Paradas = new List<ParadaRota>();
                     foreach (var p in paradas)
                     {
                         p.OrganizacaoId = rota.OrganizacaoId;

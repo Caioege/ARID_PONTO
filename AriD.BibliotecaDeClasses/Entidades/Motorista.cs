@@ -15,6 +15,6 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public DateTime EmissaoCNH { get; set; }
         public DateTime VencimentoCNH { get; set; }
         public eStatusMotorista Situacao { get; set; }
-        public string Observacoes { get; set; }
+        public string? Observacoes { get; set; }
     }
 }

@@ -1,0 +1,123 @@
+@using AriD.Servicos.Extensao
+@model ConfiguracaoBonus
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="bx bx-edit"></i> @(Model.Id > 0 ? "Alterar" : "Adicionar") Configuração de Bônus
+        </h5>
+    </div>
+    <div class="card-body">
+        @{
+            bool podeAlterarTipo = ViewBag.PodeAlterarTipo ?? true;
+        }
+
+        @if (!podeAlterarTipo)
+        {
+            <div class="alert alert-warning mb-4">
+                <i class="bx bx-info-circle"></i> O <b>Tipo do Bônus</b> não pode ser alterado pois já existem cálculos realizados. Para mudar o tipo, inative esta configuração e crie uma nova.
+            </div>
+        }
+
+        <form id="formulario-bonus">
+            @Html.HiddenFor(m => m.Id)
+            <input type="hidden" name="Ativo" id="Ativo" value="@(Model.Ativo.ToString().ToLower())" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label obrigatorio" for="Descricao">Descrição</label>
+                    @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", @placeholder = "Ex: Vale Alimentação" })
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tipo de Bônus</label>
+                    @if (podeAlterarTipo)
+                    {
+                        @Html.DropDownListFor(m => m.TipoBonus, Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eTipoBonus>(), new { @class = "form-select", @onchange = "toggleTipos()" })
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.TipoBonus)
+                        <select class="form-select" disabled="disabled">
+                            <option selected="selected">@Model.TipoBonus.DescricaoDoEnumerador()</option>
+                        </select>
+                    }
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label obrigatorio" for="ValorDiario">Valor (Diário ou Total)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">R$</span>
+                        @Html.TextBox("ValorDiario", Model.ValorDiario.ToString("N2"), new { @class = "form-control decimal" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label">Limitar as Funções (Cargos)? (Deixe em branco para aplicar a todos)</label>
+                    <select name="FuncoesIds" id="FuncoesIds" class="form-select select2" multiple="multiple" data-placeholder="Selecione as funções elegíveis">
+                        @foreach (var funcao in ViewBag.Funcoes as List<AriD.BibliotecaDeClasses.Entidades.Funcao>)
+                        {
+                            @if (Model.Funcoes.Any(f => f.FuncaoId == funcao.Id))
+                            {
+                                <option value="@funcao.Id" selected="selected">@funcao.Descricao</option>
+                            }
+                            else
+                            {
+                                <option value="@funcao.Id">@funcao.Descricao</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 divDiario">
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" class="form-check-input" name="ApenasDiasComCargaHoraria" id="ApenasDiasComCargaHoraria" @(Model.ApenasDiasComCargaHoraria ? "checked" : "") value="true">
+                        <label class="form-check-label" for="ApenasDiasComCargaHoraria">Apenas dias com Carga Horária?</label>
+                    </div>
+                </div>
+                <div class="col-md-4 divDiario">
+                    <label class="form-label">Minutos de falta p/ desconto (Dia)</label>
+                    @Html.TextBoxFor(m => m.MinutosFaltaDesconto, new { @class = "form-control", @type = "number", @min = "0" })
+                </div>
+                <div class="col-md-4 divMensal" style="display: none;">
+                    <label class="form-label">Tolerância total de faltas no Mês (Minutos)</label>
+                    @Html.TextBoxFor(m => m.MinutosFaltaDescontoMensal, new { @class = "form-control", @type = "number", @min = "0" })
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4 divDiario">
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" class="form-check-input" name="TurnoIntercaladoPagaDobrado" id="TurnoIntercaladoPagaDobrado" @(Model.TurnoIntercaladoPagaDobrado ? "checked" : "") value="true" onchange="toggleTolerancia()">
+                        <label class="form-check-label" for="TurnoIntercaladoPagaDobrado">Turno Intercalado (Dobro)?</label>
+                    </div>
+                </div>
+                <div id="divTolerancia" class="col-md-4" style="display: @(Model.TurnoIntercaladoPagaDobrado && Model.TipoBonus == AriD.BibliotecaDeClasses.Enumeradores.eTipoBonus.Diario ? "block" : "none")">
+                    <label class="form-label">Min. Intervalo p/ Dobro</label>
+                    @Html.TextBoxFor(m => m.MinutosIntervaloTurnoIntercalado, new { @class = "form-control", @type = "number", @min = "1" })
+                </div>
+                <div class="col-md-4 divMensal" style="display: none;">
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" class="form-check-input" name="PerdeIntegralmenteComFalta" id="PerdeIntegralmenteComFalta" @(Model.PerdeIntegralmenteComFalta ? "checked" : "") value="true">
+                        <label class="form-check-label" for="PerdeIntegralmenteComFalta">Perde TUDO com 1 Falta Injustificada?</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="CarregarPagina('@Url.Action("Index")')">
+                    <i class="bx bx-left-arrow-circle"></i> Voltar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class="bx bx-save"></i> Salvar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/Bonus/alterar.js?t=@DateTime.Now.Ticks"></script>

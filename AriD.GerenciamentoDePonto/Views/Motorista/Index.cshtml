@@ -1,8 +1,10 @@
 @using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.BibliotecaDeClasses.ParametrosDeConsulta
 @using AriD.GerenciamentoDePonto.WebGrid
 @using Newtonsoft.Json
 @using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@using AriD.Servicos.Extensao
 
 @model ListaPaginada<Motorista>
 @{
@@ -17,8 +19,7 @@
         @if (Context.PossuiPermissao(eItemDePermissao_Motorista.CadastrarOuAlterar))
         {
             <button type="button" class="btn btn-primary float-end" onclick="abrirModal(0)">
-                <i class='bx bxs-user-plus'></i> 
-                <span class="d-none d-sm-inline">&nbsp;Adicionar</span>
+                <span class="d-none d-sm-inline">+&nbsp;Adicionar</span>
             </button>
         }
     </div>
@@ -30,9 +31,9 @@
             <label class="form-label" for="FiltroSituacao">Situação</label>
             <select id="FiltroSituacao" class="form-select filter-trigger">
                 <option value="">Todas</option>
-                @foreach(var opt in Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista>())
+                @foreach (eStatusMotorista opt in Enum.GetValues(typeof(eStatusMotorista)))
                 {
-                    <option value="@opt.Value">@opt.Text</option>
+                    <option value="@opt">@opt.DescricaoDoEnumerador()</option>
                 }
             </select>
         </div>
@@ -40,28 +41,30 @@
             <label class="form-label" for="FiltroCategoriaCNH">Categoria CNH</label>
             <select id="FiltroCategoriaCNH" class="form-select filter-trigger">
                 <option value="">Todas</option>
-                @foreach(var opt in Html.GetEnumSelectList<AriD.BibliotecaDeClasses.Enumeradores.eCategoriaCNH>())
+                @foreach (eCategoriaCNH opt in Enum.GetValues(typeof(eCategoriaCNH)))
                 {
-                    <option value="@opt.Value">@opt.Text</option>
+                    <option value="@opt">@opt.DescricaoDoEnumerador()</option>
                 }
             </select>
         </div>
         <div class="col-lg-6 col-md-12">
             <label class="form-label">&nbsp;</label>
             <div class="input-group input-group-merge">
-                <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
                 <input type="text"
                        class="form-control filter-trigger"
                        placeholder="Pesquisar por nome ou CNH..."
                        aria-label="Pesquisar..."
                        aria-describedby="basic-addon-search31"
                        id="TermoDeBusca" />
+                <button class="btn btn-primary" id="btn-pesquisar" type="button" onclick="aplicarFiltrosMotorista()">
+                    <i class='bx bx-search-alt'></i> Pesquisar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card mb-6">
+<div class="card" style="padding: 10px">
     @Html.Hidden("Adicional", Model.Adicional)
     <div id="grid">
         @await Html.PartialAsync("_TabelaPaginada", Model)
@@ -70,4 +73,4 @@
 
 <div id="div-modal"></div>
 
-<script src="/Scripts/Paginas/Motorista/index.js"></script>
+<script src="/Scripts/Paginas/Motorista/index.js?t=@DateTime.Now.Ticks"></script>

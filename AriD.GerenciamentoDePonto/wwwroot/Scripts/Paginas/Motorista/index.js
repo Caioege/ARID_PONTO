@@ -7,6 +7,7 @@ function abrirModal(id) {
             if (data.sucesso) {
                 $('#div-modal').html(data.html);
                 assineSalvarCadastroModal();
+                assineMascarasDoComponente($('#_Modal'));
                 $('#_Modal').modal('show');
             }
         }
@@ -95,17 +96,18 @@ function carregarHistoricoSituacao() {
 }
 
 // Filtros
+function aplicarFiltrosMotorista() {
+    var params = {
+        Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
+        CategoriaCNH: $('#FiltroCategoriaCNH').val() !== "" ? parseInt($('#FiltroCategoriaCNH').val()) : null
+    };
+    $('#Adicional').val(JSON.stringify(params));
+    carregarTabelaPaginadaComPesquisa('/Motorista/TabelaPaginada');
+}
+
 $(function () {
     $('#FiltroSituacao, #FiltroCategoriaCNH').on('change', function () {
         aplicarFiltrosMotorista();
     });
-
-    function aplicarFiltrosMotorista() {
-        var params = {
-            Situacao: $('#FiltroSituacao').val() !== "" ? parseInt($('#FiltroSituacao').val()) : null,
-            CategoriaCNH: $('#FiltroCategoriaCNH').val() !== "" ? parseInt($('#FiltroCategoriaCNH').val()) : null
-        };
-        $('#Adicional').val(JSON.stringify(params));
-        carregarTabelaPaginadaComPesquisa('/Motorista/TabelaPaginada');
-    }
 });
+

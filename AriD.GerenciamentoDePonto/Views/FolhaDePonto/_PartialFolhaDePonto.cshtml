@@ -298,18 +298,15 @@
                 }
             </td>
         </tr>
-        @if (ViewBag.BonusCalculados != null && ((List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>)ViewBag.BonusCalculados).Any())
+        @if (ViewBag.BonusCalculados != null)
         {
+            var listaDeBonus = (List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>)ViewBag.BonusCalculados;
+            var descricaoBonus = string.Join("&nbsp;&nbsp;|&nbsp;&nbsp;", listaDeBonus.Select(c => $"{c.ConfiguracaoBonus?.Descricao}: {c.ValorTotal.ToString("C")}"));
             <tr>
                 <td colspan="99" style="background-color: #d1ecf1; text-align: center">
-                    <b>RESUMO DE BÔNUS E ASSIDUIDADE:</b>
+                    <b>RESUMO DE BÔNUS:</b>
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    @foreach (var bonus in (List<AriD.BibliotecaDeClasses.Entidades.BonusCalculado>)ViewBag.BonusCalculados)
-                    {
-                        var descricaoBonus = bonus.ConfiguracaoBonus?.Descricao ?? "Bônus";
-                        <span>@descricaoBonus: <b>@bonus.ValorTotal.ToString("C")</b></span>
-                        @Html.Raw("&nbsp;&nbsp;|&nbsp;&nbsp;")
-                    }
+                    @Html.Raw(descricaoBonus)
                 </td>
             </tr>
         }

@@ -27,7 +27,7 @@ namespace AriD.Servicos.Servicos
             _repositorioVinculo = repositorioVinculo;
         }
 
-        public void GerarBonusDoMes(int organizacaoId, int configuracaoBonusId, string mesReferencia, List<int> vinculosIds)
+        public void GerarBonusDoMes(int organizacaoId, int configuracaoBonusId, string mesReferencia, List<int> vinculosIds, bool forcarRecalculo = false)
         {
             var config = _repositorioConfiguracaoBonus.Obtenha(configuracaoBonusId);
             if (config == null || !config.Ativo) throw new Exception("Configuração de Bônus não encontrada ou inativa.");
@@ -38,61 +38,76 @@ namespace AriD.Servicos.Servicos
             DateTime primeiroDia = new DateTime(ano, mes, 1);
             DateTime ultimoDia = primeiroDia.AddMonths(1).AddDays(-1);
 
-            foreach(var vinculoId in vinculosIds)
+            foreach (var vinculoId in vinculosIds)
             {
                 var vinculo = _repositorioVinculo.Obtenha(vinculoId);
                 if (vinculo == null) continue;
 
-                // Filtrar por Função
                 if (config.Funcoes.Any() && !config.Funcoes.Any(f => f.FuncaoId == vinculo.FuncaoId))
-                {
-                    continue; // Pula se a função do servidor não tem acesso ao bônus
-                }
+                    continue;
 
                 var pontos = _repositorioPontoDoDia.ObtenhaLista(p => p.VinculoDeTrabalhoId == vinculoId && p.Data >= primeiroDia && p.Data <= ultimoDia);
                 
+                // Trava Folha Fechada
+                if (!forcarRecalculo && pontos.Any(p => p.PontoFechado))
+                    continue;
+
                 int diasTrabalhados = 0;
                 int diasIntercalados = 0;
                 int diasComFaltaInjustificada = 0;
+                double totalMinutosFaltaMes = 0;
                 var logs = new List<string>();
 
-                foreach(var ponto in pontos)
+                for (DateTime dia = primeiroDia; dia <= ultimoDia; dia = dia.AddDays(1))
                 {
-                    bool isFDSFeRiado = (ponto.DiaDaSemana == eDiaDaSemana.Sabado || ponto.DiaDaSemana == eDiaDaSemana.Domingo);
-                    
-                    if (isFDSFeRiado && !config.PagaEmFinaisDeSemanaEFeriados)
-                    {
-                        continue;
-                    }
+                    var ponto = pontos.FirstOrDefault(p => p.Data.Date == dia.Date) ?? new PontoDoDia { Data = dia };
+                    bool temCargaHoraria = ponto.CargaHoraria.HasValue && ponto.CargaHoraria.Value.TotalMinutes > 0;
 
-                    // Se não for registro de entrada/saída E for tipo RegistroManual, ou houver alguma falta (exemplo básico: não tem ponto e não tem entrada)
-                    // Na folha de ponto Arid, as faltas normalmente geram "SemRegistro" ou abonos ausentes. Aqui podemos checar se foi falta, 
-                    // dependendo de como o DB trata ausência. Simplificado: se for dia de trabalho e não tem ponto.
-                    // Para o bônus, precisamos de dias trabalhados
-                    if(ponto.Entrada1.HasValue || ponto.Saida1.HasValue) 
+                    if (config.TipoBonus == eTipoBonus.Diario)
                     {
-                        diasTrabalhados++;
-                        logs.Add($"{ponto.Data:dd/MM}: Ponto presencial detectado.");
+                        if (config.ApenasDiasComCargaHoraria && !temCargaHoraria)
+                            continue;
 
-                        if(config.TurnoIntercaladoPagaDobrado && config.TipoBonus == eTipoBonus.Diario)
+                        double minutosFaltaNoDia = ponto.HorasNegativas?.TotalMinutes ?? 0;
+                        bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue;
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !ponto.JustificativaPeriodo1Id.HasValue;
+
+                        if (faltaInjustificada)
                         {
-                            // Regra de turno intercalado: intervalo entre Saida1 e Entrada2 superior à tolerância
-                            if (ponto.Saida1.HasValue && ponto.Entrada2.HasValue)
+                            logs.Add($"{ponto.Data:dd/MM}: Falta injustificada detectada. Bônus diário não concedido.");
+                        }
+                        else if (temRegistroPonto && config.MinutosFaltaDesconto > 0 && minutosFaltaNoDia >= config.MinutosFaltaDesconto)
+                        {
+                            logs.Add($"{ponto.Data:dd/MM}: Bônus não concedido por atraso/falta excessiva ({minutosFaltaNoDia} min).");
+                        }
+                        else
+                        {
+                            diasTrabalhados++;
+                            logs.Add($"{ponto.Data:dd/MM}: Dia contabilizado para bônus.");
+
+                            if (config.TurnoIntercaladoPagaDobrado && temRegistroPonto)
                             {
-                                var diff = ponto.Entrada2.Value.Subtract(ponto.Saida1.Value);
-                                if (diff.TotalMinutes >= config.MinutosIntervaloTurnoIntercalado)
+                                if (ponto.Saida1.HasValue && ponto.Entrada2.HasValue)
                                 {
-                                    diasIntercalados++;
-                                    logs.Add($"{ponto.Data:dd/MM}: Turno Intercalado (intervalo >= {config.MinutosIntervaloTurnoIntercalado} min). Bônus em dobro.");
+                                    var diff = ponto.Entrada2.Value.Subtract(ponto.Saida1.Value);
+                                    if (diff.TotalMinutes >= config.MinutosIntervaloTurnoIntercalado)
+                                    {
+                                        diasIntercalados++;
+                                        logs.Add($"{ponto.Data:dd/MM}: Turno Intercalado (intervalo >= {config.MinutosIntervaloTurnoIntercalado} min). Bônus em dobro.");
+                                    }
                                 }
                             }
                         }
-                    } 
-                    else if (!isFDSFeRiado && (!ponto.JustificativaPeriodo1Id.HasValue))
+                    }
+                    else if (config.TipoBonus == eTipoBonus.Mensal)
                     {
-                        // Dia útil sem ponto registrado e sem justificativa = Falta injustificada provável
-                        diasComFaltaInjustificada++;
-                        logs.Add($"{ponto.Data:dd/MM}: Falta possivelmente injustificada ou sem registro de ponto.");
+                        if (ponto.HorasNegativas.HasValue)
+                            totalMinutosFaltaMes += ponto.HorasNegativas.Value.TotalMinutes;
+
+                        if (!ponto.Entrada1.HasValue && !ponto.Saida1.HasValue && temCargaHoraria && !ponto.JustificativaPeriodo1Id.HasValue)
+                        {
+                            diasComFaltaInjustificada++;
+                        }
                     }
                 }
 
@@ -111,9 +126,14 @@ namespace AriD.Servicos.Servicos
                         valorTotal = 0;
                         logs.Add($"Bônus zerado devido à regra de Perda Integral por Falta ({diasComFaltaInjustificada} dia(s) contabilizados).");
                     }
+                    else if (config.MinutosFaltaDescontoMensal > 0 && totalMinutosFaltaMes >= config.MinutosFaltaDescontoMensal)
+                    {
+                        valorTotal = 0;
+                        logs.Add($"Bônus zerado: Total de faltas no mês ({totalMinutosFaltaMes} min) atingiu o limite de {config.MinutosFaltaDescontoMensal} min.");
+                    }
                     else
                     {
-                        valorTotal = config.ValorDiario; // Aqui ValorDiario age como Valor Mensal Total
+                        valorTotal = config.ValorDiario; 
                         logs.Add($"Bônus de assiduidade creditado integralmente.");
                     }
                 }
@@ -146,7 +166,7 @@ namespace AriD.Servicos.Servicos
             }
             _repositorio.Commit();
         }
-        public List<BonusCalculado> ObterOuCalcularBonusFolha(int organizacaoId, int vinculoId, string mesReferencia, bool salvarNoBanco)
+        public List<BonusCalculado> ObterOuCalcularBonusFolha(int organizacaoId, int vinculoId, string mesReferencia, bool salvarNoBanco, bool forcarRecalculo = false)
         {
             var configsAtivas = _repositorioConfiguracaoBonus.ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo);
             var vinculo = _repositorioVinculo.Obtenha(vinculoId);
@@ -161,46 +181,91 @@ namespace AriD.Servicos.Servicos
             DateTime ultimoDia = primeiroDia.AddMonths(1).AddDays(-1);
 
             var pontos = _repositorioPontoDoDia.ObtenhaLista(p => p.VinculoDeTrabalhoId == vinculoId && p.Data >= primeiroDia && p.Data <= ultimoDia);
+            bool folhaFechada = pontos.Any(p => p.PontoFechado);
 
             foreach (var config in configsAtivas)
             {
                 if (config.Funcoes.Any() && !config.Funcoes.Any(f => f.FuncaoId == vinculo.FuncaoId))
                     continue;
 
+                var jaCalculado = _repositorio.Obtenha(b => b.ConfiguracaoBonusId == config.Id && b.VinculoDeTrabalhoId == vinculoId && b.MesReferencia == mesReferencia);
+                
+                // Se salvarNoBanco é true, mas a folha está fechada e não forçamos, usamos o que está no banco (ou retornamos vazio se não houver)
+                if (salvarNoBanco && folhaFechada && !forcarRecalculo)
+                {
+                    if (jaCalculado != null) 
+                    {
+                        jaCalculado.ConfiguracaoBonus = config;
+                        resultados.Add(jaCalculado);
+                    }
+                    continue;
+                }
+
+                // Se a folha está fechada, não estamos forçando, e apenas queremos VER (salvarNoBanco = false)
+                // Retornamos o que já foi salvo para evitar discrepância visual
+                if (!salvarNoBanco && folhaFechada && !forcarRecalculo && jaCalculado != null)
+                {
+                    jaCalculado.ConfiguracaoBonus = config;
+                    resultados.Add(jaCalculado);
+                    continue;
+                }
+
                 int diasTrabalhados = 0;
                 int diasIntercalados = 0;
                 int diasComFaltaInjustificada = 0;
+                double totalMinutosFaltaMes = 0;
                 var logs = new List<string>();
 
-                foreach(var ponto in pontos)
+                for (DateTime dia = primeiroDia; dia <= ultimoDia; dia = dia.AddDays(1))
                 {
-                    bool isFDSFeRiado = (ponto.DiaDaSemana == eDiaDaSemana.Sabado || ponto.DiaDaSemana == eDiaDaSemana.Domingo);
-                    
-                    if (isFDSFeRiado && !config.PagaEmFinaisDeSemanaEFeriados)
-                        continue;
+                    var ponto = pontos.FirstOrDefault(p => p.Data.Date == dia.Date) ?? new PontoDoDia { Data = dia };
+                    bool temCargaHoraria = ponto.CargaHoraria.HasValue && ponto.CargaHoraria.Value.TotalMinutes > 0;
 
-                    if(ponto.Entrada1.HasValue || ponto.Saida1.HasValue) 
+                    if (config.TipoBonus == eTipoBonus.Diario)
                     {
-                        diasTrabalhados++;
-                        logs.Add($"{ponto.Data:dd/MM}: Ponto presencial detectado.");
+                        if (config.ApenasDiasComCargaHoraria && !temCargaHoraria)
+                            continue;
 
-                        if(config.TurnoIntercaladoPagaDobrado && config.TipoBonus == eTipoBonus.Diario)
+                        double minutosFaltaNoDia = ponto.HorasNegativas?.TotalMinutes ?? 0;
+                        bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue;
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !ponto.JustificativaPeriodo1Id.HasValue;
+
+                        if (faltaInjustificada)
                         {
-                            if (ponto.Saida1.HasValue && ponto.Entrada2.HasValue)
+                            logs.Add($"{ponto.Data:dd/MM}: Falta injustificada detectada. Bônus diário não concedido.");
+                        }
+                        else if (temRegistroPonto && config.MinutosFaltaDesconto > 0 && minutosFaltaNoDia >= config.MinutosFaltaDesconto)
+                        {
+                            logs.Add($"{ponto.Data:dd/MM}: Bônus não concedido por atraso/falta excessiva ({minutosFaltaNoDia} min).");
+                        }
+                        else
+                        {
+                            diasTrabalhados++;
+                            logs.Add($"{ponto.Data:dd/MM}: Dia contabilizado para bônus.");
+
+                            if (config.TurnoIntercaladoPagaDobrado && temRegistroPonto)
                             {
-                                var diff = ponto.Entrada2.Value.Subtract(ponto.Saida1.Value);
-                                if (diff.TotalMinutes >= config.MinutosIntervaloTurnoIntercalado)
+                                if (ponto.Saida1.HasValue && ponto.Entrada2.HasValue)
                                 {
-                                    diasIntercalados++;
-                                    logs.Add($"{ponto.Data:dd/MM}: Turno Intercalado detectado.");
+                                    var diff = ponto.Entrada2.Value.Subtract(ponto.Saida1.Value);
+                                    if (diff.TotalMinutes >= config.MinutosIntervaloTurnoIntercalado)
+                                    {
+                                        diasIntercalados++;
+                                        logs.Add($"{ponto.Data:dd/MM}: Turno Intercalado (intervalo >= {config.MinutosIntervaloTurnoIntercalado} min). Bônus em dobro.");
+                                    }
                                 }
                             }
                         }
-                    } 
-                    else if (!isFDSFeRiado && (!ponto.JustificativaPeriodo1Id.HasValue))
+                    }
+                    else if (config.TipoBonus == eTipoBonus.Mensal)
                     {
-                        diasComFaltaInjustificada++;
-                        logs.Add($"{ponto.Data:dd/MM}: Falta possivelmente injustificada.");
+                        if (ponto.HorasNegativas.HasValue)
+                            totalMinutosFaltaMes += ponto.HorasNegativas.Value.TotalMinutes;
+
+                        if (!ponto.Entrada1.HasValue && !ponto.Saida1.HasValue && temCargaHoraria && !ponto.JustificativaPeriodo1Id.HasValue)
+                        {
+                            diasComFaltaInjustificada++;
+                        }
                     }
                 }
 
@@ -217,6 +282,11 @@ namespace AriD.Servicos.Servicos
                         valorTotal = 0;
                         logs.Add($"Bônus zerado devido à regra de Perda Integral por Falta.");
                     }
+                    else if (config.MinutosFaltaDescontoMensal > 0 && totalMinutosFaltaMes >= config.MinutosFaltaDescontoMensal)
+                    {
+                        valorTotal = 0;
+                        logs.Add($"Bônus zerado: Total de faltas no mês ({totalMinutosFaltaMes} min) atingiu o limite.");
+                    }
                     else
                     {
                         valorTotal = config.ValorDiario;
@@ -224,8 +294,6 @@ namespace AriD.Servicos.Servicos
                     }
                 }
 
-                var jaCalculado = _repositorio.Obtenha(b => b.ConfiguracaoBonusId == config.Id && b.VinculoDeTrabalhoId == vinculoId && b.MesReferencia == mesReferencia);
-                
                 if (jaCalculado != null)
                 {
                     jaCalculado.DiasEfetivosTrabalhados = diasTrabalhados;
