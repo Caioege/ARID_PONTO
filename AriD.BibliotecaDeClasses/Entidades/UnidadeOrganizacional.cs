@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,5 +21,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public int? RaioDaCercaVirtualEmMetros { get; set; }
+        public bool RecebeNotificacaoConectividade { get; set; }
+        public string? EmailNotificacaoConectividade { get; set; }
     }
 }

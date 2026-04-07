@@ -1,4 +1,6 @@
-﻿namespace AriD.BibliotecaDeClasses.DTO.Aplicativo
+using AriD.BibliotecaDeClasses.Enumeradores;
+
+namespace AriD.BibliotecaDeClasses.DTO.Aplicativo
 {
     public class AutenticacaoAppDTO
     {
@@ -15,5 +17,6 @@
         public bool RegistroDePontoNoAplicativo { get; set; }
         public bool RegistroManualNoAplicativo { get; set; }
         public bool RegistroDeAtestadoNoAplicativo { get; set; }
+        public eTipoComprovacaoPontoApp TipoComprovacaoApp { get; set; }
     }
 }

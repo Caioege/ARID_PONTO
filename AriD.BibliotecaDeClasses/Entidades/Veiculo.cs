@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 
 namespace AriD.BibliotecaDeClasses.Entidades
@@ -8,6 +8,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string Placa { get; set; }
         public string Marca { get; set; }
         public string Modelo { get; set; }
+        public eTipoVeiculo TipoVeiculo { get; set; }
         public eCorVeiculo Cor { get; set; }
         public eTipoCombustivel TipoCombustivel { get; set; }
         public eStatusVeiculo Status { get; set; }

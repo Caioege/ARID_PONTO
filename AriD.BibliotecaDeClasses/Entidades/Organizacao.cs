@@ -26,5 +26,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public string? LatitudeCentroide { get; set; }
         public string? LongitudeCentroide { get; set; }
+        public bool RecebeNotificacaoConectividade { get; set; }
+        public string? EmailNotificacaoConectividade { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model UnidadeOrganizacional
+@model UnidadeOrganizacional
 
 <div class="card mb-6">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -47,6 +47,35 @@
                 ViewBag.PrefixoEndereco = "Endereco.";
             }
             @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
+            <br />
+            <h6>Cerca Virtual (Geofencing)</h6>
+            <div class="row">
+                <div class="col col-lg-3 col-md-4 col-xs-12">
+                    <label class="form-label" for="Latitude">Latitude</label>
+                    @Html.TextBoxFor(model => model.Latitude, new { @class = "form-control", placeholder = "Ex: -15.123456" })
+                </div>
+                <div class="col col-lg-3 col-md-4 col-xs-12">
+                    <label class="form-label" for="Longitude">Longitude</label>
+                    @Html.TextBoxFor(model => model.Longitude, new { @class = "form-control", placeholder = "Ex: -48.123456" })
+                </div>
+                <div class="col col-lg-3 col-md-4 col-xs-12">
+                    <label class="form-label" for="RaioDaCercaVirtualEmMetros">Raio da Cerca (Metros)</label>
+                    @Html.TextBoxFor(model => model.RaioDaCercaVirtualEmMetros, new { @class = "form-control", type = "number", placeholder = "Ex: 100" })
+                    <small class="text-muted">Distância máxima permitida para o ponto.</small>
+                </div>
+            </div>
+            <br />
+            <h6>Notificações de Conectividade</h6>
+            <div class="row">
+                <div class="col col-lg-3 col-md-4 col-xs-12">
+                    <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações de conectividade</label>
+                    @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
+                </div>
+                <div class="col col-lg-6 col-md-8 col-xs-12">
+                    <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento das notificações</label>
+                    @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: unidade@suaempresa.com.br" })
+                </div>
+            </div>
             <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = Model.OrganizacaoId })')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar

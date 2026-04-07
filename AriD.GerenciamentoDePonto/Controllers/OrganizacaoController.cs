@@ -97,6 +97,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     persistido.EnvioDeMensagemWhatsAppExperimental = organizacao.EnvioDeMensagemWhatsAppExperimental;
                     persistido.Ativa = organizacao.Ativa;
                 }
+
+                persistido.RecebeNotificacaoConectividade = organizacao.RecebeNotificacaoConectividade;
+                persistido.EmailNotificacaoConectividade = organizacao.EmailNotificacaoConectividade;
+
                 _servico.Atualizar(persistido);
             }
 

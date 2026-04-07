@@ -42,40 +42,47 @@
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col col-lg-3 col-md-3">
+                        <div class="col col-lg-4 col-md-4">
                             <label class="form-label obrigatorio" for="Marca">Marca</label>
                             @Html.TextBoxFor(model => model.Marca, new { @class = "form-control", @maxlength = "50" })
                         </div>
-                        <div class="col col-lg-3 col-md-3">
+                        <div class="col col-lg-4 col-md-4">
                             <label class="form-label obrigatorio" for="Modelo">Modelo</label>
                             @Html.TextBoxFor(model => model.Modelo, new { @class = "form-control", @maxlength = "50" })
                         </div>
-                        <div class="col col-lg-3 col-md-3">
-                            <label class="form-label obrigatorio" for="Cor">Cor</label>
-                            @Html.EnumDropDownListFor(model => model.Cor, new { @class = "form-select" })
-                        </div>
-                        <div class="col col-lg-3 col-md-3">
-                            <label class="form-label obrigatorio" for="TipoCombustivel">Combustível</label>
-                            @Html.EnumDropDownListFor(model => model.TipoCombustivel, new { @class = "form-select" })
+                        <div class="col col-lg-4 col-md-4">
+                            <label class="form-label obrigatorio" for="TipoVeiculo">Tipo de Veículo</label>
+                            @Html.DropDownListFor(model => model.TipoVeiculo, ViewBag.TiposVeiculo as SelectList, new { @class = "form-select" })
                         </div>
                     </div>
 
                     <div class="row mt-2">
-                        <div class="col col-lg-3 col-md-3">
+                        <div class="col col-lg-4 col-md-4">
+                            <label class="form-label obrigatorio" for="Cor">Cor</label>
+                            @Html.EnumDropDownListFor(model => model.Cor, new { @class = "form-select" })
+                        </div>
+                        <div class="col col-lg-4 col-md-4">
+                            <label class="form-label obrigatorio" for="TipoCombustivel">Combustível</label>
+                            @Html.EnumDropDownListFor(model => model.TipoCombustivel, new { @class = "form-select" })
+                        </div>
+                        <div class="col col-lg-4 col-md-4">
+                            <label class="form-label obrigatorio" for="VencimentoLicenciamento">Licenciamento</label>
+                            @Html.TextBoxFor(model => model.VencimentoLicenciamento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col col-lg-4 col-md-4">
                             <label class="form-label obrigatorio" for="AnoFabricacao">Ano Fab.</label>
                             @Html.TextBoxFor(model => model.AnoFabricacao, new { @class = "form-control", type = "number", min = "1900", max = "2100" })
                         </div>
-                        <div class="col col-lg-3 col-md-3">
+                        <div class="col col-lg-4 col-md-4">
                             <label class="form-label obrigatorio" for="AnoModelo">Ano Mod.</label>
                             @Html.TextBoxFor(model => model.AnoModelo, new { @class = "form-control", type = "number", min = "1900", max = "2100" })
                         </div>
-                        <div class="col col-lg-3 col-md-3">
+                        <div class="col col-lg-4 col-md-4">
                             <label class="form-label obrigatorio" for="QuilometragemAtual">Km Atual</label>
                             @Html.TextBoxFor(model => model.QuilometragemAtual, new { @class = "form-control", type = "number", min = "0" })
-                        </div>
-                        <div class="col col-lg-3 col-md-3">
-                            <label class="form-label obrigatorio" for="VencimentoLicenciamento">Licenciamento</label>
-                            @Html.TextBoxFor(model => model.VencimentoLicenciamento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                         </div>
                     </div>
 

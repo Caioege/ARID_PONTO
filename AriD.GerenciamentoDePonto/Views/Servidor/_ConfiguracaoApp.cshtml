@@ -1,0 +1,191 @@
+@model Servidor
+@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
+
+@{
+    var possuiAcessoApp = Model.AcessoAoAplicativo;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h5 class="card-title">Permissões de Acesso e Funcionalidades</h5>
+        <hr />
+        <div class="row mb-4">
+            <section class="col col-md-3 col-sm-6">
+                <label class="form-label">Acesso ao Aplicativo/Portal</label>
+                <div class="input-group">
+                    @Html.CheckboxDropDownListFor(model => model.AcessoAoAplicativo, new { @class = "form-select acesso-app-master" })
+                    @if (Model.Id > 0)
+                    {
+                        <button type="button" class="btn btn-outline-danger" id="btnRestaurarSenha" title="Restaurar senha padrão (Data de Nascimento)">
+                            <i class="tf-icons bx bx-reset"></i>
+                        </button>
+                    }
+                </div>
+            </section>
+
+            <section class="col col-md-3 col-sm-6">
+                <label class="form-label">Registro de ponto no Aplicativo</label>
+                @Html.CheckboxDropDownListFor(model => model.RegistroDePontoNoAplicativo, new { @class = "form-select dependente-app" })
+            </section>
+
+            <section class="col col-md-3 col-sm-6">
+                <label class="form-label">Registro manual no Aplicativo/Portal</label>
+                @Html.CheckboxDropDownListFor(model => model.RegistroManualNoAplicativo, new { @class = "form-select dependente-app" })
+            </section>
+
+            <section class="col col-md-3 col-sm-6">
+                <label class="form-label">Registro de atestado no Aplicativo/Portal</label>
+                @Html.CheckboxDropDownListFor(model => model.RegistroDeAtestadoNoAplicativo, new { @class = "form-select dependente-app" })
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2" id="box-configuracao-comprovacao">
+    <div class="col-md-12">
+        <h5 class="card-title">Segurança e Comprovação (Anti-Fraude)</h5>
+        <hr />
+        <input type="hidden" id="TipoComprovacaoAppOriginal" value="@((int)Model.TipoComprovacaoPontoApp)" />
+
+        <div class="row">
+            <section class="col col-md-4 col-sm-12">
+                <label class="form-label">Tipo de comprovação para registro de PONTO no APP</label>
+                <select asp-for="TipoComprovacaoPontoApp" class="form-select select2" id="TipoComprovacaoPontoApp" name="TipoComprovacaoPontoApp">
+                    @foreach (eTipoComprovacaoPontoApp item in Enum.GetValues(typeof(eTipoComprovacaoPontoApp)))
+                    {
+                        var isSelected = Model.TipoComprovacaoPontoApp == item;
+                        if (isSelected)
+                        {
+                            <option value="@((int)item)" selected="selected">@item.DescricaoDoEnumerador()</option>
+                        }
+                        else 
+                        {
+                            <option value="@((int)item)">@item.DescricaoDoEnumerador()</option>
+                        }
+                    }
+                </select>
+                <div class="form-text mt-2" id="descricao-comprovacao-app">
+                    <b>Liveness Facial:</b> Exige que o usuário pisque os olhos ao vivo, bloqueando fotos de outras fotos.
+                </div>
+            </section>
+            <section class="col col-md-8 col-sm-12" id="box-motivo-mudanca-app" style="display: none;">
+                <label class="form-label obrigatorio text-danger">Motivo da Alteração de Segurança</label>
+                <input type="text" id="MotivoAlteracaoConfiguracaoApp" name="MotivoAlteracaoConfiguracaoApp" class="form-control border-danger" placeholder="Justifique por que a regra foi alterada..." maxlength="500" />
+                <div class="form-text text-danger">
+                    Essa informação será salva no histórico de auditoria.
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@if (Model.Id > 0 && Model.ListaDeHistoricosDeConfiguracaoApp != null && Model.ListaDeHistoricosDeConfiguracaoApp.Any())
+{
+    <br />
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h5 class="card-title">Histórico de Alterações de Segurança</h5>
+            <div class="table-responsive text-nowrap mt-2">
+                <table class="table table-bordered table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                            <th>De</th>
+                            <th>Para</th>
+                            <th>Motivo Registrado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var historico in Model.ListaDeHistoricosDeConfiguracaoApp.OrderByDescending(x => x.DataAlteracao))
+                        {
+                            <tr>
+                                <td>@historico.DataAlteracao.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@historico.UsuarioAlteracao.NomeDaPessoa</td>
+                                <td><span class="badge bg-secondary">@historico.TipoComprovacaoAnterior.DescricaoDoEnumerador()</span></td>
+                                <td><span class="badge bg-primary">@historico.TipoComprovacaoNova.DescricaoDoEnumerador()</span></td>
+                                <td style="white-space: pre-wrap">@historico.Motivo</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function() {
+        function verificarAcessoApp() {
+            var temAcesso = $('#AcessoAoAplicativo').val() === 'true' || $('#AcessoAoAplicativo').val() === 'True';
+            if (!temAcesso) {
+                $('.dependente-app').each(function() {
+                    $(this).val('False').trigger('change');
+                    $(this).prop('disabled', true);
+                });
+                $('#box-configuracao-comprovacao').hide();
+                $('#TipoComprovacaoPontoApp').prop('disabled', true);
+            } else {
+                $('.dependente-app').prop('disabled', false);
+                $('#box-configuracao-comprovacao').show();
+                $('#TipoComprovacaoPontoApp').prop('disabled', false);
+            }
+        }
+
+        $('#AcessoAoAplicativo').change(verificarAcessoApp);
+        verificarAcessoApp(); // Executa na carga inicial
+
+        $('#TipoComprovacaoPontoApp').change(function() {
+            var original = $('#TipoComprovacaoAppOriginal').val();
+            var atual = $(this).val();
+
+            if (original && original !== atual && original !== '') {
+                $('#box-motivo-mudanca-app').fadeIn();
+            } else {
+                $('#box-motivo-mudanca-app').fadeOut();
+                $('#MotivoAlteracaoConfiguracaoApp').val('');
+            }
+            
+            var text = '';
+            if (atual == '0') text = '<b>Nenhuma:</b> O aplicativo registrará o ponto silenciosamente ao clicar no botão. Útil se há problemas na câmera.';
+            else if (atual == '1') text = '<b>Apenas Selfie:</b> Tira uma foto normal, mas está sujeito a fotos falsas (imprimir o rosto do servidor e mostrar na câmera).';
+            else if (atual == '2') text = '<b>Liveness Facial:</b> Exige que o usuário pisque os olhos ao vivo, bloqueando fraudes por fotos.';
+            
+            $('#descricao-comprovacao-app').html(text);
+        });
+        
+        // Dispara uma vez para carregar o texto da base.
+        $('#TipoComprovacaoPontoApp').trigger('change');
+        
+        // Remove a div para sumir caso não alterou.
+        var original = $('#TipoComprovacaoAppOriginal').val();
+        var atual = $('#TipoComprovacaoPontoApp').val();
+        if(original === atual) {
+            $('#box-motivo-mudanca-app').hide();
+        }
+
+        $('#btnRestaurarSenha').click(function () {
+            Swal.fire({
+                title: 'Restaurar Senha?',
+                text: "A senha do servidor será alterada para a data de nascimento (DDMMAAAA). Deseja continuar?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, restaurar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('/Servidor/RestaurarSenhaPadrao', { id: @Model.Id }, function (res) {
+                        if (res.sucesso) {
+                            ExibirMensagemDeSucesso(res.mensagem);
+                        } else {
+                            ExibirMensagemDeErro(res.mensagem);
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

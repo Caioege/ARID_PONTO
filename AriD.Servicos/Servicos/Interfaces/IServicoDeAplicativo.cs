@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO.Aplicativo;
+using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 
@@ -14,5 +14,7 @@ namespace AriD.Servicos.Servicos.Interfaces
         List<KeyValuePair<DateTime, string>> ObtenhaUltimosRegistrosDoServidor(int servidorId);
         List<CodigoDescricaoDTO> ObtenhaListaDeJustificativas(int organizacaoId);
         void ReceptarRegistro(PostRegistroDePontoDTO registro, bool fromApp);
+        void RegistrarToken(RegistrarTokenDTO registrarToken);
+        void AlterarSenha(int servidorId, string senhaAtual, string novaSenha);
     }
 }

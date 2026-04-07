@@ -343,3 +343,6 @@ ADD CONSTRAINT `FK_RotaExecucao_Veiculo`
   REFERENCES `arid_ponto`.`veiculo` (`Id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+-- Adicionando Tipo de Veiculo para monitoramento diferenciado
+ALTER TABLE veiculo ADD COLUMN TipoVeiculo INT NOT NULL DEFAULT 0;

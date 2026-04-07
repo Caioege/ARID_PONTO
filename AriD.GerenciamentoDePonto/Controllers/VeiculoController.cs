@@ -8,6 +8,7 @@ using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
+using AriD.Servicos.Extensao;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -57,6 +58,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var model = veiculoId == 0 ?
                     new Veiculo { Status = AriD.BibliotecaDeClasses.Enumeradores.eStatusVeiculo.Disponivel, AnoFabricacao = DateTime.Now.Year, AnoModelo = DateTime.Now.Year, VencimentoLicenciamento = DateTime.Today.AddYears(1) } :
                     _veiculoServico.Obtenha(veiculoId);
+
+            var tiposVeiculo = Enum.GetValues(typeof(AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo))
+                .Cast<AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo>()
+                .Select(v => new { Id = (int)v, Descricao = v.DescricaoDoEnumerador() })
+                .ToList();
+            ViewBag.TiposVeiculo = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(tiposVeiculo, "Id", "Descricao");
 
             var html = await RenderizarComoString("_Modal", model);
             return Json(new { sucesso = true, html = html });

@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
@@ -85,6 +85,78 @@ namespace AriD.Servicos.Servicos
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public async Task ProcessarMonitoramentoConectividade(List<MonitoramentoConectividadeDTO> dados)
+        {
+            if (dados == null || !dados.Any()) return;
+
+            var serials = dados.Select(d => d.NumeroSerie).ToList();
+
+            var query = @"
+                SELECT 
+                    e.Descricao, 
+                    e.NumeroDeSerie AS NumeroSerie, 
+                    u.Nome AS UnidadeNome,
+                    o.Id AS OrganizacaoId,
+                    o.Nome AS OrganizacaoNome,
+                    o.RecebeNotificacaoConectividade AS OrgRecebe,
+                    o.EmailNotificacaoConectividade AS OrgEmail,
+                    u.Id AS UnidadeId,
+                    u.RecebeNotificacaoConectividade AS UnitRecebe,
+                    u.EmailNotificacaoConectividade AS UnitEmail
+                FROM equipamentodeponto e
+                INNER JOIN unidadeorganizacional u ON u.Id = e.UnidadeOrganizacionalId
+                INNER JOIN organizacao o ON o.Id = e.OrganizacaoId
+                WHERE e.NumeroDeSerie IN @SERIALS AND e.Ativo = 1";
+
+            var infoEquipamentos = _repositorio.ConsultaDapper<dynamic>(query, new { @SERIALS = serials }).ToList();
+
+            if (!infoEquipamentos.Any()) return;
+
+            // Agrupar por Organização
+            var porOrganizacao = infoEquipamentos.GroupBy(x => (int)x.OrganizacaoId);
+
+            foreach (var grupoOrg in porOrganizacao)
+            {
+                var primeiraInfo = grupoOrg.First();
+                bool orgRecebe = Convert.ToBoolean(primeiraInfo.OrgRecebe);
+                string orgEmail = primeiraInfo.OrgEmail;
+                string orgNome = primeiraInfo.OrganizacaoNome;
+
+                var equipamentosComData = grupoOrg.Select(e => new EquipamentoConectividadeInfo
+                {
+                    Descricao = e.Descricao,
+                    NumeroSerie = e.NumeroSerie,
+                    UnidadeNome = e.UnidadeNome,
+                    DataHoraUltimoRegistro = dados.FirstOrDefault(d => d.NumeroSerie == (string)e.NumeroSerie)?.DataHoraUltimoRegistro ?? DateTime.MinValue
+                }).ToList();
+
+                // Notificação para a Organização (Todos os equipamentos da org)
+                if (orgRecebe && !string.IsNullOrEmpty(orgEmail))
+                {
+                    await _emailService.EnviarNotificacaoConectividadeAsync(orgEmail, orgNome, equipamentosComData);
+                }
+
+                // Notificação por Unidade
+                var porUnidade = grupoOrg.GroupBy(x => (int)x.UnidadeId);
+                foreach (var grupoUnidade in porUnidade)
+                {
+                    var infoUnidade = grupoUnidade.First();
+                    bool unitRecebe = Convert.ToBoolean(infoUnidade.UnitRecebe);
+                    string unitEmail = infoUnidade.UnitEmail;
+                    string unitNome = infoUnidade.UnidadeNome;
+
+                    if (unitRecebe && !string.IsNullOrEmpty(unitEmail))
+                    {
+                        var equipamentosDaUnidade = equipamentosComData
+                            .Where(e => grupoUnidade.Any(gu => (string)gu.NumeroSerie == e.NumeroSerie))
+                            .ToList();
+
+                        await _emailService.EnviarNotificacaoConectividadeAsync(unitEmail, unitNome, equipamentosDaUnidade);
+                    }
+                }
             }
         }
 

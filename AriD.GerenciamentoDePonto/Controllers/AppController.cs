@@ -189,6 +189,37 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpPost("registrar-token")]
+        public IActionResult RegistrarToken([FromBody] RegistrarTokenDTO registrarToken)
+        {
+            try
+            {
+                _servicoDeAplicativo.RegistrarToken(registrarToken);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("alterar-senha")]
+        public IActionResult AlterarSenha([FromBody] AlterarSenhaDTO alterarSenha)
+        {
+            try
+            {
+                _servicoDeAplicativo.AlterarSenha(alterarSenha.ServidorId, alterarSenha.SenhaAtual, alterarSenha.NovaSenha);
+                return Ok(new { sucesso = true, mensagem = "Senha alterada com sucesso." });
+            }
+            catch (Exception ex)
+            {
+                if (ex is ApplicationException)
+                    return BadRequest(new { message = ex.Message });
+
+                return StatusCode(500, new { message = "Ocorreu um erro ao alterar a senha. Tente novamente mais tarde." });
+            }
+        }
+
         private byte[] ObterBytesDeFileStream(FileStream fileStream)
         {
             using (var memoryStream = new MemoryStream())

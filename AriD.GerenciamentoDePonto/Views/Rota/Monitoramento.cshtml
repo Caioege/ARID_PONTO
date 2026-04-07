@@ -159,10 +159,10 @@
                         <span id="ultima-sincronizacao">Sincronizando...</span>
                     </div>
 
-                    <div class="map-overlay" id="filtros-overlay">
+                    <div class="map-overlay collapsed" id="filtros-overlay">
                         <div class="map-overlay-header" onclick="toggleFiltros()">
                             <h5><i class="bx bx-filter-alt"></i> Filtros</h5>
-                            <button class="toggle-overlay-btn"><i class="bx bx-chevron-up" id="toggle-icon"></i></button>
+                            <button class="toggle-overlay-btn"><i class="bx bx-chevron-down" id="toggle-icon"></i></button>
                         </div>
                         <div id="filtros-content">
                             <div class="filter-group">
@@ -181,6 +181,10 @@
                             <div class="filter-group">
                                 <label for="M_FiltroMotorista">Motorista</label>
                                 @Html.DropDownList("M_FiltroMotorista", ViewBag.Motoristas as SelectList, "Todos", new { @class = "form-select form-select-sm" })
+                            </div>
+                            <div class="filter-group">
+                                <label for="M_FiltroTipoVeiculo">Tipo de Veículo</label>
+                                @Html.DropDownList("M_FiltroTipoVeiculo", ViewBag.TiposVeiculo as SelectList, "Todos", new { @class = "form-select form-select-sm" })
                             </div>
                             <div class="filter-group">
                                 <label for="M_FiltroVeiculo">Veículo</label>

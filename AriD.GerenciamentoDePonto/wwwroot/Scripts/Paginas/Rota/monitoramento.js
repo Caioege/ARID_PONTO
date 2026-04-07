@@ -4,7 +4,7 @@ let routeLayers = {};
 
 $(document).ready(function() {
     if ($.fn.select2) {
-        $('#M_FiltroRota, #M_FiltroMotorista, #M_FiltroVeiculo').select2({
+        $('#M_FiltroRota, #M_FiltroMotorista, #M_FiltroVeiculo, #M_FiltroTipoVeiculo').select2({
             width: '100%',
             placeholder: 'Escolha uma opção',
             allowClear: true,
@@ -87,11 +87,13 @@ function renderizarRotasNoMapa() {
     let filtroMotorista = $("#M_FiltroMotorista").val();
     let filtroVeiculo = $("#M_FiltroVeiculo").val();
     let filtroRota = $("#M_FiltroRota").val();
+    let filtroTipoVeiculo = $("#M_FiltroTipoVeiculo").val();
 
     let dadosFiltrados = allRoutesData.filter(r => {
         if (filtroMotorista && r.motoristaId.toString() !== filtroMotorista) return false;
         if (filtroVeiculo && r.veiculoId.toString() !== filtroVeiculo) return false;
         if (filtroRota && r.rotaId.toString() !== filtroRota) return false;
+        if (filtroTipoVeiculo && r.tipoVeiculo !== null && r.tipoVeiculo !== undefined && r.tipoVeiculo.toString() !== filtroTipoVeiculo) return false;
         return true;
     });
 
@@ -147,18 +149,63 @@ function renderizarRotasNoMapa() {
             heading = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
         }
 
-        // SVG Premium (Carro vista superior, dinâmico e sombreado)
+        // SVG Dinâmico baseado no tipo de veículo
         let strokeColor = isFinalizada ? "#999" : "white";
         let shadowColor = isFinalizada ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.5)";
         let opacityCar = isFinalizada ? "0.7" : "1";
-        let carSvg = `
-            <div style="transform: rotate(${heading}deg); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 3px 5px ${shadowColor}); opacity: ${opacityCar};">
-                <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        
+        let innerSvg = "";
+        switch(rota.tipoVeiculo) {
+            case 1: // Motocicleta
+                innerSvg = `
+                    <rect x="11" y="2" width="2" height="4" fill="#333" rx="1"/> <!-- Roda Dianteira -->
+                    <path d="M7 8 Q12 6 17 8" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round"/> <!-- Guidão -->
+                    <ellipse cx="12" cy="11" rx="3" ry="4" fill="${cor}" stroke="${strokeColor}" stroke-width="1"/> <!-- Tanque -->
+                    <ellipse cx="12" cy="16" rx="2.5" ry="4" fill="#111" /> <!-- Assento -->
+                    <rect x="11" y="18" width="2" height="4" fill="#333" rx="1"/> <!-- Roda Traseira -->
+                `;
+                break;
+            case 2: // Caminhao
+                innerSvg = `
+                    <rect x="7" y="2" width="10" height="5" rx="2" fill="${cor}" stroke="${strokeColor}" stroke-width="1"/>
+                    <rect x="8" y="4" width="8" height="2" fill="rgba(0,0,0,0.8)" rx="0.5"/>
+                    <rect x="11" y="7" width="2" height="2" fill="#333" />
+                    <rect x="7" y="9" width="10" height="13" rx="1" fill="${cor}" stroke="${strokeColor}" stroke-width="1"/>
+                    <rect x="8" y="10" width="8" height="11" fill="rgba(255,255,255,0.2)" rx="0.5"/>
+                `;
+                break;
+            case 3: // Onibus
+                innerSvg = `
+                    <rect x="6" y="1" width="12" height="22" rx="2" fill="${cor}" stroke="${strokeColor}" stroke-width="1"/>
+                    <rect x="7" y="2" width="10" height="2" fill="rgba(0,0,0,0.8)" rx="0.5"/>
+                    <rect x="7" y="20" width="10" height="1.5" fill="rgba(0,0,0,0.8)" rx="0.5"/>
+                    <rect x="9" y="6" width="6" height="3" fill="#eee" rx="1"/>
+                    <rect x="9" y="14" width="6" height="3" fill="#eee" rx="1"/>
+                    <rect x="10.5" y="10" width="3" height="3" fill="rgba(0,0,0,0.3)" rx="0.5"/>
+                `;
+                break;
+            case 4: // Ambulancia
+                innerSvg = `
+                    <rect x="6" y="2" width="12" height="20" rx="3" fill="white" stroke="${strokeColor}" stroke-width="1"/>
+                    <rect x="7" y="5" width="10" height="3" fill="rgba(0,0,0,0.8)" rx="0.5"/>
+                    <rect x="7" y="3" width="10" height="1.5" fill="${cor}" rx="0.5"/>
+                    <rect x="10" y="8" width="4" height="2" fill="red" rx="1"/>
+                    <path d="M12 12V18M9 15H15" stroke="red" stroke-width="2.5" stroke-linecap="square"/>
+                `;
+                break;
+            default: // Carro (case 0 ou default)
+                innerSvg = `
                     <rect x="5" y="2" width="14" height="20" rx="4" fill="${cor}" stroke="${strokeColor}" stroke-width="1.5"/>
                     <rect x="7" y="5" width="10" height="4" fill="rgba(0,0,0,0.7)" rx="1"/>
                     <rect x="7" y="15" width="10" height="4" fill="rgba(0,0,0,0.6)" rx="1"/>
-                    <rect x="4" y="8" width="2" height="4" rx="1" fill="${cor}" />
-                    <rect x="18" y="8" width="2" height="4" rx="1" fill="${cor}" />
+                `;
+                break;
+        }
+
+        let carSvg = `
+            <div style="transform: rotate(${heading}deg); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 4px 6px ${shadowColor}); opacity: ${opacityCar};">
+                <svg viewBox="0 0 24 24" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                    ${innerSvg}
                 </svg>
             </div>
         `;
@@ -166,8 +213,8 @@ function renderizarRotasNoMapa() {
         let customIcon = L.divIcon({
             className: 'custom-car-icon',
             html: carSvg,
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
         });
 
         let marker = L.marker(rota.ultimaLocalizacao, { icon: customIcon }).addTo(map);

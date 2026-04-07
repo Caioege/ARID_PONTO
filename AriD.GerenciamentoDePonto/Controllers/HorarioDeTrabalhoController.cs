@@ -518,7 +518,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 RegrasHoraExtra = regrasTela,
 
                 BancoDeHorasSomenteHorasExtrasAprovadas = vig.BancoDeHorasSomenteHorasExtrasAprovadas,
-                BancoDeHorasPrioridadePercentuais = vig.BancoDeHorasPrioridadePercentuais
+                BancoDeHorasPrioridadePercentuais = vig.BancoDeHorasPrioridadePercentuais ?? string.Empty
             };
         }
 
@@ -545,7 +545,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             vig.ToleranciaAposASaidaEmMinutos = vm.ToleranciaAposASaidaEmMinutos;
 
             vig.BancoDeHorasSomenteHorasExtrasAprovadas = vm.BancoDeHorasSomenteHorasExtrasAprovadas;
-            vig.BancoDeHorasPrioridadePercentuais = vm.BancoDeHorasPrioridadePercentuais;
+            vig.BancoDeHorasPrioridadePercentuais = vm.BancoDeHorasPrioridadePercentuais ?? string.Empty;
         }
 
         private List<RegraHoraExtra> MonteRegrasPadraoParaTela(List<RegraHoraExtra> regrasCarregadas)

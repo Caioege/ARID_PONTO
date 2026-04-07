@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,5 +33,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public DateTime? DataFinalAtestado { get; set; }
 
         public bool ForaDaCerca { get; set; }
+
+        public bool MockGPS { get; set; }
+        public bool LivenessSuccess { get; set; }
+        public string? AnexoLiveness { get; set; }
+        public string? MotivoAuditoria { get; set; }
+
+        public string? ComprovanteAtestado { get; set; }
     }
 }

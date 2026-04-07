@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -50,7 +50,8 @@ namespace AriD.Servicos.Servicos
                         p.Cpf as Cpf,
                         s.RegistroDePontoNoAplicativo,
                         s.RegistroManualNoAplicativo,
-                        s.RegistroDeAtestadoNoAplicativo
+                        s.RegistroDeAtestadoNoAplicativo,
+                        s.TipoComprovacaoPontoApp as TipoComprovacaoApp
                     from pessoa p
                     inner join organizacao o
 	                    on o.Id = p.OrganizacaoId
@@ -62,12 +63,24 @@ namespace AriD.Servicos.Servicos
                         and s.AcessoAoAplicativo = true
                     limit 1";
 
-                return _repositorioServidor.ConsultaDapper<AutenticacaoAppDTO>(queryAcesso, new
+                var result = _repositorioServidor.ConsultaDapper<AutenticacaoAppDTO>(queryAcesso, new
                 {
                     @USUARIO = ObterSomenteNumeros(credenciais.Usuario, "---"),
                     @SENHA = ObterSomenteNumeros(credenciais.Senha, "---"),
                     @SENHACRIPTOGRAFADA = Criptografia.CriptografarSenha(credenciais.Senha)
                 }).FirstOrDefault();
+
+                if (result != null)
+                {
+                    var caminhoFoto = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{result.OrganizacaoId}", $"{result.ServidorId}.png");
+                    if (File.Exists(caminhoFoto))
+                    {
+                        var bytes = File.ReadAllBytes(caminhoFoto);
+                        result.FotoBase64 = Convert.ToBase64String(bytes);
+                    }
+                }
+
+                return result;
             }
             catch (Exception)
             {
@@ -290,25 +303,71 @@ namespace AriD.Servicos.Servicos
                 var vinculo = _repositorioVinculo.Obtenha(registro.VinculoDeTrabalhoId);
 
                 string anexoPontoNome = null;
-                if (registro.Imagem != null)
-                {
-                    if (!registro.Imagem.ContentType.Contains("image") && fromApp)
-                        throw new ApplicationException("O comprovante enviado não é uma imagem.");
+                string anexoLivenessNome = null;
 
-                    var extensaoArquivo = Path.GetExtension(registro.Imagem.FileName);
+                if (registro.ImagemDesafio != null)
+                {
+                    var extensao = Path.GetExtension(registro.ImagemDesafio.FileName);
+                    using (var ms = new MemoryStream())
+                    {
+                        registro.ImagemDesafio.CopyTo(ms);
+                        var arquivo = ms.ToArray();
+
+                        var pastaLiveness = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "registrosapp", $"{vinculo.OrganizacaoId}", "liveness");
+                        if (!Path.Exists(pastaLiveness)) Directory.CreateDirectory(pastaLiveness);
+
+                        var nomeUnico = $"{vinculo.Id}_LIVENESS_{dataAgora.Ticks}_{Guid.NewGuid()}.{extensao}";
+                        var caminho = Path.Combine(pastaLiveness, nomeUnico);
+
+                        using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
+                            fs.Write(arquivo, 0, arquivo.Length);
+
+                        anexoLivenessNome = nomeUnico;
+                        anexoPontoNome = $"liveness/{nomeUnico}";
+                    }
+                }
+                else
+                {
+                    if (registro.Imagem != null)
+                    {
+                        if (registro.Imagem.ContentType == null || !registro.Imagem.ContentType.Contains("image") && fromApp)
+                            throw new ApplicationException("O comprovante enviado não é uma imagem.");
+
+                        var extensaoArquivo = Path.GetExtension(registro.Imagem.FileName);
+                        using (var ms = new MemoryStream())
+                        {
+                            registro.Imagem.CopyTo(ms);
+                            var arquivo = ms.ToArray();
+
+                            var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "registrosapp", $"{vinculo.OrganizacaoId}");
+                            if (!Path.Exists(pastaBase)) Directory.CreateDirectory(pastaBase);
+
+                            anexoPontoNome = $"{vinculo.Id}_{dataAgora.Ticks}_{Guid.NewGuid()}.{extensaoArquivo}";
+                            var caminho = Path.Combine(pastaBase, anexoPontoNome);
+
+                            using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
+                                fs.Write(arquivo, 0, arquivo.Length);
+                        }
+                    }
+                }
+
+                string comprovanteAtestadoNome = null;
+                if (registro.AnexoAtestado != null)
+                {
+                    var extensaoArquivoAnexoAtestado = Path.GetExtension(registro.AnexoAtestado.FileName);
 
                     using (var ms = new MemoryStream())
                     {
-                        registro.Imagem.CopyTo(ms);
+                        registro.AnexoAtestado.CopyTo(ms);
                         var arquivo = ms.ToArray();
 
-                        var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "registrosapp", $"{vinculo.OrganizacaoId}");
+                        var pastaBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "anexos", "atestados", $"{vinculo.OrganizacaoId}");
 
                         if (!Path.Exists(pastaBase))
                             Directory.CreateDirectory(pastaBase);
 
-                        anexoPontoNome = $"{vinculo.Id}_{dataAgora.Ticks}_{Guid.NewGuid()}.{extensaoArquivo}";
-                        var caminho = Path.Combine(pastaBase, anexoPontoNome);
+                        comprovanteAtestadoNome = $"{vinculo.Id}_ATESTADO_{dataAgora.Ticks}_{Guid.NewGuid()}{extensaoArquivoAnexoAtestado}";
+                        var caminho = Path.Combine(pastaBase, comprovanteAtestadoNome);
 
                         using (FileStream fs = new FileStream(caminho, FileMode.OpenOrCreate, FileAccess.Write))
                             fs.Write(arquivo, 0, arquivo.Length);
@@ -374,10 +433,20 @@ namespace AriD.Servicos.Servicos
                     catch { }
                 }
 
+                var motivoAuditoria = string.Empty;
+                if (registro.IsMockLocation)
+                    motivoAuditoria += "[ALERTA] GPS Simulado detectado; ";
+                if (!registro.LivenessSuccess)
+                    motivoAuditoria += "[ALERTA] Falha no teste de vivacidade (Liveness); ";
+                if (foraDaCerca)
+                    motivoAuditoria += "[AVISO] Registro fora da cerca virtual; ";
+                if (registro.Manual)
+                    motivoAuditoria += "[AVISO] Registro manual; ";
+
                 var registroAplicativo = new RegistroAplicativo
                 {
                     OrganizacaoId = vinculo.OrganizacaoId,
-                    Situacao = registro.Manual || foraDaCerca ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
+                    Situacao = registro.Manual || foraDaCerca || registro.IsMockLocation || !registro.LivenessSuccess ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
                     Manual = registro.Manual,
                     Observacao = registro.Observacao,
                     DataHora = registro.Manual && registro.DataHora.HasValue ? registro.DataHora.Value : dataAgora,
@@ -388,7 +457,12 @@ namespace AriD.Servicos.Servicos
                     DataInicialAtestado = registro.DataInicialAtestado,
                     DataFinalAtestado = registro.DataFinalAtestado,
                     JustificativaDeAusenciaId = registro.JustificativaDeAusenciaId,
-                    ForaDaCerca = foraDaCerca
+                    ForaDaCerca = foraDaCerca,
+                    MockGPS = registro.IsMockLocation,
+                    LivenessSuccess = registro.LivenessSuccess,
+                    AnexoLiveness = anexoLivenessNome,
+                    MotivoAuditoria = string.IsNullOrWhiteSpace(motivoAuditoria) ? null : motivoAuditoria.Trim(),
+                    ComprovanteAtestado = comprovanteAtestadoNome
                 };
 
                 if (registro.DataHora > dataAgora)
@@ -456,6 +530,51 @@ namespace AriD.Servicos.Servicos
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
             return R * c;
+        }
+
+        public void RegistrarToken(RegistrarTokenDTO registrarToken)
+        {
+            var servidor = _repositorioServidor.Obtenha(registrarToken.ServidorId);
+            if (servidor == null) return;
+
+            servidor.PushToken = registrarToken.Token;
+            servidor.PlataformaDispositivo = registrarToken.Plataforma;
+            servidor.UltimoAcessoApp = DateTime.Now;
+
+            _repositorioServidor.Atualizar(servidor);
+            _repositorioServidor.Commit();
+        }
+
+        public void AlterarSenha(int servidorId, string senhaAtual, string novaSenha)
+        {
+            var servidor = _repositorioServidor.Obtenha(servidorId);
+            if (servidor == null) throw new ApplicationException("Servidor não encontrado.");
+
+            bool senhaValida = false;
+            
+            if (string.IsNullOrEmpty(servidor.SenhaPersonalizadaDeAcesso))
+            {
+                // Verifica contra a senha padrão (Data de Nascimento ddMMyyyy)
+                var senhaPadrao = servidor.Pessoa.DataDeNascimento.ToString("ddMMyyyy");
+                if (ObterSomenteNumeros(senhaAtual, "") == senhaPadrao)
+                    senhaValida = true;
+            }
+            else
+            {
+                // Verifica contra a senha personalizada criptografada
+                if (servidor.SenhaPersonalizadaDeAcesso == Criptografia.CriptografarSenha(senhaAtual))
+                    senhaValida = true;
+            }
+
+            if (!senhaValida)
+                throw new ApplicationException("A senha atual informada está incorreta.");
+
+            if (string.IsNullOrWhiteSpace(novaSenha) || novaSenha.Length < 4)
+                throw new ApplicationException("A nova senha deve ter pelo menos 4 caracteres.");
+
+            servidor.SenhaPersonalizadaDeAcesso = Criptografia.CriptografarSenha(novaSenha);
+            _repositorioServidor.Atualizar(servidor);
+            _repositorioServidor.Commit();
         }
     }
 }

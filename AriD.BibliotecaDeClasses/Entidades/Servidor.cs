@@ -1,4 +1,5 @@
-﻿using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Entidades.Base;
+using AriD.BibliotecaDeClasses.Enumeradores;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,6 +12,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
             VinculosDeTrabalho = new();
             ListaDeAnexos = new();
             ListaDeObservacoes = new();
+            ListaDeHistoricosDeConfiguracaoApp = new();
         }
 
         [Required]
@@ -25,9 +27,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public virtual List<VinculoDeTrabalho> VinculosDeTrabalho { get; set; }
         public virtual List<AnexoServidor> ListaDeAnexos { get; set; }
         public virtual List<ObservacaoServidor> ListaDeObservacoes { get; set; }
+        public virtual List<HistoricoConfiguracaoAppServidor> ListaDeHistoricosDeConfiguracaoApp { get; set; }
 
         public bool AcessoAoAplicativo { get; set; }
         public bool RegistroDePontoNoAplicativo { get; set; }
+        public eTipoComprovacaoPontoApp TipoComprovacaoPontoApp { get; set; } = eTipoComprovacaoPontoApp.LivenessFacial;
         public bool RegistroManualNoAplicativo { get; set; }
         public bool RegistroDeAtestadoNoAplicativo { get; set; }
 
@@ -50,6 +54,14 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         [MaxLength(1000)]
         public string? AlertaManutencaoDePonto { get; set; }
+
+        [MaxLength(255)]
+        public string? PushToken { get; set; }
+
+        [MaxLength(20)]
+        public string? PlataformaDispositivo { get; set; }
+
+        public DateTime? UltimoAcessoApp { get; set; }
 
         public string Nome => Pessoa?.Nome;
     }

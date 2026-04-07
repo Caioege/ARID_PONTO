@@ -1,115 +1,220 @@
-﻿@model List<RegistroAplicativo>
+@model List<RegistroAplicativo>
 
 @{
+    // 1. Registros que foram inseridos manualmente (sem GPS/Biometria automática)
     var registrosManuais = Model
-        .Where(c => !c.JustificativaDeAusenciaId.HasValue)
+        .Where(c => !c.JustificativaDeAusenciaId.HasValue && c.Manual)
         .OrderBy(c => c.DataHora);
 
+    // 2. Registros de ponto automáticos capturados pelo app (podem ter alertas de segurança)
+    var registrosPontoApp = Model
+        .Where(c => !c.JustificativaDeAusenciaId.HasValue && !c.Manual)
+        .OrderBy(c => c.DataHora);
+
+    // 3. Justificativas e Atestados
     var registrosJustificativas = Model
         .Where(c => c.JustificativaDeAusenciaId.HasValue)
         .OrderBy(c => c.DataInicialAtestado);
 }
 
 <div class="modal" tabindex="-1" id="_ModalSolicitacoesApp" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    Solicitações feitas no Aplicativo
+                    <i class='bx bx-list-check me-2'></i>Solicitações do Aplicativo
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 @Html.Hidden("RecarregarFolhaDePontoAoFechar", false)
-                @if (registrosManuais.Count() > 0)
-                {
-                    <h6><i class='bx bx-calendar-edit'></i> Registros manuais</h6>
-                    <table class="table table-condensed table-responsive table-bordered">
-                        <thead style="background-color: aliceblue">
-                            <tr>
-                                <th class="text-center" width="20%">
-                                    Data/Hora
-                                </th>
-                                <th class="text-center" width="60%">
-                                    Observação
-                                </th>
-                                <th width="20%">
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var registro in registrosManuais)
-                            {
-                                <tr id="linha-registro-app-@registro.Id">
-                                    <td class="text-center">
-                                        @registro.DataHora.ToString("dd/MM/yyyy")
-                                        <br />
-                                        @registro.DataHora.ToString("HH:mm")
-                                    </td>
-                                    <td style="text-align: justify">
-                                        @registro.Observacao
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-success" onclick="aprovaRegistro(@registro.Id)">
-                                            <i class='bx bxs-check-square'></i>
-                                        </button>
 
-                                        <button type="button" class="btn btn-danger" onclick="reprovaRegistro(@registro.Id)">
-                                            <i class='bx bxs-checkbox-minus'></i>
-                                        </button>
-                                    </td>
+                @if (registrosPontoApp.Any())
+                {
+                    <h6 class="text-primary mt-2"><i class='bx bx-fingerprint me-1'></i> Registros de Ponto (Fotos/Biometria)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center" width="15%">Data/Hora</th>
+                                    <th class="text-center">Validações de Segurança</th>
+                                    <th class="text-center" width="10%">Local/Foto</th>
+                                    <th class="text-center" width="15%">Ações</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var registro in registrosPontoApp)
+                                {
+                                    <tr id="linha-registro-app-@registro.Id">
+                                        <td class="text-center align-middle">
+                                            <strong>@registro.DataHora.ToString("dd/MM/yyyy")</strong><br />
+                                            @registro.DataHora.ToString("HH:mm")
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                                @if (registro.ForaDaCerca)
+                                                {
+                                                    <span class="badge bg-label-warning" title="O servidor registrou fora da cerca virtual permitida">
+                                                        <i class='bx bx-map-alt me-1'></i>Fora da Cerca
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-label-success">
+                                                        <i class='bx bx-check-shield me-1'></i>Na Cerca
+                                                    </span>
+                                                }
+
+                                                @if (registro.MockGPS)
+                                                {
+                                                    <span class="badge bg-label-danger" title="Detecção de GPS falso ou simulado!">
+                                                        <i class='bx bx-navigation me-1'></i>GPS Simulado
+                                                    </span>
+                                                }
+
+                                                @if (registro.LivenessSuccess)
+                                                {
+                                                    <span class="badge bg-label-info">
+                                                        <i class='bx bx-face me-1'></i>Biometria OK
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-label-secondary">
+                                                        <i class='bx bx-hide me-1'></i>Sem Biometria
+                                                    </span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            @if (!string.IsNullOrEmpty(registro.Latitude) && !string.IsNullOrEmpty(registro.Longitude))
+                                            {
+                                                <a href="https://www.google.com/maps?q=@registro.Latitude,@registro.Longitude" target="_blank" class="btn btn-icon btn-outline-warning btn-sm me-1" title="Ver no Mapa">
+                                                    <i class='bx bx-map-pin'></i>
+                                                </a>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(registro.AnexoLiveness))
+                                            {
+                                                var caminhoProv = Url.Content($"~/img/registrosapp/{Context.DadosDaSessao().OrganizacaoId}/liveness/{registro.AnexoLiveness}");
+                                                <button type="button" class="btn btn-icon btn-outline-info btn-sm" onclick="expandirImagem('@caminhoProv')" title="Visualizar Prova de Vida">
+                                                    <i class='bx bx-image-alt'></i>
+                                                </button>
+                                            }
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <button type="button" class="btn btn-success btn-sm" onclick="aprovaRegistro(@registro.Id)" title="Aprovar">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="reprovaRegistro(@registro.Id)" title="Reprovar">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr />
                 }
-                @if (registrosJustificativas.Count() > 0)
+
+                @if (registrosManuais.Any())
                 {
-                    <h6><i class='bx bx-paperclip' ></i> Atestados</h6>
-                    <table class="table table-condensed table-responsive table-bordered">
-                        <thead style="background-color: aliceblue">
-                            <tr>
-                                <th class="text-center" width="20%">
-                                    Início/Fim
-                                </th>
-                                <th class="text-center" width="60%">
-                                    Justificativa
-                                </th>
-                                <th width="20%">
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var registro in registrosJustificativas)
-                            {
-                                <tr id="linha-registro-app-@registro.Id">
-                                    <td class="text-center">
-                                        @(registro.DataInicialAtestado?.ToString("dd/MM/yyyy"))
-                                        <br />
-                                        @(registro.DataFinalAtestado?.ToString("dd/MM/yyyy"))
-                                    </td>
-                                    <td style="text-align: justify">
-                                        @(registro.JustificativaDeAusencia?.SiglaComDescricao)
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-success" onclick="aprovaRegistro(@registro.Id)">
-                                            <i class='bx bxs-check-square'></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-danger" onclick="reprovaRegistro(@registro.Id)">
-                                            <i class='bx bxs-checkbox-minus'></i>
-                                        </button>
-                                    </td>
+                    <h6 class="text-warning mt-4"><i class='bx bx-edit me-1'></i> Registros Manuais</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center" width="15%">Data/Hora</th>
+                                    <th>Observação</th>
+                                    <th class="text-center" width="15%">Ações</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var registro in registrosManuais)
+                                {
+                                    <tr id="linha-registro-app-@registro.Id">
+                                        <td class="text-center align-middle">
+                                            <strong>@registro.DataHora.ToString("dd/MM/yyyy")</strong><br />
+                                            @registro.DataHora.ToString("HH:mm")
+                                        </td>
+                                        <td class="align-middle" style="text-align: justify">
+                                            <small>@registro.Observacao</small>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <button type="button" class="btn btn-success btn-sm" onclick="aprovaRegistro(@registro.Id)">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="reprovaRegistro(@registro.Id)">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr />
+                }
 
+                @if (registrosJustificativas.Any())
+                {
+                    <h6 class="text-success mt-4"><i class='bx bx-file me-1'></i> Atestados / Justificativas</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center" width="15%">Período</th>
+                                    <th>Justificativa</th>
+                                    <th class="text-center" width="10%">Anexo</th>
+                                    <th class="text-center" width="15%">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var registro in registrosJustificativas)
+                                {
+                                    <tr id="linha-registro-app-@registro.Id">
+                                        <td class="text-center align-middle">
+                                            <small>De: @(registro.DataInicialAtestado?.ToString("dd/MM/yyyy"))</small><br />
+                                            <small>Até: @(registro.DataFinalAtestado?.ToString("dd/MM/yyyy"))</small>
+                                        </td>
+                                        <td class="align-middle">
+                                            <strong>@(registro.JustificativaDeAusencia?.Sigla)</strong> - @(registro.JustificativaDeAusencia?.Descricao)
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            @if (!string.IsNullOrEmpty(registro.ComprovanteAtestado))
+                                            {
+                                                var caminhoAtestado = Url.Content($"~/anexos/atestados/{Context.DadosDaSessao().OrganizacaoId}/{registro.ComprovanteAtestado}");
+                                                <a href="@caminhoAtestado" target="_blank" class="btn btn-icon btn-outline-success btn-sm" title="Baixar Atestado">
+                                                    <i class='bx bx-download'></i>
+                                                </a>
+                                            }
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <button type="button" class="btn btn-success btn-sm" onclick="aprovaRegistro(@registro.Id)">
+                                                <i class='bx bx-check'></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="reprovaRegistro(@registro.Id)">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                @if (!Model.Any())
+                {
+                    <div class="alert alert-secondary text-center mb-0">
+                        <i class='bx bx-info-circle me-1'></i> Nenhuma solicitação pendente no momento.
+                    </div>
                 }
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class='bx bx-window-close'></i> Fechar
+                    <i class='bx bx-window-close me-1'></i>Fechar
                 </button>
             </div>
         </div>

@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
@@ -117,10 +117,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost]
-        public IActionResult Salvar(Servidor servidor)
+        public IActionResult Salvar(Servidor servidor, [FromForm] string MotivoAlteracaoConfiguracaoApp)
         {
+            var dadosSessao = this.HttpContext.DadosDaSessao();
             int id = servidor.Id;
-            servidor.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            servidor.OrganizacaoId = dadosSessao.OrganizacaoId;
             servidor.Pessoa.OrganizacaoId = servidor.OrganizacaoId;
 
             ValideExistenciaDeServidorComCpf(servidor.OrganizacaoId, servidor.Id, servidor.Pessoa.Cpf);
@@ -128,10 +129,51 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (servidor.Id == 0)
             {
                 servidor.DataDeCadastro = DateTime.Now;
+                
+                if (servidor.AcessoAoAplicativo)
+                {
+                    servidor.ListaDeHistoricosDeConfiguracaoApp = new List<HistoricoConfiguracaoAppServidor>
+                    {
+                        new HistoricoConfiguracaoAppServidor
+                        {
+                            TipoComprovacaoNova = servidor.TipoComprovacaoPontoApp,
+                            TipoComprovacaoAnterior = eTipoComprovacaoPontoApp.Nenhuma,
+                            Motivo = "Definição inicial ao criar o servidor.",
+                            DataAlteracao = DateTime.Now,
+                            UsuarioAlteracaoId = dadosSessao.UsuarioId,
+                            OrganizacaoId = dadosSessao.OrganizacaoId
+                        }
+                    };
+                }
+
                 id = _servico.Adicionar(servidor);
             }
             else
+            {
+                var servidorDB = _servico.Obtenha(servidor.Id);
+                if (servidorDB.TipoComprovacaoPontoApp != servidor.TipoComprovacaoPontoApp)
+                {
+                    if (string.IsNullOrWhiteSpace(MotivoAlteracaoConfiguracaoApp))
+                        throw new ApplicationException("É obrigatório informar o motivo da alteração da configuração de liveness do aplicativo.");
+
+                    servidor.ListaDeHistoricosDeConfiguracaoApp = servidorDB.ListaDeHistoricosDeConfiguracaoApp ?? new List<HistoricoConfiguracaoAppServidor>();
+                    servidor.ListaDeHistoricosDeConfiguracaoApp.Add(new HistoricoConfiguracaoAppServidor
+                    {
+                        TipoComprovacaoAnterior = servidorDB.TipoComprovacaoPontoApp,
+                        TipoComprovacaoNova = servidor.TipoComprovacaoPontoApp,
+                        Motivo = MotivoAlteracaoConfiguracaoApp.Trim(),
+                        DataAlteracao = DateTime.Now,
+                        UsuarioAlteracaoId = dadosSessao.UsuarioId,
+                        OrganizacaoId = dadosSessao.OrganizacaoId
+                    });
+                }
+                
+                servidor.ListaDeAnexos = servidorDB.ListaDeAnexos;
+                servidor.ListaDeObservacoes = servidorDB.ListaDeObservacoes;
+                servidor.VinculosDeTrabalho = servidorDB.VinculosDeTrabalho;
+
                 _servico.Atualizar(servidor);
+            }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
         }
@@ -424,9 +466,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpPost]
-        public IActionResult ExecutarAcaoEmLote(int acao)
+        public IActionResult ExecutarAcaoEmLote(int acao, string motivo)
         {
-            _servicoDeServidor.ExecuteAcaoEmLote(acao, this.HttpContext.DadosDaSessao());
+            _servicoDeServidor.ExecuteAcaoEmLote(acao, motivo, this.HttpContext.DadosDaSessao());
             return Json(new { sucesso = true, mensagem = $"A ação em lote foi executada." });
         }
 
@@ -542,6 +584,26 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 return returnIfNull;
 
             return retorno;
+        }
+
+        [HttpPost]
+        public IActionResult RestaurarSenhaPadrao(int id)
+        {
+            try
+            {
+                var servidor = _servico.Obtenha(id);
+                if (servidor == null)
+                    return Json(new { sucesso = false, mensagem = "Servidor não encontrado." });
+
+                servidor.SenhaPersonalizadaDeAcesso = null;
+                _servico.Atualizar(servidor);
+
+                return Json(new { sucesso = true, mensagem = "A senha foi restaurada para o padrão (data de nascimento)." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { sucesso = false, mensagem = ex.Message });
+            }
         }
 
         private void ValideExistenciaDeServidorComCpf(

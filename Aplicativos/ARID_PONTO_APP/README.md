@@ -1,1 +1,0 @@
-Aplicativo de FREQUÊNCIA ESCOLAR desenvolvido para a empresa AriD Tecnologia.

@@ -50,7 +50,7 @@ namespace AriD.Servicos.Servicos
                 throw new ApplicationException("Servidor não encontrado.");
 
             if (!servidor.Organizacao.EnvioDeMensagemWhatsAppExperimental)
-                throw new ApplicationException("O envio de comprovante está desabilitado para essa organização.");
+                return;
 
             if (string.IsNullOrEmpty(servidor.TelefoneDeContato))
                 throw new ApplicationException("O telefone de contato do servidor não foi informado.");

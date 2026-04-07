@@ -139,6 +139,24 @@
                 @Html.EnumDropDownListFor(model => model.NomenclaturaServidor, new { @class = "form-select" })
             </div>
         </div>
+
+        <hr />
+        <div class="row">
+            <div class="col col-xs-12">
+                <h5>Notificações de Conectividade</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-lg-3 col-md-4 col-xs-12">
+                <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações de conectividade</label>
+                @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
+            </div>
+            <div class="col col-lg-6 col-md-8 col-xs-12">
+                <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento das notificações</label>
+                @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: TI@suaempresa.com.br" })
+                <small class="text-muted">Se ativado, envia um resumo de todos os equipamentos com problema na organização.</small>
+            </div>
+        </div>
         </form>
 
         <hr />

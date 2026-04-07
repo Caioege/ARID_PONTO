@@ -42,7 +42,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public bool BancoDeHorasSomenteHorasExtrasAprovadas { get; set; } = true;
 
         [MaxLength(120)]
-        public string BancoDeHorasPrioridadePercentuais { get; set; }
+        public string? BancoDeHorasPrioridadePercentuais { get; set; }
 
         public virtual List<HorarioDeTrabalhoDia> Dias { get; set; } = new();
 

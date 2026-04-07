@@ -6,10 +6,13 @@ using AriD.Servicos.Servicos;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using AriD.BibliotecaDeClasses.Configuracoes;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDistributedMemoryCache();
+
+builder.Services.Configure<EmailConfig>(builder.Configuration.GetSection("Email"));
 
 builder.Services.AddCors(options =>
 {

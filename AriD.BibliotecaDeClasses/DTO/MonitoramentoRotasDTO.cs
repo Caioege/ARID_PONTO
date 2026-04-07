@@ -18,6 +18,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public int? VeiculoId { get; set; }
         public string Placa { get; set; }
         public string Modelo { get; set; }
+        public int? TipoVeiculo { get; set; }
     }
 
     public class LocalizacaoDapperDTO
@@ -67,6 +68,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public List<double[]> HistoricoLocalizacoes { get; set; }
         public string UltimaAtualizacao { get; set; }
         public List<MonitoramentoParadaDTO> Paradas { get; set; }
+        public int? TipoVeiculo { get; set; }
         public bool Finalizada { get; set; }
     }
 }

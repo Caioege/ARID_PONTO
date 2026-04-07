@@ -1,4 +1,4 @@
-﻿@model PontoDoDia
+@model PontoDoDia
 
 @{
     string acao = ViewBag.Acao;
@@ -174,16 +174,58 @@
 
                                             @if (!string.IsNullOrEmpty(registroAplicativo.AnexoPonto))
                                             {
-                                                var caminhoImagem = Url.Content($"~/img/registrosapp/{Context.DadosDaSessao().OrganizacaoId}/{registroAplicativo.AnexoPonto}");
+                                                // Se houver liveness e for o mesmo arquivo, não mostramos a foto de registro duplicada
+                                                bool ehFotoDuplicada = !string.IsNullOrEmpty(registroAplicativo.AnexoLiveness) &&
+                                                                      registroAplicativo.AnexoPonto.Contains(registroAplicativo.AnexoLiveness);
+
+                                                if (!ehFotoDuplicada)
+                                                {
+                                                    var caminhoImagem = Url.Content($"~/img/registrosapp/{Context.DadosDaSessao().OrganizacaoId}/{registroAplicativo.AnexoPonto}");
                                                 <div class="col-12 text-center mt-3">
+                                                    <span class="badge bg-secondary mb-2">Foto de Registro</span><br/>
                                                     <img src="@caminhoImagem"
                                                          alt="Registro Fotográfico"
                                                          class="rounded shadow-sm border"
                                                          style="max-height: 220px; max-width: 100%; object-fit: cover; cursor: zoom-in;"
                                                          onclick="expandirImagem('@caminhoImagem')" />
-                                                    <div class="text-muted small mt-1">
-                                                        <i class="bx bx-fullscreen"></i> Clique para ampliar
+                                                </div>
+                                                }
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(registroAplicativo.AnexoLiveness))
+                                            {
+                                                var caminhoLiveness = Url.Content($"~/img/registrosapp/{Context.DadosDaSessao().OrganizacaoId}/liveness/{registroAplicativo.AnexoLiveness}");
+                                                <div class="col-12 text-center mt-3">
+                                                    <span class="badge bg-info mb-2">Foto de Vivacidade (Desafio)</span><br/>
+                                                    <img src="@caminhoLiveness"
+                                                         alt="Desafio de Vivacidade"
+                                                         class="rounded shadow-sm border"
+                                                         style="max-height: 220px; max-width: 100%; object-fit: cover; cursor: zoom-in;"
+                                                         onclick="expandirImagem('@caminhoLiveness')" />
+                                                </div>
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(registroAplicativo.MotivoAuditoria))
+                                            {
+                                                <div class="col-12 mt-3">
+                                                    <div class="alert alert-warning mb-0 py-2 d-flex align-items-center">
+                                                        <i class='bx bx-error-circle fs-4 me-2'></i>
+                                                        <div>
+                                                            <strong>Motivo da Auditoria:</strong><br/>
+                                                            <span class="small">@registroAplicativo.MotivoAuditoria</span>
+                                                        </div>
                                                     </div>
+                                                </div>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(registroAplicativo.ComprovanteAtestado))
+                                            {
+                                                var caminhoAtestado = Url.Content($"~/anexos/atestados/{Context.DadosDaSessao().OrganizacaoId}/{registroAplicativo.ComprovanteAtestado}");
+                                                <div class="col-12 text-center mt-3 border-top pt-3">
+                                                    <span class="badge bg-success mb-2"><i class='bx bx-file'></i> Comprovante Anexo (Atestado)</span><br/>
+                                                    <a href="@caminhoAtestado" target="_blank" class="btn btn-outline-success btn-sm w-100">
+                                                        <i class='bx bx-download'></i> Visualizar/Baixar Comprovante
+                                                    </a>
                                                 </div>
                                             }
                                         </div>

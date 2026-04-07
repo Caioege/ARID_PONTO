@@ -1071,7 +1071,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoEntrada1Id.HasValue && 
                         registroPersistido.RegistroDePontoEntrada1.RegistroAplicativoId.HasValue && 
-                        registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Manual && 
                         registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoEntrada1.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1083,7 +1082,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoEntrada2Id.HasValue &&
                         registroPersistido.RegistroDePontoEntrada2.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoEntrada2.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1095,7 +1093,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoEntrada3Id.HasValue &&
                         registroPersistido.RegistroDePontoEntrada3.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoEntrada3.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1107,7 +1104,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoEntrada4Id.HasValue &&
                         registroPersistido.RegistroDePontoEntrada4.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoEntrada4.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1119,7 +1115,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoEntrada5Id.HasValue &&
                         registroPersistido.RegistroDePontoEntrada5.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoEntrada5.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1131,7 +1126,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoSaida1Id.HasValue &&
                         registroPersistido.RegistroDePontoSaida1.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoSaida1.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1143,7 +1137,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoSaida2Id.HasValue &&
                         registroPersistido.RegistroDePontoSaida2.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoSaida2.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1155,7 +1148,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoSaida3Id.HasValue &&
                         registroPersistido.RegistroDePontoSaida3.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoSaida3.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1167,7 +1159,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoSaida4Id.HasValue &&
                         registroPersistido.RegistroDePontoSaida4.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoSaida4.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;
@@ -1179,7 +1170,6 @@ namespace AriD.Servicos.Servicos
 
                     if (registroPersistido.RegistroDePontoSaida5Id.HasValue &&
                         registroPersistido.RegistroDePontoSaida5.RegistroAplicativoId.HasValue &&
-                        registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Manual &&
                         registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Situacao == eSituacaoRegistroAplicativo.Aprovado)
                     {
                         registroPersistido.RegistroDePontoSaida5.RegistroAplicativo.Situacao = eSituacaoRegistroAplicativo.AguardandoAvaliacao;

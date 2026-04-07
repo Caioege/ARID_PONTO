@@ -35,7 +35,8 @@ namespace AriD.Servicos.Servicos
                     p.Nome as MotoristaNome,
                     re.VeiculoId,
                     v.Placa,
-                    v.Modelo
+                    v.Modelo,
+                    v.TipoVeiculo
                 FROM rotaexecucao re
                 INNER JOIN rota r ON r.Id = re.RotaId
                 INNER JOIN motorista m ON m.Id = COALESCE(re.MotoristaId, r.MotoristaId)
@@ -154,6 +155,7 @@ namespace AriD.Servicos.Servicos
                     MotoristaNome = exec.MotoristaNome,
                     VeiculoId = exec.VeiculoId,
                     PlacaModelo = $"{exec.Placa} - {exec.Modelo}",
+                    TipoVeiculo = exec.TipoVeiculo,
                     UltimaLocalizacao = new[] { 
                         Convert.ToDouble(ultima.Latitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")), 
                         Convert.ToDouble(ultima.Longitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")) 

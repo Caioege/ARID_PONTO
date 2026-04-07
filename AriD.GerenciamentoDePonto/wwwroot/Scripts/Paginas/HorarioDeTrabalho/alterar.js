@@ -165,6 +165,8 @@ function assineEventoBotaoSalvar() {
 
         formulario.RegrasHoraExtra = obterRegrasHoraExtraDaTela();
 
+        formulario.BancoDeHorasPrioridadePercentuais = formulario.BancoDeHorasPrioridadePercentuais || "100,70,50";
+
         RequisicaoAjaxComCarregamento(
             '/HorarioDeTrabalho/Salvar',
             'POST',

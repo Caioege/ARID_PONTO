@@ -27,137 +27,157 @@
         </small>
     </div>
     <div class="card-body">
-        <form id="formulario-horario-trabalho">
-            @Html.HiddenFor(model => model.Id)
-            <div class="row">
-                <div class="col col-lg-3 col-md-6 col-sm-12">
+<form id="formulario-horario-trabalho">
+    @Html.HiddenFor(model => model.Id)
+
+    <!-- SEÇÃO 1 E 2: CONFIGURAÇÕES GERAIS E JORNADA -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center pb-2">
+            <h5 class="mb-0"><i class='bx bx-info-circle me-2'></i>Configurações Gerais e Jornada</h5>
+        </div>
+        <div class="card-body">
+            <h6 class="text-muted mb-2 border-bottom pb-1">Identificação</h6>
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
                     <label class="form-label obrigatorio" for="Sigla">Sigla</label>
                     @Html.TextBoxFor(model => model.Sigla, new { @class = "form-control", @maxlength = "5" })
                 </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio" for="Ativo">Ativo</label>
-                    @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
-                </div>
-
-                <div class="col col-lg-6 col-md-12 col-sm-12">
+                <div class="col-md-6">
                     <label class="form-label obrigatorio" for="Descricao">Descrição</label>
                     @Html.TextBoxFor(model => model.Descricao, new { @class = "form-control", @maxlength = "100" })
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label obrigatorio" for="Ativo">Ativo</label>
+                    @Html.CheckboxDropDownListFor(model => model.Ativo, new { @class = "form-select" })
+                </div>
             </div>
 
-            <div class="row">
-                <div class="col col-lg-3 col-md-6 col-sm-12">
+            <h6 class="text-muted mb-2 border-bottom pb-1">Regras da Carga Horária</h6>
+            <div class="row g-3">
+                <div class="col-md-3">
                     <label class="form-label obrigatorio" for="TipoCargaHoraria">Tipo da Carga Horária</label>
                     @Html.EnumDropDownListFor(model => model.TipoCargaHoraria, new { @class = "form-select" })
                 </div>
-
-                <div class="col col-lg-3 col-md-12 col-sm-12">
+                <div class="col-md-3">
                     <label id="label-chmensal-fixa" class="form-label" for="CargaHorariaMensalFixa">Carga Horária Mensal</label>
-                    @if (Model.TipoCargaHoraria == eTipoCargaHoraria.MensalFixa)
-                    {
-                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control numeroAte999", @maxlength = "3" })
-                    }
-                    else
-                    {
-                        @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control numeroAte999", @maxlength = "3", @disabled = "disabled", @readonly = "readonly" })
-                    }
+                    @Html.TextBoxFor(model => model.CargaHorariaMensalFixa, new { @class = "form-control numeroAte999", @maxlength = "3", @disabled = (Model.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa ? "disabled" : null), @readonly = (Model.TipoCargaHoraria != eTipoCargaHoraria.MensalFixa ? "readonly" : null) })
                 </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12" id="div-utiliza-5" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
+                <div class="col-md-3" id="div-utiliza-5" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                     <label class="form-label obrigatorio" for="UtilizaCincoPeriodos">Utilizar Cinco Períodos</label>
                     @Html.CheckboxDropDownListFor(model => model.UtilizaCincoPeriodos, new { @class = "form-select" })
                 </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio" for="UtilizaBancoDeHoras">Utiliza Banco De Horas</label>
-                    @Html.CheckboxDropDownListFor(model => model.UtilizaBancoDeHoras, new { @class = "form-select" })
-                </div>
-
-                <div id="div-data-bh" class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? string.Empty : "display:none")">
-                    <label class="form-label">Início do Banco de Horas</label>
-                    @Html.TextBox("InicioBancoDeHoras", Model.InicioBancoDeHoras?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? "" : "display:none")" id="div-bh-fonte">
-                    <label class="form-label obrigatorio">Crédito do BH considera</label>
-                    @Html.CheckboxDropDownListFor(m => m.BancoDeHorasSomenteHorasExtrasAprovadas, new { @class = "form-select" })
-                    <div class="form-text">Marcado: só horas extras aprovadas. Desmarcado: todas as horas positivas.</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12" style="@(Model.UtilizaBancoDeHoras ? "" : "display:none")" id="div-bh-prioridade">
-                    <label class="form-label obrigatorio">Prioridade de compensação (percentuais)</label>
-                    @Html.TextBoxFor(m => m.BancoDeHorasPrioridadePercentuais, new { @class = "form-control", @placeholder = "Ex: 100,70,50" })
-                    <div class="form-text">Ordem de consumo para compensar horas negativas.</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
+                <div class="col-md-3">
                     <label class="form-label obrigatorio" for="IntervaloAutomatico">Intervalo automático</label>
                     @Html.EnumDropDownListFor(model => model.IntervaloAutomatico, new { @class = "form-select" })
-                    <div class="form-text">Define quais batidas serão preenchidas automaticamente.</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label obrigatorio" for="ToleranciaDiariaEmMinutos">Tolerância Diária em Minutos</label>
-                    @Html.TextBoxFor(model => model.ToleranciaDiariaEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label" for="ToleranciaDsrEmMinutos">Tolerância DSR em Minutos</label>
-                    @Html.TextBoxFor(model => model.ToleranciaDsrEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
-                    <div class="form-text">Se o dia não tiver carga horária e o trabalho no dia for até esta tolerância, não gera saldo/HE.</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label" for="ToleranciaAntesDaEntradaEmMinutos">Tolerância Antes da Entrada</label>
-                    @Html.TextBoxFor(model => model.ToleranciaAntesDaEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
-                    <div class="form-text">Minutos de tolerância antes do início da jornada</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label" for="ToleranciaAposAEntradaEmMinutos">Tolerância Após a Entrada</label>
-                    @Html.TextBoxFor(model => model.ToleranciaAposAEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
-                    <div class="form-text">Minutos de tolerância ao se atrasar</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label" for="ToleranciaAntesDaSaidaEmMinutos">Tolerância Antes da Saída</label>
-                    @Html.TextBoxFor(model => model.ToleranciaAntesDaSaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
-                    <div class="form-text">Minutos aceitáveis ao sair mais cedo</div>
-                </div>
-
-                <div class="col col-lg-3 col-md-6 col-sm-12">
-                    <label class="form-label" for="ToleranciaAposASaidaEmMinutos">Tolerância Após a Saída</label>
-                    @Html.TextBoxFor(model => model.ToleranciaAposASaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder="0" })
-                    <div class="form-text">Minutos desconsiderados como Hora Extra após o final do expediente</div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <br />
+    <!-- SEÇÃO 3 E 4: TOLERÂNCIAS E BANCO DE HORAS -->
+    <div class="row mb-4">
+        <!-- Coluna Esquerda: Tolerâncias -->
+        <div class="col-xl-6 mb-4 mb-xl-0">
+            <div class="card h-100">
+                <div class="card-header pb-2">
+                    <h5 class="mb-0"><i class='bx bx-timer me-2'></i>Tolerâncias (Minutos)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label obrigatorio" for="ToleranciaDiariaEmMinutos">Tolerância Diária</label>
+                            @Html.TextBoxFor(model => model.ToleranciaDiariaEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
+                            <div class="form-text small">Soma total do dia.</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ToleranciaDsrEmMinutos">Tolerância DSR</label>
+                            @Html.TextBoxFor(model => model.ToleranciaDsrEmMinutos, new { @class = "form-control numeroAte999", @maxlenth = "3" })
+                            <div class="form-text small">Dias de folga.</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ToleranciaAntesDaEntradaEmMinutos">Antes da Entrada</label>
+                            @Html.TextBoxFor(model => model.ToleranciaAntesDaEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder = "0" })
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ToleranciaAposAEntradaEmMinutos">Após a Entrada</label>
+                            @Html.TextBoxFor(model => model.ToleranciaAposAEntradaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder = "0" })
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ToleranciaAntesDaSaidaEmMinutos">Antes da Saída</label>
+                            @Html.TextBoxFor(model => model.ToleranciaAntesDaSaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder = "0" })
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label" for="ToleranciaAposASaidaEmMinutos">Após a Saída</label>
+                            @Html.TextBoxFor(model => model.ToleranciaAposASaidaEmMinutos, new { @class = "form-control numeroAte999", @maxlength = "3", @placeholder = "0" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Banco de Horas -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header pb-2">
+                    <h5 class="mb-0"><i class='bx bx-archive me-2'></i>Banco de Horas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label obrigatorio" for="UtilizaBancoDeHoras">Utiliza Banco De Horas</label>
+                            @Html.CheckboxDropDownListFor(model => model.UtilizaBancoDeHoras, new { @class = "form-select" })
+                        </div>
+                        <div id="div-data-bh" class="col-sm-6" style="@(Model.UtilizaBancoDeHoras ? string.Empty : "display:none")">
+                            <label class="form-label">Início do Banco de Horas</label>
+                            @Html.TextBox("InicioBancoDeHoras", Model.InicioBancoDeHoras?.ToString("yyyy-MM-dd"), new { @class = "form-control data" })
+                        </div>
+                        <div class="col-sm-12" style="@(Model.UtilizaBancoDeHoras ? "" : "display:none")" id="div-bh-fonte">
+                            <label class="form-label obrigatorio">Crédito do BH considera</label>
+                            @Html.CheckboxDropDownListFor(m => m.BancoDeHorasSomenteHorasExtrasAprovadas, new { @class = "form-select" })
+                            <div class="form-text small">Marcado: só HE aprovadas alimentam o saldo do banco.</div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="d-none">@Html.HiddenFor(m => m.BancoDeHorasPrioridadePercentuais)</div>
+                            <label class="form-label obrigatorio">Prioridade de compensação</label>
+                            <select id="sel-bh-prioridade" class="form-select" multiple="multiple" style="width:100%"></select>
+                            <div class="form-text small">Ordem de percentuais (ex: 100, 70, 50) de onde as horas serão descontadas primeiro.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO 5: GRADE DE HORÁRIO SEMANAL -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class='bx bx-calendar me-2'></i>Grade de Horário Semanal</h5>
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive text-nowrap">
-                <table class="table table-bordered" id="tabela-horario">
-                    <thead>
+                <table class="table table-bordered mb-0" id="tabela-horario">
+                    <thead class="table-light">
                         <tr>
-                            <th class="text-center"><b>Dia da semana</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Ent. 1</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Sai. 1</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Ent. 2</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Sai. 2</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Ent. 3</b></th>
-                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)"><b>Sai. 3</b></th>
-                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 4</b></th>
-                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Sai. 4</b></th>
-                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Ent. 5</b></th>
-                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")"><b>Sai. 5</b></th>
-                            <th width="7.5%" class="text-center"><b>CH</b></th>
+                            <th class="text-center">Dia da semana</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Ent. 1</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Sai. 1</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Ent. 2</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Sai. 2</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Ent. 3</th>
+                            <th width="7.5%" class="colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">Sai. 3</th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">Ent. 4</th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">Sai. 4</th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">Ent. 5</th>
+                            <th width="7.5%" class="ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">Sai. 5</th>
+                            <th width="7.5%" class="text-center bg-light">CH Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var diaDaSemana in Model.Dias)
                         {
                             <tr class="linha" data-diadasemana="@((int)diaDaSemana.DiaDaSemana)" data-id="@diaDaSemana.Id">
-                                <td>
-                                    <b>@(diaDaSemana.DiaDaSemana.DescricaoDoEnumerador())</b>
+                                <td class="bg-light">
+                                    <span class="fw-bold">@diaDaSemana.DiaDaSemana.DescricaoDoEnumerador()</span>
                                 </td>
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent1", diaDaSemana.Entrada1, new { @class = "form-control hora entrada1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
@@ -165,39 +185,33 @@
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai1", diaDaSemana.Saida1, new { @class = "form-control hora saida1", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent2", diaDaSemana.Entrada2, new { @class = "form-control hora entrada2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai2", diaDaSemana.Saida2, new { @class = "form-control hora saida2", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent3", diaDaSemana.Entrada3, new { @class = "form-control hora entrada3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
                                 <td class="text-center colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai3", diaDaSemana.Saida3, new { @class = "form-control hora saida3", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-
                                 <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent4", diaDaSemana.Entrada4, new { @class = "form-control hora entrada4", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
                                 <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai4", diaDaSemana.Saida4, new { @class = "form-control hora saida4", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-
                                 <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Ent5", diaDaSemana.Entrada5, new { @class = "form-control hora entrada5", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
                                 <td class="text-center ocultar-cinco-periodo" style="@(Model.UtilizaCincoPeriodos ? string.Empty : "display:none;")">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_Sai5", diaDaSemana.Saida5, new { @class = "form-control hora saida5", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
-
-                                <td class="text-center carga-horaria colunas-horario-nao-fixo" style="@(Model.CargaHorariaFixa ? "display: none" : string.Empty)">
-                                    @(diaDaSemana.CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm"))
+                                <td class="text-center carga-horaria fw-bold bg-light">
+                                    @(diaDaSemana.CalculeCargaHorariaTotal(false)?.ToString(@"hh\:mm") ?? "00:00")
                                 </td>
-
                                 <td class="text-center colunas-horario-fixo" style="@(Model.CargaHorariaFixa ? string.Empty : "display: none")">
                                     @Html.TextBox($"{diaDaSemana.DiaDaSemana.ToString()}_CargaHorariaFixa", diaDaSemana.CargaHorariaFixa, new { @class = "form-control hora chfixa", @maxlength = "5", @placeholder = "__:__", @autocomplete = "off" })
                                 </td>
@@ -206,73 +220,84 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
-            @Html.Partial("_ConfiguracaoHoraExtra", Model)
+    <!-- SEÇÃO 6 E 7: HORAS EXTRAS E EXIBIÇÃO -->
+    <div class="row mb-4">
+        <!-- Coluna Esquerda: Horas Extras -->
+        <div class="col-xl-6 mb-4 mb-xl-0">
+            <div class="card h-100">
+                <div class="card-header pb-2">
+                    <h5 class="mb-0"><i class='bx bx-trending-up me-2'></i>Configuração de Horas Extras</h5>
+                </div>
+                <div class="card-body">
+                    <div class="pe-xl-3">
+                        @Html.Partial("_ConfiguracaoHoraExtra", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <br />
-            <h6 class="text-muted">Configuração de Exibição</h6>
-            <div class="row">
-                <div class="col-12">
+        <!-- Coluna Direita: Exibição na Folha -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header pb-2">
+                    <h5 class="mb-0"><i class='bx bx-show me-2'></i>Exibição na Folha de Ponto</h5>
+                </div>
+                <div class="card-body">
                     @Html.HiddenFor(model => model.ColunasVisiveis)
-
                     <div class="row g-2">
                         @{
-                            var colunas = new Dictionary<eColunasDaFolha, string>
-                                                {
-                                                { eColunasDaFolha.HorasTrabalhadas, "Horas Trabalhadas" },
-                                                { eColunasDaFolha.CargaHoraria, "Carga Horária" },
-                                                { eColunasDaFolha.HorasPositivas, "Horas Positivas" },
-                                                { eColunasDaFolha.HorasNegativas, "Horas Negativas" },
-                                                { eColunasDaFolha.BHSaldo, "BH Saldo" },
-                                                { eColunasDaFolha.BHAjuste, "BH Ajuste" }
-                                                };
+                            var colunas = new Dictionary<eColunasDaFolha, string> {
+                                { eColunasDaFolha.HorasTrabalhadas, "Horas Trabalhadas" },
+                                { eColunasDaFolha.CargaHoraria, "Carga Horária" },
+                                { eColunasDaFolha.HorasPositivas, "Horas Positivas" },
+                                { eColunasDaFolha.HorasNegativas, "Horas Negativas" },
+                                { eColunasDaFolha.BHSaldo, "BH Saldo" },
+                                { eColunasDaFolha.BHAjuste, "BH Ajuste" }
+                            };
                         }
-
                         @foreach (var coluna in colunas)
                         {
                             var isChecked = Model.ColunasVisiveis.HasFlag(coluna.Key);
                             var valorInt = (int)coluna.Key;
-
-                            <div class="col-6 col-md-4 col-lg-2">
+                            <div class="col-sm-6 col-md-4">
                                 <div class="form-check card-select p-2 border rounded text-center h-100 d-flex flex-column align-items-center justify-content-center bg-light">
-                                    <input class="form-check-input check-coluna mb-1"
-                                           type="checkbox"
-                                           value="@valorInt"
-                                           id="chk_col_@valorInt"
-                                           @(isChecked ? "checked" : "")
-                                           style="cursor: pointer;">
-
-                                    <label class="form-check-label cursor-pointer small fw-bold" for="chk_col_@valorInt" style="font-size: 0.85rem;">
-                                        @coluna.Value
-                                    </label>
+                                    <input class="form-check-input check-coluna mb-1" type="checkbox" value="@valorInt" id="chk_col_@valorInt" @(isChecked ? "checked" : "") style="cursor: pointer;">
+                                    <label class="form-check-label cursor-pointer small fw-bold" for="chk_col_@valorInt">@coluna.Value</label>
                                 </div>
                             </div>
                         }
                     </div>
-
-                    <div class="form-text mt-2">Desmarque as colunas que deseja ocultar.</div>
+                    <div class="form-text mt-3">
+                        <i class='bx bx-info-circle me-1'></i>Deselecione os totalizadores que não devem aparecer impressos ou na tela da folha de espelho do funcionário com esta grade.
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <br />
-            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')">
-                <i class='bx bxs-left-arrow-circle'></i> Voltar
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "HorarioDeTrabalho")')">
+            <i class='bx bxs-left-arrow-circle me-1'></i>Voltar
+        </button>
+
+        @if (Model.Id > 0 && podeRemover)
+        {
+            <button type="button" class="btn btn-danger" onclick="removerHorario(@Model.Id)">
+                <i class="bx bx-trash me-1"></i>Remover
             </button>
+        }
 
-            @if (Model.Id > 0 && podeRemover)
-            {
-                <button type="button" class="btn btn-danger" onclick="removerHorario(@Model.Id)">
-                    <i class="bx bx-trash"></i> Remover
-                </button>
-            }
-
-            @if (podeAlterar)
-            {
-                <button type="button" class="btn btn-primary" id="btn-salvar">
-                    <i class='bx bxs-save'></i> Salvar
-                </button>
-            }
-        </form>
+        @if (podeAlterar)
+        {
+            <button type="button" class="btn btn-primary" id="btn-salvar">
+                <i class='bx bxs-save me-1'></i>Salvar
+            </button>
+        }
+    </div>
+</form>
     </div>
 </div>
 

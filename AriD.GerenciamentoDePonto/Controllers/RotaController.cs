@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using AriD.Servicos.Extensao;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
@@ -294,6 +295,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     .ToList();
                 ViewBag.Rotas = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(rotas, "Id", "Descricao");
 
+                var tiposVeiculo = Enum.GetValues(typeof(AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo))
+                    .Cast<AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo>()
+                    .Select(v => new { Id = (int)v, Descricao = v.DescricaoDoEnumerador() })
+                    .ToList();
+                ViewBag.TiposVeiculo = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(tiposVeiculo, "Id", "Descricao");
+
                 var organizacao = _organizacaoServico.Obtenha(organizacaoId);
                 ViewBag.LatCentro = !string.IsNullOrEmpty(organizacao.LatitudeCentroide) ? organizacao.LatitudeCentroide : "-15.7942";
                 ViewBag.LonCentro = !string.IsNullOrEmpty(organizacao.LongitudeCentroide) ? organizacao.LongitudeCentroide : "-47.8821";
@@ -402,7 +409,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                                MotoristaId = sId,
                                MotoristaNome = $"Motorista Teste {sId}",
                                VeiculoId = 500 + sId,
-                               PlacaModelo = $"MOC-{random.Next(1000, 9999)} - AMBULÂNCIA",
+                               PlacaModelo = $"MOC-{random.Next(1000, 9999)} - {((AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo)(sId % 5)).DescricaoDoEnumerador()}",
+                               TipoVeiculo = sId % 5,
                                UltimaLocalizacao = new[] { mockArray[endStep][0], mockArray[endStep][1] },
                                HistoricoLocalizacoes = historico,
                                UltimaAtualizacao = isFinished ? dataBase.AddHours(18).ToString("dd/MM/yyyy HH:mm:ss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace AriD.BibliotecaDeClasses.DTO.Aplicativo
@@ -19,5 +19,11 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo
         public int? JustificativaDeAusenciaId { get; set; }
         public DateTime? DataInicialAtestado { get; set; }
         public DateTime? DataFinalAtestado { get; set; }
+
+        public IFormFile? ImagemDesafio { get; set; }
+        public bool IsMockLocation { get; set; }
+        public bool LivenessSuccess { get; set; }
+
+        public IFormFile? AnexoAtestado { get; set; }
     }
 }
