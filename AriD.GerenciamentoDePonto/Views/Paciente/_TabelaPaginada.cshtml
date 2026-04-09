@@ -1,0 +1,25 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.GerenciamentoDePonto.WebGrid
+@model ListaPaginada<Paciente>
+
+@{
+    var grid = new WebGrid<Paciente>(Model, ajaxUpdateContainerId: "paciente-tabela", ajaxUpdateCallback: "assineEventosTabelaPacientes");
+}
+
+@await grid.Table(
+    grid.Columns(
+        grid.Column("Nome", "Nome", canSort: true),
+        grid.Column("CPF", "CPF", canSort: true),
+        grid.Column("Telefone", "Contato", canSort: true),
+        grid.Column("Endereco", "Endereço"),
+        grid.Column(header: "Status", format: (item) => (item.Ativo ? "Ativo" : "Inativo")),
+        grid.Column(header: "Ações", style: "text-center", width: 10, format: (item) => {
+            return Html.Raw($@"
+                <button type='button' class='btn btn-sm btn-icon btn-outline-primary' onclick='abrirModalPaciente({item.Id})'><i class='bx bx-edit-alt'></i></button>
+                <button type='button' class='btn btn-sm btn-icon btn-outline-danger' onclick='removerPaciente({item.Id})'><i class='bx bx-trash'></i></button>
+            ");
+        })
+    ),
+    tableStyle: "table-sm",
+    footer: Html.PartialAsync("_PaginacaoWebGrid", Model)
+)

@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.DTO
+@using AriD.BibliotecaDeClasses.DTO
 @model List<CodigoDescricaoDTO>
 
 <div class="modal" tabindex="-1" id="_ModalRegistroManual" data-bs-backdrop="static">
@@ -38,7 +38,7 @@
 
                     <div id="container-hora">
                         <div class="mb-3">
-                            <label class="form-label obrigatorio" >Horário</label>
+                            <label class="form-label obrigatorio" for="Horario">Horário</label>
                             <input type="time" name="Horario" id="Horario" class="form-control" />
                             <div class="form-text">Informe o horário exato da batida esquecida.</div>
                         </div>
@@ -46,7 +46,7 @@
 
                     <div id="container-periodo" style="display: none;">
                         <div class="mb-3">
-                            <label class="form-label obrigatorio">Justificativa</label>
+                            <label class="form-label obrigatorio" for="JustificativaId">Justificativa</label>
                             @Html.DropDownList("JustificativaId", new SelectList((List<CodigoDescricaoDTO>)ViewBag.Justificativas, "Codigo", "Descricao"), string.Empty, new { @class = "form-select" })
                         </div>
                     </div>

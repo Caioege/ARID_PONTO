@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
@@ -183,6 +183,99 @@ namespace AriD.Servicos.Servicos
                     dto.RegistrosPorEquipamento = new Tuple<string[], int[]>(
                         dadosEquipamentos.Select(c => c.Key).ToArray(),
                         dadosEquipamentos.Select(c => c.Value).ToArray());
+                }
+
+                if (!unidadeId.HasValue)
+                {
+                    query = @"
+                        SELECT 
+                            v.Id as VeiculoId,
+                            v.Placa,
+                            v.Modelo,
+                            m.KmProximaManutencao,
+                            m.DataVencimentoManutencao,
+                            v.QuilometragemAtual
+                        FROM veiculo v
+                        LEFT JOIN (
+                            SELECT VeiculoId, MAX(Id) as MaxId
+                            FROM manutencaoveiculo
+                            GROUP BY VeiculoId
+                        ) max_m ON max_m.VeiculoId = v.Id
+                        INNER JOIN manutencaoveiculo m ON m.Id = max_m.MaxId
+                        WHERE 
+                            v.OrganizacaoId = @ORGANIZACAOID 
+                            AND v.Status NOT IN (3, 4)";
+
+                    var rawAlertas = _repositorio.ConsultaDapper<dynamic>(query, new { @ORGANIZACAOID = organizacaoId }).ToList();
+
+                    foreach (var item in rawAlertas)
+                    {
+                        bool precisaAlerta = false;
+                        string motivo = "";
+                        string tipoAlerta = "";
+                        string expiracaoInfo = "";
+                        
+                        if (item.KmProximaManutencao != null && item.QuilometragemAtual > 0)
+                        {
+                            int kmRestante = (int)item.KmProximaManutencao - (int)item.QuilometragemAtual;
+                            if (kmRestante <= 1000 && kmRestante > 0)
+                            {
+                                precisaAlerta = true;
+                                motivo = "KM Próxima";
+                                tipoAlerta = "Media";
+                                expiracaoInfo = $"Restam {kmRestante} KM";
+                            }
+                            else if (kmRestante <= 0)
+                            {
+                                precisaAlerta = true;
+                                motivo = "KM Atrasada";
+                                tipoAlerta = "Alta";
+                                expiracaoInfo = $"Atrasado em {-kmRestante} KM";
+                            }
+                        }
+                        
+                        if (!precisaAlerta || tipoAlerta != "Alta")
+                        {
+                            if (item.DataVencimentoManutencao != null)
+                            {
+                                var dataVencimento = (DateTime)item.DataVencimentoManutencao;
+                                var diasRestantes = (dataVencimento - DateTime.Now.Date).TotalDays;
+                                
+                                if (diasRestantes <= 15 && diasRestantes > 0)
+                                {
+                                    precisaAlerta = true;
+                                    if (tipoAlerta != "Alta") {
+                                        motivo = "Vencimento Próximo";
+                                        tipoAlerta = "Media";
+                                        expiracaoInfo = $"Vence em {diasRestantes:0} dias";
+                                    }
+                                }
+                                else if (diasRestantes <= 0)
+                                {
+                                    precisaAlerta = true;
+                                    motivo = "Data Atrasada";
+                                    tipoAlerta = "Alta";
+                                    expiracaoInfo = $"Atrasado {(int)-diasRestantes} dias";
+                                }
+                            }
+                        }
+                        
+                        if (precisaAlerta)
+                        {
+                            dto.AlertasDeManutencao.Add(new AlertaManutencaoDTO
+                            {
+                                VeiculoId = item.VeiculoId,
+                                Placa = item.Placa,
+                                Modelo = item.Modelo,
+                                Motivo = motivo,
+                                TipoAlerta = tipoAlerta,
+                                ExpiracaoInfo = expiracaoInfo
+                            });
+                        }
+                    }
+
+                    // Order by priority (Alta first) and then by motive
+                    dto.AlertasDeManutencao = dto.AlertasDeManutencao.OrderBy(a => a.TipoAlerta == "Alta" ? 0 : 1).ToList();
                 }
 
                 return dto;

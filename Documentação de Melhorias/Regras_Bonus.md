@@ -25,7 +25,7 @@ No cadastro de bônus, é possível habilitar a flag **"Turno Intercalado (Dobro
 *   Se a diferença de tempo entre a primeira saída (`Saida1`) e a segunda entrada (`Entrada2`) for superior ou igual à tolerância, o sistema pagará **2 diárias** (o dobro) em vez de 1 naquele dia específico.
 
 ## 4. Regra de Vigência e Carga Horária
-A antiga regra de "Pagar em FDS e Feriados" foi substituída pela verificação de **Carga Horária**. O sistema agora consulta a jornada prevista para o servidor no dia (`ponto.CargaHoraria`) para decidir se o bônus diário é devido, garantindo precisão tanto para quem trabalha em escala 12x36 quanto para o administrativo (seg-sex).
+A verificação de **Carga Horária** utiliza a jornada prevista para o servidor no dia (`ponto.CargaHoraria`). O sistema agora garante que dias com carga horária prevista sejam analisados mesmo que não haja registro de ponto no banco de dados para aquele dia (evitando que faltas justificadas ou escalas vazias sejam ignoradas pelo filtro de carga horária).
 
 ## 5. Exportação para Folha de Pagamento
 O Módulo de Bônus está completamente integrado à rotina de Exportação da Folha de Pagamento do sistema (`Exportação -> Gerar TXT/CSV`). 
@@ -40,9 +40,9 @@ Como a Folha de Pagamento tradicionalmente exporta minutos (ex: Horas Extras, At
 A partir da versão atual, o sistema itera por **todos os dias do calendário** do mês de referência (ex: de 1 a 31 de janeiro), independentemente de haver ou não registro de ponto ou escala no banco de dados para o dia específico.
 
 1.  **Bônus Diário**:
-    - Se "Apenas dias com Carga Horária" estiver **desmarcado**: O dia é contabilizado para o bônus, a menos que haja uma falta injustificada ou atraso acima da tolerância.
-    - Se estiver **marcado**: O dia só conta se houver carga horária prevista.
-2.  **Faltas**: Dias com carga horária mas sem batida de ponto e sem justificativa são considerados "Falta Injustificada" e removem o bônus diário daquele dia.
+    - Se "Apenas dias com Carga Horária" estiver **desmarcado**: O dia é contabilizado para o bônus, a menos que haja uma falta injustificada ou atraso acima da tolerância. Se o servidor trabalhar em um dia extra (sem carga horária), o bônus também é concedido se houver registro de ponto.
+    - Se estiver **marcado**: O dia conta se houver carga horária prevista OU se houver trabalho efetivo (registros de ponto em qualquer um dos 5 períodos possíveis). Isso garante que o trabalho em dias extras não seja penalizado pelo filtro.
+2.  **Faltas e Justificativas**: Dias com carga horária mas sem batida de ponto são analisados quanto a justificativas. Se houver qualquer justificativa (Afastamento, Abono ou Justificativa Manual em qualquer período), o bônus é mantido. Caso contrário, é considerada "Falta Injustificada" e o bônus do dia é removido.
 
 ## 7. Travas de Segurança e Integridade
 

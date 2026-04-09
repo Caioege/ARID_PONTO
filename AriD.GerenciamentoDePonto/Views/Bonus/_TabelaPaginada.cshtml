@@ -10,6 +10,17 @@
         tabela.Column("Descricao", "Descrição", width: 40f),
         tabela.Column("TipoBonus", "Tipo", format: (item) => ((eTipoBonus)item.TipoBonus).DescricaoDoEnumerador(), width: 30f),
         tabela.Column("ValorDiario", "Valor", format: (item) => item.ValorDiario.ToString("C"), width: 15f),
+        tabela.Column("Ativo", "Status", format: 
+            @<text>
+                @if (item.Ativo)
+                {
+                    <span class="badge bg-label-success">Ativo</span>
+                }
+                else
+                {
+                    <span class="badge bg-label-secondary">Inativo</span>
+                }
+            </text>, width: 10f),
         tabela.Column(string.Empty, "Ação", format:
             @<text>
                 <div class="btn-group">

@@ -41,7 +41,7 @@ class MotoristaRotasService {
     }
 
     final response = await _client.post(
-      '/rotas/iniciar',
+      '/api/rota-app/rotas/iniciar',
       data: {'rotaId': rotaId, 'veiculoId': veiculoId},
     );
 
@@ -58,7 +58,7 @@ class MotoristaRotasService {
     }
 
     await _client.post(
-      '/rotas/encerrar',
+      '/api/rota-app/rotas/encerrar',
       data: {
         'rotaExecucaoId': rotaExecucaoId,
         'paradas': paradas.map((p) => p.toJson()).toList(),
@@ -78,7 +78,7 @@ class MotoristaRotasService {
     }
 
     await _client.post(
-      '/rotas/confirmar-parada',
+      '/api/rota-app/rotas/confirmar-parada',
       data: {
         'rotaExecucaoId': rotaExecucaoId,
         'paradaId': paradaId,
@@ -103,7 +103,7 @@ class MotoristaRotasService {
     }
 
     await _client.post(
-      '/rotas/salvar-ponto',
+      '/api/rota-app/rotas/salvar-ponto',
       data: {
         'rotaExecucaoId': rotaExecucaoId,
         'latitude': latitude.toStringAsFixed(6),

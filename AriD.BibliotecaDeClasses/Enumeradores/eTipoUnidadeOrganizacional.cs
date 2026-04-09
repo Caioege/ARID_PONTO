@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace AriD.BibliotecaDeClasses.Enumeradores
 {
@@ -8,6 +8,15 @@ namespace AriD.BibliotecaDeClasses.Enumeradores
         InstituicaoPublica,
 
         [Description("Instituição Privada")]
-        InstituicaoPrivada
+        InstituicaoPrivada,
+
+        [Description("Unidade de Saúde")]
+        Saude,
+
+        [Description("Educação")]
+        Educacao,
+
+        [Description("Fundação")]
+        Fundacao
     }
 }

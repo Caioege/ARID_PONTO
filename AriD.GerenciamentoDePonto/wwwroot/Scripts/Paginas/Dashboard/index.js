@@ -45,6 +45,23 @@ function atualizarDashboard(dados) {
         htmlTabela += '</tr>';
     });
     $('#tabela-registros').html(htmlTabela);
+
+    if (dados.alertasDeManutencao && dados.alertasDeManutencao.length > 0) {
+        let htmlAlertas = '';
+        $.each(dados.alertasDeManutencao, function (i, alerta) {
+            let corBadge = alerta.tipoAlerta === 'Alta' ? 'bg-danger' : 'bg-warning text-dark';
+            htmlAlertas += '<tr>';
+            htmlAlertas += `<td><strong>${alerta.placa}</strong> - <small>${alerta.modelo}</small></td>`;
+            htmlAlertas += `<td>${alerta.motivo}</td>`;
+            htmlAlertas += `<td><span class="badge ${corBadge}">${alerta.expiracaoInfo}</span></td>`;
+            htmlAlertas += `<td><a href="/Manutencao/Index?veiculoId=${alerta.veiculoId}" class="btn btn-sm btn-outline-primary" title="Ver Manutenções do Veículo"><i class='bx bx-wrench'></i></a></td>`;
+            htmlAlertas += '</tr>';
+        });
+        $('#tabela-alertas').html(htmlAlertas);
+        $('#div-alertas-manutencao').fadeIn('fast');
+    } else {
+        $('#div-alertas-manutencao').fadeOut('fast');
+    }
 }
 
 function assineGraficos(dados) {

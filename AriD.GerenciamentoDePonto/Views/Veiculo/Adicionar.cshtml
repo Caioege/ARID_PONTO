@@ -1,0 +1,94 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@model Veiculo
+
+<div class="card mb-6">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Adicionar Veículo</h5>
+        <small class="text-muted float-end">Campos com <span style="color: red">*</span> são obrigatórios.</small>
+    </div>
+    <div class="card-body">
+        <form id="formulario-veiculo">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.OrganizacaoId)
+
+            <div class="row">
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="Placa">Placa</label>
+                    @Html.TextBoxFor(model => model.Placa, new { @class = "form-control placa", @maxlength = "10", style = "text-transform: uppercase;" })
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label">Organização</label>
+                    <input type="text" class="form-control" value="@ViewBag.OrganizacaoNome" disabled readonly />
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="Status">Status</label>
+                    @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="TipoCombustivel">Combustível</label>
+                    @Html.EnumDropDownListFor(model => model.TipoCombustivel, new { @class = "form-select" })
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="Marca">Marca</label>
+                    @Html.TextBoxFor(model => model.Marca, new { @class = "form-control", @maxlength = "50" })
+                </div>
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="Modelo">Modelo</label>
+                    @Html.TextBoxFor(model => model.Modelo, new { @class = "form-control", @maxlength = "50" })
+                </div>
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="TipoVeiculo">Tipo de Veículo</label>
+                    @Html.DropDownListFor(model => model.TipoVeiculo, ViewBag.TiposVeiculo as SelectList, new { @class = "form-select" })
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="Renavam">Renavam</label>
+                    @Html.TextBoxFor(model => model.Renavam, new { @class = "form-control", style = "text-transform: uppercase;" })
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="Chassi">Chassi</label>
+                    @Html.TextBoxFor(model => model.Chassi, new { @class = "form-control", style = "text-transform: uppercase;" })
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="Cor">Cor</label>
+                    @Html.EnumDropDownListFor(model => model.Cor, new { @class = "form-select" })
+                </div>
+                <div class="col col-lg-3 col-md-6">
+                    <label class="form-label obrigatorio" for="VencimentoLicenciamento">Licenciamento</label>
+                    @Html.TextBoxFor(model => model.VencimentoLicenciamento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="AnoFabricacao">Ano Fabricação</label>
+                    @Html.TextBoxFor(model => model.AnoFabricacao, new { @class = "form-control", type = "number" })
+                </div>
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="AnoModelo">Ano Modelo</label>
+                    @Html.TextBoxFor(model => model.AnoModelo, new { @class = "form-control", type = "number" })
+                </div>
+                <div class="col col-lg-4 col-md-4">
+                    <label class="form-label obrigatorio" for="QuilometragemAtual">Quilometragem (KM)</label>
+                    @Html.TextBoxFor(model => model.QuilometragemAtual, new { @class = "form-control", type = "number" })
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-secondary" onclick="CarregarPagina('/Veiculo/Index')">
+                    <i class='bx bxs-left-arrow-circle'></i> Voltar
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-salvar">
+                    <i class='bx bxs-save'></i> Salvar e Continuar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/Scripts/Paginas/Veiculo/cadastro.js?t=@DateTime.Now.Ticks"></script> 

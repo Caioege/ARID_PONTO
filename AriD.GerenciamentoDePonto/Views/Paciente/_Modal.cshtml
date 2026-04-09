@@ -1,0 +1,65 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@model Paciente
+
+<div class="modal fade" id="modal-container" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(Model.Id == 0 ? "Adicionar Paciente" : "Alterar Paciente")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-paciente">
+                    @Html.HiddenFor(m => m.Id)
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="Nome" class="form-label">Nome Completo</label>
+                            <input type="text" id="Nome" name="Nome" class="form-control" value="@Model.Nome" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="CPF" class="form-label">CPF</label>
+                            <input type="text" id="CPF" name="CPF" class="form-control cpf-mask" value="@Model.CPF" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="DataNascimento" class="form-label">Data de Nascimento</label>
+                            <input type="date" id="DataNascimento" name="DataNascimento" class="form-control" value="@(Model.DataNascimento?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="Telefone" class="form-label">Telefone</label>
+                            <input type="text" id="Telefone" name="Telefone" class="form-control phone-mask" value="@Model.Telefone" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Situação</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="Ativo" name="Ativo" value="true" @(Model.Ativo ? "checked" : "")>
+                                <label class="form-check-label" for="Ativo">Ativo</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h6>Informações do Acompanhante</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="AcompanhanteNome" class="form-label">Nome do Acompanhante</label>
+                            <input type="text" id="AcompanhanteNome" name="AcompanhanteNome" class="form-control" value="@Model.AcompanhanteNome" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="AcompanhanteCPF" class="form-label">CPF do Acompanhante</label>
+                            <input type="text" id="AcompanhanteCPF" name="AcompanhanteCPF" class="form-control cpf-mask" value="@Model.AcompanhanteCPF" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarPaciente()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

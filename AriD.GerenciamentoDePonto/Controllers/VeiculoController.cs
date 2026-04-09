@@ -15,10 +15,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
     public class VeiculoController : BaseController
     {
         private readonly IServico<Veiculo> _veiculoServico;
+        private readonly IServico<ChecklistItem> _checklistServico;
+        private readonly IServico<ManutencaoVeiculo> _manutencaoServico;
 
-        public VeiculoController(IServico<Veiculo> veiculoServico)
+        public VeiculoController(
+            IServico<Veiculo> veiculoServico, 
+            IServico<ChecklistItem> checklistServico,
+            IServico<ManutencaoVeiculo> manutencaoServico)
         {
             _veiculoServico = veiculoServico;
+            _checklistServico = checklistServico;
+            _manutencaoServico = manutencaoServico;
         }
 
         [HttpGet]
@@ -53,20 +60,50 @@ namespace AriD.GerenciamentoDePonto.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Modal(int veiculoId)
+        public IActionResult Adicionar()
         {
-            var model = veiculoId == 0 ?
-                    new Veiculo { Status = AriD.BibliotecaDeClasses.Enumeradores.eStatusVeiculo.Disponivel, AnoFabricacao = DateTime.Now.Year, AnoModelo = DateTime.Now.Year, VencimentoLicenciamento = DateTime.Today.AddYears(1) } :
-                    _veiculoServico.Obtenha(veiculoId);
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_Veiculo.CadastrarOuAlterar))
+                return RedirectToAction("ErroDeAcesso", "ControleDeAcesso");
 
+            var model = new Veiculo 
+            { 
+                Status = AriD.BibliotecaDeClasses.Enumeradores.eStatusVeiculo.Disponivel, 
+                AnoFabricacao = DateTime.Now.Year, 
+                AnoModelo = DateTime.Now.Year, 
+                VencimentoLicenciamento = DateTime.Today.AddYears(1) 
+            };
+            
+            PrepareViewBags(model);
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Alterar(int id)
+        {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_Veiculo.Visualizar))
+                return RedirectToAction("ErroDeAcesso", "ControleDeAcesso");
+
+            var model = _veiculoServico.Obtenha(id);
+            if (model == null) return RedirectToAction("Index");
+
+            PrepareViewBags(model);
+            
+            // Load history for the view if needed via ViewBag or similar
+            ViewBag.HistoricoManutencao = _manutencaoServico.ObtenhaLista(m => m.VeiculoId == id).OrderByDescending(m => m.DataManutencao).ToList();
+
+            return View(model);
+        }
+
+        private void PrepareViewBags(Veiculo model)
+        {
             var tiposVeiculo = Enum.GetValues(typeof(AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo))
                 .Cast<AriD.BibliotecaDeClasses.Enumeradores.eTipoVeiculo>()
                 .Select(v => new { Id = (int)v, Descricao = v.DescricaoDoEnumerador() })
                 .ToList();
-            ViewBag.TiposVeiculo = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(tiposVeiculo, "Id", "Descricao");
+            ViewBag.TiposVeiculo = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(tiposVeiculo, "Id", "Descricao", (int)model.TipoVeiculo);
 
-            var html = await RenderizarComoString("_Modal", model);
-            return Json(new { sucesso = true, html = html });
+            var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
+            ViewBag.OrganizacaoNome = this.HttpContext.DadosDaSessao().OrganizacaoNome;
         }
 
         [HttpPost]
@@ -96,6 +133,44 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _veiculoServico.Remover(item);
 
             return Json(new { sucesso = true, mensagem = "O registro foi removido." });
+        }
+
+        [HttpGet]
+        public IActionResult ObtenhaChecklist(int veiculoId)
+        {
+            var itens = _checklistServico.ObtenhaLista(c => c.VeiculoId == veiculoId && c.Ativo)
+                .Select(c => new { c.Id, c.Descricao });
+            return Json(new { sucesso = true, itens = itens });
+        }
+
+        [HttpPost]
+        public IActionResult SalvarItemChecklist(int veiculoId, string descricao)
+        {
+            if (string.IsNullOrWhiteSpace(descricao))
+                return Json(new { sucesso = false, mensagem = "Descrição é obrigatória." });
+
+            var item = new ChecklistItem
+            {
+                OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId,
+                VeiculoId = veiculoId,
+                Descricao = descricao,
+                Ativo = true
+            };
+
+            _checklistServico.Adicionar(item);
+            return Json(new { sucesso = true, id = item.Id });
+        }
+
+        [HttpPost]
+        public IActionResult RemoverItemChecklist(int id)
+        {
+            var item = _checklistServico.Obtenha(id);
+            if (item != null)
+            {
+                item.Ativo = false;
+                _checklistServico.Atualizar(item);
+            }
+            return Json(new { sucesso = true });
         }
 
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<Veiculo> listaPaginada)

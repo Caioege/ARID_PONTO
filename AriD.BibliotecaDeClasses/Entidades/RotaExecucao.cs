@@ -11,6 +11,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
 
         public DateTime DataHoraInicio { get; set; }
         public DateTime? DataHoraFim { get; set; }
+        public string? Observacao { get; set; }
 
         public int? VeiculoId { get; set; }
         [ForeignKey(nameof(VeiculoId))]

@@ -278,24 +278,24 @@
                                 </a>
                             </li>
 
-                            @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.AprovacaoEmLote, usuarioAdm))
+                            @* @if (listaDePermissao.PossuiPermissao(eItemDePermissao_FolhaDePonto.AprovacaoEmLote, usuarioAdm))
                             {
-                                <li>
+                                <li class='menu-item searchable-item'>
                                     <a onclick="CarregarPagina('@Url.Action("AprovarMarcacaoLote", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
                                         <span class="menu-icon">
-                                            <i class="fa fa-fw fa-clock-o"></i>
+                                            <i class="bx bx-time-five"></i>
                                         </span>
                                         <div class="menu-text-content" style="white-space: normal !important;">Registros Fora da Tolerância</div>
                                     </a>
                                 </li>
-                            }
+                            } *@
 
                             @if (listaDePermissao.PossuiPermissao(eItemDePermissao_Bonus.Visualizar, usuarioAdm))
                             {
-                                <li>
+                                <li class='menu-item searchable-item'>
                                     <a onclick="CarregarPagina('@Url.Action("Index", "Bonus")')" href="javascript:void(0)" class="menu-link">
                                         <span class="menu-icon">
-                                            <i class="fa fa-fw fa-money"></i>
+                                            <i class="bx bx-medal"></i>
                                         </span>
                                         <div class="menu-text-content" style="white-space: normal !important;">Configurações de Bônus</div>
                                     </a>
@@ -317,6 +317,15 @@
                                 <a onclick="CarregarPagina('@Url.Action("Index", "FolhaDePonto")')" href="javascript:void(0)" class="menu-link">
                                     <i class='menu-icon bx bxs-calendar'></i>
                                     <div class="menu-text-content">Folha de Ponto</div>
+                                </a>
+                            </li>
+                        }
+                        @if (listaDePermissao.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Visualizar, usuarioAdm))
+                        {
+                            <li class='menu-item searchable-item'>
+                                <a onclick="CarregarPagina('@Url.Action("Index", "ExportacaoFolhaPagamento")')" href="javascript:void(0)" class="menu-link">
+                                    <i class='bx bx-money-withdraw'></i>
+                                    <div class="menu-text-content">Folha de Pagamento</div>
                                 </a>
                             </li>
                         }

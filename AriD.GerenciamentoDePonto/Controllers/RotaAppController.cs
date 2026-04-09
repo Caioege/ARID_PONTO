@@ -1,5 +1,6 @@
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO.Aplicativo;
 using AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<RotaExecucao> _servicoRotaExecucao;
         private readonly IServico<Motorista> _servicoMotorista;
         private readonly IServico<RotaVeiculo> _servicoRotaVeiculo;
+        private readonly IServico<ChecklistItem> _servicoChecklist;
+        private readonly IServico<ChecklistExecucao> _servicoExecucao;
+        private readonly IServico<RotaOcorrenciaDesvio> _servicoDesvio;
         private readonly IMemoryCache _memoryCache;
 
         public RotaAppController(
@@ -28,6 +32,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<RotaExecucao> servicoRotaExecucao,
             IServico<Motorista> servicoMotorista,
             IServico<RotaVeiculo> servicoRotaVeiculo,
+            IServico<ChecklistItem> servicoChecklist,
+            IServico<ChecklistExecucao> servicoExecucao,
+            IServico<RotaOcorrenciaDesvio> servicoDesvio,
             IMemoryCache memoryCache)
         {
             _servicoDeAplicativo = servicoDeAplicativo;
@@ -37,6 +44,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _servicoRotaExecucao = servicoRotaExecucao;
             _servicoMotorista = servicoMotorista;
             _servicoRotaVeiculo = servicoRotaVeiculo;
+            _servicoChecklist = servicoChecklist;
+            _servicoExecucao = servicoExecucao;
+            _servicoDesvio = servicoDesvio;
             _memoryCache = memoryCache;
         }
 
@@ -69,6 +79,39 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
+        [HttpPost("registrar-token")]
+        public IActionResult RegistrarToken([FromBody] RegistrarTokenDTO dto, [FromHeader(Name = "Authorization")] string auth)
+        {
+            try
+            {
+                int motoristaId = ObterMotoristaId(auth);
+                if (motoristaId <= 0) return Unauthorized();
+
+                var motorista = _servicoMotorista.Obtenha(motoristaId);
+                if (motorista == null) return BadRequest(new { message = "Motorista não encontrado." });
+
+                var servidor = motorista.Servidor;
+                if (servidor == null) return BadRequest(new { message = "Servidor não vinculado." });
+
+                servidor.PushToken = dto.Token;
+                servidor.PlataformaDispositivo = dto.Plataforma;
+                servidor.UltimoAcessoApp = DateTime.Now;
+
+                _servicoDeAplicativo.RegistrarToken(new AriD.BibliotecaDeClasses.DTO.Aplicativo.RegistrarTokenDTO
+                {
+                    ServidorId = servidor.Id,
+                    Token = dto.Token,
+                    Plataforma = dto.Plataforma
+                });
+
+                return Ok(new { sucesso = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("rotas")]
         public IActionResult Rotas([FromHeader(Name = "Authorization")] string auth)
         {
@@ -92,32 +135,62 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet("veiculos")]
         public IActionResult Veiculos(int rotaId)
         {
-            var cacheKey = $"VeiculosApp_Rota_{rotaId}";
-            if (_memoryCache.TryGetValue(cacheKey, out List<VeiculoCheckListDTO> cachedVeiculos))
-            {
-                return Ok(new { data = cachedVeiculos });
-            }
-
             var veiculos = _servicoRotaVeiculo.ObtenhaLista(rv => rv.RotaId == rotaId).Select(rv => rv.Veiculo).ToList();
-            var resultado = veiculos.Select(v => new VeiculoCheckListDTO {
-                Id = v.Id,
-                RotaId = rotaId,
-                Nome = v.Modelo,
-                Placa = v.Placa,
-                Modelo = v.Modelo,
-                Cor = v.Cor.ToString(),
-                Checklist = new List<CheckListItemDTO>()
-            }).ToList();
+            
+            var resultado = veiculos.Select(v => {
+                var checklist = _servicoChecklist.ObtenhaLista(c => c.VeiculoId == v.Id && c.Ativo)
+                    .Select(c => new CheckListItemDTO {
+                        Id = c.Id,
+                        Descricao = c.Descricao,
+                        Checked = false
+                    }).ToList();
 
-            _memoryCache.Set(cacheKey, resultado, TimeSpan.FromHours(1));
+                return new VeiculoCheckListDTO {
+                    Id = v.Id,
+                    RotaId = rotaId,
+                    Nome = v.Modelo,
+                    Placa = v.Placa,
+                    Modelo = v.Modelo,
+                    Cor = v.Cor.ToString(),
+                    Checklist = checklist
+                };
+            }).ToList();
 
             return Ok(new { data = resultado });
         }
 
         [HttpPost("checklist")]
-        public IActionResult SalvarChecklist([FromBody] dynamic dto)
+        public IActionResult SalvarChecklist([FromBody] ChecklistPostDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            return Ok(new { sucesso = true });
+            try
+            {
+                int motoristaId = ObterMotoristaId(auth);
+                if (motoristaId == 0) return Unauthorized();
+
+                var veiculo = _servicoRotaVeiculo.ObtenhaLista(rv => rv.VeiculoId == dto.VeiculoId).Select(rv => rv.Veiculo).FirstOrDefault();
+                if (veiculo == null) return BadRequest(new { message = "Veículo não encontrado" });
+
+                var execucao = new ChecklistExecucao
+                {
+                    OrganizacaoId = veiculo.OrganizacaoId,
+                    VeiculoId = dto.VeiculoId,
+                    MotoristaId = motoristaId,
+                    RotaId = dto.RotaId,
+                    DataHora = DateTime.Now,
+                    Itens = dto.Itens.Select(itemId => new ChecklistExecucaoItem {
+                        ChecklistItemId = itemId,
+                        Marcado = true
+                    }).ToList()
+                };
+
+                _servicoExecucao.Adicionar(execucao);
+
+                return Ok(new { sucesso = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost("rotas/iniciar")]
@@ -168,6 +241,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (exec == null) return BadRequest(new { message = "Execução não encontrada" });
 
             exec.DataHoraFim = DateTime.Now;
+            exec.Observacao = dto.Observacao;
             _servicoRotaExecucao.Atualizar(exec);
 
             return Ok(new { sucesso = true });
@@ -225,6 +299,42 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 };
 
                 _servicoLocalizacao.Adicionar(localizacao);
+
+                // Geographic Path Deviation Check
+                if (!string.IsNullOrEmpty(rota.PolylineOficial))
+                {
+                    if (double.TryParse(dto.Latitude, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double lat) &&
+                        double.TryParse(dto.Longitude, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double lon))
+                    {
+                        var driverCoord = new Servicos.Utilitarios.PolylineUtils.Coordinate { Latitude = lat, Longitude = lon };
+                        var polylinePath = Servicos.Utilitarios.PolylineUtils.Decode(rota.PolylineOficial);
+                        
+                        double minDistance = double.MaxValue;
+                        
+                        // Check distance against each segment
+                        for (int i = 0; i < polylinePath.Count - 1; i++)
+                        {
+                            var dist = Servicos.Utilitarios.PolylineUtils.DistanceToSegment(driverCoord, polylinePath[i], polylinePath[i+1]);
+                            if (dist < minDistance)
+                                minDistance = dist;
+                        }
+
+                        // Tolerance is 500 meters
+                        if (minDistance > 500)
+                        {
+                            _servicoDesvio.Adicionar(new RotaOcorrenciaDesvio
+                            {
+                                RotaId = rota.Id,
+                                Latitude = dto.Latitude,
+                                Longitude = dto.Longitude,
+                                DistanciaEmMetros = minDistance,
+                                DataHora = dto.DataHora,
+                                OrganizacaoId = rota.OrganizacaoId
+                            });
+                        }
+                    }
+                }
+
                 return Ok(new { sucesso = true });
             }
             catch (Exception ex)

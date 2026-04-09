@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.DTO;
+@using AriD.BibliotecaDeClasses.DTO;
 @model ListaPaginada<RegistroDePontoIndexDTO>
 
 <div class="card mb-6">
@@ -8,11 +8,26 @@
         </h5>
     </div>
     <div class="card-body">
+        @Html.Hidden("Adicional", Model.Adicional)
+        <div class="row mb-3">
+            <div class="col-md-3 col-sm-6 col-12">
+                <label class="form-label">Data Início</label>
+                <input type="date" id="FiltroDataInicio" class="form-control" />
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <label class="form-label">Data Fim</label>
+                <input type="date" id="FiltroDataFim" class="form-control" />
+            </div>
+            <div class="col-md-6 col-sm-12 col-12">
+                <label class="form-label">Unidade</label>
+                @Html.DropDownList("FiltroUnidadeId", (SelectList)ViewBag.Unidades, "Todas as Unidades", new { @class = "form-control select2" })
+            </div>
+        </div>
         <div class="row">
-            <div class="col-md-5 col-sm-6 col-xs-12">
+            <div class="col-md-12">
                 <div class="input-group">
-                    @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Digite para buscar", @style = "background: white" })
-                    <button class="btn btn-primary" type="button" onclick="carregarTabelaPaginadaComPesquisa('@Url.Action("TabelaPaginada")')">
+                    @Html.TextBox("TermoDeBusca", Model.TermoDeBusca, new { @class = "form-control", @placeholder = "Digite para buscar por nome, matrícula ou unidade", @style = "background: white" })
+                    <button class="btn btn-primary" type="button" onclick="pesquisarRegistros()">
                         <i class='bx bx-search-alt'></i> Pesquisar
                     </button>
                 </div>
@@ -27,3 +42,5 @@
         <div id="div-modal"></div>
     </div>
 </div>
+
+<script src="/Scripts/Paginas/RegistroDePonto/index.js?t=@DateTime.Now.Ticks"></script>

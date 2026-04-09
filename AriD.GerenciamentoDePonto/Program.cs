@@ -71,6 +71,8 @@ builder.Services.AddScoped(typeof(IServicoDeServidor), typeof(ServicoDeServidor)
 builder.Services.AddScoped(typeof(IServicoDeExportacaoFolhaPagamento), typeof(ServicoDeExportacaoFolhaPagamento));
 builder.Services.AddScoped(typeof(IServicoBonus), typeof(ServicoBonus));
 builder.Services.AddScoped(typeof(IServicoMonitoramentoRotas), typeof(ServicoMonitoramentoRotas));
+builder.Services.AddScoped(typeof(IServicoNotificacao), typeof(FirebaseServico));
+builder.Services.AddHttpClient<IServicoDeRoteirizacao, ServicoDeRoteirizacao>();
 
 var app = builder.Build();
 

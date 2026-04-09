@@ -61,16 +61,29 @@ namespace AriD.Servicos.Servicos
                 for (DateTime dia = primeiroDia; dia <= ultimoDia; dia = dia.AddDays(1))
                 {
                     var ponto = pontos.FirstOrDefault(p => p.Data.Date == dia.Date) ?? new PontoDoDia { Data = dia };
-                    bool temCargaHoraria = ponto.CargaHoraria.HasValue && ponto.CargaHoraria.Value.TotalMinutes > 0;
+                    bool temCargaHoraria = (ponto.CargaHoraria?.TotalMinutes ?? 0) > 0;
+                    bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue ||
+                                            ponto.Entrada2.HasValue || ponto.Saida2.HasValue ||
+                                            ponto.Entrada3.HasValue || ponto.Saida3.HasValue ||
+                                            ponto.Entrada4.HasValue || ponto.Saida4.HasValue ||
+                                            ponto.Entrada5.HasValue || ponto.Saida5.HasValue ||
+                                            (ponto.HorasTrabalhadas?.TotalMinutes ?? 0) > 0;
+
+                    bool possuiJustificativa = ponto.JustificativaPeriodo1Id.HasValue ||
+                                               ponto.JustificativaPeriodo2Id.HasValue ||
+                                               ponto.JustificativaPeriodo3Id.HasValue ||
+                                               ponto.JustificativaPeriodo4Id.HasValue ||
+                                               ponto.JustificativaPeriodo5Id.HasValue ||
+                                               ponto.AfastamentoId.HasValue ||
+                                               (ponto.Abono?.TotalMinutes ?? 0) > 0;
 
                     if (config.TipoBonus == eTipoBonus.Diario)
                     {
-                        if (config.ApenasDiasComCargaHoraria && !temCargaHoraria)
+                        if (config.ApenasDiasComCargaHoraria && !temCargaHoraria && !temRegistroPonto)
                             continue;
 
                         double minutosFaltaNoDia = ponto.HorasNegativas?.TotalMinutes ?? 0;
-                        bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue;
-                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !ponto.JustificativaPeriodo1Id.HasValue;
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !possuiJustificativa;
 
                         if (faltaInjustificada)
                         {
@@ -104,7 +117,8 @@ namespace AriD.Servicos.Servicos
                         if (ponto.HorasNegativas.HasValue)
                             totalMinutosFaltaMes += ponto.HorasNegativas.Value.TotalMinutes;
 
-                        if (!ponto.Entrada1.HasValue && !ponto.Saida1.HasValue && temCargaHoraria && !ponto.JustificativaPeriodo1Id.HasValue)
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !possuiJustificativa;
+                        if (faltaInjustificada)
                         {
                             diasComFaltaInjustificada++;
                         }
@@ -166,6 +180,7 @@ namespace AriD.Servicos.Servicos
             }
             _repositorio.Commit();
         }
+
         public List<BonusCalculado> ObterOuCalcularBonusFolha(int organizacaoId, int vinculoId, string mesReferencia, bool salvarNoBanco, bool forcarRecalculo = false)
         {
             var configsAtivas = _repositorioConfiguracaoBonus.ObtenhaLista(c => c.OrganizacaoId == organizacaoId && c.Ativo);
@@ -219,7 +234,21 @@ namespace AriD.Servicos.Servicos
                 for (DateTime dia = primeiroDia; dia <= ultimoDia; dia = dia.AddDays(1))
                 {
                     var ponto = pontos.FirstOrDefault(p => p.Data.Date == dia.Date) ?? new PontoDoDia { Data = dia };
-                    bool temCargaHoraria = ponto.CargaHoraria.HasValue && ponto.CargaHoraria.Value.TotalMinutes > 0;
+                    bool temCargaHoraria = (ponto.CargaHoraria?.TotalMinutes ?? 0) > 0;
+                    bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue ||
+                                            ponto.Entrada2.HasValue || ponto.Saida2.HasValue ||
+                                            ponto.Entrada3.HasValue || ponto.Saida3.HasValue ||
+                                            ponto.Entrada4.HasValue || ponto.Saida4.HasValue ||
+                                            ponto.Entrada5.HasValue || ponto.Saida5.HasValue ||
+                                            (ponto.HorasTrabalhadas?.TotalMinutes ?? 0) > 0;
+
+                    bool possuiJustificativa = ponto.JustificativaPeriodo1Id.HasValue ||
+                                               ponto.JustificativaPeriodo2Id.HasValue ||
+                                               ponto.JustificativaPeriodo3Id.HasValue ||
+                                               ponto.JustificativaPeriodo4Id.HasValue ||
+                                               ponto.JustificativaPeriodo5Id.HasValue ||
+                                               ponto.AfastamentoId.HasValue ||
+                                               (ponto.Abono?.TotalMinutes ?? 0) > 0;
 
                     if (config.TipoBonus == eTipoBonus.Diario)
                     {
@@ -227,14 +256,13 @@ namespace AriD.Servicos.Servicos
                             continue;
 
                         double minutosFaltaNoDia = ponto.HorasNegativas?.TotalMinutes ?? 0;
-                        bool temRegistroPonto = ponto.Entrada1.HasValue || ponto.Saida1.HasValue;
-                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !ponto.JustificativaPeriodo1Id.HasValue;
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !possuiJustificativa;
 
-                        if (faltaInjustificada)
+                        if (faltaInjustificada && config.PerdeIntegralmenteComFalta)
                         {
                             logs.Add($"{ponto.Data:dd/MM}: Falta injustificada detectada. Bônus diário não concedido.");
                         }
-                        else if (temRegistroPonto && config.MinutosFaltaDesconto > 0 && minutosFaltaNoDia >= config.MinutosFaltaDesconto)
+                        else if (config.MinutosFaltaDesconto > 0 && minutosFaltaNoDia >= config.MinutosFaltaDesconto)
                         {
                             logs.Add($"{ponto.Data:dd/MM}: Bônus não concedido por atraso/falta excessiva ({minutosFaltaNoDia} min).");
                         }
@@ -262,7 +290,8 @@ namespace AriD.Servicos.Servicos
                         if (ponto.HorasNegativas.HasValue)
                             totalMinutosFaltaMes += ponto.HorasNegativas.Value.TotalMinutes;
 
-                        if (!ponto.Entrada1.HasValue && !ponto.Saida1.HasValue && temCargaHoraria && !ponto.JustificativaPeriodo1Id.HasValue)
+                        bool faltaInjustificada = temCargaHoraria && !temRegistroPonto && !possuiJustificativa;
+                        if (faltaInjustificada)
                         {
                             diasComFaltaInjustificada++;
                         }

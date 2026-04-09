@@ -32,7 +32,7 @@ class ChecklistService {
     }
 
     try {
-      final response = await _client.get('/rotas');
+      final response = await _client.get('/api/rota-app/rotas');
 
       final retorno = <RotaChecklistDTO>[];
       final body = response.data;
@@ -105,7 +105,7 @@ class ChecklistService {
 
     try {
       final response = await _client.get(
-        '/veiculos',
+        '/api/rota-app/veiculos',
         queryParameters: {'rotaId': rotaId},
       );
 
@@ -138,7 +138,7 @@ class ChecklistService {
 
     try {
       await _client.post(
-        '/checklist',
+        '/api/rota-app/checklist',
         data: {
           'rotaId': rotaId,
           'veiculoId': veiculoId,

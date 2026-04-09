@@ -186,7 +186,22 @@ namespace AriD.Servicos.Servicos
                                 and (regap.Id is null or regap.Manual = false)";
 
                 if (parametros.Unidades.Any())
-                    fromAndWhere += " and uni.Id in @UNIDADES or exists (select 1 from lotacaounidadeorganizacional lotvin where lotvin.VinculoDeTrabalhoId = vin.Id and lot.UnidadeOrganizacionalId in @UNIDADES) ";
+                    fromAndWhere += @" and (uni.Id in @UNIDADES or exists (select 1 from lotacaounidadeorganizacional lotvin where lotvin.VinculoDeTrabalhoId = vin.Id and lotvin.UnidadeOrganizacionalId in @UNIDADES 
+                                                                           and cast(reg.DataHoraRegistro as date) >= cast(lotvin.Entrada as date)
+                                                                           and (lotvin.Saida is null or cast(reg.DataHoraRegistro as date) <= cast(lotvin.Saida as date))
+                                                                          )) ";
+
+                if (parametros.DataInicio.HasValue)
+                    fromAndWhere += " and cast(reg.DataHoraRegistro as date) >= @DATAINICIO ";
+
+                if (parametros.DataFim.HasValue)
+                    fromAndWhere += " and cast(reg.DataHoraRegistro as date) <= @DATAFIM ";
+
+                if (parametros.FiltroUnidadeId.HasValue)
+                    fromAndWhere += @" and (uni.Id = @FILTROUNIDADEID or exists (select 1 from lotacaounidadeorganizacional lot_sub_filter where lot_sub_filter.VinculoDeTrabalhoId = vin.Id and lot_sub_filter.UnidadeOrganizacionalId = @FILTROUNIDADEID 
+                                                                           and cast(reg.DataHoraRegistro as date) >= cast(lot_sub_filter.Entrada as date)
+                                                                           and (lot_sub_filter.Saida is null or cast(reg.DataHoraRegistro as date) <= cast(lot_sub_filter.Saida as date))
+                                                                          )) ";
 
                 if (parametros.DepartamentoId.HasValue)
                     fromAndWhere += " and vin.DepartamentoId = @DEPARTAMENTOID ";
@@ -211,7 +226,15 @@ namespace AriD.Servicos.Servicos
                                 reg.UsuarioEquipamentoId as IdEquipamento,
                                 pes.Nome as PessoaNome,
                                 uni.Id as UnidadeOrganizacionalId,
-                                uni.Nome as UnidadeOrganizacionalNome,
+                                if (reg.RegistroAplicativoId is not null, 
+                                    (select group_concat(distinct uni_lot.Nome separator ', ')
+                                     from lotacaounidadeorganizacional lot_sub
+                                     inner join unidadeorganizacional uni_lot on uni_lot.Id = lot_sub.UnidadeOrganizacionalId
+                                     where lot_sub.VinculoDeTrabalhoId = vin.Id
+                                       and cast(reg.DataHoraRegistro as date) >= cast(lot_sub.Entrada as date)
+                                       and (lot_sub.Saida is null or cast(reg.DataHoraRegistro as date) <= cast(lot_sub.Saida as date))
+                                    ), 
+                                    uni.Nome) as UnidadeOrganizacionalNome,
                                 if (reg.RegistroAplicativoId is not null, 'Aplicativo', 'Equipamento de Ponto') as Origem
                             {fromAndWhere}
                             order by reg.DataHoraRegistro, reg.DataHoraRecebimento, pes.Nome
@@ -225,7 +248,10 @@ namespace AriD.Servicos.Servicos
                     @PESQUISA = parametros.Pesquisa,
                     @LIMIT = parametros.TotalPorPagina,
                     @OFFSET = (parametros.TotalPorPagina * (parametros.Pagina- 1)),
-                    @DEPARTAMENTOID = parametros.DepartamentoId
+                    @DEPARTAMENTOID = parametros.DepartamentoId,
+                    @DATAINICIO = parametros.DataInicio,
+                    @DATAFIM = parametros.DataFim,
+                    @FILTROUNIDADEID = parametros.FiltroUnidadeId
                 };
 
                 var total = _repositorio.ConsultaDapper<int?>(count, parametrosConsultaDapper).FirstOrDefault() ?? 0;

@@ -9,11 +9,11 @@
             <i class='bx bxs-user-account'></i> Horas Positivas e Negativas por @Context.NomenclaturaServidores()
         </h5>
         <div class="d-flex align-items-center">
-            <select id="TemplateFiltros" class="form-select form-select-sm me-2" style="width: 200px;" onchange="FiltrosPersonalizados.aplicar()">
+            <select id="TemplateFiltros" class="form-select form-select-sm me-2 select2" onchange="FiltrosPersonalizados.aplicar()">
                 <option value="">-- Templates Salvos --</option>
             </select>
             <button class="btn btn-outline-secondary btn-sm" onclick="FiltrosPersonalizados.salvar()" title="Salvar Filtro Atual">
-                <i class='bx bx-star'></i>
+                <i class='bx bx-save'></i>
             </button>
         </div>
     </div>
@@ -22,7 +22,7 @@
         {
             <div class="row">
                 <div class="col col-md-12">
-                    <label class="form-label obrigatorio">Unidade</label>
+                    <label class="form-label obrigatorio" for="UnidadeId">Unidade</label>
                     @Html.DropDownList("UnidadeId", (SelectList)ViewBag.Unidades, "", new { @class = "select2" })
                 </div>
             </div>
@@ -54,7 +54,7 @@
     </div>
 </div>
 
-<script src="/Scripts/Comum/filtros_personalizados.js"></script>
+<script src="/Scripts/Comum/filtros_personalizados.js?t=@DateTime.Now.Ticks"></script>
 <script>
     $(document).ready(function() {
         FiltrosPersonalizados.init('.card-body', '#TemplateFiltros');

@@ -1,9 +1,11 @@
-﻿using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.DTO;
+using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace AriD.GerenciamentoDePonto.Controllers
@@ -11,11 +13,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
     public class RegistroDePontoController : BaseController
     {
         private readonly IServicoRegistroDePonto _servico;
+        private readonly IServico<UnidadeOrganizacional> _servicoUnidade;
 
         public RegistroDePontoController(
-            IServicoRegistroDePonto servico)
+            IServicoRegistroDePonto servico,
+            IServico<UnidadeOrganizacional> servicoUnidade)
         {
             _servico = servico;
+            _servicoUnidade = servicoUnidade;
         }
 
         [HttpGet]
@@ -23,6 +28,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var dadosDaSessao = this.DadosDaSessao();
+                int organizacaoId = dadosDaSessao.OrganizacaoId;
+
+                ViewBag.Unidades = new SelectList(
+                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId && dadosDaSessao.UnidadeOrganizacionais.Contains(c.Id))
+                    .OrderBy(c => c.Nome),
+                    "Id", "Nome");
+
                 ConfigureDadosDaTabelaPaginada(listaPaginada);
                 return View(listaPaginada);
             }
@@ -56,6 +69,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             parametros.Pesquisa = listaPaginada.TermoDeBusca;
             parametros.TotalPorPagina = listaPaginada.QuantidadeDeItensPorPagina;
             parametros.Pagina = listaPaginada.Pagina;
+
+            if (parametros.DataInicio.HasValue) parametros.DataInicio = parametros.DataInicio.Value.Date;
+            if (parametros.DataFim.HasValue) parametros.DataFim = parametros.DataFim.Value.Date;
 
             var dados = _servico.ObtenhaListaPaginadaDTO(parametros);
 

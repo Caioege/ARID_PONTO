@@ -82,10 +82,18 @@ namespace AriD.Servicos.DBContext
         public DbSet<ConfiguracaoBonusFuncao> ConfiguracaoBonusFuncao { get; set; }
         public DbSet<BonusCalculado> BonusCalculado { get; set; }
         public DbSet<Rota> Rota { get; set; }
+        public DbSet<RotaOcorrenciaDesvio> RotaOcorrenciaDesvio { get; set; }
         public DbSet<ParadaRota> ParadaRota { get; set; }
         public DbSet<LocalizacaoRota> LocalizacaoRota { get; set; }
         public DbSet<Motorista> Motorista { get; set; }
         public DbSet<Veiculo> Veiculo { get; set; }
         public DbSet<MotoristaHistoricoSituacao> MotoristaHistoricoSituacao { get; set; }
+        public DbSet<ChecklistItem> ChecklistItem { get; set; }
+        public DbSet<ChecklistExecucao> ChecklistExecucao { get; set; }
+        public DbSet<ChecklistExecucaoItem> ChecklistExecucaoItem { get; set; }
+        public DbSet<Paciente> Paciente { get; set; }
+        public DbSet<ManutencaoVeiculo> ManutencaoVeiculo { get; set; }
+        public DbSet<RotaPaciente> RotaPaciente { get; set; }
+        public DbSet<RotaProfissional> RotaProfissional { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.DTO;
+@using AriD.BibliotecaDeClasses.DTO;
 @using AriD.BibliotecaDeClasses.Enumeradores
 @model ListaPaginada<RegistroDePontoIndexDTO>
 
@@ -24,10 +24,14 @@
             </text>, width: 10f),
     };
 
-    if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao) 
+    if (dadosDaSessao.Perfil == ePerfilDeAcesso.Organizacao || dadosDaSessao.Perfil == ePerfilDeAcesso.UnidadeOrganizacional || dadosDaSessao.Perfil == ePerfilDeAcesso.Departamento) 
     {
         listaDeColunas.Add(tabela.Column("UnidadeOrganizacionalNome", "Unidade", format:
-            @<text><span>@(item.UnidadeOrganizacionalNome ?? "-")</span></text>));
+            @<text>
+                <span title="@item.UnidadeOrganizacionalNome">
+                    @(item.UnidadeOrganizacionalNome ?? "-")
+                </span>
+            </text>));
     }
 }
 

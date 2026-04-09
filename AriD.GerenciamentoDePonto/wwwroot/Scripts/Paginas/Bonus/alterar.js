@@ -8,7 +8,8 @@ $(document).ready(function() {
 
 function toggleTolerancia(animar = true) {
     const selector = '#divTolerancia';
-    if ($('#TurnoIntercaladoPagaDobrado').is(':checked') && $('#TipoBonus').val() == '1') {
+    const tipoDiario = '1';
+    if ($('#TurnoIntercaladoPagaDobrado').is(':checked') && $('#TipoBonus').val() == tipoDiario) {
         animar ? $(selector).fadeIn() : $(selector).show();
     } else {
         animar ? $(selector).fadeOut() : $(selector).hide();
@@ -16,7 +17,8 @@ function toggleTolerancia(animar = true) {
 }
 
 function toggleTipos(animar = true) {
-    if ($('#TipoBonus').val() == '1') { // Diario
+    const tipoDiario = '1';
+    if ($('#TipoBonus').val() == tipoDiario) { // Diario
         animar ? $('.divDiario').fadeIn() : $('.divDiario').show();
         $('.divMensal').hide();
         toggleTolerancia(animar);

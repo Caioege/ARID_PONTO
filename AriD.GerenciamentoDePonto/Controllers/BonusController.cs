@@ -52,7 +52,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private void ConfigureDadosDaTabelaPaginada(ListaPaginada<ConfiguracaoBonus> listaPaginada)
         {
             int organizacaoId = HttpContext.DadosDaSessao().OrganizacaoId;
-            Expression<Func<ConfiguracaoBonus, bool>> pesquisa = c => c.OrganizacaoId == organizacaoId && c.Ativo;
+            Expression<Func<ConfiguracaoBonus, bool>> pesquisa = c => c.OrganizacaoId == organizacaoId;
 
             if (!string.IsNullOrWhiteSpace(listaPaginada.TermoDeBusca))
             {

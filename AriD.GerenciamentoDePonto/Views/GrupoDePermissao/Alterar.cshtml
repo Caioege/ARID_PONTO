@@ -180,6 +180,12 @@
             @await Html.PartialAsync("_PartialItemPermissao", modelFolhaDePonto)
 
             @{
+                var modelExportacaoFolha =
+                new Tuple<string, Type, GrupoDePermissao>("Exportação da Folha", typeof(eItemDePermissao_ExportacaoFolhaPagamento), Model);
+            }
+            @await Html.PartialAsync("_PartialItemPermissao", modelExportacaoFolha)
+
+            @{
                 var modelRegistrosDePonto =
                 new Tuple<string, Type, GrupoDePermissao>("Registros de Ponto", typeof(eItemDePermissao_RegistrosDePonto), Model);
             }

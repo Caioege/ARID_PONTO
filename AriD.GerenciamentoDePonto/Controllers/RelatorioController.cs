@@ -833,7 +833,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             foreach (var justificativa in grupoJustificativa.OrderBy(c => c.Key))
             {
-                var table = new Table(UnitValue.CreatePercentArray(new[] 
+                var table = new Table(UnitValue.CreatePercentArray(new[]
                 {
                     35f,
                     15f,
@@ -915,7 +915,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 document.Add(new Div().SetMarginBottom(3).Add(table));
             }
-
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
+            
             document.Close();
             return stream.ToArray();
         }
@@ -1027,6 +1028,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             document.Add(new Div().Add(table));
+
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
 
             document.Close();
             return stream.ToArray();
@@ -1335,6 +1338,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             document.Add(new Div().Add(table));
 
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
+
             document.Close();
             return stream.ToArray();
         }
@@ -1501,6 +1506,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             document.Add(new Div().Add(table));
 
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
+
             document.Close();
             return stream.ToArray();
         }
@@ -1609,6 +1616,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             document.Add(new Div().Add(table));
+
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
 
             document.Close();
             return stream.ToArray();
@@ -1745,6 +1754,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         }
 
                         document.Add(new Div().Add(table));
+
+                        AdicioneAssinaturaPadrao(document, dadosDaSessao);
 
                         document.Close();
                         return stream.ToArray();
@@ -1902,6 +1913,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 document.Add(tableObservacoes);
             }
 
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
             document.Close();
             return stream.ToArray();
         }
@@ -2042,8 +2054,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         .SetTextAlignment(TextAlignment.CENTER)
                         .Add(new Text($"{situacaoTexto}"))));
 
-                    var textoLatLong = (!string.IsNullOrWhiteSpace(registro.Latitude) && !string.IsNullOrWhiteSpace(registro.Longitude)) ?
-                        $"Lat: {servidor.Latitude}\nLong:{servidor.Longitude}" :
+                    var textoLatLong = (!string.IsNullOrWhiteSpace(registro.Latitude) && !string.IsNullOrWhiteSpace(registro.Longitude)) ? 
+                        $"Lat: {registro.Latitude}\nLong:{registro.Longitude}" :
                         "";
 
                     table.AddCell(new Cell()
@@ -2055,6 +2067,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             document.Add(new Div().Add(table));
+
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
 
             document.Close();
             return stream.ToArray();
@@ -2229,6 +2243,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 if (ultimaUnidade.Key != unidade.Key)
                     document.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
             }
+
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
 
             document.Close();
             return stream.ToArray();
@@ -2527,6 +2543,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             document.Add(new Div().SetMarginTop(10).Add(table));
 
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
+
             document.Close();
             return stream.ToArray();
         }
@@ -2605,9 +2623,45 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             document.Add(table);
+            
+            AdicioneAssinaturaPadrao(document, dadosDaSessao);
+            
             document.Close();
 
             return stream.ToArray();
+        }
+
+        private static void AdicioneAssinaturaPadrao(Document document, SessaoDTO sessao)
+        {
+            Table tabela = new Table(2);
+            tabela.SetWidth(UnitValue.CreatePercentValue(100));
+            tabela.SetMarginTop(30f);
+
+            Cell assinatura1 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura1.SetTextAlignment(TextAlignment.CENTER);
+            assinatura1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell assinatura2 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura2.SetTextAlignment(TextAlignment.CENTER);
+            assinatura2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(assinatura1);
+            tabela.AddCell(assinatura2);
+
+            Cell nome1 = new Cell().Add(new Paragraph("Operador: " + sessao.UsuarioNome));
+            nome1.SetTextAlignment(TextAlignment.CENTER);
+            nome1.SetFontSize(8f);
+            nome1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell nome2 = new Cell().Add(new Paragraph("Responsável / Direção"));
+            nome2.SetTextAlignment(TextAlignment.CENTER);
+            nome2.SetFontSize(8f);
+            nome2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(nome1);
+            tabela.AddCell(nome2);
+
+            document.Add(tabela);
         }
     }
 }

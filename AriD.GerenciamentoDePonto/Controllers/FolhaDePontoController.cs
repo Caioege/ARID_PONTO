@@ -236,7 +236,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             ViewBag.ExtPendenciasPorDia = pendenciasPorDia;
 
             var fecharFolha = listaDePonto.All(c => c.PontoFechado);
-            ViewBag.BonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesAno.ToString(), false);
+            ViewBag.BonusCalculados = _servicoBonus.ObterOuCalcularBonusFolha(organizacaoId, vinculoDeTrabalhoId, mesAno.ToString(), true);
 
             var html = await RenderizarComoString("_PartialFolhaDePonto", listaDePonto);
             return Json(new
@@ -359,7 +359,20 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 unidadeId,
                 mesAno);
 
-            return Json(new { sucesso = true, mensagem = "A folha de ponto foi restaurada para a versão inicial." });
+            _servicoDeFolhaDePonto.CarregueFolhaDePonto(
+                this.DadosDaSessao().OrganizacaoId,
+                vinculoDeTrabalhoId,
+                unidadeId,
+                mesAno);
+
+            _servicoBonus.ObterOuCalcularBonusFolha(
+                this.DadosDaSessao().OrganizacaoId,
+                vinculoDeTrabalhoId,
+                mesAno.ToString(),
+                true,
+                true);
+
+            return Json(new { sucesso = true, mensagem = "A folha de ponto foi restaurada para a versão inicial e os bônus foram recalculados." });
         }
 
         [HttpGet]
@@ -1063,7 +1076,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             if (bonusCalculados != null && bonusCalculados.Any())
             {
-                var blockBonus = new Div().SetMarginTop(10f);
+                var blockBonus = new Div().SetMarginTop(20f);
                 var tableBonus = new Table(2);
 
                 tableBonus.AddCell(new Cell(1, 2)
@@ -1316,22 +1329,33 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var dadosDaSessao = HttpContext.DadosDaSessao();
             
-            var (total, itens) = _servicoDeFolhaDePonto.ObtenhaRegistrosForaDaTolerancia(
-                dadosDaSessao.OrganizacaoId, unidadeId, departamentoId, horarioId,
-                dataInicial ?? new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
-                dataFinal ?? DateTime.Now,
-                pagina, 50);
+            ViewBag.Unidades = new SelectList(_servicoUnidade.ObtenhaLista(x => x.OrganizacaoId == dadosDaSessao.OrganizacaoId && x.Ativa).OrderBy(x => x.Nome), "Id", "Nome", unidadeId);
+            ViewBag.DataInicial = dataInicial;
+            ViewBag.DataFinal = dataFinal;
 
             var viewModel = new ListaPaginada<RegistroForaDaToleranciaDTO>()
             {
                 Pagina = pagina,
                 QuantidadeDeItensPorPagina = 50,
-                TotalDeItens = total,
-                Itens = itens
+                TotalDeItens = 0,
+                Itens = new List<RegistroForaDaToleranciaDTO>()
             };
+
+            // Obriga a seleção de uma data para trazer a listagem
+            if (dataInicial.HasValue && dataFinal.HasValue)
+            {
+                var (total, itens) = _servicoDeFolhaDePonto.ObtenhaRegistrosForaDaTolerancia(
+                    dadosDaSessao.OrganizacaoId, unidadeId, departamentoId, horarioId,
+                    dataInicial.Value, dataFinal.Value,
+                    pagina, 50);
+
+                viewModel.TotalDeItens = total;
+                viewModel.Itens = itens;
+            }
             
             return View(viewModel);
         }
+
 
         [HttpPost]
         public IActionResult ExecutarAprovacaoMarcacaoLote(List<int> registrosIds, string acao, string motivo)

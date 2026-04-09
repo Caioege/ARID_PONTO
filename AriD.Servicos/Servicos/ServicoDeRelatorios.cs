@@ -423,10 +423,10 @@ namespace AriD.Servicos.Servicos
 	                    reg.OrganizacaoId = @ORGANIZACAOID
 	                    and date(reg.DataHoraRegistro) = @DATA
                         and ra.Manual = false
-                        and ra.JustificativaDeAusenciaId = false
+                        and ra.JustificativaDeAusenciaId is null
                         {(tipoDeVinculoDeTrabalhoId.HasValue ? "and vin.TipoDoVinculoDeTrabalhoId = @TIPOID" : string.Empty)}
                         {(departamentoId.HasValue ? "and vin.DepartamentoId = @DEPARTAMENTOID" : string.Empty)}
-                        and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = vin.Id and l.UnidadeOrganizacionalId = @UNIDADEID)
+                        and exists (select 1 from lotacaounidadeorganizacional l where l.VinculoDeTrabalhoId = vin.Id and l.UnidadeOrganizacionalId = @UNIDADEID and @DATA between date(l.Entrada) and coalesce(date(l.Saida), '9999-12-31'))
                         {(horarioDeTrabalhoId.HasValue ? "and vin.HorarioDeTrabalhoId = @HORARIOID" : string.Empty)})
                     union
                     (select

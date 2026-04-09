@@ -141,6 +141,8 @@ namespace AriD.Servicos.Servicos
                         ConcluidoEm = p.ConcluidoEm != null ? p.ConcluidoEm.Value.ToString("dd/MM/yy HH:mm") : null
                     }).ToList();
 
+                var sofreuDesvio = _repositorio.ConsultaDapper<int>("SELECT COUNT(1) FROM rotaocorrenciadesvio WHERE RotaId = @RotaId", new { RotaId = idRota }).FirstOrDefault() > 0;
+
                 resultado.Add(new MonitoramentoRotaDTO
                 {
                     ExecucaoId = exec.ExecucaoId,
@@ -163,7 +165,8 @@ namespace AriD.Servicos.Servicos
                     HistoricoLocalizacoes = historico,
                     UltimaAtualizacao = ultima.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
                     Paradas = paradas,
-                    Finalizada = hdFim.HasValue
+                    Finalizada = hdFim.HasValue,
+                    SujeitoADesvio = sofreuDesvio
                 });
             }
 

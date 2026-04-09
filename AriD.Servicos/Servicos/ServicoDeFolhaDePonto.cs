@@ -2954,22 +2954,120 @@ namespace AriD.Servicos.Servicos
             int organizacaoId, int? unidadeId, int? departamentoId, int? horarioId, 
             DateTime dataInicial, DateTime dataFinal, int pagina, int qtd)
         {
-            // Implementação SQL para buscar marcações (Entrada/Saída) atípicas no período.
-            var lista = new List<RegistroForaDaToleranciaDTO>();
-            
-            var sql = @"
-                SELECT r.Id as RegistroId, p.Id as PontoDoDiaId, p.VinculoDeTrabalhoId, 
-                       s.Nome as ServidorNome, r.DataHoraRegistro, r.AprovadoForaTolerancia, r.AcaoAprovacao,
-                       'Ponto' as TipoRegistro
-                FROM RegistrosDePonto r
-                JOIN PontosDoDia p ON p.RegistroDePontoEntrada1Id = r.Id OR p.RegistroDePontoSaida1Id = r.Id
-                JOIN VinculosDeTrabalho v ON p.VinculoDeTrabalhoId = v.Id
-                JOIN Servidor s ON v.ServidorId = s.Id
-                WHERE p.OrganizacaoId = @OrgId AND p.Data >= @DataIni AND p.Data <= @DataFim
-                  AND r.Desconsiderado = 0";
+            var offset = (pagina - 1) * qtd;
 
-            return (0, lista); // Stub - Requer ajuste fino no SQL do Dapper considerando as Vigências
+            // Busca registros brutos e os cruza com a escala via lotação/vínculo
+            var sql = @"
+                SELECT 
+                    r.Id as RegistroId,
+                    v.Id as VinculoDeTrabalhoId,
+                    s.Nome as ServidorNome,
+                    u.Nome as UnidadeNome,
+                    d.Descricao as DepartamentoNome,
+                    r.DataHoraRegistro,
+                    r.AprovadoForaTolerancia,
+                    r.AcaoAprovacao,
+                    r.UsuarioAprovacaoToleranciaNome,
+                    hd.Entrada1, hd.Saida1, hd.Entrada2, hd.Saida2, hd.Entrada3, hd.Saida3, hd.Entrada4, hd.Saida4, hd.Entrada5, hd.Saida5,
+                    hvg.ToleranciaAntesDaEntradaEmMinutos, hvg.ToleranciaAposAEntradaEmMinutos,
+                    hvg.ToleranciaAntesDaSaidaEmMinutos, hvg.ToleranciaAposASaidaEmMinutos
+                FROM RegistrosDePonto r
+                LEFT JOIN RegistroAplicativo ra ON ra.Id = r.RegistroAplicativoId
+                LEFT JOIN LotacaoUnidadeOrganizacional lot ON lot.MatriculaEquipamento = r.UsuarioEquipamentoId 
+                    AND lot.OrganizacaoId = r.OrganizacaoId
+                    AND CAST(r.DataHoraRegistro AS DATE) >= CAST(lot.Entrada AS DATE)
+                    AND (lot.Saida IS NULL OR CAST(r.DataHoraRegistro AS DATE) <= CAST(lot.Saida AS DATE))
+                JOIN VinculosDeTrabalho v ON v.Id = COALESCE(ra.VinculoDeTrabalhoId, lot.VinculoDeTrabalhoId)
+                JOIN Servidor s ON s.Id = v.ServidorId
+                JOIN Departamentos d ON d.Id = v.DepartamentoId
+                LEFT JOIN UnidadesOrganizacionais u ON u.Id = lot.UnidadeOrganizacionalId
+                JOIN HorarioDeTrabalhoVigencia hvg ON hvg.HorarioDeTrabalhoId = v.HorarioDeTrabalhoId
+                    AND hvg.VigenciaInicio <= CAST(r.DataHoraRegistro AS DATE)
+                JOIN HorarioDeTrabalhoDia hd ON hd.HorarioDeTrabalhoVigenciaId = hvg.Id
+                    AND hd.DiaDaSemana = CASE WHEN (DAYOFWEEK(r.DataHoraRegistro) - 1) = 0 THEN 0 ELSE (DAYOFWEEK(r.DataHoraRegistro) - 1) END
+                WHERE r.OrganizacaoId = @OrgId 
+                  AND CAST(r.DataHoraRegistro AS DATE) >= @DataIni 
+                  AND CAST(r.DataHoraRegistro AS DATE) <= @DataFim
+                  AND r.Desconsiderado = 0
+                  AND (ra.Id IS NULL OR ra.Manual = 0)
+                  -- Filtro para pegar apenas a vigência correta (mais próxima do registro)
+                  AND hvg.VigenciaInicio = (
+                      SELECT MAX(h2.VigenciaInicio) 
+                      FROM HorarioDeTrabalhoVigencia h2 
+                      WHERE h2.HorarioDeTrabalhoId = v.HorarioDeTrabalhoId 
+                        AND h2.VigenciaInicio <= CAST(r.DataHoraRegistro AS DATE)
+                  )";
+
+            if (unidadeId.HasValue) sql += " AND (u.Id = @UnidadeId OR lot.UnidadeOrganizacionalId = @UnidadeId)";
+            if (departamentoId.HasValue) sql += " AND v.DepartamentoId = @DepartamentoId";
+            if (horarioId.HasValue) sql += " AND v.HorarioDeTrabalhoId = @HorarioId";
+
+            var rows = _repositorio.ConsultaDapper<dynamic>(sql, new { 
+                OrgId = organizacaoId, 
+                DataIni = dataInicial.Date, 
+                DataFim = dataFinal.Date,
+                UnidadeId = unidadeId,
+                DepartamentoId = departamentoId,
+                HorarioId = horarioId
+            }).ToList();
+
+            var listaFinal = new List<RegistroForaDaToleranciaDTO>();
+
+            foreach (var r in rows)
+            {
+                var times = new List<(TimeSpan? Time, string Label, bool isEntrada)>
+                {
+                    (r.Entrada1, "Entrada 1", true), (r.Saida1, "Saída 1", false),
+                    (r.Entrada2, "Entrada 2", true), (r.Saida2, "Saída 2", false),
+                    (r.Entrada3, "Entrada 3", true), (r.Saida3, "Saída 3", false),
+                    (r.Entrada4, "Entrada 4", true), (r.Saida4, "Saída 4", false),
+                    (r.Entrada5, "Entrada 5", true), (r.Saida5, "Saída 5", false)
+                }.Where(x => x.Time.HasValue).ToList();
+
+                if (!times.Any()) continue;
+
+                var regTime = ((DateTime)r.DataHoraRegistro).TimeOfDay;
+                
+                // Encontrar o slot mais próximo
+                var closest = times
+                    .Select(t => new { t.Time, t.Label, t.isEntrada, Diff = (t.Time.Value - regTime).Duration() })
+                    .OrderBy(x => x.Diff)
+                    .First();
+
+                double diffMinutos = (closest.Time.Value - regTime).TotalMinutes;
+                int tolAntes = closest.isEntrada ? (int)r.ToleranciaAntesDaEntradaEmMinutos : (int)r.ToleranciaAntesDaSaidaEmMinutos;
+                int tolDepois = closest.isEntrada ? (int)r.ToleranciaAposAEntradaEmMinutos : (int)r.ToleranciaAposASaidaEmMinutos;
+
+                bool foraTolerancia = false;
+                if (diffMinutos > 0 && diffMinutos > tolAntes) foraTolerancia = true; // Antecipado demais (ex: esperado 08:00, bateu 07:45, tolAntes=10 -> diff=15 > 10)
+                else if (diffMinutos < 0 && Math.Abs(diffMinutos) > tolDepois) foraTolerancia = true; // Atrasado demais
+
+                if (foraTolerancia || r.AprovadoForaTolerancia != null)
+                {
+                    listaFinal.Add(new RegistroForaDaToleranciaDTO
+                    {
+                        RegistroId = r.RegistroId,
+                        VinculoDeTrabalhoId = r.VinculoDeTrabalhoId,
+                        ServidorNome = r.ServidorNome,
+                        UnidadeNome = r.UnidadeNome ?? "N/A",
+                        DepartamentoNome = r.DepartamentoNome,
+                        DataHoraRegistro = r.DataHoraRegistro,
+                        HorarioEsperado = closest.Time.Value,
+                        TipoRegistro = closest.Label,
+                        MinutosForaTolerancia = (int)Math.Abs(diffMinutos),
+                        AprovadoForaTolerancia = r.AprovadoForaTolerancia == null ? (bool?)null : Convert.ToBoolean(r.AprovadoForaTolerancia),
+                        AcaoAprovacao = r.AcaoAprovacao,
+                        UsuarioAprovacaoNome = r.UsuarioAprovacaoToleranciaNome
+                    });
+                }
+            }
+
+            var totalCount = listaFinal.Count;
+            var itens = listaFinal.OrderByDescending(x => x.DataHoraRegistro).Skip(offset).Take(qtd).ToList();
+
+            return (totalCount, itens);
         }
+
 
         public void AproveOuDesconsidereLote(int organizacaoId, List<int> registrosIds, string acao, string motivo)
         {

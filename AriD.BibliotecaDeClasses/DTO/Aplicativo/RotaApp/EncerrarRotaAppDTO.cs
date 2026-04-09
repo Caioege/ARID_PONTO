@@ -6,5 +6,6 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
     {
         public int RotaExecucaoId { get; set; }
         public List<EncerrarParadaDTO> Paradas { get; set; } = new List<EncerrarParadaDTO>();
+        public string? Observacao { get; set; }
     }
 }

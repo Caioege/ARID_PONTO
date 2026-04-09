@@ -21,14 +21,21 @@
 
         <form id="formulario-bonus">
             @Html.HiddenFor(m => m.Id)
-            <input type="hidden" name="Ativo" id="Ativo" value="@(Model.Ativo.ToString().ToLower())" />
-
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-9">
                     <label class="form-label obrigatorio" for="Descricao">Descrição</label>
                     @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control", @placeholder = "Ex: Vale Alimentação" })
                 </div>
                 <div class="col-md-3">
+                    <div class="form-check form-switch mt-4">
+                        <input type="checkbox" class="form-check-input" name="Ativo" id="Ativo" @(Model.Ativo ? "checked" : "") value="true">
+                        <label class="form-check-label" for="Ativo">Configuração Ativa?</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <label class="form-label">Tipo de Bônus</label>
                     @if (podeAlterarTipo)
                     {
@@ -36,13 +43,13 @@
                     }
                     else
                     {
-                        @Html.HiddenFor(m => m.TipoBonus)
+                        <input type="hidden" name="TipoBonus" id="TipoBonus" value="@((int)Model.TipoBonus)" />
                         <select class="form-select" disabled="disabled">
                             <option selected="selected">@Model.TipoBonus.DescricaoDoEnumerador()</option>
                         </select>
                     }
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label obrigatorio" for="ValorDiario">Valor (Diário ou Total)</label>
                     <div class="input-group">
                         <span class="input-group-text">R$</span>

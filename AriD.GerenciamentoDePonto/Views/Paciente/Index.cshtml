@@ -1,0 +1,54 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.ParametrosDeConsulta
+@using AriD.GerenciamentoDePonto.WebGrid
+@using Newtonsoft.Json
+@using AriD.Servicos.Extensao
+
+@model ListaPaginada<Paciente>
+
+<div class="row">
+    <div class="col col-lg-8 col-md-10 mt-1 col-xs-9">
+        <h5>Pacientes e Acompanhantes</h5>
+    </div>
+    <div class="col col-lg-4 col-md-2 mt-1 col-xs-3 float-end">
+        <button type="button" class="btn btn-primary float-end" onclick="abrirModal(0)">
+            <span class="d-none d-sm-inline">+&nbsp;Adicionar</span>
+        </button>
+    </div>
+</div>
+
+<div class="card mb-3 p-4">
+    <div class="row">
+        <div class="col-lg-3 col-md-4">
+            <label class="form-label" for="FiltroAtivo">Situação</label>
+            <select id="FiltroAtivo" class="form-select filter-trigger">
+                <option value="">Todos</option>
+                <option value="true">Ativos</option>
+                <option value="false">Inativos</option>
+            </select>
+        </div>
+        <div class="col-lg-9 col-md-8">
+            <label class="form-label">&nbsp;</label>
+            <div class="input-group input-group-merge">
+                <input type="text"
+                       class="form-control filter-trigger"
+                       placeholder="Pesquisar por nome ou CPF..."
+                       id="TermoDeBusca" />
+                <button class="btn btn-primary" id="btn-pesquisar" type="button" onclick="aplicarFiltrosPaciente()">
+                    <i class='bx bx-search-alt'></i> Pesquisar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="padding: 10px">
+    @Html.Hidden("Adicional", Model.Adicional)
+    <div id="grid">
+        @await Html.PartialAsync("_TabelaPaginada", Model)
+    </div>
+</div>
+
+<div id="div-modal"></div>
+
+<script src="/Scripts/Paginas/Paciente/index.js?t=@DateTime.Now.Ticks"></script>

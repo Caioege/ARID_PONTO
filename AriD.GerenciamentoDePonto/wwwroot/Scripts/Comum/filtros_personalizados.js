@@ -22,6 +22,16 @@ var FiltrosPersonalizados = {
             `);
         }
 
+        // Inicializa Select2 no dropdown de templates se a classe ou plugin estiver disponível
+        //if ($.fn.select2) {
+        //    $(this.dropdownSelector).select2({
+        //        placeholder: "-- Templates Salvos --",
+        //        allowClear: true,
+        //        dropdownParent: $(this.dropdownSelector).parent(),
+        //        width: '200px'
+        //    });
+        //}
+
         $(this.dropdownSelector).on('change', function() {
             if($(this).val()) {
                 $('.btn-excluir-filtro').show();
@@ -90,16 +100,27 @@ var FiltrosPersonalizados = {
     },
 
     carregarTemplates: function () {
+        $('[aria-controls="select2-TemplateFiltros-container"]').parent().parent()[0].style.setProperty('width', '250px', 'important');
+
         let self = this;
         $.get('/FiltroRelatorio/ObtenhaFiltros', { urlRelatorio: this.urlRelatorio }, function (data) {
             if (data.sucesso) {
                 let dropdown = $(self.dropdownSelector);
                 dropdown.empty();
-                dropdown.append('<option value="">-- Templates Salvos --</option>');
+                dropdown.append('<option value=""></option>');
                 
                 data.dados.forEach(function (filtro) {
-                    dropdown.append(`<option value='${filtro.id}' data-json='${filtro.jsonParametros}'>${filtro.nome}</option>`);
+                    // Garante que é uma string para o atributo e armazena o objeto no .data() para redundância
+                    let jsonStr = typeof filtro.jsonParametros === 'string' ? filtro.jsonParametros : JSON.stringify(filtro.jsonParametros);
+                    let jsonObj = typeof filtro.jsonParametros === 'string' ? JSON.parse(filtro.jsonParametros) : filtro.jsonParametros;
+                    
+                    dropdown.append($('<option></option>')
+                        .val(filtro.id)
+                        .attr('data-json', jsonStr)
+                        .data('filtros', jsonObj)
+                        .text(filtro.nome));
                 });
+
                 dropdown.trigger('change');
             }
         });
@@ -107,18 +128,37 @@ var FiltrosPersonalizados = {
 
     aplicar: function () {
         let option = $(this.dropdownSelector).find('option:selected');
-        let jsonStr = option.data('json');
+        let dataAttr = option.attr('data-json');
+        let dataInternal = option.data('filtros');
         
-        if (!jsonStr) {
+        let filtros = null;
+        if (dataInternal && typeof dataInternal === 'object') {
+            filtros = dataInternal;
+        } else if (dataAttr && typeof dataAttr === 'string' && dataAttr !== "[object Object]") {
+            try {
+                filtros = JSON.parse(dataAttr);
+            } catch (e) {
+                console.error("Erro no parse do JSON:", e);
+            }
+        }
+
+        if (!filtros) {
             this.limpar();
             return;
         }
-
-        let filtros = JSON.parse(jsonStr);
         for (let id in filtros) {
             let elemento = $('#' + id);
             if (elemento.length && id !== $(this.dropdownSelector).attr('id')) {
-                elemento.val(filtros[id]).trigger('change');
+                // Aplica o valor
+                elemento.val(filtros[id]);
+                
+                // Dispara o change para o Select2 (se houver) e outros listeners
+                if (elemento.hasClass('select2-hidden-accessible')) {
+                    elemento.trigger('change.select2').trigger('change');
+                } else {
+                    elemento.trigger('change');
+                }
+
                 elemento.prop('disabled', true);
             }
         }
@@ -130,8 +170,12 @@ var FiltrosPersonalizados = {
     limpar: function () {
          $(this.containerSelector).find('input, select').not(this.dropdownSelector).each(function () {
              $(this).prop('disabled', false);
+             // Se for select2, precisa garantir que o estado visual também mude
+             if ($(this).hasClass('select2-hidden-accessible')) {
+                $(this).trigger('change.select2');
+             }
          });
-         $(this.dropdownSelector).val('');
+         $(this.dropdownSelector).val('').trigger('change');
          $('.btn-limpar-filtro').hide();
          $('.btn-excluir-filtro').hide();
     },
@@ -164,3 +208,4 @@ var FiltrosPersonalizados = {
         });
     }
 };
+

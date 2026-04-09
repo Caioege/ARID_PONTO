@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @{
     var dadosDaSessao = Context.DadosDaSessao();
 }
@@ -8,6 +8,14 @@
         <h5 class="mb-0">
             <i class="bx bxs-user-voice"></i> @Context.NomenclaturaServidores() com Afastamentos
         </h5>
+        <div class="d-flex align-items-center">
+            <select id="TemplateFiltros" class="form-select form-select-sm me-2 select2" onchange="FiltrosPersonalizados.aplicar()">
+                <option value="">-- Templates Salvos --</option>
+            </select>
+            <button class="btn btn-outline-secondary btn-sm" onclick="FiltrosPersonalizados.salvar()" title="Salvar Filtro Atual">
+                <i class='bx bx-save'></i>
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <div class="row">
@@ -44,7 +52,12 @@
     </div>
 </div>
 
+<script src="/Scripts/Comum/filtros_personalizados.js?t=@DateTime.Now.Ticks"></script>
 <script>
+    $(document).ready(function() {
+        FiltrosPersonalizados.init('.card-body', '#TemplateFiltros');
+    });
+
     function processarRelatorio() {
         let parametros = {
             unidadeLotacaoId: $('#UnidadeId').val(),

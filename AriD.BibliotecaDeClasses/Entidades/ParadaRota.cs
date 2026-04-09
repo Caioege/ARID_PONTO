@@ -10,6 +10,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public virtual Rota Rota { get; set; }
 
         public string Endereco { get; set; }
+        public int Ordem { get; set; }
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public string? Link { get; set; }

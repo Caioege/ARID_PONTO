@@ -26,8 +26,53 @@ function initMap() {
     }).addTo(map);
 
     obterDadosMonitoramento();
-    // Poll data every 10 seconds for real time map update
-    setInterval(obterDadosMonitoramento, 10000);
+    // Poll data every 15 seconds for real time map update
+    setInterval(obterDadosMonitoramento, 15000);
+    
+    // Draw building indicators
+    renderizarUnidadesNoMapa();
+}
+
+let markerUnidadesLayers = [];
+function renderizarUnidadesNoMapa() {
+    if (typeof mapUnidades === 'undefined' || !mapUnidades || mapUnidades.length === 0) return;
+
+    mapUnidades.forEach(un => {
+        let iconHtml = '<i class="bx bxs-building-house"></i>';
+        let corBg = '#3498db';
+        
+        switch(un.TipoId) {
+            case 0: iconHtml = '<i class="bx bxs-bank"></i>'; corBg = '#2c3e50'; break; // Instituicao Publica
+            case 1: iconHtml = '<i class="bx bxs-buildings"></i>'; corBg = '#7f8c8d'; break; // Instituicao Privada
+            case 2: iconHtml = '<i class="bx bx-plus-medical"></i>'; corBg = '#e74c3c'; break; // Saude
+            case 3: iconHtml = '<i class="bx bxs-graduation"></i>'; corBg = '#f39c12'; break; // Educacao
+            case 4: iconHtml = '<i class="bx bx-building"></i>'; corBg = '#9b59b6'; break; // Fundacao
+        }
+
+        let markerCss = `background: ${corBg}; color: white; border: 2px solid white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 16px;`;
+        
+        let customIcon = L.divIcon({
+            className: 'custom-unidade-icon',
+            html: `<div style="${markerCss}">${iconHtml}</div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        let marker = L.marker([un.Latitude, un.Longitude], { icon: customIcon }).addTo(map);
+        
+        let popupContent = `
+            <div style="min-width: 180px; font-family: sans-serif; padding: 4px;">
+                <h6 style="margin: 0; padding-bottom: 5px; border-bottom: 1px solid #ccc; color: ${corBg}; display: flex; align-items: center; gap: 5px;">
+                    ${iconHtml} <strong style="font-size: 1.1em;">${un.Nome}</strong>
+                </h6>
+                <div style="margin-top: 8px; font-size: 0.9em; color: #555;">
+                    <div><strong>Tipo:</strong> ${un.Tipo}</div>
+                </div>
+            </div>
+        `;
+        marker.bindPopup(popupContent);
+        markerUnidadesLayers.push(marker);
+    });
 }
 
 function obterDadosMonitoramento() {
@@ -282,6 +327,7 @@ function renderizarRotasNoMapa() {
         let pacienteHtml = rota.nomePaciente ? `<div><strong>Paciente:</strong> <span style="color: #2980b9;">${rota.nomePaciente}</span></div>` : "";
         let medicoHtml = rota.medicoResponsavel ? `<div><strong>Médico Resp.:</strong> ${rota.medicoResponsavel}</div>` : "";
         let dataExecucaoHtml = rota.dataParaExecucao ? `<div><strong>Data Agendada:</strong> ${rota.dataParaExecucao}</div>` : "";
+        let desvioHtml = rota.sujeitoADesvio === true ? `<div style="margin-top: 6px; padding: 4px; background: #ffeaa7; border-left: 3px solid #e17055; color: #d63031; font-weight: bold; font-size: 0.85em; border-radius:3px;"><i class="bx bx-error-circle"></i> ALERTA: Desvio detectado</div>` : "";
 
         let popupContent = `
             <div class="popup-content" style="min-width: 200px;">
@@ -297,6 +343,7 @@ function renderizarRotasNoMapa() {
                     <div class="mt-2 text-muted" style="font-size: 0.85em;">
                         ${tempoLabel} ${rota.ultimaAtualizacao.substring(11, 19)}
                     </div>
+                    ${desvioHtml}
                 </div>
                 ${paradasListHtml}
             </div>`;

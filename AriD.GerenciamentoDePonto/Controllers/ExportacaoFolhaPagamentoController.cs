@@ -1,7 +1,8 @@
-﻿using AriD.BibliotecaDeClasses.Comum;
+using AriD.BibliotecaDeClasses.Comum;
 using AriD.BibliotecaDeClasses.DTO;
 using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
+using AriD.BibliotecaDeClasses.Enumeradores.Permissao;
 using AriD.GerenciamentoDePonto.Helpers;
 using AriD.Servicos.Extensao;
 using AriD.Servicos.Servicos.Interfaces;
@@ -36,6 +37,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Visualizar)) return RedirectToAction("ErroDeAcesso", "ControleDeAcesso");
+
             var s = HttpContext.DadosDaSessao();
             var orgId = s.OrganizacaoId;
 
@@ -71,6 +74,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult Exportar(int unidadeId, string mesDeReferencia, int layoutId, int formatoArquivo, bool somenteServidoresHabilitados = true)
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Gerenciar)) 
+                return Json(new { sucesso = false, mensagem = "Sem permissão para exportar." });
+
             var mesAno = new MesAno(mesDeReferencia);
             var orgId = HttpContext.DadosDaSessao().OrganizacaoId;
 
@@ -118,6 +124,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> ModalLayout(int id = 0)
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Gerenciar)) 
+                return Json(new { sucesso = false, mensagem = "Sem permissão para gerenciar layouts." });
+
             var orgId = HttpContext.DadosDaSessao().OrganizacaoId;
 
             LayoutExportacaoFolhaPagamento layout;
@@ -157,6 +166,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult SalvarLayout(LayoutExportacaoFolhaPagamento layout, string camposJson)
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Gerenciar)) 
+                return Json(new { sucesso = false, mensagem = "Sem permissão." });
+
             var orgId = HttpContext.DadosDaSessao().OrganizacaoId;
 
             var campos = string.IsNullOrWhiteSpace(camposJson)
@@ -172,6 +184,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> ModalCodigos()
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Gerenciar)) 
+                return Json(new { sucesso = false, mensagem = "Sem permissão." });
+
             var orgId = HttpContext.DadosDaSessao().OrganizacaoId;
 
             var lista = _servicoExport.ObtenhaMapeamentos(orgId);
@@ -197,6 +212,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost]
         public IActionResult SalvarCodigos(string mapeamentosJson)
         {
+            if (!HttpContext.PossuiPermissao(eItemDePermissao_ExportacaoFolhaPagamento.Gerenciar)) 
+                return Json(new { sucesso = false, mensagem = "Sem permissão." });
+
             var orgId = HttpContext.DadosDaSessao().OrganizacaoId;
 
             var mapeamentos = string.IsNullOrWhiteSpace(mapeamentosJson)
@@ -274,8 +292,45 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
 
             doc.Add(tblIgn);
+
+            var sessao = HttpContext.DadosDaSessao();
+            AdicioneAssinaturaPadrao(doc, sessao);
+
             doc.Close();
             return ms.ToArray();
+        }
+
+        private static void AdicioneAssinaturaPadrao(Document document, SessaoDTO sessao)
+        {
+            Table tabela = new Table(2);
+            tabela.SetWidth(UnitValue.CreatePercentValue(100));
+            tabela.SetMarginTop(30f);
+
+            Cell assinatura1 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura1.SetTextAlignment(TextAlignment.CENTER);
+            assinatura1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell assinatura2 = new Cell().Add(new Paragraph("__________________________________"));
+            assinatura2.SetTextAlignment(TextAlignment.CENTER);
+            assinatura2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(assinatura1);
+            tabela.AddCell(assinatura2);
+
+            Cell nome1 = new Cell().Add(new Paragraph("Operador: " + sessao.UsuarioNome));
+            nome1.SetTextAlignment(TextAlignment.CENTER);
+            nome1.SetFontSize(8f);
+            nome1.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            Cell nome2 = new Cell().Add(new Paragraph("Responsável / Direção"));
+            nome2.SetTextAlignment(TextAlignment.CENTER);
+            nome2.SetFontSize(8f);
+            nome2.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+            tabela.AddCell(nome1);
+            tabela.AddCell(nome2);
+
+            document.Add(tabela);
         }
 
         private static string FmtHHMM(int minutos)

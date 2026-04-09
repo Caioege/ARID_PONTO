@@ -1,4 +1,7 @@
-﻿namespace AriD.BibliotecaDeClasses.ParametrosDeConsulta
+using System;
+using System.Collections.Generic;
+
+namespace AriD.BibliotecaDeClasses.ParametrosDeConsulta
 {
     public class ParametrosDeConsultaRegistroDePonto
     {
@@ -8,5 +11,8 @@
         public int Pagina { get; set; }
         public int TotalPorPagina { get; set; }
         public int? DepartamentoId { get; set; }
+        public DateTime? DataInicio { get; set; }
+        public DateTime? DataFim { get; set; }
+        public int? FiltroUnidadeId { get; set; }
     }
 }

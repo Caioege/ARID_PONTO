@@ -1,4 +1,4 @@
-﻿namespace AriD.BibliotecaDeClasses.DTO
+namespace AriD.BibliotecaDeClasses.DTO
 {
     public class DashboardDTO
     {
@@ -10,5 +10,6 @@
         public Tuple<string[], int[]> RegistrosPorEquipamento { get; set; } = new Tuple<string[], int[]>(null, null);
 
         public List<DashboardRegistroEquipamentoDTO> UltimosRegistrosRecebidos { get; set; } = [];
+        public List<AlertaManutencaoDTO> AlertasDeManutencao { get; set; } = new List<AlertaManutencaoDTO>();
     }
-}
+}

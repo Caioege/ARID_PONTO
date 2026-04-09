@@ -70,5 +70,6 @@ namespace AriD.BibliotecaDeClasses.DTO
         public List<MonitoramentoParadaDTO> Paradas { get; set; }
         public int? TipoVeiculo { get; set; }
         public bool Finalizada { get; set; }
+        public bool SujeitoADesvio { get; set; }
     }
 }
