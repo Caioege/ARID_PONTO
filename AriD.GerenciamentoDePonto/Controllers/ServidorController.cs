@@ -156,8 +156,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     if (string.IsNullOrWhiteSpace(MotivoAlteracaoConfiguracaoApp))
                         throw new ApplicationException("É obrigatório informar o motivo da alteração da configuração de liveness do aplicativo.");
 
-                    servidor.ListaDeHistoricosDeConfiguracaoApp = servidorDB.ListaDeHistoricosDeConfiguracaoApp ?? new List<HistoricoConfiguracaoAppServidor>();
-                    servidor.ListaDeHistoricosDeConfiguracaoApp.Add(new HistoricoConfiguracaoAppServidor
+                    servidorDB.ListaDeHistoricosDeConfiguracaoApp.Add(new HistoricoConfiguracaoAppServidor
                     {
                         TipoComprovacaoAnterior = servidorDB.TipoComprovacaoPontoApp,
                         TipoComprovacaoNova = servidor.TipoComprovacaoPontoApp,
@@ -168,11 +167,33 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     });
                 }
                 
-                servidor.ListaDeAnexos = servidorDB.ListaDeAnexos;
-                servidor.ListaDeObservacoes = servidorDB.ListaDeObservacoes;
-                servidor.VinculosDeTrabalho = servidorDB.VinculosDeTrabalho;
+                servidorDB.Pessoa.Nome = servidor.Pessoa.Nome;
+                servidorDB.Pessoa.NomeSocial = servidor.Pessoa.NomeSocial;
+                servidorDB.Pessoa.Cpf = servidor.Pessoa.Cpf;
+                servidorDB.Pessoa.Rg = servidor.Pessoa.Rg;
+                servidorDB.Pessoa.DataDeNascimento = servidor.Pessoa.DataDeNascimento;
+                
+                servidorDB.Pessoa.Endereco.Cep = servidor.Pessoa.Endereco.Cep;
+                servidorDB.Pessoa.Endereco.Logradouro = servidor.Pessoa.Endereco.Logradouro;
+                servidorDB.Pessoa.Endereco.Complemento = servidor.Pessoa.Endereco.Complemento;
+                servidorDB.Pessoa.Endereco.Numero = servidor.Pessoa.Endereco.Numero;
+                servidorDB.Pessoa.Endereco.Bairro = servidor.Pessoa.Endereco.Bairro;
+                servidorDB.Pessoa.Endereco.Cidade = servidor.Pessoa.Endereco.Cidade;
+                servidorDB.Pessoa.Endereco.UF = servidor.Pessoa.Endereco.UF;
 
-                _servico.Atualizar(servidor);
+                servidorDB.AcessoAoAplicativo = servidor.AcessoAoAplicativo;
+                servidorDB.RegistroDePontoNoAplicativo = servidor.RegistroDePontoNoAplicativo;
+                servidorDB.TipoComprovacaoPontoApp = servidor.TipoComprovacaoPontoApp;
+                servidorDB.RegistroManualNoAplicativo = servidor.RegistroManualNoAplicativo;
+                servidorDB.RegistroDeAtestadoNoAplicativo = servidor.RegistroDeAtestadoNoAplicativo;
+                servidorDB.TelefoneDeContato = servidor.TelefoneDeContato;
+                servidorDB.Email = servidor.Email;
+                servidorDB.CodigoCRM = servidor.CodigoCRM;
+                servidorDB.EspecialidadeMedica = servidor.EspecialidadeMedica;
+                servidorDB.HabilitaExportacaoParaFolhaDePagamento = servidor.HabilitaExportacaoParaFolhaDePagamento;
+                servidorDB.AlertaManutencaoDePonto = servidor.AlertaManutencaoDePonto;
+
+                _servico.Atualizar(servidorDB);
             }
 
             return Json(new { sucesso = true, mensagem = "Os dados foram salvos.", id = id });
@@ -527,7 +548,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var dados = _servico.ObtenhaListaPaginada(
                 CarregueFiltrosDePesquisa(listaPaginada), 
                 listaPaginada.Pagina, 
-                listaPaginada.QuantidadeDeItensPorPagina);
+                listaPaginada.QuantidadeDeItensPorPagina,
+                c => c.Pessoa?.Nome,
+                true);
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }

@@ -22,5 +22,6 @@ namespace AriD.Servicos.Repositorios.Interfaces
 
         MySqlConnection MySQLConn();
         List<T> ConsultaDapper<T>(string query, object parametros);
+        void ExecutarComando(string query, object parametros);
     }
 }

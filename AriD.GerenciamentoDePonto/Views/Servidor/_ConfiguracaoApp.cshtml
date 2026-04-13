@@ -142,8 +142,10 @@
 
             if (original && original !== atual && original !== '') {
                 $('#box-motivo-mudanca-app').fadeIn();
+                $('[for="MotivoAlteracaoConfiguracaoApp"]').addClass('obrigatorio');
             } else {
                 $('#box-motivo-mudanca-app').fadeOut();
+                $('[for="MotivoAlteracaoConfiguracaoApp"]').removeClass('obrigatorio');
                 $('#MotivoAlteracaoConfiguracaoApp').val('');
             }
             

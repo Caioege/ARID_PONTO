@@ -65,6 +65,7 @@ builder.Services.AddScoped(typeof(IServicoRegistroDePonto), typeof(ServicoRegist
 builder.Services.AddScoped(typeof(IServicoDeArquivoFonteDeDados), typeof(ServicoDeArquivoFonteDeDados));
 builder.Services.AddScoped(typeof(IServicoDeDashboard), typeof(ServicoDeDashboard));
 builder.Services.AddScoped(typeof(IServicoDeAplicativo), typeof(ServicoDeAplicativo));
+builder.Services.AddScoped(typeof(IServicoDeAplicativoDeRastreio), typeof(ServicoDeAplicativoDeRastreio));
 builder.Services.AddScoped(typeof(IWhatsappService), typeof(WhatsappService));
 builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
 builder.Services.AddScoped(typeof(IServicoDeServidor), typeof(ServicoDeServidor));

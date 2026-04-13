@@ -32,11 +32,11 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 int organizacaoId = dadosDaSessao.OrganizacaoId;
 
                 ViewBag.Unidades = new SelectList(
-                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId && dadosDaSessao.UnidadeOrganizacionais.Contains(c.Id))
+                    _servicoUnidade.ObtenhaLista(c => c.OrganizacaoId == organizacaoId)
                     .OrderBy(c => c.Nome),
                     "Id", "Nome");
 
-                ConfigureDadosDaTabelaPaginada(listaPaginada);
+                ConfigureDadosDaTabelaPaginada(listaPaginada, true);
                 return View(listaPaginada);
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
         }
 
-        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<RegistroDePontoIndexDTO> listaPaginada)
+        private void ConfigureDadosDaTabelaPaginada(ListaPaginada<RegistroDePontoIndexDTO> listaPaginada, bool requisicaoInicial = false)
         {
             var parametros = JsonConvert.DeserializeObject<ParametrosDeConsultaRegistroDePonto>(listaPaginada.Adicional);
 
@@ -70,8 +70,16 @@ namespace AriD.GerenciamentoDePonto.Controllers
             parametros.TotalPorPagina = listaPaginada.QuantidadeDeItensPorPagina;
             parametros.Pagina = listaPaginada.Pagina;
 
-            if (parametros.DataInicio.HasValue) parametros.DataInicio = parametros.DataInicio.Value.Date;
-            if (parametros.DataFim.HasValue) parametros.DataFim = parametros.DataFim.Value.Date;
+            if (requisicaoInicial)
+            {
+                parametros.DataInicio = DateTime.Today;
+                parametros.DataFim = DateTime.Today;
+            }
+            else
+            {
+                if (parametros.DataInicio.HasValue) parametros.DataInicio = parametros.DataInicio.Value.Date;
+                if (parametros.DataFim.HasValue) parametros.DataFim = parametros.DataFim.Value.Date;
+            }
 
             var dados = _servico.ObtenhaListaPaginadaDTO(parametros);
 

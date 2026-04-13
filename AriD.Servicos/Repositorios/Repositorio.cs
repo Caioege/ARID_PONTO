@@ -121,5 +121,13 @@ namespace AriD.Servicos.Repositorios
                 return conn.Query<T>(query, parametros).ToList();
             }
         }
+
+        public void ExecutarComando(string query, object parametros)
+        {
+            using (var conn = MySQLConn())
+            {
+                conn.Execute(query, parametros);
+            }
+        }
     }
 }

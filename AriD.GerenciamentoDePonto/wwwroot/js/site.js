@@ -383,7 +383,7 @@ function adicioneItemNoCampoSelecionavel(campoSelecionavel, valor, texto) {
 }
 
 function carregarTabelaPaginadaComPesquisa(url = '/TabelaPaginada', grid = 'grid') {
-    $(`#${grid}`).load(`${url}?TermoDeBusca=${$('#TermoDeBusca').val()}&adicional=${$('#Adicional').val() || '{}'}`);
+    $(`#${grid}`).load(encodeURI(`${url}?TermoDeBusca=${$('#TermoDeBusca').val()}&adicional=${$('#Adicional').val() || '{}'}`));
 }
 
 function ajusteValidacaoDeCampo(campo, valido) {

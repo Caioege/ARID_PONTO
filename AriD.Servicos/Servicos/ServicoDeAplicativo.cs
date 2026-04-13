@@ -302,6 +302,15 @@ namespace AriD.Servicos.Servicos
                 var dataAgora = DateTime.Now;
                 var vinculo = _repositorioVinculo.Obtenha(registro.VinculoDeTrabalhoId);
 
+                var configuracaoAplicativo = eTipoComprovacaoPontoApp.Nenhuma;
+                if (registro.ImagemDesafio != null) configuracaoAplicativo = eTipoComprovacaoPontoApp.LivenessFacial;
+                else if (registro.Imagem != null) configuracaoAplicativo = eTipoComprovacaoPontoApp.ApenasSelfie;
+
+                bool ehPontoComum = !registro.Manual && !registro.JustificativaDeAusenciaId.HasValue;
+
+                if (ehPontoComum && vinculo.Servidor.TipoComprovacaoPontoApp != configuracaoAplicativo)
+                    throw new ApplicationException("Suas configurações de segurança foram alteradas. Por favor, saia do aplicativo e entre novamente para sincronizar os dados e depois refaça o registro de ponto.");
+
                 string anexoPontoNome = null;
                 string anexoLivenessNome = null;
 
@@ -436,17 +445,23 @@ namespace AriD.Servicos.Servicos
                 var motivoAuditoria = string.Empty;
                 if (registro.IsMockLocation)
                     motivoAuditoria += "[ALERTA] GPS Simulado detectado; ";
-                if (!registro.LivenessSuccess)
+
+                bool vivacidadeObrigatoria = vinculo.Servidor.TipoComprovacaoPontoApp == eTipoComprovacaoPontoApp.LivenessFacial;
+                bool livenessFalhou = vivacidadeObrigatoria && !registro.LivenessSuccess;
+
+                if (livenessFalhou)
                     motivoAuditoria += "[ALERTA] Falha no teste de vivacidade (Liveness); ";
+
                 if (foraDaCerca)
                     motivoAuditoria += "[AVISO] Registro fora da cerca virtual; ";
+
                 if (registro.Manual)
                     motivoAuditoria += "[AVISO] Registro manual; ";
 
                 var registroAplicativo = new RegistroAplicativo
                 {
                     OrganizacaoId = vinculo.OrganizacaoId,
-                    Situacao = registro.Manual || foraDaCerca || registro.IsMockLocation || !registro.LivenessSuccess ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
+                    Situacao = (registro.Manual || foraDaCerca || registro.IsMockLocation || livenessFalhou) ? eSituacaoRegistroAplicativo.AguardandoAvaliacao : eSituacaoRegistroAplicativo.Aprovado,
                     Manual = registro.Manual,
                     Observacao = registro.Observacao,
                     DataHora = registro.Manual && registro.DataHora.HasValue ? registro.DataHora.Value : dataAgora,

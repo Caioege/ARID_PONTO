@@ -7,6 +7,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
+    /// <summary>
+    /// Controller responsável pelas funcionalidades do aplicativo móvel de Gestão de Ponto (Servidor/Colaborador).
+    /// </summary>
+    /// <remarks>
+    /// <b>Arquitetura e Decisão Técnica:</b>
+    /// Esta API foi implementada dentro do projeto ASP.NET MVC principal a pedido do proprietário da aplicação.
+    /// O objetivo inicial é reduzir custos de hospedagem e manter uma infraestrutura enxuta durante a fase de lançamento,
+    /// evitando a necessidade de gerenciar múltiplas instâncias de hospedagem.
+    /// 
+    /// <b>Evolução Futura:</b>
+    /// Existe um planejamento para que, em etapas futuras de escalabilidade, estas funcionalidades de API sejam 
+    /// extraídas para um microserviço ou aplicação distinta dentro da mesma solução, separando completamente 
+    /// as responsabilidades de Frontend Web das APIs de integração.
+    /// 
+    /// <b>Comunicação:</b>
+    /// Este controller comunica-se prioritariamente com o Aplicativo Móvel AriD Ponto (versão Servidor), 
+    /// fornecendo dados de autenticação, horários, registro de ponto e consulta de espelho de ponto.
+    /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
     public class AppController : Controller
