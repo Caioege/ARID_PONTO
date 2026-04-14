@@ -117,7 +117,23 @@
     }
 
     <ul class="menu-inner py-1" id="main-menu-list">
-        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.Servidor)
+        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+        {
+            <li class='menu-item searchable-item'>
+                <a onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')" href="javascript:void(0)" class="menu-link">
+                    <i class='menu-icon bx bx-buildings'></i>
+                    <div class="menu-text-content">Organizações</div>
+                </a>
+            </li>
+
+            <li class='menu-item searchable-item'>
+                <a onclick="CarregarPagina('@Url.Action("Index", "Usuario")')" href="javascript:void(0)" class="menu-link">
+                    <i class='menu-icon bx bxs-user-account'></i>
+                    <div class="menu-text-content" style="white-space: normal !important;">Cadastro de Usuários</div>
+                </a>
+            </li>
+        }
+        else if (dadosDaSessao.Perfil == ePerfilDeAcesso.Servidor)
         {
             <li class='menu-item searchable-item'>
                 <a onclick="CarregarPagina('@Url.Action("RegistrosDePonto", "PortalServidor")')" href="javascript:void(0)" class="menu-link">

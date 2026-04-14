@@ -15,56 +15,6 @@
     var extPercentuais = ViewBag.ExtPercentuais as List<decimal> ?? new();
 }
 
-<style>
-    .table thead tr th,
-    .table tbody tr td {
-    padding: 5px !important;
-    }
-
-    .linha-servidor:hover {
-    background-color: #e9e9e938;
-    }
-
-    .item-selecionavel:hover {
-    cursor: pointer;
-    background: lightyellow !important;
-    }
-
-    .linha-afastamento-abono > td:not(:first-child) {
-    background: ivory;
-    }
-
-    .linha-afastamento-sem-abono > td:not(:first-child) {
-    background: #fff0f3;
-    }
-
-    .legenda > ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    }
-
-    .he-pendente {
-        background: #fff3cd !important;
-    }
-
-    .he-badge {
-        cursor: pointer;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 11px;
-        border: 1px solid #ffeeba;
-        background: #fff3cd;
-        color: #856404;
-        display: inline-flex;
-        gap: 6px;
-        align-items: center;
-    }
-
-        .he-badge:hover {
-            filter: brightness(0.98);
-        }
-</style>
 
 @if (!string.IsNullOrEmpty(observacaoServidor))
 {
@@ -84,7 +34,7 @@
 </div>
 
 @Html.Hidden("PodeMovimentarRegistros", Context.PossuiPermissao(eItemDePermissao_FolhaDePonto.MoverRegistros).ToString().ToLower())
-<table class="table table-bordered">
+<table class="table table-bordered table-folha">
     <thead>
         <tr style="background-color: aliceblue;">
             <th class="text-center">

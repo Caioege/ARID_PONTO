@@ -12,10 +12,11 @@ function assineChangeUnidadeOrganizacional() {
 
 		$('#div-ponto').html('');
 
-		$('#btn-imprimir').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-gerenciar-app').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-acoes-container').hide();
+		$('#btn-imprimir').attr("style", "display: none !important");
+		$('#btn-gerenciar-app').attr("style", "display: none !important");
+		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important");
+		$('#btn-resetar').attr("style", "display: none !important");
 		$('#btn-fechar-ponto').attr("style", "display: none !important");
 
 		if ($(this).val()) {
@@ -50,11 +51,12 @@ function assineChangeServidor() {
 
 		$('#div-ponto').html('');
 
-		$('#btn-imprimir').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-gerenciar-app').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-ocorrencias-espelho').attr("style", "display: none !important; margin-right: 5px;");
-		$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+		$('#btn-acoes-container').hide();
+		$('#btn-imprimir').attr("style", "display: none !important");
+		$('#btn-gerenciar-app').attr("style", "display: none !important");
+		$('#btn-visualizarhistoricofolha').attr("style", "display: none !important");
+		$('#btn-ocorrencias-espelho').attr("style", "display: none !important");
+		$('#btn-resetar').attr("style", "display: none !important");
 		$('#btn-fechar-ponto').attr("style", "display: none !important");
 
 		if ($(this).val()) {
@@ -101,15 +103,16 @@ function carregarFolhaDePonto(mensagem) {
 			if (data.sucesso) {
 				$('#div-ponto').html(data.html);
 
-				$('#btn-imprimir').attr("style", "display: inline !important; margin-right: 5px;");
-				$('#btn-gerenciar-app').attr("style", "display: inline !important; margin-right: 5px;");
-				$('#btn-visualizarhistoricofolha').attr("style", "display: inline !important; margin-right: 5px;");
-				$('#btn-ocorrencias-espelho').attr("style", "display: inline !important; margin-right: 5px; color: #fff;");
+				$('#btn-acoes-container').show();
+				$('#btn-imprimir').attr("style", "display: block !important");
+				$('#btn-gerenciar-app').attr("style", "display: block !important");
+				$('#btn-visualizarhistoricofolha').attr("style", "display: block !important");
+				$('#btn-ocorrencias-espelho').attr("style", "display: block !important");
 
 				if (!data.exibirAbrir) {
-					$('#btn-resetar').attr("style", "display: inline !important; margin-right: 5px;");
+					$('#btn-resetar').attr("style", "display: block !important");
 				} else {
-					$('#btn-resetar').attr("style", "display: none !important; margin-right: 5px;");
+					$('#btn-resetar').attr("style", "display: none !important");
 				}
 
 				assineEventoAvancarRecuarPonto();
@@ -125,7 +128,7 @@ function carregarFolhaDePonto(mensagem) {
 
 function ajustarExibicaoBotaoFecharPonto(exibir) {
 	if (exibir) {
-		$('#btn-fechar-ponto').attr("style", "display: inline !important");
+		$('#btn-fechar-ponto').attr("style", "display: block !important");
 	} else {
 		$('#btn-fechar-ponto').attr("style", "display: none !important");
 	}
@@ -133,7 +136,7 @@ function ajustarExibicaoBotaoFecharPonto(exibir) {
 
 function ajustarExibicaoBotaoAbrirPonto(exibir) {
 	if (exibir) {
-		$('#btn-abrir-ponto').attr("style", "display: inline !important");
+		$('#btn-abrir-ponto').attr("style", "display: block !important");
 	} else {
 		$('#btn-abrir-ponto').attr("style", "display: none !important");
 	}

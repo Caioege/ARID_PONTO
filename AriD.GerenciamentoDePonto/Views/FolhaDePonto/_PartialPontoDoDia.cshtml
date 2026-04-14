@@ -1,38 +1,9 @@
-﻿@model List<PontoDoDia>
+@model List<PontoDoDia>
 
 @{
     const int larguraPeriodo = 60;
 }
 
-<style>
-    .table thead tr th,
-    .table tbody tr td {
-        padding: 5px !important;
-    }
-
-    .linha-servidor:hover {
-        background-color: #e9e9e938;
-    }
-
-    .item-selecionavel:hover {
-        cursor: pointer;
-        background: lightyellow !important;
-    }
-
-    .linha-afastamento-abono > td:not(:first-child) {
-        background: ivory;
-    }
-
-    .linha-afastamento-sem-abono > td:not(:first-child) {
-        background: #fff0f3;
-    }
-
-    .legenda > ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-</style>
 
 @* <div class="legenda">
     <ul style="display: flex; justify-content: space-evenly;">
@@ -49,7 +20,7 @@
 </div>
 <br /> *@
 
-<table class="table table-bordered">
+<table class="table table-bordered table-folha">
     <thead>
         <tr style="background-color: aliceblue;">
             <th class="text-center">
