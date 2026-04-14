@@ -1,4 +1,6 @@
+@using AriD.BibliotecaDeClasses.DTO
 @using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.Servicos.Extensao
 @model Organizacao
 
 @{
@@ -21,9 +23,9 @@
         border: 1px solid gray
     }
 
-        .img-foto:hover {
-            cursor: pointer;
-        }
+    .img-foto:hover {
+        cursor: pointer;
+    }
 
     @@media (width <= 770px) {
         #div-dados-direita {
@@ -49,76 +51,173 @@
     </div>
     <div class="card-body">
         <form id="formulario-organizacao">
-            <div id="div-dados-esquerda">
-                <img class="img-foto" src="/Organizacao/Brasao/@(Model.Id)?c=@DateTime.Now.Ticks" width="140px" height="140px" />
-            </div>
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.EnderecoId)
-            <div id="div-dados-direita">
-                <div class="row">
-                    <div class="col col-lg-12 col-md-12 col-xs-12">
-                        <label class="form-label obrigatorio" for="Nome">Nome</label>
-                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-lg-2 col-md-4 col-xs-12">
-                        <label class="form-label obrigatorio" for="Ativa">Ativa</label>
-                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
-                        {
-                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
-                        }
-                        else
-                        {
-                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
-                        }
-                    </div>
 
-                    <div class="col col-lg-2 col-md-4 col-xs-12">
-                        <label class="form-label obrigatorio" for="GestaoMobileAtivo">Gestão Mobile</label>
-                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
-                        {
-                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select" })
-                        }
-                        else
-                        {
-                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
-                        }
-                    </div>
+            <div class="nav-align-top mb-6">
+                <ul class="nav nav-pills custom-nav-pills mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados-gerais" aria-controls="tab-dados-gerais" aria-selected="true">
+                            <i class="tf-icons bx bx-buildings"></i>
+                            DADOS GERAIS
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-configuracoes" aria-controls="tab-configuracoes" aria-selected="false" tabindex="-1">
+                            <i class="tf-icons bx bx-cog"></i>
+                            CONFIGURAÇÕES
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-unidades" aria-controls="tab-unidades" aria-selected="false" tabindex="-1">
+                            <i class="tf-icons bx bx-list-ul"></i>
+                            UNIDADES
+                        </button>
+                    </li>
+                </ul>
 
-                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
-                    {
-                        <div class="col col-lg-3 col-md-4 col-xs-12">
-                            <label class="form-label obrigatorio" for="EnvioDeMensagemWhatsAppExperimental">Envio de mensagem WhatsApp (Experimental)</label>
-                            @Html.CheckboxDropDownListFor(model => model.EnvioDeMensagemWhatsAppExperimental, new { @class = "form-select" })
+                <div class="border rounded p-4 shadow-sm" style="background-color: #fff; border-color: #d9dee3 !important;">
+                    <div class="tab-content" style="padding: 0 !important; box-shadow: none;">
+                        
+                        <!-- Tab: Dados Gerais -->
+                        <div class="tab-pane fade active show" id="tab-dados-gerais" role="tabpanel">
+                            <div id="div-dados-esquerda">
+                                <img class="img-foto" src="/Organizacao/Brasao/@(Model.Id)?c=@DateTime.Now.Ticks" width="140px" height="140px" />
+                            </div>
+                            <div id="div-dados-direita">
+                                <div class="row">
+                                    <div class="col col-lg-12 col-md-12 col-xs-12">
+                                        <label class="form-label obrigatorio" for="Nome">Nome</label>
+                                        @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-lg-3 col-md-4 col-xs-12">
+                                        <label class="form-label obrigatorio" for="Ativa">Ativa</label>
+                                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                                        {
+                                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                                        }
+                                        else
+                                        {
+                                            @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
+                                        }
+                                    </div>
+
+                                    <div class="col col-lg-3 col-md-4 col-xs-12">
+                                        <label class="form-label obrigatorio" for="GestaoMobileAtivo">Gestão Mobile</label>
+                                        @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                                        {
+                                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select" })
+                                        }
+                                        else
+                                        {
+                                            @Html.CheckboxDropDownListFor(model => model.GestaoMobileAtivo, new { @class = "form-select", @disabled = "disabled", @readonly = "readonly" })
+                                        }
+                                    </div>
+
+                                    @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+                                    {
+                                        <div class="col col-lg-4 col-md-4 col-xs-12">
+                                            <label class="form-label obrigatorio" for="EnvioDeMensagemWhatsAppExperimental">Envio de mensagem WhatsApp (Experimental)</label>
+                                            @Html.CheckboxDropDownListFor(model => model.EnvioDeMensagemWhatsAppExperimental, new { @class = "form-select" })
+                                        </div>
+
+                                        <div class="col col-lg-2 col-md-4 col-xs-12" onclick="enviarMensagemWhatsAppTeste()">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button type="button" class="btn btn-outline-primary btn-sm d-block w-100"><i class='bx bxl-whatsapp'></i> Enviar teste</button>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col col-lg-6 col-md-6 col-xs-12">
+                                        <label class="form-label" for="LatitudeCentroide">Latitude Central (Gestão Mobile)</label>
+                                        @Html.TextBoxFor(model => model.LatitudeCentroide, new { @class = "form-control", placeholder = "Ex: -15.7942" })
+                                    </div>
+                                    <div class="col col-lg-6 col-md-6 col-xs-12">
+                                        <label class="form-label" for="LongitudeCentroide">Longitude Central (Gestão Mobile)</label>
+                                        @Html.TextBoxFor(model => model.LongitudeCentroide, new { @class = "form-control", placeholder = "Ex: -47.8821" })
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <hr />
+                            @{
+                                ViewBag.PrefixoEndereco = "Endereco.";
+                            }
+                            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
                         </div>
 
-                        <div class="col col-lg-2 col-md-4 col-xs-12 float-end" onclick="enviarMensagemWhatsAppTeste()">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="button" class="btn btn-primary btn-sm"><i class='bx bxl-whatsapp'></i> Enviar teste</button>
+                        <!-- Tab: Configurações -->
+                        <div class="tab-pane fade" id="tab-configuracoes" role="tabpanel">
+                            <div class="row">
+                                <div class="col col-xs-12">
+                                    <h5 class="fw-bold"><i class='bx bx-rename'></i> Nomenclaturas</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-md-4 col-xs-12">
+                                    <label class="form-label obrigatorio" for="NomenclaturaServidor">Servidores</label>
+                                    @Html.EnumDropDownListFor(model => model.NomenclaturaServidor, new { @class = "form-select" })
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="row">
+                                <div class="col col-xs-12">
+                                    <h5 class="fw-bold"><i class='bx bx-bell'></i> Notificações de Conectividade</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-lg-4 col-md-4 col-xs-12">
+                                    <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações</label>
+                                    @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
+                                </div>
+                                <div class="col col-lg-8 col-md-8 col-xs-12">
+                                    <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento</label>
+                                    @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: TI@suaempresa.com.br" })
+                                    <small class="text-muted">Se ativado, envia um resumo de todos os equipamentos com problema na organização.</small>
+                                </div>
+                            </div>
                         </div>
-                    }
-                </div>
-                <!-- Gestao Mobile Configuration -->
-                <div class="row mt-2">
-                    <div class="col col-lg-3 col-md-4 col-xs-12">
-                        <label class="form-label" for="LatitudeCentroide">Latitude Central (Gestão Mobile)</label>
-                        @Html.TextBoxFor(model => model.LatitudeCentroide, new { @class = "form-control", placeholder = "Ex: -15.7942" })
-                    </div>
-                    <div class="col col-lg-3 col-md-4 col-xs-12">
-                        <label class="form-label" for="LongitudeCentroide">Longitude Central (Gestão Mobile)</label>
-                        @Html.TextBoxFor(model => model.LongitudeCentroide, new { @class = "form-control", placeholder = "Ex: -47.8821" })
+
+                        <!-- Tab: Unidades -->
+                        <div class="tab-pane fade" id="tab-unidades" role="tabpanel">
+                            <div class="row mb-4 align-items-end">
+                                <div class="col col-md-5 col-xs-12">
+                                    <label class="form-label">Filtrar por Nome</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-search'></i></span>
+                                        <input type="text" id="filtro-nome-unidade" class="form-control" placeholder="Digite o nome da unidade..." />
+                                    </div>
+                                </div>
+                                <div class="col col-md-4 col-xs-12">
+                                    <label class="form-label">Filtrar por Tipo</label>
+                                        @{
+                                            var listaDeItens = new List<CodigoDescricaoDTO>();
+                                            foreach (eTipoUnidadeOrganizacional item in Enum.GetValues(typeof(eTipoUnidadeOrganizacional)))
+                                            {
+                                            listaDeItens.Add(new((int)item, item.DescricaoDoEnumerador()));
+                                            }
+                                        }
+                                    @Html.DropDownList("filtro-tipo-unidade", new SelectList(listaDeItens, "Codigo", "Descricao"), "Todos os Tipos", new { @class = "form-select" })
+                                </div>
+                                <div class="col col-md-3 col-xs-12 text-end">
+                                    <button type="button" class="btn btn-primary" onclick="CarregarPagina('@Url.Action("Adicionar", "UnidadeOrganizacional", new { organizacaoId = Model.Id })')">
+                                        <i class='bx bx-plus-circle'></i> Nova Unidade
+                                    </button>
+                                </div>
+                            </div>
+                            <hr />
+                            @Html.Hidden("Adicional")
+                            <div id="grid"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <br />
-            @{
-                ViewBag.PrefixoEndereco = "Endereco.";
-            }
-            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
-            <br />
-
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar
             </button>
@@ -126,53 +225,7 @@
             <button type="button" class="btn btn-primary" id="btn-salvar">
                 <i class='bx bxs-save'></i> Salvar
             </button>
-
-        <hr />
-        <div class="row">
-            <div class="col col-xs-12">
-                <h5>Nomenclaturas</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md-4 col-xs-12">
-                <label class="form-label obrigatorio" for="NomenclaturaServidor">Servidores</label>
-                @Html.EnumDropDownListFor(model => model.NomenclaturaServidor, new { @class = "form-select" })
-            </div>
-        </div>
-
-        <hr />
-        <div class="row">
-            <div class="col col-xs-12">
-                <h5>Notificações de Conectividade</h5>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-lg-3 col-md-4 col-xs-12">
-                <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações de conectividade</label>
-                @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
-            </div>
-            <div class="col col-lg-6 col-md-8 col-xs-12">
-                <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento das notificações</label>
-                @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: TI@suaempresa.com.br" })
-                <small class="text-muted">Se ativado, envia um resumo de todos os equipamentos com problema na organização.</small>
-            </div>
-        </div>
         </form>
-
-        <hr />
-        <div class="row">
-            <div class="col col-md-8 col-xs-12">
-                <h5>Unidades Organizacionais</h5>
-            </div>
-            <div class="col col-md-4 col-xs-12 float-end">
-                <button type="button" class="btn btn-primary btn-sm float-end" onclick="CarregarPagina('@Url.Action("Adicionar", "UnidadeOrganizacional", new { organizacaoId = Model.Id })')">
-                    <i class='bx bx-list-plus'></i>
-                </button>
-            </div>
-        </div>
-
-        @Html.Hidden("Adicional")
-        <div id="grid"></div>
     </div>
 </div>
 <input type="file" accept=".png, .jpg, .jpeg" id="fotoInput" style="display: none;" />

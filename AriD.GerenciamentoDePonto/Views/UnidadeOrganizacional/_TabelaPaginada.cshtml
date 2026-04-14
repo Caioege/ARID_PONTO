@@ -1,4 +1,4 @@
-﻿@using AriD.BibliotecaDeClasses.Enumeradores
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.Servicos.Extensao
 @model ListaPaginada<UnidadeOrganizacional>
 
@@ -11,7 +11,7 @@
         tabela.Column("CNPJ", "CNPJ", width: 15f),
         tabela.Column("Tipo", "Tipo", format: 
             @<text>
-                @(((eTipoUnidadeOrganizacional)item.Tipo).DescricaoDoEnumerador())
+                @(item.Tipo != null ? ((eTipoUnidadeOrganizacional)item.Tipo).DescricaoDoEnumerador() : "-")
             </text>, width: 10f),
         tabela.Column("Ativa", "Ativa", format:
             @<text>

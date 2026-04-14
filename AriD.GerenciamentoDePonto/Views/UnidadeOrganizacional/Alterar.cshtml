@@ -14,70 +14,102 @@
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.EnderecoId)
             @Html.HiddenFor(model => model.OrganizacaoId)
-            <div class="row">
-                <div class="col col-md-12">
-                    <label class="form-label">Organização</label>
-                    @Html.TextBox("OrganizacaoNome", Model.Organizacao.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-lg-10 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio" for="Nome">Nome</label>
-                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
-                </div>
 
-                <div class="col col-lg-2 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio" for="Ativa">Ativa</label>
-                    @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
-                </div>
-            </div>
-            <div class="row">
-                <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label obrigatorio" for="CNPJ">CNPJ</label>
-                    @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control", @maxlength = "18" })
-                </div>
+            <div class="nav-align-top mb-6">
+                <ul class="nav nav-pills custom-nav-pills mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados-gerais" aria-controls="tab-dados-gerais" aria-selected="true">
+                            <i class="tf-icons bx bx-buildings"></i>
+                            DADOS GERAIS
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-configuracoes" aria-controls="tab-configuracoes" aria-selected="false" tabindex="-1">
+                            <i class="tf-icons bx bx-cog"></i>
+                            CONFIGURAÇÕES
+                        </button>
+                    </li>
+                </ul>
 
-                <div class="col col-lg-9 col-md-8 col-xs-12">
-                    <label class="form-label obrigatorio" for="Tipo">Tipo</label>
-                    @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
-                </div>
-            </div>
-            <br />
-            @{
-                ViewBag.PrefixoEndereco = "Endereco.";
-            }
-            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
-            <br />
+                <div class="border rounded p-4 shadow-sm" style="background-color: #fff; border-color: #d9dee3 !important;">
+                    <div class="tab-content" style="padding: 0 !important; box-shadow: none;">
 
-            <h6>Cerca Virtual (Geofencing)</h6>
-            <div class="row">
-                <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label" for="Latitude">Latitude</label>
-                    @Html.TextBoxFor(model => model.Latitude, new { @class = "form-control", placeholder = "Ex: -15.123456" })
-                </div>
-                <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label" for="Longitude">Longitude</label>
-                    @Html.TextBoxFor(model => model.Longitude, new { @class = "form-control", placeholder = "Ex: -48.123456" })
-                </div>
-                <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label" for="RaioDaCercaVirtualEmMetros">Raio da Cerca (Metros)</label>
-                    @Html.TextBoxFor(model => model.RaioDaCercaVirtualEmMetros, new { @class = "form-control", type = "number", placeholder = "Ex: 100" })
-                    <small class="text-muted">Distância máxima permitida para o ponto.</small>
+                        <!-- Tab: Dados Gerais -->
+                        <div class="tab-pane fade active show" id="tab-dados-gerais" role="tabpanel">
+                            <div class="row">
+                                <div class="col col-md-12">
+                                    <label class="form-label">Organização</label>
+                                    @Html.TextBox("OrganizacaoNome", Model.Organizacao.Nome, new { @class = "form-control", @disabled = "disabled", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-lg-10 col-md-8 col-xs-12">
+                                    <label class="form-label obrigatorio" for="Nome">Nome</label>
+                                    @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                                </div>
+
+                                <div class="col col-lg-2 col-md-4 col-xs-12">
+                                    <label class="form-label obrigatorio" for="Ativa">Ativa</label>
+                                    @Html.CheckboxDropDownListFor(model => model.Ativa, new { @class = "form-select" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col col-lg-3 col-md-4 col-xs-12">
+                                    <label class="form-label obrigatorio" for="CNPJ">CNPJ</label>
+                                    @Html.TextBoxFor(model => model.CNPJ, new { @class = "form-control cnpj", @maxlength = "18" })
+                                </div>
+
+                                <div class="col col-lg-9 col-md-8 col-xs-12">
+                                    <label class="form-label obrigatorio" for="Tipo">Tipo</label>
+                                    @Html.EnumDropDownListFor(model => model.Tipo, new { @class = "form-select" })
+                                </div>
+                            </div>
+                            <br />
+                            <hr />
+                            @{
+                                ViewBag.PrefixoEndereco = "Endereco.";
+                            }
+                            @await Html.PartialAsync("_EnderecoPartial", Model.Endereco)
+                        </div>
+
+                        <!-- Tab: Configurações -->
+                        <div class="tab-pane fade" id="tab-configuracoes" role="tabpanel">
+                            <h5 class="fw-bold"><i class='bx bx-map-pin'></i> Cerca Virtual (Geofencing)</h5>
+                            <div class="row">
+                                <div class="col col-lg-3 col-md-4 col-xs-12">
+                                    <label class="form-label" for="Latitude">Latitude</label>
+                                    @Html.TextBoxFor(model => model.Latitude, new { @class = "form-control", placeholder = "Ex: -15.123456" })
+                                </div>
+                                <div class="col col-lg-3 col-md-4 col-xs-12">
+                                    <label class="form-label" for="Longitude">Longitude</label>
+                                    @Html.TextBoxFor(model => model.Longitude, new { @class = "form-control", placeholder = "Ex: -48.123456" })
+                                </div>
+                                <div class="col col-lg-3 col-md-4 col-xs-12">
+                                    <label class="form-label" for="RaioDaCercaVirtualEmMetros">Raio da Cerca (Metros)</label>
+                                    @Html.TextBoxFor(model => model.RaioDaCercaVirtualEmMetros, new { @class = "form-control", type = "number", placeholder = "Ex: 100" })
+                                    <small class="text-muted">Distância máxima permitida para o ponto.</small>
+                                </div>
+                            </div>
+                            <br />
+                            <hr />
+                            <h5 class="fw-bold"><i class='bx bx-bell'></i> Notificações de Conectividade</h5>
+                            <div class="row">
+                                <div class="col col-lg-4 col-md-4 col-xs-12">
+                                    <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações</label>
+                                    @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
+                                </div>
+                                <div class="col col-lg-8 col-md-8 col-xs-12">
+                                    <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento</label>
+                                    @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: unidade@suaempresa.com.br" })
+                                    <small class="text-muted">Se ativado, envia notificações apenas dos equipamentos desta unidade.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <br />
-            <h6>Notificações de Conectividade</h6>
-            <div class="row">
-                <div class="col col-lg-3 col-md-4 col-xs-12">
-                    <label class="form-label" for="RecebeNotificacaoConectividade">Receber notificações de conectividade</label>
-                    @Html.CheckboxDropDownListFor(model => model.RecebeNotificacaoConectividade, new { @class = "form-select" })
-                </div>
-                <div class="col col-lg-6 col-md-8 col-xs-12">
-                    <label class="form-label" for="EmailNotificacaoConectividade">E-mail para recebimento das notificações</label>
-                    @Html.TextBoxFor(model => model.EmailNotificacaoConectividade, new { @class = "form-control", placeholder = "Ex: unidade@suaempresa.com.br" })
-                    <small class="text-muted">Se ativado, envia notificações apenas dos equipamentos desta unidade.</small>
-                </div>
-            </div>
+
             <br />
             <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Alterar", "Organizacao", new { id = Model.OrganizacaoId })')">
                 <i class='bx bxs-left-arrow-circle'></i> Voltar

@@ -1,4 +1,4 @@
-﻿using AriD.BibliotecaDeClasses.Entidades;
+using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.ParametrosDeConsulta;
 using AriD.GerenciamentoDePonto.WebGrid;
 using AriD.Servicos.Servicos;
@@ -28,7 +28,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 var parametros = JsonConvert.DeserializeObject<ParametrosConsultaUnidadesOrganizacionais>(listaPaginada.Adicional);
 
-                var dados = _servicoUnidadeOrganizacional.ObtenhaListaPaginada(c => c.OrganizacaoId == parametros.OrganizacaoId, listaPaginada.Pagina, listaPaginada.QuantidadeDeItensPorPagina);
+                var dados = _servicoUnidadeOrganizacional.ObtenhaListaPaginada(c => 
+                    c.OrganizacaoId == parametros.OrganizacaoId &&
+                    (string.IsNullOrEmpty(parametros.Nome) || c.Nome.ToLower().Contains(parametros.Nome.ToLower())) &&
+                    (!parametros.Tipo.HasValue || c.Tipo == parametros.Tipo), 
+                    listaPaginada.Pagina, 
+                    listaPaginada.QuantidadeDeItensPorPagina,
+                    c => c.Nome,
+                    true);
 
                 listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
 
@@ -48,7 +55,8 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 return View(new UnidadeOrganizacional
                 {
                     OrganizacaoId = organizacaoId,
-                    Organizacao = _servicoOrganizacao.Obtenha(organizacaoId)
+                    Organizacao = _servicoOrganizacao.Obtenha(organizacaoId),
+                    Ativa = true
                 });
             }
             catch (Exception ex)
