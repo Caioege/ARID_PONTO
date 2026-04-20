@@ -5,7 +5,7 @@ class ValidacaoServer implements Exception {
 
   factory ValidacaoServer.fromMap(Map<String, dynamic> map) => ValidacaoServer(
     sucesso: map['sucesso'] ?? false,
-    mensagem: map['mensagem'] ?? 'Erro inesperado',
+    mensagem: map['mensagem'] ?? map['message'] ?? 'Erro inesperado',
   );
 
   factory ValidacaoServer.fromJson(String source) =>
@@ -22,4 +22,7 @@ class ValidacaoServer implements Exception {
     mensagem:
         'Verifique se seu Wi-Fi está conectado ou se seu pacote de dados está ativo!',
   );
+
+  @override
+  String toString() => mensagem;
 }

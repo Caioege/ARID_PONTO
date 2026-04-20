@@ -31,6 +31,7 @@ namespace AriD.Servicos.Servicos
                     r.MedicoResponsavel,
                     re.DataHoraInicio,
                     re.DataHoraFim,
+                    re.HistoricoPausas,
                     COALESCE(re.MotoristaId, r.MotoristaId) as MotoristaId,
                     p.Nome as MotoristaNome,
                     re.VeiculoId,
@@ -39,7 +40,7 @@ namespace AriD.Servicos.Servicos
                     v.TipoVeiculo
                 FROM rotaexecucao re
                 INNER JOIN rota r ON r.Id = re.RotaId
-                INNER JOIN motorista m ON m.Id = COALESCE(re.MotoristaId, r.MotoristaId)
+                INNER JOIN motorista m ON m.Id = COALESCE(re.MotoristaId, r.MotoristaId, r.MotoristaSecundarioId)
                 INNER JOIN servidor s ON s.Id = m.ServidorId
                 INNER JOIN pessoa p ON p.Id = s.PessoaId
                 LEFT JOIN veiculo v ON v.Id = re.VeiculoId
@@ -62,17 +63,17 @@ namespace AriD.Servicos.Servicos
 
             if (!execucoes.Any()) return new List<MonitoramentoRotaDTO>();
 
-            var veiculoIds = execucoes.Where(e => e.VeiculoId != null).Select(e => (int)e.VeiculoId).Distinct().ToList();
+            var rotaIds = execucoes.Select(e => (int)e.RotaId).Distinct().ToList();
 
             var queryLocalizacoes = @"
                 SELECT 
-                    VeiculoId,
+                    RotaId,
                     DataHora,
                     Latitude,
                     Longitude
-                FROM localizacaoveiculo
+                FROM localizacaorota
                 WHERE OrganizacaoId = @OrganizacaoId
-                  AND VeiculoId IN @VeiculoIds
+                  AND RotaId IN @RotaIds
                   AND DataHora >= @DataBase
                   AND DataHora <= @DataFim
                 ORDER BY DataHora ASC
@@ -81,12 +82,11 @@ namespace AriD.Servicos.Servicos
             var localizacoesAll = _repositorio.ConsultaDapper<LocalizacaoDapperDTO>(queryLocalizacoes, new
             {
                 OrganizacaoId = organizacaoId,
-                VeiculoIds = veiculoIds,
+                RotaIds = rotaIds,
                 DataBase = dataBase.Date,
                 DataFim = dataFim
             });
 
-            var rotaIds = execucoes.Select(e => (int)e.RotaId).Distinct().ToList();
 
             var queryParadas = @"
                 SELECT 
@@ -117,7 +117,7 @@ namespace AriD.Servicos.Servicos
                 var dtInicio = (DateTime)exec.DataHoraInicio;
 
                 var locais = localizacoesAll
-                    .Where(l => l.VeiculoId == idVeiculo && l.DataHora >= dtInicio && l.DataHora <= dtFimFiltro)
+                    .Where(l => l.RotaId == exec.RotaId && l.DataHora >= dtInicio && l.DataHora <= dtFimFiltro)
                     .ToList();
 
                 if (!locais.Any()) continue;
@@ -143,6 +143,14 @@ namespace AriD.Servicos.Servicos
 
                 var sofreuDesvio = _repositorio.ConsultaDapper<int>("SELECT COUNT(1) FROM rotaocorrenciadesvio WHERE RotaId = @RotaId", new { RotaId = idRota }).FirstOrDefault() > 0;
 
+                var pausas = new List<MonitoramentoPausaDTO>();
+                if (!string.IsNullOrEmpty(exec.HistoricoPausas))
+                {
+                    try {
+                        pausas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MonitoramentoPausaDTO>>(exec.HistoricoPausas);
+                    } catch { }
+                }
+
                 resultado.Add(new MonitoramentoRotaDTO
                 {
                     ExecucaoId = exec.ExecucaoId,
@@ -165,6 +173,7 @@ namespace AriD.Servicos.Servicos
                     HistoricoLocalizacoes = historico,
                     UltimaAtualizacao = ultima.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
                     Paradas = paradas,
+                    Pausas = pausas,
                     Finalizada = hdFim.HasValue,
                     SujeitoADesvio = sofreuDesvio
                 });

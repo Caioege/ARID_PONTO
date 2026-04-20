@@ -5,7 +5,7 @@ import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart
 import 'package:arid_rastreio/modules/motorista/rotas/dto/encerrar_parada_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
 import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
-import 'package:arid_rastreio/core/service/rota_location_task.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobx/mobx.dart';
 import '../service/motorista_rotas_service.dart';
 
@@ -36,6 +36,45 @@ abstract class MotoristaRotasControllerBase with Store {
   ObservableList<ParadaStore> paradas = ObservableList<ParadaStore>();
 
   @action
+  Future<RotaExecucaoDTO?> obterRotaEmAndamento() async {
+    carregando = true;
+    try {
+      final execucao = await _service.obterRotaEmAndamento();
+      if (execucao != null) {
+        rotaAtual = execucao;
+        _carregarParadasEOrigens(execucao);
+        rotaIniciada = true;
+        estaPausada = execucao.estaPausada;
+        
+        _enviarLocalizacaoAtual();
+      }
+      return execucao;
+    } finally {
+      carregando = false;
+    }
+  }
+
+  Future<void> _enviarLocalizacaoAtual() async {
+    if (rotaAtual == null) return;
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+        ),
+      );
+
+      await _service.salvarPontoDaRotaBackground(
+        rotaExecucaoId: rotaAtual!.id,
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        dataHora: DateTime.now(),
+      );
+    } catch (_) {
+      // Falha silenciosa para não travar o fluxo principal
+    }
+  }
+
+  @action
   Future<RotaExecucaoDTO> iniciarRota({
     required int rotaId,
     required int veiculoId,
@@ -49,28 +88,55 @@ abstract class MotoristaRotasControllerBase with Store {
       );
 
       rotaAtual = execucao;
-
-      paradas.clear();
-
-      for (final p in execucao.paradas) {
-        paradas.add(
-          ParadaStore(
-            id: p.id,
-            endereco: p.endereco,
-            latitude: p.latitude,
-            longitude: p.longitude,
-            link: p.link,
-            entregue: p.entregue,
-          ),
-        );
-      }
-
+      _carregarParadasEOrigens(execucao);
       rotaIniciada = true;
       estaPausada = execucao.estaPausada;
+
+      _enviarLocalizacaoAtual();
 
       return execucao;
     } finally {
       carregando = false;
+    }
+  }
+
+  void _carregarParadasEOrigens(RotaExecucaoDTO execucao) {
+    paradas.clear();
+
+    if (execucao.nomeUnidadeOrigem != null) {
+      paradas.add(
+        ParadaStore(
+          id: -1,
+          endereco: execucao.nomeUnidadeOrigem!,
+          entregue: execucao.origemEntregue,
+          observacao: execucao.origemObservacao ?? '',
+        )
+      );
+    }
+
+    for (final p in execucao.paradas) {
+      paradas.add(
+        ParadaStore(
+          id: p.id,
+          endereco: p.endereco,
+          latitude: p.latitude,
+          longitude: p.longitude,
+          link: p.link,
+          entregue: p.entregue,
+          observacao: p.observacao ?? '',
+        ),
+      );
+    }
+
+    if (execucao.nomeUnidadeDestino != null) {
+      paradas.add(
+        ParadaStore(
+          id: -2,
+          endereco: execucao.nomeUnidadeDestino!,
+          entregue: execucao.destinoEntregue,
+          observacao: execucao.destinoObservacao ?? '',
+        )
+      );
     }
   }
 
@@ -89,6 +155,7 @@ abstract class MotoristaRotasControllerBase with Store {
       );
 
       parada.confirmada = true;
+      _enviarLocalizacaoAtual();
     } finally {
       parada.salvando = false;
     }
@@ -151,7 +218,7 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
-      final loc = await RotaLocationTask.getCurrentLocation();
+      final loc = await Geolocator.getCurrentPosition();
       await _service.iniciarPausa(
         rotaExecucaoId: rotaAtual!.id,
         motivo: motivo,
@@ -172,7 +239,7 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
-      final loc = await RotaLocationTask.getCurrentLocation();
+      final loc = await Geolocator.getCurrentPosition();
       await _service.finalizarPausa(
         rotaExecucaoId: rotaAtual!.id,
         latitude: loc?.latitude,

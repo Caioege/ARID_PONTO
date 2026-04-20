@@ -11,6 +11,13 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public int QuantidadePausas { get; set; }
         public int QuantidadePausasRealizadas { get; set; }
         public bool EstaPausada { get; set; }
+        public string? NomeUnidadeOrigem { get; set; }
+        public bool? OrigemEntregue { get; set; }
+        public string? OrigemObservacao { get; set; }
+        
+        public string? NomeUnidadeDestino { get; set; }
+        public bool? DestinoEntregue { get; set; }
+        public string? DestinoObservacao { get; set; }
 
         public List<ParadaRotaDTO> Paradas { get; set; } = [];
     }

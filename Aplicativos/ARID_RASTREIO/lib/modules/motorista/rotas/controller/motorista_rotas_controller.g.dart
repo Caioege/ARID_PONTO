@@ -63,6 +63,24 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
     });
   }
 
+  late final _$estaPausadaAtom = Atom(
+    name: 'MotoristaRotasControllerBase.estaPausada',
+    context: context,
+  );
+
+  @override
+  bool get estaPausada {
+    _$estaPausadaAtom.reportRead();
+    return super.estaPausada;
+  }
+
+  @override
+  set estaPausada(bool value) {
+    _$estaPausadaAtom.reportWrite(value, super.estaPausada, () {
+      super.estaPausada = value;
+    });
+  }
+
   late final _$rotaFinalizadaIdAtom = Atom(
     name: 'MotoristaRotasControllerBase.rotaFinalizadaId',
     context: context,
@@ -136,6 +154,26 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
     return _$encerrarRotaAsyncAction.run(() => super.encerrarRota());
   }
 
+  late final _$iniciarPausaAsyncAction = AsyncAction(
+    'MotoristaRotasControllerBase.iniciarPausa',
+    context: context,
+  );
+
+  @override
+  Future<void> iniciarPausa(String motivo) {
+    return _$iniciarPausaAsyncAction.run(() => super.iniciarPausa(motivo));
+  }
+
+  late final _$finalizarPausaAsyncAction = AsyncAction(
+    'MotoristaRotasControllerBase.finalizarPausa',
+    context: context,
+  );
+
+  @override
+  Future<void> finalizarPausa() {
+    return _$finalizarPausaAsyncAction.run(() => super.finalizarPausa());
+  }
+
   late final _$MotoristaRotasControllerBaseActionController = ActionController(
     name: 'MotoristaRotasControllerBase',
     context: context,
@@ -180,6 +218,7 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
 rotaAtual: ${rotaAtual},
 carregando: ${carregando},
 rotaIniciada: ${rotaIniciada},
+estaPausada: ${estaPausada},
 rotaFinalizadaId: ${rotaFinalizadaId},
 paradas: ${paradas}
     ''';

@@ -14,6 +14,11 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? Observacao { get; set; }
         public string? HistoricoPausas { get; set; }
 
+        public bool? OrigemEntregue { get; set; }
+        public string? OrigemObservacao { get; set; }
+        public bool? DestinoEntregue { get; set; }
+        public string? DestinoObservacao { get; set; }
+
         public int? VeiculoId { get; set; }
         [ForeignKey(nameof(VeiculoId))]
         public virtual Veiculo Veiculo { get; set; }

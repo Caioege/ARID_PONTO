@@ -14,10 +14,20 @@ String extrairMensagemErro(Object error) {
       return data['erro'];
     }
 
+    if (error.error != null && error.error is Exception) {
+       if (error.error.runtimeType.toString() == 'ValidacaoServer') {
+            return error.error.toString();
+       }
+    }
+
     return 'Não foi possível comunicar com o servidor.';
   }
 
-  return 'Ocorreu um erro inesperado. Tente novamente.';
+  if (error.runtimeType.toString() == 'ValidacaoServer') {
+    return error.toString();
+  }
+
+  return error.toString();
 }
 
 int compararNomesNaturais(String a, String b) {

@@ -327,6 +327,18 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               hasError: mensagemErro != null,
                               isAcompanhante: _tipoAcesso == 'acompanhante',
                             ),
+                            if (mensagemErro != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  mensagemErro!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.error,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             const SizedBox(height: 12),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,

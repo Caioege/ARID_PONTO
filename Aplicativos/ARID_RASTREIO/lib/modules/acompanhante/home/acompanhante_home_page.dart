@@ -102,7 +102,7 @@ class _AcompanhanteHomePageState extends State<AcompanhanteHomePage> {
         final rota = _rotas[index];
         return Card(
           elevation: 4,
-          margin: const EdgeInsets.bottom(16),
+          margin: const EdgeInsets.only(bottom: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Column(
             children: [

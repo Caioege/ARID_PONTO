@@ -69,8 +69,31 @@ class LocationTaskHandler extends TaskHandler {
 
   @override
   Future<void> onRepeatEvent(DateTime timestamp) async {
-    // agora não precisa mais chamar manualmente
-    // porque o stream já emite quando há mudança
+    final rotaExecucaoIdStr = await FlutterForegroundTask.getData(
+      key: 'rotaExecucaoId',
+    );
+
+    final rotaExecucaoId = int.tryParse(rotaExecucaoIdStr ?? '');
+    if (rotaExecucaoId == null) return;
+
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+        ),
+      );
+
+      final backgroundService = locator<RotaBackgroundService>();
+
+      await backgroundService.enviarPonto(
+        rotaExecucaoId: rotaExecucaoId,
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        dataHora: tz.TZDateTime.now(tz.local),
+      );
+    } catch (_) {
+      // catch potential geolocator timeout or service busy
+    }
   }
 
   @override

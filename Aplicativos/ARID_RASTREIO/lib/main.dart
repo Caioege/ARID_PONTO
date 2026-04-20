@@ -24,7 +24,7 @@ Future<void> main() async {
       playSound: false,
     ),
     foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.repeat(5000),
+      eventAction: ForegroundTaskEventAction.repeat(30000),
       autoRunOnBoot: false,
       allowWakeLock: true,
       allowWifiLock: true,

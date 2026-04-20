@@ -1,5 +1,6 @@
 import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/page/motorista_checklist_page.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/page/motorista_rotas_page.dart';
 import 'package:arid_rastreio/shared/layout/dialogs/app_dialog.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,31 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
     );
 
     _pageController.forward();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final rotasCtl = locator<MotoristaRotasController>();
+      final execucao = await rotasCtl.obterRotaEmAndamento();
+
+      if (execucao != null) {
+        controller.mudarIndex(1);
+
+        await FlutterForegroundTask.saveData(
+          key: 'rotaExecucaoId',
+          value: execucao.id.toString(),
+        );
+
+        await RotaTrackingService.start();
+
+        if (mounted) {
+          showAppDialog(
+            context: context,
+            titulo: 'Sessão Restaurada',
+            mensagem: 'Você possui uma rota em andamento bloqueada. Não feche o aplicativo.',
+            tipo: AppDialogType.alerta,
+          );
+        }
+      }
+    });
   }
 
   @override

@@ -13,6 +13,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public string MedicoResponsavel { get; set; }
         public DateTime DataHoraInicio { get; set; }
         public DateTime? DataHoraFim { get; set; }
+        public string HistoricoPausas { get; set; }
         public int MotoristaId { get; set; }
         public string MotoristaNome { get; set; }
         public int? VeiculoId { get; set; }
@@ -23,7 +24,7 @@ namespace AriD.BibliotecaDeClasses.DTO
 
     public class LocalizacaoDapperDTO
     {
-        public int VeiculoId { get; set; }
+        public int RotaId { get; set; }
         public DateTime DataHora { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
@@ -50,6 +51,17 @@ namespace AriD.BibliotecaDeClasses.DTO
         public string ConcluidoEm { get; set; }
     }
 
+    public class MonitoramentoPausaDTO
+    {
+        public string Motivo { get; set; }
+        public DateTime DataHoraInicio { get; set; }
+        public DateTime? DataHoraFim { get; set; }
+        public double? LatInicio { get; set; }
+        public double? LngInicio { get; set; }
+        public double? LatFim { get; set; }
+        public double? LngFim { get; set; }
+    }
+
     public class MonitoramentoRotaDTO
     {
         public int ExecucaoId { get; set; }
@@ -68,6 +80,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public List<double[]> HistoricoLocalizacoes { get; set; }
         public string UltimaAtualizacao { get; set; }
         public List<MonitoramentoParadaDTO> Paradas { get; set; }
+        public List<MonitoramentoPausaDTO> Pausas { get; set; }
         public int? TipoVeiculo { get; set; }
         public bool Finalizada { get; set; }
         public bool SujeitoADesvio { get; set; }

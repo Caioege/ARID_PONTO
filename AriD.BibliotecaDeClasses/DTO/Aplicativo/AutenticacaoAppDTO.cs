@@ -18,5 +18,13 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo
         public bool RegistroManualNoAplicativo { get; set; }
         public bool RegistroDeAtestadoNoAplicativo { get; set; }
         public eTipoComprovacaoPontoApp TipoComprovacaoApp { get; set; }
+
+        public DateTime? DataDeNascimento { get; set; }
+        public string Email { get; set; }
+
+        public string NumeroCNH { get; set; }
+        public AriD.BibliotecaDeClasses.Enumeradores.eCategoriaCNH? CategoriaCNH { get; set; }
+        public DateTime? EmissaoCNH { get; set; }
+        public DateTime? ValidadeCNH { get; set; }
     }
 }

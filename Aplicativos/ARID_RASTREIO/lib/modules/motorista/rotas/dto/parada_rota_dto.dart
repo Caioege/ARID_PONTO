@@ -22,10 +22,10 @@ class ParadaRotaDTO {
       id: json['id'],
       endereco: json['endereco'],
       latitude: json['latitude'] != null
-          ? (json['latitude'] as num).toDouble()
+          ? double.tryParse(json['latitude'].toString())
           : null,
       longitude: json['longitude'] != null
-          ? (json['longitude'] as num).toDouble()
+          ? double.tryParse(json['longitude'].toString())
           : null,
 
       link: json['link'],

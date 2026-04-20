@@ -26,7 +26,7 @@ namespace AriD.GerenciamentoDePonto.Helpers
             bool ajaxRequest = headerValue == "XMLHttpRequest";
 
             context.HttpContext.Request.Headers.TryGetValue("User-Agent", out var userAgent);
-            if (controller == "app")
+            if (controller == "app" || controller == "rastreioapp")
                 return;
             
             if (!string.IsNullOrEmpty(userAgent) && userAgent.Equals("AIFaceEVO.API-ARID.TECNOLOGIA"))

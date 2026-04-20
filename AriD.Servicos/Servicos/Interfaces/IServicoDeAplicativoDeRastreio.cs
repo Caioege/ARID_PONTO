@@ -19,6 +19,7 @@ namespace AriD.Servicos.Servicos.Interfaces
         void SalvarChecklist(ChecklistPostDTO dto, int motoristaId);
         
         RotaExecucaoDTO IniciarRota(IniciarRotaAppDTO dto, int motoristaId);
+        RotaExecucaoDTO? ObterRotaEmAndamento(int motoristaId);
         void EncerrarRota(EncerrarRotaAppDTO dto);
         void ConfirmarParada(ConfirmarParadaAppDTO dto);
         void SalvarPonto(PostLocalizacaoExecucaoDTO dto);

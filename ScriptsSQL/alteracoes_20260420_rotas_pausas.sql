@@ -8,3 +8,6 @@ ADD COLUMN QuantidadePausas INT NOT NULL DEFAULT 0;
 -- Tabela RotaExecucao
 ALTER TABLE rotaexecucao 
 ADD COLUMN HistoricoPausas TEXT NULL;
+
+ALTER TABLE `arid_ponto`.`rotaexecucao` 
+ADD COLUMN `Observacao` VARCHAR(1000) NULL AFTER `DestinoObservacao`;

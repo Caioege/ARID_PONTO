@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
+import 'package:arid_rastreio/shared/functions/functions.dart';
 
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
@@ -125,28 +126,39 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
               );
 
               if (confirmar == true) {
-                final RotaExecucaoDTO rotaExecucao = await rotasController
-                    .iniciarRota(
-                      rotaId: checklistController.rotaSelecionada!.id,
-                      veiculoId: checklistController.veiculoSelecionado!.id,
-                    );
+                try {
+                  final RotaExecucaoDTO rotaExecucao = await rotasController
+                      .iniciarRota(
+                        rotaId: checklistController.rotaSelecionada!.id,
+                        veiculoId: checklistController.veiculoSelecionado!.id,
+                      );
 
-                await solicitarPermissoes();
+                  await solicitarPermissoes();
 
-                await FlutterForegroundTask.saveData(
-                  key: 'rotaExecucaoId',
-                  value: rotaExecucao.id.toString(),
-                );
-
-                await RotaTrackingService.start();
-
-                if (context.mounted) {
-                  await showAppDialog(
-                    context: context,
-                    titulo: 'Rota iniciada',
-                    mensagem: 'A rota foi iniciada com sucesso.',
-                    tipo: AppDialogType.sucesso,
+                  await FlutterForegroundTask.saveData(
+                    key: 'rotaExecucaoId',
+                    value: rotaExecucao.id.toString(),
                   );
+
+                  await RotaTrackingService.start();
+
+                  if (context.mounted) {
+                    await showAppDialog(
+                      context: context,
+                      titulo: 'Rota iniciada',
+                      mensagem: 'A rota foi iniciada com sucesso.',
+                      tipo: AppDialogType.sucesso,
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    await showAppDialog(
+                      context: context,
+                      titulo: 'Atenção',
+                      mensagem: extrairMensagemErro(e),
+                      tipo: AppDialogType.alerta,
+                    );
+                  }
                 }
               }
             },
@@ -327,7 +339,12 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
     if (result == true) {
       await rotasController.iniciarPausa(motivoCmd.text.trim());
       if (context.mounted) {
-        MensagemRodapeApp.sucesso(conteudo: 'Rota pausada.');
+        showAppDialog(
+          context: context,
+          titulo: 'Pausa Adicionada',
+          mensagem: 'Rota pausada com sucesso. O rastreio foi suspenso.',
+          tipo: AppDialogType.sucesso,
+        );
       }
     }
   }
@@ -350,7 +367,12 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                     onPressed: () async {
                       await rotasController.finalizarPausa();
                       if (context.mounted) {
-                        MensagemRodapeApp.sucesso(conteudo: 'Rota retomada. Registro de localização ativo.');
+                        showAppDialog(
+                          context: context,
+                          titulo: 'Pausa Finalizada',
+                          mensagem: 'Rota retomada. Registro de localização ativo.',
+                          tipo: AppDialogType.sucesso,
+                        );
                       }
                     },
                     icon: const Icon(Icons.play_circle_fill, color: Colors.white),
@@ -370,7 +392,12 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                   child: ElevatedButton.icon(
                     onPressed: limiteOk 
                         ? () => _dialogoPausa() 
-                        : () => MensagemRodapeApp.alerta(conteudo: 'O limite de pausas desta rota já foi atingido!'),
+                        : () => showAppDialog(
+                              context: context, 
+                              titulo: 'Atenção', 
+                              mensagem: 'O limite de pausas desta rota já foi atingido!', 
+                              tipo: AppDialogType.alerta,
+                            ),
                     icon: const Icon(Icons.pause_circle_filled, color: Colors.white),
                     label: Text(
                       limiteOk ? 'Fazer Pausa' : 'Limite de Pausas Atingido', 
@@ -537,22 +564,35 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                             ),
                             title: Text(
                               parada.endereco,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
                             ),
-                            subtitle: !isExpanded
-                                ? const Text(
-                                    'Endereço',
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (parada.observacao.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0, bottom: 2.0),
+                                    child: Text(
+                                      'Obs: ${parada.observacao}',
+                                      style: TextStyle(
+                                        color: Colors.yellow[300],
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                if (!isExpanded)
+                                  const Text(
+                                    'Toque para abrir detalhes e confirmar',
                                     style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 12,
                                     ),
-                                  )
-                                : null,
+                                  ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -757,7 +797,7 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                                           context: context,
                                           titulo: 'Atenção',
                                           mensagem:
-                                              'Selecione se a entrega foi realizada.',
+                                              'Selecione se a parada foi realizada.',
                                         );
                                         return;
                                       }
@@ -769,9 +809,9 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                                       if (context.mounted) {
                                         await showAppDialog(
                                           context: context,
-                                          titulo: 'Parada da Rota',
+                                          titulo: 'Ponto da Rota',
                                           mensagem:
-                                              'Entrega salva com sucesso.',
+                                              'Registro feito com sucesso.',
                                           tipo: AppDialogType.sucesso,
                                         );
                                       }

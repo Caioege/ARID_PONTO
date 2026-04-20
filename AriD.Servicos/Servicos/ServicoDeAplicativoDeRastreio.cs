@@ -59,10 +59,17 @@ namespace AriD.Servicos.Servicos
                         s.RegistroDePontoNoAplicativo,
                         s.RegistroManualNoAplicativo,
                         s.RegistroDeAtestadoNoAplicativo,
-                        s.TipoComprovacaoPontoApp as TipoComprovacaoApp
+                        s.TipoComprovacaoPontoApp as TipoComprovacaoApp,
+                        p.DataDeNascimento,
+                        s.Email,
+                        m.NumeroCNH,
+                        m.CategoriaCNH,
+                        m.EmissaoCNH,
+                        m.VencimentoCNH as ValidadeCNH
                     from pessoa p
                     inner join organizacao o on o.Id = p.OrganizacaoId
                     inner join servidor s on s.PessoaId = p.Id
+                    left join motorista m on m.ServidorId = s.Id and m.Situacao = 0
                     where replace(replace(p.Cpf, '.', ''), '-', '') = @USUARIO ";
 
                 if (isAcompanhante)
@@ -73,11 +80,11 @@ namespace AriD.Servicos.Servicos
                 else
                 {
                     // Motorista: Deve ter cadastro ativo na tabela Motorista e senha válida
-                    queryAcesso += @" and exists (select 1 from motorista m where m.ServidorId = s.Id and m.Situacao = 0) "; // 0 = Ativo
-                    queryAcesso += @" and (IF(s.SenhaPersonalizadaDeAcesso IS NULL, DATE_FORMAT(p.DataDeNascimento, '%d%m%Y') = @SENHA, s.SenhaPersonalizadaDeAcesso = @SENHACRIPTOGRAFADA) = true) ";
+                    queryAcesso += @" and (IF(s.SenhaPersonalizadaDeAcesso IS NULL, DATE_FORMAT(p.DataDeNascimento, '%d%m%Y') = @SENHA, s.SenhaPersonalizadaDeAcesso = @SENHACRIPTOGRAFADA) = true) 
+                                      and m.Id IS NOT NULL ";
                 }
 
-                queryAcesso += @" and s.AcessoAoAplicativo = true limit 1";
+                queryAcesso += @" limit 1";
 
                 var result = _repositorioServidor.ConsultaDapper<AutenticacaoAppDTO>(queryAcesso, new
                 {
@@ -103,41 +110,71 @@ namespace AriD.Servicos.Servicos
         public List<RotaCheckListDTO> ObterRotasMotorista(int motoristaId)
         {
             var sql = @"
-                SELECT r.Id, r.Descricao as Nome, r.Recorrente, r.DataParaExecucao
+                SELECT r.Id, r.Descricao as Nome, r.Recorrente, r.DataParaExecucao, r.DataInicio, r.DataFim, r.DiasSemana
                 FROM rota r
-                WHERE r.Situacao = 0 AND r.MotoristaId = @ID"; // 0 = Ativa
+                WHERE r.Situacao = 1 AND (r.MotoristaId = @ID OR r.MotoristaSecundarioId = @ID)"; // 1 = Ativa
 
             var todas = _repositorioRota.ConsultaDapper<dynamic>(sql, new { @ID = motoristaId }).ToList();
             var hoje = DateTime.Now.Date;
+            var flagHoje = ObterFlagHoje(hoje);
 
             return todas
-                .Where(r => (bool)r.Recorrente || (!r.Recorrente && r.DataParaExecucao != null && ((DateTime)r.DataParaExecucao).Date == hoje))
+                .Where(r => 
+                {
+                    bool isRecorrente = Convert.ToBoolean(r.Recorrente);
+                    if (!isRecorrente) return r.DataParaExecucao != null && ((DateTime)r.DataParaExecucao).Date == hoje;
+
+                    if (r.DataInicio != null && ((DateTime)r.DataInicio).Date > hoje) return false;
+                    if (r.DataFim != null && ((DateTime)r.DataFim).Date < hoje) return false;
+
+                    if (r.DiasSemana != null)
+                    {
+                        var rotadias = (eFlagDiaSemana)Convert.ToInt32(r.DiasSemana);
+                        return rotadias.HasFlag(flagHoje);
+                    }
+                    return false;
+                })
                 .Select(r => new RotaCheckListDTO {
                     Id = r.Id,
                     Codigo = $"RT-{r.Id:000}",
                     Nome = r.Nome,
-                    Descricao = r.Recorrente ? "Rota Recorrente" : $"Planejada para {r.DataParaExecucao:dd/MM/yyyy}"
+                    Descricao = Convert.ToBoolean(r.Recorrente) ? $"{r.Nome} (Recorrente)" : $"{r.Nome} (Planejada para {r.DataParaExecucao:dd/MM/yyyy})"
                 }).ToList();
         }
 
         public List<RotaCheckListDTO> ObterRotasAcompanhante(int servidorId)
         {
             var sql = @"
-                SELECT r.Id, r.Descricao as Nome, r.Recorrente, r.DataParaExecucao
+                SELECT r.Id, r.Descricao as Nome, r.Recorrente, r.DataParaExecucao, r.DataInicio, r.DataFim, r.DiasSemana
                 FROM rota r
                 INNER JOIN rotaprofissional rp ON rp.RotaId = r.Id
-                WHERE r.Situacao = 0 AND rp.ServidorId = @ID";
+                WHERE r.Situacao = 1 AND rp.ServidorId = @ID"; // 1 = Ativa
 
             var todas = _repositorioRota.ConsultaDapper<dynamic>(sql, new { @ID = servidorId }).ToList();
             var hoje = DateTime.Now.Date;
+            var flagHoje = ObterFlagHoje(hoje);
 
             return todas
-                .Where(r => (bool)r.Recorrente || (!r.Recorrente && r.DataParaExecucao != null && ((DateTime)r.DataParaExecucao).Date == hoje))
+                .Where(r => 
+                {
+                    bool isRecorrente = Convert.ToBoolean(r.Recorrente);
+                    if (!isRecorrente) return r.DataParaExecucao != null && ((DateTime)r.DataParaExecucao).Date == hoje;
+
+                    if (r.DataInicio != null && ((DateTime)r.DataInicio).Date > hoje) return false;
+                    if (r.DataFim != null && ((DateTime)r.DataFim).Date < hoje) return false;
+
+                    if (r.DiasSemana != null)
+                    {
+                        var rotadias = (eFlagDiaSemana)Convert.ToInt32(r.DiasSemana);
+                        return rotadias.HasFlag(flagHoje);
+                    }
+                    return false;
+                })
                 .Select(r => new RotaCheckListDTO {
                     Id = r.Id,
                     Codigo = $"RT-{r.Id:000}",
                     Nome = r.Nome,
-                    Descricao = r.Recorrente ? "Rota Recorrente" : $"Planejada para {r.DataParaExecucao:dd/MM/yyyy}"
+                    Descricao = Convert.ToBoolean(r.Recorrente) ? $"{r.Nome} (Recorrente)" : $"{r.Nome} (Planejada para {r.DataParaExecucao:dd/MM/yyyy})"
                 }).ToList();
         }
 
@@ -219,21 +256,63 @@ namespace AriD.Servicos.Servicos
                 @Agora = DateTime.Now
             }).First();
 
-            var sqlRota = "SELECT Id, Descricao, PermitePausa, QuantidadePausas FROM rota WHERE Id = @RotaId";
-            var rota = _repositorioRota.ConsultaDapper<dynamic>(sqlRota, new { @RotaId = dto.RotaId }).First();
+            return ObterRotaEmAndamentoAux(id, dto.RotaId);
+        }
 
-            var sqlParadas = "SELECT Id, Endereco, Latitude, Longitude, Link FROM paradarota WHERE RotaId = @RotaId";
-            var paradas = _repositorioParada.ConsultaDapper<ParadaRotaDTO>(sqlParadas, new { @RotaId = dto.RotaId }).ToList();
+        public RotaExecucaoDTO? ObterRotaEmAndamento(int motoristaId)
+        {
+            var sqlAtiva = "SELECT Id, RotaId FROM rotaexecucao WHERE MotoristaId = @MotoristaId AND DataHoraFim IS NULL LIMIT 1";
+            var exec = _repositorioExecucao.ConsultaDapper<dynamic>(sqlAtiva, new { @MotoristaId = motoristaId }).FirstOrDefault();
+
+            if (exec == null) return null;
+
+            return ObterRotaEmAndamentoAux((int)exec.Id, (int)exec.RotaId);
+        }
+
+        private RotaExecucaoDTO ObterRotaEmAndamentoAux(int execucaoId, int rotaId)
+        {
+            var sqlRota = @"SELECT r.Id, r.Descricao, r.PermitePausa, r.QuantidadePausas, 
+                                   uo.Nome as NomeUnidadeOrigem, ud.Nome as NomeUnidadeDestino,
+                                   e.OrigemEntregue, e.OrigemObservacao, e.DestinoEntregue, e.DestinoObservacao, e.HistoricoPausas
+                            FROM rotaexecucao e
+                            INNER JOIN rota r ON r.Id = e.RotaId
+                            LEFT JOIN unidadeorganizacional uo ON r.UnidadeOrigemId = uo.Id 
+                            LEFT JOIN unidadeorganizacional ud ON r.UnidadeDestinoId = ud.Id 
+                            WHERE e.Id = @ExecId";
+            var rota = _repositorioRota.ConsultaDapper<dynamic>(sqlRota, new { @ExecId = execucaoId }).First();
+
+            var sqlParadas = "SELECT Id, Endereco, Latitude, Longitude, Link, Entregue, Observacao FROM paradarota WHERE RotaId = @RotaId";
+            var paradas = _repositorioParada.ConsultaDapper<ParadaRotaDTO>(sqlParadas, new { @RotaId = rotaId }).ToList();
+
+            var pausada = false;
+            var emAndamento = true;
+            var pausasTotais = 0;
+
+            if (!string.IsNullOrEmpty((string)rota.HistoricoPausas))
+            {
+                var historico = JsonConvert.DeserializeObject<List<RegistoPausaExecucao>>((string)rota.HistoricoPausas);
+                if (historico != null)
+                {
+                    pausasTotais = historico.Count;
+                    pausada = historico.Any(p => !p.DataHoraFim.HasValue);
+                }
+            }
 
             return new RotaExecucaoDTO {
-                Id = id,
-                RotaId = rota.Id,
+                Id = execucaoId,
+                RotaId = rotaId,
                 Descricao = rota.Descricao,
-                EmAndamento = true,
-                PermitePausa = (bool)rota.PermitePausa,
-                QuantidadePausas = (int)rota.QuantidadePausas,
-                QuantidadePausasRealizadas = 0,
-                EstaPausada = false,
+                EmAndamento = emAndamento,
+                PermitePausa = Convert.ToBoolean(rota.PermitePausa),
+                QuantidadePausas = Convert.ToInt32(rota.QuantidadePausas),
+                QuantidadePausasRealizadas = pausasTotais,
+                EstaPausada = pausada,
+                NomeUnidadeOrigem = rota.NomeUnidadeOrigem,
+                OrigemEntregue = rota.OrigemEntregue == null ? (bool?)null : Convert.ToBoolean(rota.OrigemEntregue),
+                OrigemObservacao = rota.OrigemObservacao,
+                NomeUnidadeDestino = rota.NomeUnidadeDestino,
+                DestinoEntregue = rota.DestinoEntregue == null ? (bool?)null : Convert.ToBoolean(rota.DestinoEntregue),
+                DestinoObservacao = rota.DestinoObservacao,
                 Paradas = paradas
             };
         }
@@ -246,13 +325,34 @@ namespace AriD.Servicos.Servicos
 
         public void ConfirmarParada(ConfirmarParadaAppDTO dto)
         {
-            var sql = "UPDATE paradarota SET Entregue = @Entregue, Observacao = @Obs, ConcluidoEm = @Agora WHERE Id = @Id";
-            _repositorioParada.ExecutarComando(sql, new { 
-                @Entregue = dto.Entregue ?? false, 
-                @Obs = dto.Observacao, 
-                @Agora = DateTime.Now, 
-                @Id = dto.ParadaId 
-            });
+            if (dto.ParadaId == -1) // Origem
+            {
+                var sqlOrigem = "UPDATE rotaexecucao SET OrigemEntregue = @Entregue, OrigemObservacao = @Obs WHERE Id = @Id";
+                _repositorioExecucao.ExecutarComando(sqlOrigem, new { 
+                    @Entregue = dto.Entregue ?? false, 
+                    @Obs = dto.Observacao, 
+                    @Id = dto.RotaExecucaoId 
+                });
+            }
+            else if (dto.ParadaId == -2) // Destino
+            {
+                var sqlDestino = "UPDATE rotaexecucao SET DestinoEntregue = @Entregue, DestinoObservacao = @Obs WHERE Id = @Id";
+                _repositorioExecucao.ExecutarComando(sqlDestino, new { 
+                    @Entregue = dto.Entregue ?? false, 
+                    @Obs = dto.Observacao, 
+                    @Id = dto.RotaExecucaoId 
+                });
+            }
+            else
+            {
+                var sql = "UPDATE paradarota SET Entregue = @Entregue, Observacao = @Obs, ConcluidoEm = @Agora WHERE Id = @Id";
+                _repositorioParada.ExecutarComando(sql, new { 
+                    @Entregue = dto.Entregue ?? false, 
+                    @Obs = dto.Observacao, 
+                    @Agora = DateTime.Now, 
+                    @Id = dto.ParadaId 
+                });
+            }
         }
 
         public void SalvarPonto(PostLocalizacaoExecucaoDTO dto)
@@ -371,6 +471,21 @@ namespace AriD.Servicos.Servicos
         {
             if (string.IsNullOrEmpty(texto)) return "";
             return new string(texto.Where(char.IsDigit).ToArray());
+        }
+
+        private eFlagDiaSemana ObterFlagHoje(DateTime date)
+        {
+            return date.DayOfWeek switch
+            {
+                DayOfWeek.Sunday => eFlagDiaSemana.Domingo,
+                DayOfWeek.Monday => eFlagDiaSemana.Segunda,
+                DayOfWeek.Tuesday => eFlagDiaSemana.Terca,
+                DayOfWeek.Wednesday => eFlagDiaSemana.Quarta,
+                DayOfWeek.Thursday => eFlagDiaSemana.Quinta,
+                DayOfWeek.Friday => eFlagDiaSemana.Sexta,
+                DayOfWeek.Saturday => eFlagDiaSemana.Sabado,
+                _ => eFlagDiaSemana.Nenhum
+            };
         }
     }
 }

@@ -40,6 +40,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _memoryCache = memoryCache;
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
         [HttpPost("autentique")]
         public IActionResult Autentique([FromBody] CredenciaisDTO credenciais)
         {
@@ -47,7 +48,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 var acesso = _servicoDeRastreio.AutenticarUsuario(credenciais);
                 if (acesso == null)
-                    return BadRequest(new { message = "Usuário ou senha incorretos." });
+                    throw new ApplicationException("Usuário ou senha incorretos.");
 
                 var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{acesso.OrganizacaoId}", $"{acesso.ServidorId}.png");
 
@@ -64,7 +65,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         nome = acesso.ServidorNome, 
                         login = credenciais.Usuario, 
                         foto = acesso.FotoBase64, 
-                        tipoAcesso = credenciais.TipoAcesso 
+                        tipoAcesso = credenciais.TipoAcesso,
+                        cpf = acesso.Cpf,
+                        dataNascimento = acesso.DataDeNascimento?.ToString("yyyy-MM-dd"),
+                        email = acesso.Email,
+                        numeroCnh = acesso.NumeroCNH,
+                        categoriaCnh = acesso.CategoriaCNH?.ToString(),
+                        emissaoCnh = acesso.EmissaoCNH?.ToString("yyyy-MM-dd"),
+                        validadeCnh = acesso.ValidadeCNH?.ToString("yyyy-MM-dd")
                     } 
                 });
             }
@@ -165,6 +173,23 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 var retorno = _servicoDeRastreio.IniciarRota(dto, motoristaId);
                 return Ok(retorno);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("rotas/em-andamento")]
+        public IActionResult ObterEmAndamento([FromHeader(Name = "Authorization")] string auth)
+        {
+            try 
+            {
+                int motoristaId = ObterMotoristaId(auth);
+                if (motoristaId == 0) return Unauthorized();
+
+                var retorno = _servicoDeRastreio.ObterRotaEmAndamento(motoristaId);
+                return Ok(retorno); // returns null implicitly or 204 if preferred, Ok(null) resolves to 200/204 depending on formatting
             }
             catch (Exception ex)
             {

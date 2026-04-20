@@ -33,8 +33,12 @@ abstract class ParadaStoreBase with Store {
     this.longitude,
     this.link,
     this.entregue,
+    String? observacao,
   }) {
-    controllerObservacao = TextEditingController(text: observacao);
+    if (observacao != null) {
+      this.observacao = observacao;
+    }
+    controllerObservacao = TextEditingController(text: this.observacao);
 
     controllerObservacao.addListener(() {
       observacao = controllerObservacao.text;

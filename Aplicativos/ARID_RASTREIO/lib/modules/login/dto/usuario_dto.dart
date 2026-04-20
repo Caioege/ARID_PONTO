@@ -7,6 +7,10 @@ class UsuarioDTO {
   final DateTime? dataNascimento;
   final String? email;
   final String? tipoAcesso;
+  final String? numeroCnh;
+  final String? categoriaCnh;
+  final DateTime? emissaoCnh;
+  final DateTime? validadeCnh;
 
   UsuarioDTO({
     required this.id,
@@ -17,6 +21,10 @@ class UsuarioDTO {
     this.dataNascimento,
     this.email,
     this.tipoAcesso,
+    this.numeroCnh,
+    this.categoriaCnh,
+    this.emissaoCnh,
+    this.validadeCnh,
   });
 
   /// Constrói o usuário a partir de um JSON (API ou mock)
@@ -29,6 +37,10 @@ class UsuarioDTO {
       cpf: json['cpf'],
       email: json['email'],
       tipoAcesso: json['tipoAcesso'],
+      numeroCnh: json['numeroCnh'],
+      categoriaCnh: json['categoriaCnh'],
+      emissaoCnh: json['emissaoCnh'] != null ? DateTime.tryParse(json['emissaoCnh']) : null,
+      validadeCnh: json['validadeCnh'] != null ? DateTime.tryParse(json['validadeCnh']) : null,
       dataNascimento: json['dataNascimento'] != null
           ? DateTime.tryParse(json['dataNascimento'])
           : null,
@@ -44,6 +56,10 @@ class UsuarioDTO {
     'cpf': cpf,
     'email': email,
     'tipoAcesso': tipoAcesso,
+    'numeroCnh': numeroCnh,
+    'categoriaCnh': categoriaCnh,
+    'emissaoCnh': emissaoCnh?.toIso8601String(),
+    'validadeCnh': validadeCnh?.toIso8601String(),
     'dataNascimento': dataNascimento?.toIso8601String(),
   };
 }

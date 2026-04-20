@@ -1,4 +1,4 @@
-﻿
+
 namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
 {
     public class ParadaRotaDTO
@@ -8,7 +8,7 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string Link { get; set; }
-        public bool Entregue { get; set; }
+        public bool? Entregue { get; set; }
         public string Observacao { get; set; }
     }
 }

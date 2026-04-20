@@ -10,11 +10,9 @@ class AuthResponseDTO {
   });
 
   factory AuthResponseDTO.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
-
     return AuthResponseDTO(
-      token: data['token'],
-      usuario: UsuarioDTO.fromJson(data['usuarioLogado']),
+      token: json['token'],
+      usuario: UsuarioDTO.fromJson(json['usuario']),
     );
   }
 

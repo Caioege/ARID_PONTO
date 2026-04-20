@@ -163,12 +163,21 @@ function renderizarRotasNoMapa() {
 
     dadosFiltrados.forEach(rota => {
         let isFinalizada = (rota.finalizada === true || String(rota.finalizada).toLowerCase() === 'true');
+        
+        let isPausada = false;
+        if (!isFinalizada && rota.pausas && rota.pausas.length > 0) {
+            let ultimaPausa = rota.pausas[rota.pausas.length - 1];
+            if (!ultimaPausa.dataHoraFim) {
+                isPausada = true;
+            }
+        }
+
         let layerId = rota.execucaoId || (rota.rotaId.toString() + (isFinalizada ? '_fin' : '_act'));
         
         let corViva = getPredefinedColor(rota.rotaId);
-        let cor = isFinalizada ? hexToGrayscale(corViva) : corViva;
-        let lineOpacity = isFinalizada ? 0.5 : 0.8;
-        let lineClass = isFinalizada ? 'route-path' : 'route-path animated-route';
+        let cor = isFinalizada ? hexToGrayscale(corViva) : (isPausada ? '#e67e22' : corViva);
+        let lineOpacity = isFinalizada ? 0.5 : (isPausada ? 0.6 : 0.8);
+        let lineClass = isFinalizada ? 'route-path' : (isPausada ? 'route-path paused-route' : 'route-path animated-route');
         
         // Polyline drawing the path
         let pathLine = L.polyline(rota.historicoLocalizacoes, {
@@ -323,7 +332,19 @@ function renderizarRotasNoMapa() {
             paradasListHtml += '</ul></div>';
         }
 
-        let tempoLabel = isFinalizada ? `<span style="color: #c0392b"><i class="bx bx-check-double"></i> Finalizada</span> às` : `<i class="bx bx-time"></i> Atual. às`;
+        let pausasListHtml = "";
+        if (rota.pausas && rota.pausas.length > 0) {
+            pausasListHtml = '<div style="margin-top: 10px; max-height: 100px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 5px;"><strong>Pausas:</strong><ul style="padding-left: 15px; margin-top: 5px; font-size: 0.85em; list-style-type: none; margin-left: 0; padding-inline-start: 5px;">';
+            rota.pausas.forEach((p, idx) => {
+                let dInicio = new Date(p.dataHoraInicio).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                let dFim = p.dataHoraFim ? new Date(p.dataHoraFim).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Em andamento';
+                let st = p.dataHoraFim ? `<span style="color:#27ae60;">✔ ${dInicio} às ${dFim}</span>` : `<span style="color:#e67e22; font-weight:bold;">⏳ Pausado (${dInicio})</span>`;
+                pausasListHtml += `<li style="margin-bottom: 6px; border-bottom: 1px dotted #ccc; padding-bottom: 3px;"><strong>Pausa ${idx+1}:</strong> ${p.motivo} <br/> <small>${st}</small></li>`;
+            });
+            pausasListHtml += '</ul></div>';
+        }
+
+        let tempoLabel = isFinalizada ? `<span style="color: #c0392b"><i class="bx bx-check-double"></i> Finalizada</span> às` : (isPausada ? `<span style="color: #e67e22; font-weight:bold;"><i class="bx bx-pause-circle"></i> Em Pausa</span> desde` : `<i class="bx bx-time"></i> Atual. às`);
         let pacienteHtml = rota.nomePaciente ? `<div><strong>Paciente:</strong> <span style="color: #2980b9;">${rota.nomePaciente}</span></div>` : "";
         let medicoHtml = rota.medicoResponsavel ? `<div><strong>Médico Resp.:</strong> ${rota.medicoResponsavel}</div>` : "";
         let dataExecucaoHtml = rota.dataParaExecucao ? `<div><strong>Data Agendada:</strong> ${rota.dataParaExecucao}</div>` : "";
@@ -345,6 +366,7 @@ function renderizarRotasNoMapa() {
                     </div>
                     ${desvioHtml}
                 </div>
+                ${pausasListHtml}
                 ${paradasListHtml}
             </div>`;
 

@@ -48,6 +48,18 @@ class MotoristaRotasService {
     return RotaExecucaoDTO.fromJson(response.data);
   }
 
+  Future<RotaExecucaoDTO?> obterRotaEmAndamento() async {
+    if (_usarMock) {
+      return null;
+    }
+
+    final response = await _client.get('/api/rastreio-app/rotas/em-andamento');
+
+    if (response.data == null || response.data == '') return null;
+
+    return RotaExecucaoDTO.fromJson(response.data);
+  }
+
   Future<void> encerrarRota({
     required int rotaExecucaoId,
     required List<EncerrarParadaDTO> paradas,

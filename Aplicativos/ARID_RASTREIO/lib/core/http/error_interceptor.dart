@@ -64,7 +64,10 @@ class ErrorInterceptor extends Interceptor {
     return handler.reject(
       DioException(
         requestOptions: err.requestOptions,
-        error: ValidacaoServer.erroGenerico(),
+        error: ValidacaoServer(
+          sucesso: false, 
+          mensagem: 'Falha: ${err.message ?? err.error ?? "Não foi possível autenticar"}'
+        ),
       ),
     );
   }

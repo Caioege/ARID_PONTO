@@ -9,6 +9,12 @@ class RotaExecucaoDTO {
   final int quantidadePausas;
   final int quantidadePausasRealizadas;
   final bool estaPausada;
+  final String? nomeUnidadeOrigem;
+  final bool? origemEntregue;
+  final String? origemObservacao;
+  final String? nomeUnidadeDestino;
+  final bool? destinoEntregue;
+  final String? destinoObservacao;
   final List<ParadaRotaDTO> paradas;
 
   RotaExecucaoDTO({
@@ -20,6 +26,12 @@ class RotaExecucaoDTO {
     this.quantidadePausas = 0,
     this.quantidadePausasRealizadas = 0,
     this.estaPausada = false,
+    this.nomeUnidadeOrigem,
+    this.origemEntregue,
+    this.origemObservacao,
+    this.nomeUnidadeDestino,
+    this.destinoEntregue,
+    this.destinoObservacao,
     required this.paradas,
   });
 
@@ -33,6 +45,12 @@ class RotaExecucaoDTO {
       quantidadePausas: json['quantidadePausas'] ?? 0,
       quantidadePausasRealizadas: json['quantidadePausasRealizadas'] ?? 0,
       estaPausada: json['estaPausada'] ?? false,
+      nomeUnidadeOrigem: json['nomeUnidadeOrigem'],
+      origemEntregue: json['origemEntregue'],
+      origemObservacao: json['origemObservacao'],
+      nomeUnidadeDestino: json['nomeUnidadeDestino'],
+      destinoEntregue: json['destinoEntregue'],
+      destinoObservacao: json['destinoObservacao'],
       paradas: (json['paradas'] as List)
           .map((e) => ParadaRotaDTO.fromJson(e))
           .toList(),
