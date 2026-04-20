@@ -63,13 +63,25 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet]
         public async Task<IActionResult> Modal(int motoristaId)
         {
+            var idsServidoresMotoristas = _motoristaServico.ObtenhaLista().Select(m => m.ServidorId).ToList();
             var model = motoristaId == 0 ?
                     new Motorista { Situacao = AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo, EmissaoCNH = DateTime.Today, VencimentoCNH = DateTime.Today.AddYears(5) } :
                     _motoristaServico.Obtenha(motoristaId);
 
             var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
-            var servidores = _servidorServico.ObtenhaLista(s => s.OrganizacaoId == organizacaoId).Select(s => new { Id = s.Id, Nome = s.Pessoa?.Nome ?? $"Servidor {s.Id}" }).OrderBy(s => s.Nome).ToList();
+            
+            // Filtra servidores que ainda não são motoristas (exceto o próprio se for edição)
+            var servidores = _servidorServico.ObtenhaLista(s => s.OrganizacaoId == organizacaoId && (!idsServidoresMotoristas.Contains(s.Id) || s.Id == model.ServidorId))
+                .Select(s => new { Id = s.Id, Nome = s.Pessoa?.Nome ?? $"Servidor {s.Id}" })
+                .OrderBy(s => s.Nome)
+                .ToList();
+            
             ViewBag.Servidores = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(servidores, "Id", "Nome", model.ServidorId);
+
+            if (model.Id > 0)
+            {
+                ViewBag.ServidorCompleto = _servidorServico.Obtenha(model.ServidorId);
+            }
 
             var html = await RenderizarComoString("_Modal", model);
             return Json(new { sucesso = true, html = html });

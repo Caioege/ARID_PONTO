@@ -12,19 +12,15 @@
             @Html.HiddenFor(model => model.OrganizacaoId)
 
             <div class="row">
-                <div class="col col-lg-3 col-md-6">
+                <div class="col col-lg-4 col-md-12">
                     <label class="form-label obrigatorio" for="Placa">Placa</label>
                     @Html.TextBoxFor(model => model.Placa, new { @class = "form-control placa", @maxlength = "10", style = "text-transform: uppercase;" })
                 </div>
-                <div class="col col-lg-3 col-md-6">
-                    <label class="form-label">Organização</label>
-                    <input type="text" class="form-control" value="@ViewBag.OrganizacaoNome" disabled readonly />
-                </div>
-                <div class="col col-lg-3 col-md-6">
+                <div class="col col-lg-4 col-md-6">
                     <label class="form-label obrigatorio" for="Status">Status</label>
                     @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
                 </div>
-                <div class="col col-lg-3 col-md-6">
+                <div class="col col-lg-4 col-md-6">
                     <label class="form-label obrigatorio" for="TipoCombustivel">Combustível</label>
                     @Html.EnumDropDownListFor(model => model.TipoCombustivel, new { @class = "form-select" })
                 </div>
@@ -84,7 +80,7 @@
                     <i class='bx bxs-left-arrow-circle'></i> Voltar
                 </button>
                 <button type="button" class="btn btn-primary" id="btn-salvar">
-                    <i class='bx bxs-save'></i> Salvar e Continuar
+                    <i class='bx bxs-save'></i> Salvar
                 </button>
             </div>
         </form>

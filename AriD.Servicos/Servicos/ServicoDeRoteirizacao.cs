@@ -32,9 +32,24 @@ namespace AriD.Servicos.Servicos
 
             try
             {
-                // Format: lon,lat;lon,lat;...
-                var coords = string.Join(";", paradas.Select(p => 
-                    $"{p.Longitude?.Replace(",", ".")},{p.Latitude?.Replace(",", ".")}"));
+                var listaCoordenadas = new List<string>();
+
+                // 1. Origem Fixa (Se houver)
+                if (rota.UnidadeOrigem != null && !string.IsNullOrEmpty(rota.UnidadeOrigem.Latitude))
+                {
+                    listaCoordenadas.Add($"{rota.UnidadeOrigem.Longitude.Replace(",", ".")},{rota.UnidadeOrigem.Latitude.Replace(",", ".")}");
+                }
+
+                // 2. Paradas intermédias
+                listaCoordenadas.AddRange(paradas.Select(p => $"{p.Longitude?.Replace(",", ".")},{p.Latitude?.Replace(",", ".")}"));
+
+                // 3. Destino Fixo (Se houver)
+                if (rota.UnidadeDestino != null && !string.IsNullOrEmpty(rota.UnidadeDestino.Latitude))
+                {
+                    listaCoordenadas.Add($"{rota.UnidadeDestino.Longitude.Replace(",", ".")},{rota.UnidadeDestino.Latitude.Replace(",", ".")}");
+                }
+
+                var coords = string.Join(";", listaCoordenadas);
 
                 var requestUrl = $"http://router.project-osrm.org/trip/v1/driving/{coords}?source=first&destination=last&roundtrip=false&geometries=polyline";
 

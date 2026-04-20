@@ -88,6 +88,50 @@ class MotoristaRotasService {
     );
   }
 
+  Future<void> iniciarPausa({
+    required int rotaExecucaoId,
+    required String motivo,
+    required double? latitude,
+    required double? longitude,
+  }) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return;
+    }
+
+    await _client.post(
+      '/api/rastreio-app/rotas/fazer-pausa',
+      data: {
+        'rotaExecucaoId': rotaExecucaoId,
+        'motivo': motivo,
+        'latitude': latitude?.toStringAsFixed(6),
+        'longitude': longitude?.toStringAsFixed(6),
+        'dataHora': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  Future<void> finalizarPausa({
+    required int rotaExecucaoId,
+    required double? latitude,
+    required double? longitude,
+  }) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return;
+    }
+
+    await _client.post(
+      '/api/rastreio-app/rotas/finalizar-pausa',
+      data: {
+        'rotaExecucaoId': rotaExecucaoId,
+        'latitude': latitude?.toStringAsFixed(6),
+        'longitude': longitude?.toStringAsFixed(6),
+        'dataHora': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
   Future<void> salvarPontoDaRotaBackground({
     required int rotaExecucaoId,
     required double latitude,

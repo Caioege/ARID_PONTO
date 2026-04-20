@@ -7,7 +7,7 @@ namespace AriD.BibliotecaDeClasses.Entidades
     public class UnidadeOrganizacional : EntidadeOrganizacaoBase
     {
         public string Nome { get; set; }
-        public string CNPJ { get; set; }
+        public string? CNPJ { get; set; }
 
         public int EnderecoId { get; set; }
 

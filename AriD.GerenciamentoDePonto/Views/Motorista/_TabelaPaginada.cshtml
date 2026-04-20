@@ -10,7 +10,23 @@
     var listaDeColunas = new List<WebGridColumn>
     {
         tabela.Column("Servidor.Pessoa.Nome", "Motorista", width: 50f),
-        tabela.Column("NumeroCNH", "CNH", width: 20f),
+        tabela.Column("NumeroCNH", "CNH", format:
+            @<text>
+                <div>@item.NumeroCNH</div>
+                @{
+                    var diasParaVencer = (item.VencimentoCNH.Date - DateTime.Today).TotalDays;
+                    if (diasParaVencer <= 0)
+                    {
+                        var linkText = diasParaVencer == 0 ? "VENCE HOJE" : $"VENCIDA HÁ {Math.Abs(diasParaVencer)} DIAS";
+                        <span class="badge bg-label-danger" style="font-size: 0.7rem;">@linkText</span>
+                    }
+                    else if (diasParaVencer <= 45)
+                    {
+                        var destaque = diasParaVencer <= 10 ? "font-weight: bold;" : "";
+                        <span class="badge bg-label-warning" style="font-size: 0.7rem; @destaque">VENCE EM @diasParaVencer DIAS</span>
+                    }
+                }
+            </text>, width: 20f),
         tabela.Column("CategoriaCNH", "Categoria", format: @<text>@item.CategoriaCNH.ToString()</text>, width: 10f),
         tabela.Column("Situacao", "Situação", format:
             @<text>

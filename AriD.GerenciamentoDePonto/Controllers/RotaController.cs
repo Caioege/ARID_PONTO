@@ -126,9 +126,13 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var motoristas = _motoristaServico.ObtenhaLista(m => m.OrganizacaoId == organizacaoId)
                 .Where(m => m.Situacao == AriD.BibliotecaDeClasses.Enumeradores.eStatusMotorista.Ativo)
                 .OrderBy(m => m.Servidor.Pessoa.Nome)
-                .Select(m => new { m.Id, Nome = m.Servidor.Pessoa.Nome })
+                .Select(m => new { 
+                    m.Id, 
+                    Nome = $"{m.Servidor.Pessoa.Nome} - {m.Servidor.Pessoa.Cpf} - CNH: {m.CategoriaCNH} {m.VencimentoCNH:dd/MM/yyyy}" 
+                })
                 .ToList();
             ViewBag.Motoristas = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(motoristas, "Id", "Nome", model.MotoristaId);
+            ViewBag.MotoristaSecundario = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(motoristas, "Id", "Nome", model.MotoristaSecundarioId);
 
             var veiculos = _veiculoServico.ObtenhaLista(v => v.OrganizacaoId == organizacaoId)
                 .Where(v => v.Status == AriD.BibliotecaDeClasses.Enumeradores.eStatusVeiculo.Disponivel)
@@ -139,8 +143,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
             var veiculosSelecionados = model.Id != 0 ? _rotaVeiculoServico.ObtenhaLista(rv => rv.RotaId == model.Id).Select(rv => rv.VeiculoId).ToList() : new List<int>();
             ViewBag.Veiculos = new Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList(veiculos, "Id", "Descricao", veiculosSelecionados);
 
-            var unidadesDestino = _unidadeOrganizacionalServico.ObtenhaLista(u => u.OrganizacaoId == organizacaoId && (u.Tipo == AriD.BibliotecaDeClasses.Enumeradores.eTipoUnidadeOrganizacional.Saude || u.Tipo == AriD.BibliotecaDeClasses.Enumeradores.eTipoUnidadeOrganizacional.Educacao || u.Tipo == AriD.BibliotecaDeClasses.Enumeradores.eTipoUnidadeOrganizacional.Fundacao)).OrderBy(u => u.Nome).Select(u => new { u.Id, u.Nome }).ToList();
-            ViewBag.UnidadesDestino = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(unidadesDestino, "Id", "Nome", model.UnidadeDestinoId);
+            var unidadesFiltro = _unidadeOrganizacionalServico.ObtenhaLista(u => u.OrganizacaoId == organizacaoId && u.Ativa).OrderBy(u => u.Nome).Select(u => new { u.Id, u.Nome }).ToList();
+            ViewBag.UnidadesOrigem = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(unidadesFiltro, "Id", "Nome", model.UnidadeOrigemId);
+            ViewBag.UnidadesDestino = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(unidadesFiltro, "Id", "Nome", model.UnidadeDestinoId);
 
             ViewBag.PacientesDisponiveis = _pacienteServico.ObtenhaLista(p => p.OrganizacaoId == organizacaoId && p.Ativo).OrderBy(p => p.Nome).ToList();
             
@@ -163,6 +168,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     Value = $"{s.Pessoa.Nome} - CRM: {s.CodigoCRM}" 
                 }).ToList();
             ViewBag.Medicos = medicos;
+            
+            var todasUnidades = _unidadeOrganizacionalServico
+                .ObtenhaLista(u => u.OrganizacaoId == organizacaoId && u.Ativa)
+                .OrderBy(u => u.Nome)
+                .Select(u => new { u.Id, u.Nome, u.Latitude, u.Longitude, Endereco = u.Endereco != null ? u.Endereco.ToString() : "", Tipo = (int)u.Tipo })
+                .ToList();
+
+            ViewBag.UnidadesParaModal = todasUnidades;
 
             return View(model);
         }
@@ -172,6 +185,9 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             if (!HttpContext.PossuiPermissao(eItemDePermissao_Rota.CadastrarOuAlterar))
                 throw new ApplicationException("Você não tem permissão para salvar.");
+
+            if (veiculosSelecionados == null || !veiculosSelecionados.Any())
+                throw new ApplicationException("Pelo menos um veículo deve ser informado na rota.");
 
             int id = rota.Id;
             var organizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
@@ -201,10 +217,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             {
                 var original = _rotaServico.Obtenha(c => c.Id == rota.Id);
                 original.MotoristaId = rota.MotoristaId;
+                original.MotoristaSecundarioId = rota.MotoristaSecundarioId;
                 original.Descricao = rota.Descricao;
                 original.Situacao = rota.Situacao;
                 original.Recorrente = rota.Recorrente;
+                
+                original.PermitePausa = rota.PermitePausa;
+                original.QuantidadePausas = rota.QuantidadePausas;
+
                 original.DataParaExecucao = rota.DataParaExecucao;
+                original.DataInicio = rota.DataInicio;
+                original.DataFim = rota.DataFim;
+                original.DiasSemana = rota.DiasSemana;
+                original.UnidadeOrigemId = rota.UnidadeOrigemId;
                 original.UnidadeDestinoId = rota.UnidadeDestinoId;
                 original.NomePaciente = rota.NomePaciente;
                 original.MedicoResponsavel = rota.MedicoResponsavel;
@@ -549,17 +574,43 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             listaPaginada.Parametros(this, dados.Itens, dados.Total, "TabelaPaginada");
         }
+
         [HttpPost]
-        public async Task<IActionResult> PreviaDeRotaGeoAsync(Rota rota, List<ParadaRota> paradas)
+        public async Task<IActionResult> PreviaDeRotaGeo(Rota rota, List<ParadaRota> paradas)
         {
             try
             {
-                var fakeRota = new Rota { UnidadeDestinoId = rota.UnidadeDestinoId };
-                var paradasReal = paradas ?? new List<ParadaRota>();
+                var safeParadas = paradas ?? new List<ParadaRota>();
+                var fakeRota = new Rota { 
+                    UnidadeOrigemId = rota.UnidadeOrigemId,
+                    UnidadeDestinoId = rota.UnidadeDestinoId 
+                };
+
+                if (fakeRota.UnidadeOrigemId.HasValue)
+                    fakeRota.UnidadeOrigem = _unidadeOrganizacionalServico.Obtenha(fakeRota.UnidadeOrigemId.Value);
                 
-                fakeRota = await _servicoDeRoteirizacao.OtimizarRotaAsync(fakeRota, paradasReal);
+                if (fakeRota.UnidadeDestinoId.HasValue)
+                    fakeRota.UnidadeDestino = _unidadeOrganizacionalServico.Obtenha(fakeRota.UnidadeDestinoId.Value);
+
+                fakeRota = await _servicoDeRoteirizacao.OtimizarRotaAsync(fakeRota, safeParadas);
                 
-                return Json(new { sucesso = true, polyline = fakeRota.PolylineOficial, paradas = paradasReal });
+                return Json(new { 
+                    sucesso = true, 
+                    polyline = fakeRota.PolylineOficial, 
+                    paradas = safeParadas,
+                    unidadeOrigem = fakeRota.UnidadeOrigem == null ? null : new { 
+                        fakeRota.UnidadeOrigem.Nome, 
+                        fakeRota.UnidadeOrigem.Latitude, 
+                        fakeRota.UnidadeOrigem.Longitude, 
+                        Endereco = fakeRota.UnidadeOrigem.Endereco?.ToString() 
+                    },
+                    unidadeDestino = fakeRota.UnidadeDestino == null ? null : new { 
+                        fakeRota.UnidadeDestino.Nome, 
+                        fakeRota.UnidadeDestino.Latitude, 
+                        fakeRota.UnidadeDestino.Longitude, 
+                        Endereco = fakeRota.UnidadeDestino.Endereco?.ToString() 
+                    }
+                });
             }
             catch (Exception ex)
             {

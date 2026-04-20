@@ -10,6 +10,10 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(MotoristaId))]
         public virtual Motorista Motorista { get; set; }
 
+        public int? MotoristaSecundarioId { get; set; }
+        [ForeignKey(nameof(MotoristaSecundarioId))]
+        public virtual Motorista? MotoristaSecundario { get; set; }
+
         public virtual ICollection<RotaVeiculo> VeiculosDaRota { get; set; } = new List<RotaVeiculo>();
 
         public string Descricao { get; set; }
@@ -17,11 +21,22 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public eStatusRota Situacao { get; set; }
         public bool Recorrente { get; set; }
 
+        public bool PermitePausa { get; set; }
+        public int QuantidadePausas { get; set; }
+
         public DateTime? DataParaExecucao { get; set; }
+        public DateTime? DataInicio { get; set; }
+        public DateTime? DataFim { get; set; }
+        public eFlagDiaSemana? DiasSemana { get; set; }
+
         public string? NomePaciente { get; set; }
         public string? MedicoResponsavel { get; set; }
         public string? Observacao { get; set; }
         public string? PolylineOficial { get; set; }
+
+        public int? UnidadeOrigemId { get; set; }
+        [ForeignKey(nameof(UnidadeOrigemId))]
+        public virtual UnidadeOrganizacional UnidadeOrigem { get; set; }
 
         public int? UnidadeDestinoId { get; set; }
         [ForeignKey(nameof(UnidadeDestinoId))]

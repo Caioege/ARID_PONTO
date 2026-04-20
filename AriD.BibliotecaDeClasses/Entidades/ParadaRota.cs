@@ -9,6 +9,10 @@ namespace AriD.BibliotecaDeClasses.Entidades
         [ForeignKey(nameof(RotaId))]
         public virtual Rota Rota { get; set; }
 
+        public int? UnidadeId { get; set; }
+        [ForeignKey(nameof(UnidadeId))]
+        public virtual UnidadeOrganizacional Unidade { get; set; }
+
         public string Endereco { get; set; }
         public int Ordem { get; set; }
         public string? Latitude { get; set; }

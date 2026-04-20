@@ -283,12 +283,112 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
     );
   }
 
+  Future<void> _dialogoPausa() async {
+    final TextEditingController motivoCmd = TextEditingController();
+    final bool? result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text('Fazer Pausa', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Isso irá parar a captura de sua localização.'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: motivoCmd,
+                decoration: const InputDecoration(
+                  labelText: 'Motivo da Pausa',
+                  hintText: 'Ex: Almoço',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (motivoCmd.text.trim().isEmpty) return;
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Confirmar Pausa'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      await rotasController.iniciarPausa(motivoCmd.text.trim());
+      if (context.mounted) {
+        MensagemRodapeApp.sucesso(conteudo: 'Rota pausada.');
+      }
+    }
+  }
+
   Widget _rotaAtiva(ThemeData theme) {
     return Column(
       children: [
         _cardResumoRota(theme),
         const SizedBox(height: 20),
         _cardParadas(theme),
+        
+        if (rotasController.rotaAtual?.permitePausa == true) ...[
+          const SizedBox(height: 24),
+          Observer(
+            builder: (_) {
+              if (rotasController.estaPausada) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      await rotasController.finalizarPausa();
+                      if (context.mounted) {
+                        MensagemRodapeApp.sucesso(conteudo: 'Rota retomada. Registro de localização ativo.');
+                      }
+                    },
+                    icon: const Icon(Icons.play_circle_fill, color: Colors.white),
+                    label: const Text('Finalizar Pausa (Retomar)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(vertical: 22),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      elevation: 4,
+                    ),
+                  ),
+                );
+              } else {
+                final limiteOk = rotasController.rotaAtual!.quantidadePausasRealizadas < rotasController.rotaAtual!.quantidadePausas;
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: limiteOk 
+                        ? () => _dialogoPausa() 
+                        : () => MensagemRodapeApp.alerta(conteudo: 'O limite de pausas desta rota já foi atingido!'),
+                    icon: const Icon(Icons.pause_circle_filled, color: Colors.white),
+                    label: Text(
+                      limiteOk ? 'Fazer Pausa' : 'Limite de Pausas Atingido', 
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: limiteOk ? Colors.orange : Colors.grey,
+                      padding: const EdgeInsets.symmetric(vertical: 22),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      elevation: 4,
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+
         const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,

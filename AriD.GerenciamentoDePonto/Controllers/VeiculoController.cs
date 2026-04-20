@@ -115,6 +115,15 @@ namespace AriD.GerenciamentoDePonto.Controllers
             int id = veiculo.Id;
             veiculo.OrganizacaoId = this.HttpContext.DadosDaSessao().OrganizacaoId;
 
+            // Validação de unicidade
+            var jaExiste = _veiculoServico.ObtenhaLista(v => v.OrganizacaoId == veiculo.OrganizacaoId && v.Id != veiculo.Id &&
+                (v.Placa.ToUpper() == veiculo.Placa.ToUpper() || 
+                 v.Renavam == veiculo.Renavam || 
+                 v.Chassi == veiculo.Chassi)).Any();
+
+            if (jaExiste)
+                throw new ApplicationException("Já existe um outro veículo cadastrado com esta mesma Placa, Renavam ou Chassi.");
+
             if (veiculo.Id == 0)
                 id = _veiculoServico.Adicionar(veiculo);
             else

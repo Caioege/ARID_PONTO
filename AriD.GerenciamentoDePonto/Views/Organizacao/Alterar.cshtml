@@ -218,9 +218,12 @@
             </div>
 
             <br />
-            <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')">
-                <i class='bx bxs-left-arrow-circle'></i> Voltar
-            </button>
+            @if (dadosDaSessao.Perfil == ePerfilDeAcesso.AdministradorDeSistema)
+            {
+                <button type="button" class="btn btn-secondary" onclick="CarregarPagina('@Url.Action("Index", "Organizacao")')">
+                    <i class='bx bxs-left-arrow-circle'></i> Voltar
+                </button>
+            }
 
             <button type="button" class="btn btn-primary" id="btn-salvar">
                 <i class='bx bxs-save'></i> Salvar

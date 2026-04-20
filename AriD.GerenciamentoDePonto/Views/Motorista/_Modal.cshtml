@@ -25,6 +25,9 @@
                       <li class="nav-item">
                         <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-historico" aria-controls="tab-historico" aria-selected="false" onclick="carregarHistoricoSituacao()">Histórico de Situação</button>
                       </li>
+                      <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-servidor" aria-controls="tab-servidor" aria-selected="false">Dados do Servidor</button>
+                      </li>
                   }
                 </ul>
                 
@@ -35,7 +38,8 @@
                             <div class="row">
                                 <div class="col col-lg-8 col-md-12 col-sm-12">
                                     <label class="form-label obrigatorio" for="ServidorId">Servidor / Pessoa</label>
-                                    @Html.DropDownListFor(model => model.ServidorId, (SelectList)ViewBag.Servidores, string.Empty, new { @class = "select2" })
+                                    @Html.DropDownListFor(model => model.ServidorId, (SelectList)ViewBag.Servidores, string.Empty, adicionar ? (object)new { @class = "select2" } : new { @class = "select2", disabled = "disabled" })
+                                    @if(!adicionar) { @Html.HiddenFor(model => model.ServidorId) }
                                 </div>
 
                                 <div class="col col-lg-4 col-md-12 col-sm-12 float-end">
@@ -89,6 +93,46 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="tab-servidor" role="tabpanel">
+                            @{
+                                var servidor = (Servidor)ViewBag.ServidorCompleto;
+                            }
+                            @if (servidor != null)
+                            {
+                                <div class="row">
+                                    <div class="col-md-3 text-center">
+                                        <img src="@Url.Action("Servidor", "Foto", new { id = servidor.Id })" alt="Foto" class="img-fluid rounded mb-2" style="max-height: 150px;" />
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nome</label>
+                                                <input type="text" class="form-control" value="@servidor.Pessoa.Nome" readonly />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Nome Social</label>
+                                                <input type="text" class="form-control" value="@(servidor.Pessoa.NomeSocial ?? "-")" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-4">
+                                                <label class="form-label">CPF</label>
+                                                <input type="text" class="form-control" value="@servidor.Pessoa.Cpf" readonly />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">RG</label>
+                                                <input type="text" class="form-control" value="@(servidor.Pessoa.Rg ?? "-")" readonly />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Data de Nascimento</label>
+                                                <input type="text" class="form-control" value="@servidor.Pessoa.DataDeNascimento.ToString("dd/MM/yyyy")" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     }
                 </div>

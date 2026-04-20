@@ -24,6 +24,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var dadosDaSessao = this.HttpContext.DadosDaSessao();
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                    return RedirectToAction("Alterar", dadosDaSessao.OrganizacaoId);
+
                 AjusteContextoDePaginacao(listaPaginada);
                 return View(listaPaginada);
             }
@@ -38,6 +42,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var dadosDaSessao = this.HttpContext.DadosDaSessao();
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                    return RedirectToAction("Alterar", dadosDaSessao.OrganizacaoId);
+
                 AjusteContextoDePaginacao(listaPaginada);
                 return View("_TabelaPaginada", listaPaginada);
             }
@@ -52,6 +60,10 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             try
             {
+                var dadosDaSessao = this.HttpContext.DadosDaSessao();
+                if (dadosDaSessao.Perfil != ePerfilDeAcesso.AdministradorDeSistema)
+                    return RedirectToAction("Alterar", dadosDaSessao.OrganizacaoId);
+
                 return View(new Organizacao { Ativa = true });
             }
             catch (Exception ex)

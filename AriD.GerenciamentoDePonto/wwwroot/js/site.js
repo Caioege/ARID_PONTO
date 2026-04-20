@@ -110,8 +110,10 @@ function ObtenhaFormularioSerializado(formId) {
         if (!name) return;
 
 
-        if ($form.find(`.form-label[for="${$element.attr('id')}"]`).hasClass('obrigatorio') &&
-            !$element.val().trim()) {
+        let valor = $element.val();
+        let campoEstaVazio = Array.isArray(valor) ? valor.length === 0 : (valor === null || valor === undefined || valor.toString().trim() === '');
+
+        if ($form.find(`.form-label[for="${$element.attr('id')}"]`).hasClass('obrigatorio') && campoEstaVazio) {
 
             formularioEstaValido = false;
 

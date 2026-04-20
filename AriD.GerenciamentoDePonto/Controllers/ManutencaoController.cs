@@ -43,6 +43,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     new ManutencaoVeiculo { VeiculoId = veiculoId, DataManutencao = DateTime.Today } :
                     _manutencaoServico.Obtenha(maintenanceId);
 
+            if (maintenanceId == 0)
+            {
+                var veiculo = _veiculoServico.Obtenha(veiculoId);
+                model.KmNaManutencao = veiculo?.QuilometragemAtual ?? 0;
+            }
+
             var html = await RenderizarComoString("_Modal", model);
             return Json(new { sucesso = true, html = html });
         }
@@ -64,6 +70,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 original.KmProximaManutencao = manutencao.KmProximaManutencao;
                 original.DataVencimentoManutencao = manutencao.DataVencimentoManutencao;
                 original.Observacao = manutencao.Observacao;
+                original.Situacao = manutencao.Situacao;
                 _manutencaoServico.Atualizar(original);
             }
 

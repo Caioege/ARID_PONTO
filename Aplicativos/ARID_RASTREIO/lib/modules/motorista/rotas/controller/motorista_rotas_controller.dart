@@ -4,6 +4,8 @@ import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/encerrar_parada_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
+import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
+import 'package:arid_rastreio/core/service/rota_location_task.dart';
 import 'package:mobx/mobx.dart';
 import '../service/motorista_rotas_service.dart';
 
@@ -23,6 +25,9 @@ abstract class MotoristaRotasControllerBase with Store {
 
   @observable
   bool rotaIniciada = false;
+
+  @observable
+  bool estaPausada = false;
 
   @observable
   int? rotaFinalizadaId;
@@ -61,6 +66,7 @@ abstract class MotoristaRotasControllerBase with Store {
       }
 
       rotaIniciada = true;
+      estaPausada = execucao.estaPausada;
 
       return execucao;
     } finally {
@@ -134,6 +140,47 @@ abstract class MotoristaRotasControllerBase with Store {
       rotaFinalizadaId = rotaAtual?.rotaId;
       rotaAtual = null;
       paradas.clear();
+    } finally {
+      carregando = false;
+    }
+  }
+
+  @action
+  Future<void> iniciarPausa(String motivo) async {
+    if (rotaAtual == null) return;
+    carregando = true;
+
+    try {
+      final loc = await RotaLocationTask.getCurrentLocation();
+      await _service.iniciarPausa(
+        rotaExecucaoId: rotaAtual!.id,
+        motivo: motivo,
+        latitude: loc?.latitude,
+        longitude: loc?.longitude,
+      );
+
+      await RotaTrackingService.stop();
+      estaPausada = true;
+    } finally {
+      carregando = false;
+    }
+  }
+
+  @action
+  Future<void> finalizarPausa() async {
+    if (rotaAtual == null) return;
+    carregando = true;
+
+    try {
+      final loc = await RotaLocationTask.getCurrentLocation();
+      await _service.finalizarPausa(
+        rotaExecucaoId: rotaAtual!.id,
+        latitude: loc?.latitude,
+        longitude: loc?.longitude,
+      );
+
+      await RotaTrackingService.start();
+      estaPausada = false;
     } finally {
       carregando = false;
     }

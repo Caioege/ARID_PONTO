@@ -3,7 +3,7 @@
     background: #ff00000d !important;
 }
 
-.pagination > li {
+.pagination>li {
     border: solid 2px #e4e6e8 !important;
     padding: 5px !important;
     background: white !important;
@@ -12,32 +12,32 @@
     text-align: center !important;
 }
 
-.pagination > li.disabled > a {
+.pagination>li.disabled>a {
     color: gray !important;
 }
 
-.pagination > li:hover {
+.pagination>li:hover {
     background-color: gray !important;
     cursor: pointer;
 }
 
-.pagination > li > a:hover {
+.pagination>li>a:hover {
     color: white !important;
     background-color: none !important;
     background: none !important;
 }
 
-.pagination > li.disabled > a:hover,
-.pagination > li.disabled:hover {
+.pagination>li.disabled>a:hover,
+.pagination>li.disabled:hover {
     cursor: not-allowed !important;
 }
 
-.pagination > li.active {
+.pagination>li.active {
     background-color: #66b2e3 !important;
     color: white !important;
 }
 
-.pagination > li.active > a {
+.pagination>li.active>a {
     background-color: none !important;
     background: none !important;
 }
@@ -125,13 +125,13 @@
 
     .webgrid-table td {
         display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
+        justify-content: flex-start;
         padding: 0.55rem 0.85rem;
         border: none;
         border-bottom: 1px solid #f0f0f0;
         text-align: right;
         gap: 0.5rem;
+        align-items: center;
     }
 
     .webgrid-table td:last-child {
@@ -139,7 +139,7 @@
     }
 
     .webgrid-table td::before {
-        content: attr(data-label);
+        content: attr(data-label) ": ";
         font-weight: 600;
         color: #5a6a7a;
         flex-shrink: 0;
@@ -214,4 +214,4 @@
 .custom-nav-pills .nav-link:hover:not(.active) {
     background-color: #e1e4e8;
     border-color: #cdd2d8;
-}
+}

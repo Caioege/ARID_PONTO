@@ -1,5 +1,7 @@
 @using AriD.BibliotecaDeClasses.Entidades
+@using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@using AriD.Servicos.Extensao
 @model Rota
 
 @{
@@ -17,10 +19,10 @@
             <div class="card-body">
                 <ul class="nav nav-tabs mb-3" role="tablist">
                   <li class="nav-item">
-                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados" aria-controls="tab-dados" aria-selected="true">Dados Principais</button>
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados" aria-controls="tab-dados" aria-selected="true">Geral</button>
                   </li>
                   <li class="nav-item">
-                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-pacientes" aria-controls="tab-pacientes" aria-selected="false">Pacientes e Acompanhantes</button>
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-pacientes" aria-controls="tab-pacientes" aria-selected="false">Acompanhantes/Pacientes</button>
                   </li>
                   <li class="nav-item">
                     <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-profissionais" aria-controls="tab-profissionais" aria-selected="false">Equipe/Profissionais</button>
@@ -54,34 +56,70 @@
                                     @Html.EnumDropDownListFor(model => model.Situacao, new { @class = "form-select" })
                                 </div>
                             </div>
+                            
+                            <div class="row mt-2" style="background: #fdfdfd; padding: 10px; border-radius: 8px; border: 1px solid #e1e1e1;">
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <div class="form-check form-switch mb-0 text-primary">
+                                       @Html.CheckBoxFor(model => model.PermitePausa, new { @class = "form-check-input", @id = "PermitePausa" })
+                                       <label class="form-check-label fw-bold" for="PermitePausa">Permite pausas durante a execução da rota?</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="box-quantidade-pausas" style="@(Model.PermitePausa ? "" : "display:none;")">
+                                    <label class="form-label">Quantidade de paradas permitidas durante a execução</label>
+                                    @Html.TextBoxFor(model => model.QuantidadePausas, new { @class = "form-control numeric", @type="number", min="0", step="1" })
+                                </div>
+                            </div>
 
                             <div class="row mt-2">
-                                <div class="col col-lg-6 col-md-12 col-sm-12">
+                                <div class="col-12 mb-2">
                                     <label class="form-label obrigatorio" for="MotoristaId">Motorista Principal</label>
                                     @Html.DropDownListFor(model => model.MotoristaId, (SelectList)ViewBag.Motoristas, string.Empty, new { @class = "select2" })
                                 </div>
 
-                                <div class="col col-lg-6 col-md-12 col-sm-12">
-                                    <label class="form-label" for="veiculosSelecionados">Veículos Associados (Opcional)</label>
+                                <div class="col-12 mb-2">
+                                    <label class="form-label" for="MotoristaSecundarioId">Motorista Secundário (Opcional)</label>
+                                    @Html.DropDownListFor(model => model.MotoristaSecundarioId, (SelectList)ViewBag.MotoristaSecundario, string.Empty, new { @class = "select2" })
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label obrigatorio" for="veiculosSelecionados">Veículos Associados</label>
                                     @Html.ListBox("veiculosSelecionados", (MultiSelectList)ViewBag.Veiculos, new { @class = "select2", multiple = "multiple", data_placeholder = "Selecione os veículos..." })
                                 </div>
                             </div>
                             
-                            <div class="row mt-2">
-                                <div class="col col-lg-12 col-md-12 col-sm-12">
-                                    <label class="form-label" for="UnidadeDestinoId">Unidade de Destino (TSP Checkpoint)</label>
-                                    @Html.DropDownListFor(model => model.UnidadeDestinoId, (SelectList)ViewBag.UnidadesDestino, "Selecione a Unidade Base...", new { @class = "select2" })
-                                </div>
-                            </div>
 
-                            <div class="row mt-2" id="box-rota-especifica" style="display:none; padding:10px; background-color: #f9f9f9; border-radius: 4px; border: 1px solid #1abc9c38; justify-content: center; align-items: center;">
-                                <div class="col col-lg-3 col-md-12 col-sm-12">
+                            <div class="row mt-2" id="box-config-execucao" style="display:none; padding:15px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                                <!-- Cenário 1: Rota Pontual (Não Recorrente) -->
+                                <div id="col-data-especifica" class="col col-lg-3 col-md-12 col-sm-12">
                                     <label class="form-label obrigatorio" for="DataParaExecucao">Data da Execução</label>
                                     @Html.TextBoxFor(model => model.DataParaExecucao, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                                 </div>
-                                <div class="col col-lg-9 col-md-12 col-sm-12">
-                                    <div class="alert alert-info py-2 mb-0" role="alert">
-                                      <i class="bx bx-info-circle me-1"></i> Pacientes e Médicos agora devem ser adicionados nas suas <strong>abas específicas correspondentes</strong> acima para suportar múltiplas seleções na Gestão Mobile.
+
+                                <!-- Cenário 2: Rota Recorrente com Período e Dias -->
+                                <div id="col-periodo-recorrente" class="col col-lg-12 col-md-12 col-sm-12" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="form-label obrigatorio" for="DataInicio">Data Início de Validade</label>
+                                            @Html.TextBoxFor(model => model.DataInicio, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" for="DataFim">Até (Data Fim - Opcional)</label>
+                                            @Html.TextBoxFor(model => model.DataFim, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label d-block text-primary fw-bold">Dias de Atividade na Semana</label>
+                                            <div class="d-flex justify-content-between flex-wrap bg-white p-2 border rounded">
+                                                @foreach (var dia in Enum.GetValues(typeof(eFlagDiaSemana)).Cast<eFlagDiaSemana>().Where(d => d != eFlagDiaSemana.Nenhum))
+                                                {
+                                                    <div class="form-check">
+                                                        <input class="form-check-input check-dia-semana" type="checkbox" id="dia_@((int)dia)" value="@((int)dia)" 
+                                                               @(Model.DiasSemana != null && Model.DiasSemana.Value.HasFlag(dia) ? "checked" : "")>
+                                                        <label class="form-check-label" for="dia_@((int)dia)">@dia.ToString().Substring(0, 3)</label>
+                                                    </div>
+                                                }
+                                                @Html.HiddenFor(m => m.DiasSemana)
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -93,136 +131,127 @@
                                 </div>
                             </div>
 
+                            <div class="row mt-4 mb-2 align-items-end" style="background: #f1f4f9; padding: 15px; border-radius: 8px; border-left: 5px solid #696cff;">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold" for="UnidadeOrigemId"><i class="bx bx-log-out-circle text-primary"></i> Unidade de Partida (Origem)</label>
+                                    @Html.DropDownListFor(model => model.UnidadeOrigemId, (SelectList)ViewBag.UnidadesOrigem, "Selecione a Unidade de Partida...", new { @class = "select2" })
+                                    <div class="form-text mt-1 small">Se informada, a rota começará nesta unidade. Se não informada, começará do primeiro ponto da rota.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-between">
+                                        <label class="form-label fw-bold" for="UnidadeDestinoId"><i class="bx bx-log-in-circle text-success"></i> Unidade de Destino (Finalização)</label>
+                                    </div>
+                                    @Html.DropDownListFor(model => model.UnidadeDestinoId, (SelectList)ViewBag.UnidadesDestino, "Selecione a Unidade de Chegada...", new { @class = "select2" })
+                                    <div class="form-text mt-1 text-info small"><i class="bx bx-info-circle"></i> Quando não informada, a rota terminará no último ponto de parada.</div>
+                                </div>
+                            </div>
+
                             <hr class="mt-4 mb-3" />
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="mb-0 text-primary"><i class='bx bx-map-pin'></i> Pontos de Parada Espaciais</h6>
-                                <button type="button" class="btn btn-sm btn-outline-info" id="btn-preview-rota">
-                                    <i class='bx bx-git-branch'></i> Visualizar Rota Prevista TSP
-                                </button>
+                                <h6 class="mb-0 text-primary"><i class='bx bx-map-pin'></i> Pontos da Rota</h6>
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-outline-info me-2" id="btn-preview-rota">
+                                        <i class='bx bx-git-branch'></i> Visualizar Rota Prevista
+                                    </button>
+                                    @if (!adicionar)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-success" onclick="abrirModalPonto()">
+                                            <i class='bx bx-plus'></i> Adicionar Ponto
+                                        </button>
+                                    }
+                                </div>
                             </div>
                             
-                            <div class="row mt-2 mb-3 align-items-end">
-                                <div class="col col-lg-3">
-                                    <label class="form-label" for="novaParadaEndereco">Endereço/Local</label>
-                                    <input type="text" class="form-control" id="novaParadaEndereco" placeholder="Ex: Rua A, 123" />
+                            @if (adicionar)
+                            {
+                                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                    <i class="bx bx-error-exclamation me-2"></i>
+                                    <div>
+                                        Salve os dados básicos da rota primeiro para poder gerenciar os pontos de parada.
+                                    </div>
                                 </div>
-                                <div class="col col-lg-3">
-                                    <label class="form-label" for="novaParadaLat">Latitude (Opcional - GeoTSP)</label>
-                                    <input type="text" class="form-control" id="novaParadaLat" placeholder="-00.00000" />
-                                </div>
-                                <div class="col col-lg-3">
-                                    <label class="form-label" for="novaParadaLng">Longitude (Opcional - GeoTSP)</label>
-                                    <input type="text" class="form-control" id="novaParadaLng" placeholder="-00.00000" />
-                                </div>
-                                <div class="col col-lg-2">
-                                    <label class="form-label" for="novaParadaObs">Observação</label>
-                                    <input type="text" class="form-control" id="novaParadaObs" placeholder="Aptidões, avisos..." />
-                                </div>
-                                 <div class="col col-lg-1">
-                                    <button type="button" class="btn btn-primary w-100" id="btn-adicionar-parada" onclick="adicionarParadaManualmente()">
-                                        <i class='bx bx-plus'></i> 
-                                    </button>
-                                 </div>
-                            </div>
-
-                            <div class="table-responsive text-nowrap mt-2" style="max-height: 350px; overflow-y: auto;">
-                                <table class="table table-bordered table-sm" id="tabela-paradas">
-                                    <thead>
-                                        <tr>
-                                            <th>Ordem Sugerida</th>
-                                            <th>Endereço/Localização</th>
-                                            <th>Coordenadas GPS</th>
-                                            <th width="15%">Observação</th>
-                                            @if (Model.Recorrente)
+                            }
+                            else
+                            {
+                                <div class="table-responsive text-nowrap mt-2" style="max-height: 450px; overflow-y: auto;">
+                                    <table class="table table-bordered table-sm table-hover" id="tabela-paradas">
+                                        <thead>
+                                            <tr>
+                                                <th width="30px"></th>
+                                                <th>Ordem</th>
+                                                <th>Endereço/Localização</th>
+                                                <th>Coordenadas GPS</th>
+                                                <th width="15%">Observação</th>
+                                                <th width="80px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sortable-paradas">
+                                            @if(Model.Paradas != null && Model.Paradas.Any())
                                             {
-                                                <th width="10%">Situação</th>
-                                            }
-                                            <th width="50px"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(Model.Paradas != null && Model.Paradas.Any())
-                                        {
-                                            foreach(var p in Model.Paradas.OrderBy(x => x.Ordem))
-                                            {
-                                                <tr data-id="@p.Id" data-entregue="@(p.Entregue ? "true" : "false")"
-                                                    data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link" data-obs="@p.Observacao">
-                                                    <td class="text-center font-weight-bold">
-                                                        <span class="badge bg-label-primary rounded-circle p-2">@(p.Ordem + 1)</span>
-                                                    </td>
-                                                    <td>
-                                                        @p.Endereco
-                                                        @if(!string.IsNullOrEmpty(p.Link)){ <br /><a target="_blank" href="@p.Link" style="color: #0000ffb5; text-decoration: underline;">Ext Link</a> }
-                                                    </td>
-                                                    <td>
-                                                        @if(!string.IsNullOrEmpty(p.Latitude)) { <code class="small text-muted">@p.Latitude, @p.Longitude</code> } else { <span class="text-warning small"><i class="bx bx-error"></i> Geofence Offline</span> }
-                                                    </td>
-                                                    <td>@p.Observacao</td>
-                                                    @if (Model.Recorrente)
-                                                    {
-                                                        <td>
-                                                            @if(p.Entregue) { <span class="badge bg-success">Concluído</span> } else { <span class="badge bg-secondary">Pendente</span> }
+                                                foreach(var p in Model.Paradas.OrderBy(x => x.Ordem))
+                                                {
+                                                    <tr data-id="@p.Id" data-entregue="@(p.Entregue ? "true" : "false")"
+                                                        data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link" data-obs="@p.Observacao"
+                                                        data-unidade-id="@p.UnidadeId" data-tipo-pesquisa="@(p.UnidadeId.HasValue ? $"tipo-{(int)p.Unidade?.Tipo}" : "manual")">
+                                                        <td class="text-center cursor-move"><i class="bx bx-menu"></i></td>
+                                                        <td class="text-center font-weight-bold">
+                                                            <span class="badge bg-label-primary rounded-circle p-2 label-ordem">@(p.Ordem + 1)</span>
                                                         </td>
-                                                    }
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-icon btn-danger btn-remover-parada"><i class='bx bx-trash'></i></button>
-                                                    </td>
-                                                </tr>
+                                                        <td>
+                                                            @p.Endereco
+                                                            @if(!string.IsNullOrEmpty(p.Link)){ <br /><a target="_blank" href="@p.Link" style="color: #0000ffb5; text-decoration: underline;">Ext Link</a> }
+                                                        </td>
+                                                        <td>
+                                                            @if(!string.IsNullOrEmpty(p.Latitude)) { 
+                                                                <a href="https://www.google.com/maps/search/?api=1&query=@p.Latitude,@p.Longitude" target="_blank" title="Abrir no Google Maps">
+                                                                    <code class="small text-muted">@p.Latitude, @p.Longitude</code>
+                                                                </a>
+                                                            } else { 
+                                                                <span class="text-warning small"><i class="bx bx-error"></i> Geofence Offline</span> 
+                                                            }
+                                                        </td>
+                                                        <td>@p.Observacao</td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" onclick="abrirModalPonto(this)"><i class='bx bx-edit'></i></button>
+                                                            <button type="button" class="btn btn-sm btn-icon btn-outline-danger" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
+                                                        </td>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                        else 
-                                        {
-                                            <tr id="empty-paradas-tr"><td colspan="6" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                            else 
+                                            {
+                                                <tr id="empty-paradas-tr"><td colspan="7" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
 
-                            <!-- PREVIEW AREA MAP -->
-                            <div id="preview-map-container" style="display: none; height: 400px; width: 100%; margin-top: 15px; border-radius: 8px; border: 2px solid #3498db;"></div>
 
                         </form>
                     </div>
 
                     <div class="tab-pane fade" id="tab-pacientes" role="tabpanel">
-                        <div class="row mb-3 mt-2" id="area-novo-paciente" style="display:none; background-color: #f0f3f5; padding: 15px; border-radius: 8px;">
-                            <div class="col-md-5">
-                                <label class="form-label">Nome Completo</label>
-                                <input type="text" id="novo-paciente-nome" class="form-control" />
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">CPF</label>
-                                <input type="text" id="novo-paciente-cpf" class="form-control cpf" />
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Telefone</label>
-                                <input type="text" id="novo-paciente-telefone" class="form-control telefone" />
-                            </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="button" class="btn btn-success w-100" onclick="salvarPacienteNovo()">
-                                    <i class='bx bx-check'></i> Salvar
-                                </button>
-                            </div>
-                        </div>
+                        <!-- Patient Registration Modal Triggered by Link -->
 
                         <div class="row mb-3">
                             <div class="col-md-8">
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label">Selecionar Paciente</label>
-                                    <a href="javascript:void(0)" onclick="$('#area-novo-paciente').slideToggle()" class="small text-primary">Não encontrou? Cadastrar Novo</a>
+                                    <a href="javascript:void(0)" onclick="abrirModalNovoPaciente()" class="small text-primary" style="color: blue !important; text-decoration: underline;">Não encontrou? Cadastrar Novo</a>
                                 </div>
                                 <select id="selecao-paciente" class="form-select select2-cadastro">
                                     <option value="">Selecione...</option>
                                     @foreach (var p in (List<Paciente>)ViewBag.PacientesDisponiveis)
                                     {
-                                        <option value="@p.Id" data-nome="@p.Nome">@p.Nome (@p.CPF)</option>
+                                        <option value="@p.Id" data-nome="@p.Nome" data-tel="@p.Telefone" data-cpf="@p.CPF">@p.Nome (@p.CPF) @(!string.IsNullOrEmpty(p.Telefone) ? $" - {p.Telefone}" : "")</option>
                                     }
                                 </select>
                             </div>
                             <div class="col-md-2 d-flex flex-column justify-content-end">
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="paciente-possui-acompanhante">
-                                    <label class="form-check-label" for="paciente-possui-acompanhante">C/ Acomp.</label>
+                                    <label class="form-check-label" for="paciente-possui-acompanhante">Acompanhante</label>
                                 </div>
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
@@ -236,7 +265,9 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th>Nome</th>
-                                        <th class="text-center">Acompanhante?</th>
+                                        <th>CPF</th>
+                                        <th>Contato</th>
+                                        <th class="text-center">Tipo</th>
                                         <th width="50px"></th>
                                     </tr>
                                 </thead>
@@ -245,7 +276,18 @@
                                     {
                                         <tr data-id="@rp.PacienteId" data-acompanhante="@(rp.PossuiAcompanhante ? "true" : "false")">
                                             <td>@rp.Paciente.Nome</td>
-                                            <td class="text-center">@(rp.PossuiAcompanhante ? "Sim" : "Não")</td>
+                                            <td>@rp.Paciente.CPF</td>
+                                            <td>@rp.Paciente.Telefone</td>
+                                            <td class="text-center">
+                                                @if (rp.PossuiAcompanhante)
+                                                {
+                                                    <span class="badge bg-label-secondary">Acompanhante</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-label-info">Paciente</span>
+                                                }
+                                            </td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-xs btn-icon btn-outline-danger" onclick="removerLinha(this)"><i class='bx bx-trash'></i></button>
                                             </td>
@@ -259,7 +301,7 @@
                     <div class="tab-pane fade" id="tab-profissionais" role="tabpanel">
                         <div class="row mb-3">
                             <div class="col-md-10">
-                                <label class="form-label">Selecionar Profissional (Saúde/Educação)</label>
+                                <label class="form-label">Selecionar Profissional da Rota</label>
                                 <select id="selecao-profissional" class="form-select select2-cadastro" onchange="aoMudarProfissional()">
                                     <option value="">Selecione...</option>
                                     @foreach (var s in (dynamic)ViewBag.ProfissionaisDisponiveis)
@@ -370,35 +412,185 @@
     </div>
 </div>
 
-<script src="/Scripts/Paginas/Rota/index.js?t=@DateTime.Now.Ticks"></script>
+<!-- Modal Ponto de Parada -->
+<div class="modal fade" id="modal-ponto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bx bx-map-pin"></i> Gerenciar Ponto de Parada</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="form-ponto-parada">
+        <input type="hidden" id="modal-ponto-index" />
+        <input type="hidden" id="modal-ponto-id" />
+        
+        <div class="row mb-3" id="row-tipo-pesquisa">
+            <div class="col-12">
+                <div class="d-flex gap-2 flex-wrap">
+                    <div class="form-check custom-option custom-option-basic" style="width: auto;">
+                        <label class="form-check-label custom-option-content p-2" for="tipo-manual">
+                            <input name="tipo-pesquisa" class="form-check-input" type="radio" value="manual" id="tipo-manual" checked />
+                            <span class="custom-option-header pb-0">
+                                <span class="fw-medium text-heading">Manual</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-check custom-option custom-option-basic" style="width: auto;">
+                        <label class="form-check-label custom-option-content p-2" for="tipo-cep">
+                            <input name="tipo-pesquisa" class="form-check-input" type="radio" value="cep" id="tipo-cep" />
+                            <span class="custom-option-header pb-0">
+                                <span class="fw-medium text-heading">Busca CEP</span>
+                            </span>
+                        </label>
+                    </div>
+                    @foreach (eTipoUnidadeOrganizacional tipo in Enum.GetValues(typeof(eTipoUnidadeOrganizacional)))
+                    {
+                        <div class="form-check custom-option custom-option-basic" style="width: auto;">
+                            <label class="form-check-label custom-option-content p-2" for="tipo_@tipo">
+                                <input name="tipo-pesquisa" class="form-check-input" type="radio" value="tipo-@((int)tipo)" id="tipo_@tipo" />
+                                <span class="custom-option-header pb-0">
+                                    <span class="fw-medium text-heading">@tipo.DescricaoDoEnumerador()</span>
+                                </span>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div id="section-unidade-sistema" style="display:none;" class="mb-3">
+            <label class="form-label" id="label-unidade-sistema" for="modal-selecao-unidade">Selecione a Unidade</label>
+            <select id="modal-selecao-unidade" class="form-select select2-modal">
+                <option value="">Selecione...</option>
+                @foreach(var u in (dynamic)ViewBag.UnidadesParaModal) {
+                    <option value="@u.Id" data-lat="@u.Latitude" data-lng="@u.Longitude" data-end="@u.Endereco" data-tipo="tipo-@((int)u.Tipo)">@u.Nome</option>
+                }
+            </select>
+        </div>
+
+        <div id="section-cep" style="display:none;" class="mb-3">
+            <label class="form-label" for="modal-cep">Digite o CEP</label>
+            <div class="input-group">
+                <input type="text" id="modal-cep" class="form-control cep" placeholder="00000-000" />
+                <button type="button" class="btn btn-outline-primary" onclick="pesquisarCEPModal()"><i class="bx bx-search"></i></button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-3">
+                <label class="form-label obrigatorio" for="modal-ponto-endereco">Endereço Completo</label>
+                <textarea id="modal-ponto-endereco" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="col-12 mb-3">
+                <label class="form-label" for="modal-ponto-obs">Observação</label>
+                <textarea id="modal-ponto-obs" class="form-control" rows="2" placeholder=""></textarea>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label obrigatorio" for="modal-ponto-lat">Latitude</label>
+                <input type="text" id="modal-ponto-lat" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label obrigatorio" for="modal-ponto-lng">Longitude</label>
+                <input type="text" id="modal-ponto-lng" class="form-control" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label mb-0">Localização no Mapa</label>
+                    <small class="text-muted">Clique no mapa para ajustar a posição</small>
+                </div>
+                <div id="modal-map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid #ddd;"></div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="confirmarPontoModal()">Confirmar Ponto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polyline@1.0.2/dist/leaflet.polyline.encoded.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="/Scripts/Paginas/Rota/cadastro.js?t=@DateTime.Now.Ticks"></script>
+
 <script>
+    var UNIDADES_SISTEMA = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.UnidadesParaModal));
+    var UNIDADE_ROTA_ID = '@Model.UnidadeDestinoId';
+
     if (typeof inicializarSelects === 'function') {
         inicializarSelects();
     }
-
-    $(document).ready(function() {
-        if ($.fn.select2) {
-            $('.select2-cadastro').select2({
-                width: '100%'
-            });
-            $('#MedicoResponsavel').select2({
-                tags: true,
-                placeholder: 'Selecione ou digite...'
-            });
-        }
-
-        function toggleSpecificBox() {
-            var val = String($('#Recorrente').val() || '').toLowerCase();
-            var isNaoRecorrente = (val === 'false' || ($('#Recorrente').is('input[type=checkbox]') && !$('#Recorrente').is(':checked')));
-            
-            if (isNaoRecorrente) {
-                $('#box-rota-especifica').slideDown();
-            } else {
-                $('#box-rota-especifica').slideUp();
-                $('#DataParaExecucao').val('');
-            }
-        }
-        $('#Recorrente').on('change', toggleSpecificBox);
-        setTimeout(toggleSpecificBox, 200);
-    });
 </script>
+
+<!-- Modal Novo Paciente -->
+<div class="modal fade" id="modal-novo-paciente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cadastrar Novo Acompanhante/Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="form-novo-paciente">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label obrigatorio" for="novo-paciente-nome">Nome Completo</label>
+                        <input type="text" id="novo-paciente-nome" class="form-control" placeholder="Ex: João da Silva" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label obrigatorio" for="novo-paciente-cpf">CPF</label>
+                        <input type="text" id="novo-paciente-cpf" class="form-control cpf" placeholder="000.000.000-00" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label obrigatorio" for="novo-paciente-telefone">Telefone/Celular</label>
+                        <input type="text" id="novo-paciente-telefone" class="form-control celular" placeholder="(00) 00000-0000" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="novo-paciente-datanasc">Data de Nascimento</label>
+                        <input type="date" id="novo-paciente-datanasc" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarPacienteNovo()">Salvar e Adicionar à Rota</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Preview de Rota -->
+<div class="modal fade" id="modal-preview-rota" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Prévia da Rota - Traçado OSRM</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info mb-3 d-flex align-items-center" style="border-left: 5px solid #2980b9; background-color: #f0f7fb;">
+                    <i class="bx bx-info-circle me-3 fs-3" style="color: #2980b9;"></i>
+                    <div class="small">
+                        O cálculo desta rota é realizado automaticamente com base nas informações disponíveis nos mapas globais (OSRM) e representa um <strong>traçado aproximado</strong>. 
+                        A rota prevista pode conter imprecisões, pois não considera desvios temporários, bloqueios de vias ou caminhos não mapeados no sistema.
+                    </div>
+                </div>
+                <div id="preview-map-container" style="height: 600px; width: 100%; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05);"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

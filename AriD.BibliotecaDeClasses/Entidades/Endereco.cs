@@ -6,10 +6,10 @@ namespace AriD.BibliotecaDeClasses.Entidades
 {
     public class Endereco : EntidadeBase
     {
-        [Required, MaxLength(8)]
+        [MaxLength(8)]
         public string? Cep { get; set; }
 
-        [Required, MaxLength(100)]
+        [MaxLength(100)]
         public string? Logradouro { get; set; }
 
         [MaxLength(100)]

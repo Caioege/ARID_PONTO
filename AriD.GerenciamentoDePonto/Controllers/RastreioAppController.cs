@@ -193,6 +193,34 @@ namespace AriD.GerenciamentoDePonto.Controllers
             return Ok(new { sucesso = true });
         }
 
+        [HttpPost("rotas/fazer-pausa")]
+        public IActionResult FazerPausa([FromBody] PausaRotaAppDTO dto)
+        {
+            try
+            {
+                _servicoDeRastreio.FazerPausa(dto);
+                return Ok(new { sucesso = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("rotas/finalizar-pausa")]
+        public IActionResult FinalizarPausa([FromBody] PausaRotaAppDTO dto)
+        {
+            try
+            {
+                _servicoDeRastreio.FinalizarPausa(dto);
+                return Ok(new { sucesso = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPost("receber-localizacao")]
         public IActionResult ReceberLocalizacao([FromBody] PostLocalizacaoRotaDTO dto)
         {

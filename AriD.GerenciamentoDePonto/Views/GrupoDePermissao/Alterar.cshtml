@@ -222,34 +222,37 @@
             }
             @await Html.PartialAsync("_PartialItemPermissao", modelExportacaoFolha)
 
-            @* Categoria: Gestão Mobile *@
-            <br />
-            <table class="table-titulo">
-                <tr>
-                    <td class="text-center">
-                        <i class="bx bx-mobile"></i>
-                        Gestão Mobile
-                    </td>
-                </tr>
-            </table>
-
-            @if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
+            @if (this.Context.DadosDaSessao().GestaoMobileAtivo)
             {
-                var modelMotorista =
-                    new Tuple<string, Type, GrupoDePermissao>("Motoristas", typeof(eItemDePermissao_Motorista), Model);
-                @await Html.PartialAsync("_PartialItemPermissao", modelMotorista)
+                @* Categoria: Gestão Mobile *@
+                <br />
+                <table class="table-titulo">
+                    <tr>
+                        <td class="text-center">
+                            <i class="bx bx-mobile"></i>
+                            Gestão Mobile
+                        </td>
+                    </tr>
+                </table>
 
-                var modelVeiculo =
-                    new Tuple<string, Type, GrupoDePermissao>("Veículos", typeof(eItemDePermissao_Veiculo), Model);
-                @await Html.PartialAsync("_PartialItemPermissao", modelVeiculo)
+                if (Model.PerfilDeAcesso == ePerfilDeAcesso.Organizacao)
+                {
+                    var modelMotorista =
+                        new Tuple<string, Type, GrupoDePermissao>("Motoristas", typeof(eItemDePermissao_Motorista), Model);
+                    @await Html.PartialAsync("_PartialItemPermissao", modelMotorista)
 
-                var modelRota =
-                    new Tuple<string, Type, GrupoDePermissao>("Rotas", typeof(eItemDePermissao_Rota), Model);
-                @await Html.PartialAsync("_PartialItemPermissao", modelRota)
+                    var modelVeiculo =
+                        new Tuple<string, Type, GrupoDePermissao>("Veículos", typeof(eItemDePermissao_Veiculo), Model);
+                    @await Html.PartialAsync("_PartialItemPermissao", modelVeiculo)
 
-                var modelMonitoramento =
-                    new Tuple<string, Type, GrupoDePermissao>("Monitoramento", typeof(eItemDePermissao_MonitoramentoMobile), Model);
-                @await Html.PartialAsync("_PartialItemPermissao", modelMonitoramento)
+                    var modelRota =
+                        new Tuple<string, Type, GrupoDePermissao>("Rotas", typeof(eItemDePermissao_Rota), Model);
+                    @await Html.PartialAsync("_PartialItemPermissao", modelRota)
+
+                    var modelMonitoramento =
+                        new Tuple<string, Type, GrupoDePermissao>("Monitoramento", typeof(eItemDePermissao_MonitoramentoMobile), Model);
+                    @await Html.PartialAsync("_PartialItemPermissao", modelMonitoramento)
+                }
             }
 
             @* Categoria: Relatórios *@

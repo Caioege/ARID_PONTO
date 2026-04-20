@@ -8,6 +8,7 @@ using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
 using MySqlConnector;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace AriD.Servicos.Servicos
 {
@@ -218,7 +219,7 @@ namespace AriD.Servicos.Servicos
                 @Agora = DateTime.Now
             }).First();
 
-            var sqlRota = "SELECT Id, Descricao FROM rota WHERE Id = @RotaId";
+            var sqlRota = "SELECT Id, Descricao, PermitePausa, QuantidadePausas FROM rota WHERE Id = @RotaId";
             var rota = _repositorioRota.ConsultaDapper<dynamic>(sqlRota, new { @RotaId = dto.RotaId }).First();
 
             var sqlParadas = "SELECT Id, Endereco, Latitude, Longitude, Link FROM paradarota WHERE RotaId = @RotaId";
@@ -229,6 +230,10 @@ namespace AriD.Servicos.Servicos
                 RotaId = rota.Id,
                 Descricao = rota.Descricao,
                 EmAndamento = true,
+                PermitePausa = (bool)rota.PermitePausa,
+                QuantidadePausas = (int)rota.QuantidadePausas,
+                QuantidadePausasRealizadas = 0,
+                EstaPausada = false,
                 Paradas = paradas
             };
         }
@@ -260,6 +265,58 @@ namespace AriD.Servicos.Servicos
                 @Lon = dto.Longitude, 
                 @Data = dto.DataHora 
             });
+        }
+
+        public void FazerPausa(PausaRotaAppDTO dto)
+        {
+            var sqlInfo = @"SELECT re.Id, re.HistoricoPausas, r.PermitePausa, r.QuantidadePausas 
+                            FROM rotaexecucao re
+                            INNER JOIN rota r ON r.Id = re.RotaId
+                            WHERE re.Id = @Id";
+            var exec = _repositorioExecucao.ConsultaDapper<dynamic>(sqlInfo, new { @Id = dto.RotaExecucaoId }).FirstOrDefault();
+
+            if (exec == null) throw new ApplicationException("Execução não encontrada.");
+            if (!(bool)exec.PermitePausa) throw new ApplicationException("A rota não permite pausas.");
+
+            var pausas = string.IsNullOrEmpty((string)exec.HistoricoPausas) ? new List<RegistoPausaExecucao>() : JsonConvert.DeserializeObject<List<RegistoPausaExecucao>>((string)exec.HistoricoPausas);
+
+            if (pausas.Count >= (int)exec.QuantidadePausas)
+                throw new ApplicationException("Limite de pausas atingido para esta rota.");
+
+            if (pausas.Any(p => !p.DataHoraFim.HasValue))
+                throw new ApplicationException("Já existe uma pausa em andamento.");
+
+            pausas.Add(new RegistoPausaExecucao
+            {
+                DataHoraInicio = dto.DataHora,
+                LatInicio = dto.Latitude ?? "",
+                LngInicio = dto.Longitude ?? "",
+                Motivo = dto.Motivo ?? "Pausa informada pelo app"
+            });
+
+            var sqlUpdate = "UPDATE rotaexecucao SET HistoricoPausas = @Json WHERE Id = @Id";
+            _repositorioExecucao.ExecutarComando(sqlUpdate, new { @Json = JsonConvert.SerializeObject(pausas), @Id = dto.RotaExecucaoId });
+        }
+
+        public void FinalizarPausa(PausaRotaAppDTO dto)
+        {
+            var sqlInfo = "SELECT HistoricoPausas FROM rotaexecucao WHERE Id = @Id";
+            var json = _repositorioExecucao.ConsultaDapper<string>(sqlInfo, new { @Id = dto.RotaExecucaoId }).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(json)) return;
+
+            var pausas = JsonConvert.DeserializeObject<List<RegistoPausaExecucao>>(json);
+            var pausaAtual = pausas.LastOrDefault(p => !p.DataHoraFim.HasValue);
+
+            if (pausaAtual != null)
+            {
+                pausaAtual.DataHoraFim = dto.DataHora;
+                pausaAtual.LatFim = dto.Latitude ?? "";
+                pausaAtual.LngFim = dto.Longitude ?? "";
+
+                var sqlUpdate = "UPDATE rotaexecucao SET HistoricoPausas = @Json WHERE Id = @Id";
+                _repositorioExecucao.ExecutarComando(sqlUpdate, new { @Json = JsonConvert.SerializeObject(pausas), @Id = dto.RotaExecucaoId });
+            }
         }
 
         public void ReceberLocalizacao(PostLocalizacaoRotaDTO dto)

@@ -24,6 +24,9 @@ namespace AriD.Servicos.Servicos.Interfaces
         void SalvarPonto(PostLocalizacaoExecucaoDTO dto);
         void ReceberLocalizacao(PostLocalizacaoRotaDTO dto);
         
+        void FazerPausa(PausaRotaAppDTO dto);
+        void FinalizarPausa(PausaRotaAppDTO dto);
+        
         int ObterMotoristaIdPorServidor(int servidorId);
     }
 }
