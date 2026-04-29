@@ -13,6 +13,10 @@ class MotoristaRotasService {
   Future<RotaExecucaoDTO> iniciarRota({
     required int rotaId,
     required int veiculoId,
+    int? checklistExecucaoId,
+    double? latitudeInicio,
+    double? longitudeInicio,
+    bool gpsSimulado = false,
   }) async {
     if (_usarMock) {
       await Future.delayed(const Duration(milliseconds: 600));
@@ -42,7 +46,14 @@ class MotoristaRotasService {
 
     final response = await _client.post(
       '/api/rastreio-app/rotas/iniciar',
-      data: {'rotaId': rotaId, 'veiculoId': veiculoId},
+      data: {
+        'rotaId': rotaId,
+        'veiculoId': veiculoId,
+        'checklistExecucaoId': checklistExecucaoId,
+        if (latitudeInicio != null) 'latitudeInicio': latitudeInicio.toStringAsFixed(6),
+        if (longitudeInicio != null) 'longitudeInicio': longitudeInicio.toStringAsFixed(6),
+        'gpsSimulado': gpsSimulado,
+      },
     );
 
     return RotaExecucaoDTO.fromJson(response.data);
@@ -83,6 +94,8 @@ class MotoristaRotasService {
     required int paradaId,
     required bool? entregue,
     required String? observacao,
+    double? latitude,
+    double? longitude,
   }) async {
     if (_usarMock) {
       await Future.delayed(const Duration(milliseconds: 500));
@@ -96,6 +109,8 @@ class MotoristaRotasService {
         'paradaId': paradaId,
         'entregue': entregue,
         'observacao': observacao,
+        if (latitude != null) 'latitude': latitude.toStringAsFixed(6),
+        if (longitude != null) 'longitude': longitude.toStringAsFixed(6),
       },
     );
   }
@@ -149,6 +164,12 @@ class MotoristaRotasService {
     required double latitude,
     required double longitude,
     required DateTime dataHora,
+    bool? gpsSimulado,
+    double? precisaoEmMetros,
+    double? velocidadeMetrosPorSegundo,
+    double? direcaoGraus,
+    double? altitudeMetros,
+    int? fonteCaptura,
   }) async {
     if (_usarMock) {
       await Future.delayed(const Duration(milliseconds: 200));
@@ -165,6 +186,12 @@ class MotoristaRotasService {
         'latitude': latitude.toStringAsFixed(6),
         'longitude': longitude.toStringAsFixed(6),
         'dataHora': dataHora.toIso8601String(),
+        'gpsSimulado': gpsSimulado ?? false,
+        if (precisaoEmMetros != null) 'precisaoEmMetros': precisaoEmMetros,
+        if (velocidadeMetrosPorSegundo != null) 'velocidadeMetrosPorSegundo': velocidadeMetrosPorSegundo,
+        if (direcaoGraus != null) 'direcaoGraus': direcaoGraus,
+        if (altitudeMetros != null) 'altitudeMetros': altitudeMetros,
+        if (fonteCaptura != null) 'fonteCaptura': fonteCaptura,
       },
     );
   }

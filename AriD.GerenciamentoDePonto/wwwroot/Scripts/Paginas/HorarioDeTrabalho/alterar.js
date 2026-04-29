@@ -167,10 +167,12 @@ function assineEventoBotaoSalvar() {
 
         formulario.BancoDeHorasPrioridadePercentuais = formulario.BancoDeHorasPrioridadePercentuais || "100,70,50";
 
+        const payloadMvc = montarPayloadHorarioParaMvc(formulario);
+
         RequisicaoAjaxComCarregamento(
             '/HorarioDeTrabalho/Salvar',
             'POST',
-            formulario,
+            payloadMvc,
             function (data) {
                 if (data.sucesso) {
                     MensagemRodape('success', data.mensagem);
@@ -365,4 +367,34 @@ function initSelect2Vigencia() {
         width: '100%',
         minimumResultsForSearch: 10
     });
+}
+
+function montarPayloadHorarioParaMvc(formulario) {
+    const payload = {};
+
+    Object.keys(formulario || {}).forEach(chave => {
+        if (chave === 'Dias' || chave === 'RegrasHoraExtra') return;
+        payload[chave] = formulario[chave];
+    });
+
+    (formulario.Dias || []).forEach((dia, index) => {
+        Object.keys(dia || {}).forEach(propriedade => {
+            payload[`Dias[${index}].${propriedade}`] = dia[propriedade];
+        });
+    });
+
+    (formulario.RegrasHoraExtra || []).forEach((regra, indexRegra) => {
+        Object.keys(regra || {}).forEach(propriedade => {
+            if (propriedade === 'Faixas') return;
+            payload[`RegrasHoraExtra[${indexRegra}].${propriedade}`] = regra[propriedade];
+        });
+
+        (regra.Faixas || []).forEach((faixa, indexFaixa) => {
+            Object.keys(faixa || {}).forEach(propriedade => {
+                payload[`RegrasHoraExtra[${indexRegra}].Faixas[${indexFaixa}].${propriedade}`] = faixa[propriedade];
+            });
+        });
+    });
+
+    return payload;
 }

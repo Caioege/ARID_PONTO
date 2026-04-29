@@ -308,7 +308,7 @@ namespace AriD.Servicos.Servicos
 
                 bool ehPontoComum = !registro.Manual && !registro.JustificativaDeAusenciaId.HasValue;
 
-                if (ehPontoComum && vinculo.Servidor.TipoComprovacaoPontoApp != configuracaoAplicativo)
+                if (ehPontoComum && vinculo.Servidor.TipoComprovacaoPontoApp != eTipoComprovacaoPontoApp.Nenhuma && vinculo.Servidor.TipoComprovacaoPontoApp != configuracaoAplicativo)
                     throw new ApplicationException("Suas configurações de segurança foram alteradas. Por favor, saia do aplicativo e entre novamente para sincronizar os dados e depois refaça o registro de ponto.");
 
                 string anexoPontoNome = null;
@@ -335,7 +335,7 @@ namespace AriD.Servicos.Servicos
                         anexoPontoNome = $"liveness/{nomeUnico}";
                     }
                 }
-                else
+                else if (vinculo.Servidor.TipoComprovacaoPontoApp != eTipoComprovacaoPontoApp.Nenhuma)
                 {
                     if (registro.Imagem != null)
                     {

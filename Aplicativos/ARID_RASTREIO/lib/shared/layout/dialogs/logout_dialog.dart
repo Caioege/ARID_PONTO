@@ -7,6 +7,7 @@ import 'package:arid_rastreio/core/auth/session_manager.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/main.dart';
 import 'package:arid_rastreio/shared/layout/drawer/controller/drawer_navegacao_controller.dart';
+import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
 
 class LogoutDialog {
   static Future<void> show(BuildContext context) async {
@@ -116,6 +117,7 @@ class LogoutDialog {
   static Future<void> _executarLogout() async {
     locator<DrawerNavegacaoController>().limpar();
     await locator<SessionManager>().limparSessao();
+    await RotaTrackingService.stop();
 
     locator<ChecklistController>().limpar();
     locator<MotoristaMenuController>().limpar();

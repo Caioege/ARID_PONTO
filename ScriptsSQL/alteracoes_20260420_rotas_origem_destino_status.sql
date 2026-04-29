@@ -1,4 +1,4 @@
-ALTER TABLE rotaexecucao ADD OrigemEntregue TINYINT(1) NULL;
-ALTER TABLE rotaexecucao ADD OrigemObservacao TEXT NULL;
-ALTER TABLE rotaexecucao ADD DestinoEntregue TINYINT(1) NULL;
-ALTER TABLE rotaexecucao ADD DestinoObservacao TEXT NULL;
+-- Script legado substituido.
+-- O status operacional de origem e destino agora deve ser modelado por evento de execucao,
+-- com data/hora, latitude, longitude e observacao no script:
+-- ScriptsSQL/alteracoes_20260428_execucao_rotas_motorista_unificada.sql

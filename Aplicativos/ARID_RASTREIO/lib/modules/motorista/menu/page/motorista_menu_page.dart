@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
 
 class MotoristaMenuPage extends StatefulWidget {
   const MotoristaMenuPage({super.key});
@@ -79,69 +81,93 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final rotasController = locator<MotoristaRotasController>();
 
     return Observer(
       builder: (_) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: Scaffold(
-            backgroundColor: colors.surface,
-            body: _pages.elementAt(controller.selectedindex),
-            bottomNavigationBar: SafeArea(
-              top: false,
-              child: Container(
-                height: 68,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: colors.primary,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 10,
-                      offset: const Offset(0, -4),
-                    ),
-                  ],
-                ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _BottomNavPillItem(
-                      icon: Icons.checklist_rounded,
-                      label: 'Checklist',
-                      selected: controller.selectedindex == 0,
-                      onTap: () => controller.mudarIndex(0),
+        return Stack(
+          children: [
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Scaffold(
+                backgroundColor: colors.surface,
+                body: _pages.elementAt(controller.selectedindex),
+                bottomNavigationBar: SafeArea(
+                  top: false,
+                  child: Container(
+                    height: 68,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
                       color: colors.primary,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, -4),
+                        ),
+                      ],
                     ),
-                    _BottomNavPillItem(
-                      icon: Icons.alt_route_rounded,
-                      label: 'Rotas',
-                      selected: controller.selectedindex == 1,
-                      onTap: () {
-                        final checklistController =
-                            locator<ChecklistController>();
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _BottomNavPillItem(
+                          icon: Icons.checklist_rounded,
+                          label: 'Checklist',
+                          selected: controller.selectedindex == 0,
+                          onTap: () => controller.mudarIndex(0),
+                          color: colors.primary,
+                        ),
+                        _BottomNavPillItem(
+                          icon: Icons.alt_route_rounded,
+                          label: 'Rotas',
+                          selected: controller.selectedindex == 1,
+                          onTap: () {
+                            final checklistController =
+                                locator<ChecklistController>();
 
-                        if (checklistController.temAlteracoesNaoSalvas) {
-                          showAppDialog(
-                            context: context,
-                            titulo: 'Alterações não salvas',
-                            mensagem:
-                                'Existem alterações no checklist que ainda não foram salvas. Salve antes de acessar as rotas.',
-                            tipo: AppDialogType.alerta,
-                          );
-                          return;
-                        }
+                            if (checklistController.temAlteracoesNaoSalvas) {
+                              showAppDialog(
+                                context: context,
+                                titulo: 'Alterações não salvas',
+                                mensagem:
+                                    'Existem alterações no checklist que ainda não foram salvas. Salve antes de acessar as rotas.',
+                                tipo: AppDialogType.alerta,
+                              );
+                              return;
+                            }
 
-                        controller.mudarIndex(1);
-                      },
-
-                      color: colors.primary,
+                            controller.mudarIndex(1);
+                          },
+                          color: colors.primary,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            if (rotasController.recuperandoSessao)
+              Container(
+                color: Colors.black54,
+                child: const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(color: Colors.white),
+                      SizedBox(height: 16),
+                      Text(
+                        'Restaurando sua sessão...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         );
       },
     );

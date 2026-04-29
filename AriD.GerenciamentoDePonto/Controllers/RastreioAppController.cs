@@ -7,24 +7,6 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace AriD.GerenciamentoDePonto.Controllers
 {
-    /// <summary>
-    /// Controller responsável pelas funcionalidades do aplicativo móvel de Rastreio (Motorista/Acompanhante).
-    /// </summary>
-    /// <remarks>
-    /// <b>Arquitetura e Decisão Técnica:</b>
-    /// Esta API foi implementada dentro do projeto ASP.NET MVC principal a pedido do proprietário da aplicação.
-    /// O objetivo inicial é reduzir custos de hospedagem e manter uma infraestrutura enxuta durante a fase de lançamento,
-    /// evitando a necessidade de gerenciar múltiplas instâncias de hospedagem.
-    /// 
-    /// <b>Evolução Futura:</b>
-    /// Existe um planejamento para que, em etapas futuras de escalabilidade, estas funcionalidades de API sejam 
-    /// extraídas para um microserviço ou aplicação distinta dentro da mesma solução, separando completamente 
-    /// as responsabilidades de Frontend Web das APIs de integração de rastreio e logística.
-    /// 
-    /// <b>Comunicação:</b>
-    /// Este controller comunica-se com o Aplicativo Móvel AriD Rastreio (versões Motorista e Acompanhante),
-    /// processando rotas, geolocalização em tempo real, checklists de veículos e eventos de execução de trajeto.
-    /// </remarks>
     [Route("api/rastreio-app")]
     [ApiController]
     public class RastreioAppController : Controller
@@ -44,62 +26,48 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost("autentique")]
         public IActionResult Autentique([FromBody] CredenciaisDTO credenciais)
         {
-            try
+            var acesso = _servicoDeRastreio.AutenticarUsuario(credenciais);
+            if (acesso == null)
+                throw new ApplicationException("Usuario ou senha incorretos.");
+
+            var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{acesso.OrganizacaoId}", $"{acesso.ServidorId}.png");
+
+            if (!Path.Exists(caminhoArquivo))
+                caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "sem-foto.png");
+
+            var bytes = System.IO.File.ReadAllBytes(caminhoArquivo);
+            acesso.FotoBase64 = Convert.ToBase64String(bytes);
+
+            return Ok(new
             {
-                var acesso = _servicoDeRastreio.AutenticarUsuario(credenciais);
-                if (acesso == null)
-                    throw new ApplicationException("Usuário ou senha incorretos.");
-
-                var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{acesso.OrganizacaoId}", $"{acesso.ServidorId}.png");
-
-                if (!Path.Exists(caminhoArquivo))
-                    caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "sem-foto.png");
-
-                var bytes = System.IO.File.ReadAllBytes(caminhoArquivo);
-                acesso.FotoBase64 = Convert.ToBase64String(bytes);
-
-                return Ok(new { 
-                    token = acesso.ServidorId.ToString(), 
-                    usuario = new { 
-                        id = acesso.ServidorId, 
-                        nome = acesso.ServidorNome, 
-                        login = credenciais.Usuario, 
-                        foto = acesso.FotoBase64, 
-                        tipoAcesso = credenciais.TipoAcesso,
-                        cpf = acesso.Cpf,
-                        dataNascimento = acesso.DataDeNascimento?.ToString("yyyy-MM-dd"),
-                        email = acesso.Email,
-                        numeroCnh = acesso.NumeroCNH,
-                        categoriaCnh = acesso.CategoriaCNH?.ToString(),
-                        emissaoCnh = acesso.EmissaoCNH?.ToString("yyyy-MM-dd"),
-                        validadeCnh = acesso.ValidadeCNH?.ToString("yyyy-MM-dd")
-                    } 
-                });
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+                token = acesso.ServidorId.ToString(),
+                usuario = new
+                {
+                    id = acesso.ServidorId,
+                    nome = acesso.ServidorNome,
+                    login = credenciais.Usuario,
+                    foto = acesso.FotoBase64,
+                    tipoAcesso = credenciais.TipoAcesso,
+                    cpf = acesso.Cpf,
+                    dataNascimento = acesso.DataDeNascimento?.ToString("yyyy-MM-dd"),
+                    email = acesso.Email,
+                    numeroCnh = acesso.NumeroCNH,
+                    categoriaCnh = acesso.CategoriaCNH?.ToString(),
+                    emissaoCnh = acesso.EmissaoCNH?.ToString("yyyy-MM-dd"),
+                    validadeCnh = acesso.ValidadeCNH?.ToString("yyyy-MM-dd")
+                }
+            });
         }
 
         [HttpPost("registrar-token")]
         public IActionResult RegistrarToken([FromBody] RegistrarTokenDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            try
-            {
-                int motoristaId = ObterMotoristaId(auth);
-                if (motoristaId <= 0) return Unauthorized();
+            int servidorId = ObterServidorId(auth);
+            if (servidorId <= 0) return Unauthorized();
 
-                int servidorId = ObterServidorId(auth);
+            _servicoDeRastreio.RegistrarToken(servidorId, dto.Token, dto.Plataforma);
 
-                _servicoDeRastreio.RegistrarToken(servidorId, dto.Token, dto.Plataforma);
-
-                return Ok(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(new { sucesso = true });
         }
 
         [HttpGet("rotas")]
@@ -126,7 +94,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         public IActionResult UltimaLocalizacao(int rotaId)
         {
             var ultima = _servicoDeRastreio.ObterUltimaLocalizacao(rotaId);
-            if (ultima == null) return NotFound(new { message = "Nenhuma localização encontrada." });
+            if (ultima == null) return NotFound(new { message = "Nenhuma localizacao encontrada." });
 
             return Ok(ultima);
         }
@@ -148,131 +116,103 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost("checklist")]
         public IActionResult SalvarChecklist([FromBody] ChecklistPostDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            try
-            {
-                int motoristaId = ObterMotoristaId(auth);
-                if (motoristaId == 0) return Unauthorized();
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
 
-                _servicoDeRastreio.SalvarChecklist(dto, motoristaId);
+            int idExec = _servicoDeRastreio.SalvarChecklist(dto, motoristaId);
 
-                return Ok(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(new { sucesso = true, data = idExec });
         }
 
         [HttpPost("rotas/iniciar")]
         public IActionResult Iniciar([FromBody] IniciarRotaAppDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            try 
-            {
-                int motoristaId = ObterMotoristaId(auth);
-                if (motoristaId == 0) return Unauthorized();
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
 
-                var retorno = _servicoDeRastreio.IniciarRota(dto, motoristaId);
-                return Ok(retorno);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var retorno = _servicoDeRastreio.IniciarRota(dto, motoristaId);
+            return Ok(retorno);
         }
 
         [HttpGet("rotas/em-andamento")]
         public IActionResult ObterEmAndamento([FromHeader(Name = "Authorization")] string auth)
         {
-            try 
-            {
-                int motoristaId = ObterMotoristaId(auth);
-                if (motoristaId == 0) return Unauthorized();
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
 
-                var retorno = _servicoDeRastreio.ObterRotaEmAndamento(motoristaId);
-                return Ok(retorno); // returns null implicitly or 204 if preferred, Ok(null) resolves to 200/204 depending on formatting
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            var retorno = _servicoDeRastreio.ObterRotaEmAndamento(motoristaId);
+            return Ok(retorno);
         }
 
         [HttpPost("rotas/encerrar")]
-        public IActionResult Encerrar([FromBody] EncerrarRotaAppDTO dto)
+        public IActionResult Encerrar([FromBody] EncerrarRotaAppDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            _servicoDeRastreio.EncerrarRota(dto);
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            _servicoDeRastreio.EncerrarRota(dto, motoristaId);
             return Ok(new { sucesso = true });
         }
 
         [HttpPost("rotas/confirmar-parada")]
-        public IActionResult ConfirmarParada([FromBody] ConfirmarParadaAppDTO dto)
+        public IActionResult ConfirmarParada([FromBody] ConfirmarParadaAppDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            _servicoDeRastreio.ConfirmarParada(dto);
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            _servicoDeRastreio.ConfirmarParada(dto, motoristaId);
             return Ok(new { sucesso = true });
         }
 
         [HttpPost("rotas/salvar-ponto")]
-        public IActionResult SalvarPonto([FromBody] PostLocalizacaoExecucaoDTO dto)
+        public IActionResult SalvarPonto([FromBody] PostLocalizacaoExecucaoDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            _servicoDeRastreio.SalvarPonto(dto);
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            _servicoDeRastreio.SalvarPonto(dto, motoristaId);
             return Ok(new { sucesso = true });
         }
 
         [HttpPost("rotas/fazer-pausa")]
-        public IActionResult FazerPausa([FromBody] PausaRotaAppDTO dto)
+        public IActionResult FazerPausa([FromBody] PausaRotaAppDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            try
-            {
-                _servicoDeRastreio.FazerPausa(dto);
-                return Ok(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            _servicoDeRastreio.FazerPausa(dto, motoristaId);
+            return Ok(new { sucesso = true });
         }
 
         [HttpPost("rotas/finalizar-pausa")]
-        public IActionResult FinalizarPausa([FromBody] PausaRotaAppDTO dto)
+        public IActionResult FinalizarPausa([FromBody] PausaRotaAppDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
-            try
-            {
-                _servicoDeRastreio.FinalizarPausa(dto);
-                return Ok(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            _servicoDeRastreio.FinalizarPausa(dto, motoristaId);
+            return Ok(new { sucesso = true });
         }
 
         [HttpPost("receber-localizacao")]
         public IActionResult ReceberLocalizacao([FromBody] PostLocalizacaoRotaDTO dto)
         {
-            try
-            {
-                _servicoDeRastreio.ReceberLocalizacao(dto);
-                return Ok(new { sucesso = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            _servicoDeRastreio.ReceberLocalizacao(dto);
+            return Ok(new { sucesso = true });
         }
 
         private int ObterServidorId(string authHeader)
         {
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ")) return 0;
             var token = authHeader.Substring("Bearer ".Length).Trim();
-            if (int.TryParse(token, out int servidorId)) return servidorId;
-            return 0;
+            return int.TryParse(token, out int servidorId) ? servidorId : 0;
         }
 
         private int ObterMotoristaId(string authHeader)
         {
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ")) return 0;
             var token = authHeader.Substring("Bearer ".Length).Trim();
-            
+
             var cacheKey = $"MotoristaId_TokenApp_{token}";
             if (_memoryCache.TryGetValue(cacheKey, out int cachedId))
             {
@@ -282,12 +222,12 @@ namespace AriD.GerenciamentoDePonto.Controllers
             if (int.TryParse(token, out int servidorId))
             {
                 var motoristaId = _servicoDeRastreio.ObterMotoristaIdPorServidor(servidorId);
-                
+
                 if (motoristaId > 0)
                 {
                     _memoryCache.Set(cacheKey, motoristaId, TimeSpan.FromHours(3));
                 }
-                
+
                 return motoristaId;
             }
             return 0;

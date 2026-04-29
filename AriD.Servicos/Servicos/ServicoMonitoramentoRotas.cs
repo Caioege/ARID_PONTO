@@ -22,7 +22,7 @@ namespace AriD.Servicos.Servicos
             var dataFim = new DateTime(dataBase.Year, dataBase.Month, dataBase.Day, 23, 59, 59);
 
             var queryExecucoes = @"
-                SELECT 
+                SELECT
                     re.Id as ExecucaoId,
                     re.RotaId,
                     r.Descricao,
@@ -31,8 +31,8 @@ namespace AriD.Servicos.Servicos
                     r.MedicoResponsavel,
                     re.DataHoraInicio,
                     re.DataHoraFim,
-                    re.HistoricoPausas,
-                    COALESCE(re.MotoristaId, r.MotoristaId) as MotoristaId,
+                    re.Status,
+                    re.MotoristaId,
                     p.Nome as MotoristaNome,
                     re.VeiculoId,
                     v.Placa,
@@ -40,18 +40,17 @@ namespace AriD.Servicos.Servicos
                     v.TipoVeiculo
                 FROM rotaexecucao re
                 INNER JOIN rota r ON r.Id = re.RotaId
-                INNER JOIN motorista m ON m.Id = COALESCE(re.MotoristaId, r.MotoristaId, r.MotoristaSecundarioId)
+                INNER JOIN motorista m ON m.Id = re.MotoristaId
                 INNER JOIN servidor s ON s.Id = m.ServidorId
                 INNER JOIN pessoa p ON p.Id = s.PessoaId
                 LEFT JOIN veiculo v ON v.Id = re.VeiculoId
                 WHERE re.OrganizacaoId = @OrganizacaoId
                   AND re.DataHoraInicio >= @DataBase
-                  AND (re.DataHoraFim IS NULL OR re.DataHoraFim <= @DataFim)
-            ";
+                  AND re.DataHoraInicio <= @DataFim";
 
             if (!exibirFinalizadas)
             {
-                queryExecucoes += " AND re.DataHoraFim IS NULL ";
+                queryExecucoes += " AND re.Status IN (1, 2) ";
             }
 
             var execucoes = _repositorio.ConsultaDapper<RotaExecucaoDapperDTO>(queryExecucoes, new
@@ -63,93 +62,106 @@ namespace AriD.Servicos.Servicos
 
             if (!execucoes.Any()) return new List<MonitoramentoRotaDTO>();
 
-            var rotaIds = execucoes.Select(e => (int)e.RotaId).Distinct().ToList();
+            var execucaoIds = execucoes.Select(e => e.ExecucaoId).Distinct().ToList();
 
             var queryLocalizacoes = @"
-                SELECT 
-                    RotaId,
-                    DataHora,
+                SELECT
+                    RotaExecucaoId as ExecucaoId,
+                    DataHoraCaptura as DataHora,
                     Latitude,
                     Longitude
-                FROM localizacaorota
+                FROM rotaexecucaolocalizacao
                 WHERE OrganizacaoId = @OrganizacaoId
-                  AND RotaId IN @RotaIds
-                  AND DataHora >= @DataBase
-                  AND DataHora <= @DataFim
-                ORDER BY DataHora ASC
-            ";
+                  AND RotaExecucaoId IN @ExecucaoIds
+                  AND DataHoraCaptura >= @DataBase
+                  AND DataHoraCaptura <= @DataFim
+                ORDER BY DataHora ASC";
 
             var localizacoesAll = _repositorio.ConsultaDapper<LocalizacaoDapperDTO>(queryLocalizacoes, new
             {
                 OrganizacaoId = organizacaoId,
-                RotaIds = rotaIds,
+                ExecucaoIds = execucaoIds,
                 DataBase = dataBase.Date,
                 DataFim = dataFim
-            });
-
-
-            var queryParadas = @"
-                SELECT 
-                    RotaId,
-                    Endereco as nome,
-                    Link as link,
-                    Latitude,
-                    Longitude,
-                    Entregue as entregue,
-                    ConcluidoEm as concluidoEm
-                FROM paradarota
-                WHERE RotaId IN @RotaIds
-            ";
-
-            var paradasAll = _repositorio.ConsultaDapper<ParadaDapperDTO>(queryParadas, new
-            {
-                RotaIds = rotaIds
-            });
+            }).ToList();
 
             var resultado = new List<MonitoramentoRotaDTO>();
 
             foreach (var exec in execucoes)
             {
-                DateTime? hdFim = exec.DataHoraFim != null ? (DateTime?)exec.DataHoraFim : null;
-                var dtFimFiltro = hdFim ?? DateTime.Now;
-
-                var idVeiculo = exec.VeiculoId ?? 0;
-                var dtInicio = (DateTime)exec.DataHoraInicio;
-
                 var locais = localizacoesAll
-                    .Where(l => l.RotaId == exec.RotaId && l.DataHora >= dtInicio && l.DataHora <= dtFimFiltro)
+                    .Where(l => l.ExecucaoId == exec.ExecucaoId)
                     .ToList();
 
-                if (!locais.Any()) continue;
+                var historico = locais.Select(l => new[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
 
-                var ultima = locais.Last();
+                double[]? ultimaPos = null;
+                if (locais.Any())
+                {
+                    var ultima = locais.Last();
+                    ultimaPos = new[] { ParseCoord(ultima.Latitude), ParseCoord(ultima.Longitude) };
+                }
 
-                var historico = locais.Select(l => new double[] { 
-                    Convert.ToDouble(l.Latitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")), 
-                    Convert.ToDouble(l.Longitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")) 
+                var queryParadasExec = @"
+                    SELECT
+                        p.Endereco as nome,
+                        p.Link as link,
+                        COALESCE(ev.Latitude, p.Latitude) as Latitude,
+                        COALESCE(ev.Longitude, p.Longitude) as Longitude,
+                        ev.Entregue,
+                        ev.DataHoraEvento as ConcluidoEm
+                    FROM paradarota p
+                    LEFT JOIN rotaexecucaoevento ev ON ev.Id = (
+                        SELECT ev2.Id
+                        FROM rotaexecucaoevento ev2
+                        WHERE ev2.RotaExecucaoId = @ExecId
+                          AND ev2.TipoEvento = 3
+                          AND ev2.ParadaRotaId = p.Id
+                        ORDER BY ev2.DataHoraEvento DESC, ev2.Id DESC
+                        LIMIT 1
+                    )
+                    WHERE p.RotaId = @RotaId
+                    ORDER BY p.Ordem ASC, p.Id ASC";
+
+                var paradasRaw = _repositorio.ConsultaDapper<ParadaMonitoramentoRowDTO>(queryParadasExec, new
+                {
+                    ExecId = exec.ExecucaoId,
+                    RotaId = exec.RotaId
                 }).ToList();
 
-                var idRota = exec.RotaId;
-                var paradas = paradasAll
-                    .Where(p => p.RotaId == idRota && !string.IsNullOrEmpty(p.Latitude) && !string.IsNullOrEmpty(p.Longitude))
-                    .Select(p => new MonitoramentoParadaDTO {
+                var paradas = paradasRaw
+                    .Where(p => !string.IsNullOrEmpty(p.Latitude) && !string.IsNullOrEmpty(p.Longitude))
+                    .Select(p => new MonitoramentoParadaDTO
+                    {
                         Nome = p.Nome,
                         Link = p.Link,
-                        Latitude = Convert.ToDouble(p.Latitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")),
-                        Longitude = Convert.ToDouble(p.Longitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")),
-                        Entregue = p.Entregue,
-                        ConcluidoEm = p.ConcluidoEm != null ? p.ConcluidoEm.Value.ToString("dd/MM/yy HH:mm") : null
+                        Latitude = ParseCoord(p.Latitude),
+                        Longitude = ParseCoord(p.Longitude),
+                        Entregue = p.Entregue ?? false,
+                        ConcluidoEm = p.ConcluidoEm != null ? ((DateTime)p.ConcluidoEm).ToString("dd/MM/yy HH:mm") : null
                     }).ToList();
 
-                var sofreuDesvio = _repositorio.ConsultaDapper<int>("SELECT COUNT(1) FROM rotaocorrenciadesvio WHERE RotaId = @RotaId", new { RotaId = idRota }).FirstOrDefault() > 0;
+                var sofreuDesvio = _repositorio.ConsultaDapper<int>(
+                    "SELECT COUNT(1) FROM rotaexecucaodesvio WHERE RotaExecucaoId = @ExecId",
+                    new { ExecId = exec.ExecucaoId }).FirstOrDefault() > 0;
 
-                var pausas = new List<MonitoramentoPausaDTO>();
-                if (!string.IsNullOrEmpty(exec.HistoricoPausas))
-                {
-                    try {
-                        pausas = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MonitoramentoPausaDTO>>(exec.HistoricoPausas);
-                    } catch { }
-                }
+                var queryPausas = @"
+                    SELECT Motivo, DataHoraInicio, DataHoraFim, LatitudeInicio, LongitudeInicio, LatitudeFim, LongitudeFim
+                    FROM rotaexecucaopausa
+                    WHERE RotaExecucaoId = @ExecId
+                    ORDER BY DataHoraInicio";
+
+                var pausas = _repositorio.ConsultaDapper<PausaExecucaoRowDTO>(queryPausas, new { ExecId = exec.ExecucaoId })
+                    .Select(p => new MonitoramentoPausaDTO
+                    {
+                        Motivo = p.Motivo,
+                        DataHoraInicio = p.DataHoraInicio,
+                        DataHoraFim = p.DataHoraFim,
+                        LatInicio = TryParseNullableCoord(p.LatitudeInicio),
+                        LngInicio = TryParseNullableCoord(p.LongitudeInicio),
+                        LatFim = TryParseNullableCoord(p.LatitudeFim),
+                        LngFim = TryParseNullableCoord(p.LongitudeFim)
+                    }).ToList();
 
                 resultado.Add(new MonitoramentoRotaDTO
                 {
@@ -159,27 +171,42 @@ namespace AriD.Servicos.Servicos
                     DataParaExecucao = exec.DataParaExecucao != null ? exec.DataParaExecucao.Value.ToString("dd/MM/yyyy") : "",
                     NomePaciente = exec.NomePaciente,
                     MedicoResponsavel = exec.MedicoResponsavel,
-                    HoraInicio = dtInicio.ToString("dd/MM/yy HH:mm"),
-                    HoraFim = hdFim?.ToString("dd/MM/yy HH:mm") ?? "Em Execução",
+                    HoraInicio = exec.DataHoraInicio.ToString("dd/MM/yy HH:mm"),
+                    HoraFim = exec.DataHoraFim?.ToString("dd/MM/yy HH:mm") ?? "Em Execucao",
                     MotoristaId = exec.MotoristaId,
                     MotoristaNome = exec.MotoristaNome,
                     VeiculoId = exec.VeiculoId,
                     PlacaModelo = $"{exec.Placa} - {exec.Modelo}",
                     TipoVeiculo = exec.TipoVeiculo,
-                    UltimaLocalizacao = new[] { 
-                        Convert.ToDouble(ultima.Latitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")), 
-                        Convert.ToDouble(ultima.Longitude.Replace("\"", "").Replace(" ", "").Replace(".", ",")) 
-                    },
+                    UltimaLocalizacao = ultimaPos,
                     HistoricoLocalizacoes = historico,
-                    UltimaAtualizacao = ultima.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
+                    UltimaAtualizacao = locais.Any() ? locais.Last().DataHora.ToString("dd/MM/yyyy HH:mm:ss") : exec.DataHoraInicio.ToString("dd/MM/yyyy HH:mm:ss"),
                     Paradas = paradas,
                     Pausas = pausas,
-                    Finalizada = hdFim.HasValue,
+                    Finalizada = exec.DataHoraFim.HasValue,
                     SujeitoADesvio = sofreuDesvio
                 });
             }
 
             return resultado;
+        }
+
+        private double ParseCoord(object valor)
+        {
+            if (valor == null) return 0;
+            var s = valor.ToString()?.Replace("\"", "").Replace(" ", "").Replace(",", ".");
+            if (string.IsNullOrEmpty(s)) return 0;
+            return double.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private double? TryParseNullableCoord(object valor)
+        {
+            if (valor == null) return null;
+            var s = valor.ToString()?.Replace("\"", "").Replace(" ", "").Replace(",", ".");
+            if (string.IsNullOrEmpty(s)) return null;
+            return double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed)
+                ? parsed
+                : null;
         }
     }
 }

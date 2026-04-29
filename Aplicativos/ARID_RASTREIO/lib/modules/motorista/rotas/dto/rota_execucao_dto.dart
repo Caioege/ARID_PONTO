@@ -12,9 +12,17 @@ class RotaExecucaoDTO {
   final String? nomeUnidadeOrigem;
   final bool? origemEntregue;
   final String? origemObservacao;
+  final String? origemConcluidaEm;
+  final String? origemLatitude;
+  final String? origemLongitude;
   final String? nomeUnidadeDestino;
   final bool? destinoEntregue;
   final String? destinoObservacao;
+  final String? destinoConcluidoEm;
+  final String? destinoLatitude;
+  final String? destinoLongitude;
+  final int? veiculoId;
+  final int? checklistExecucaoId;
   final List<ParadaRotaDTO> paradas;
 
   RotaExecucaoDTO({
@@ -29,9 +37,17 @@ class RotaExecucaoDTO {
     this.nomeUnidadeOrigem,
     this.origemEntregue,
     this.origemObservacao,
+    this.origemConcluidaEm,
+    this.origemLatitude,
+    this.origemLongitude,
     this.nomeUnidadeDestino,
     this.destinoEntregue,
     this.destinoObservacao,
+    this.destinoConcluidoEm,
+    this.destinoLatitude,
+    this.destinoLongitude,
+    this.veiculoId,
+    this.checklistExecucaoId,
     required this.paradas,
   });
 
@@ -48,9 +64,17 @@ class RotaExecucaoDTO {
       nomeUnidadeOrigem: json['nomeUnidadeOrigem'],
       origemEntregue: json['origemEntregue'],
       origemObservacao: json['origemObservacao'],
+      origemConcluidaEm: json['origemConcluidaEm'],
+      origemLatitude: json['origemLatitude'],
+      origemLongitude: json['origemLongitude'],
       nomeUnidadeDestino: json['nomeUnidadeDestino'],
       destinoEntregue: json['destinoEntregue'],
       destinoObservacao: json['destinoObservacao'],
+      destinoConcluidoEm: json['destinoConcluidoEm'],
+      destinoLatitude: json['destinoLatitude'],
+      destinoLongitude: json['destinoLongitude'],
+      veiculoId: json['veiculoId'],
+      checklistExecucaoId: json['checklistExecucaoId'],
       paradas: (json['paradas'] as List)
           .map((e) => ParadaRotaDTO.fromJson(e))
           .toList(),

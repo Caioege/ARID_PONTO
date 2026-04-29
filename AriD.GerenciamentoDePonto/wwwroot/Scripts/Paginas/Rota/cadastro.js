@@ -3,7 +3,6 @@ function assineEventosCadastro() {
         let endereco = $('#novaParadaEndereco').val();
         let lat = $('#novaParadaLat').val();
         let lng = $('#novaParadaLng').val();
-        let obs = $('#novaParadaObs').val();
 
         if (!endereco) {
             MensagemRodape('warning', 'Informe o endereço da parada!');
@@ -17,11 +16,10 @@ function assineEventosCadastro() {
         let geoCoordHtml = (lat && lng) ? `<a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" title="Abrir no Google Maps"><code class="small text-muted">${lat}, ${lng}</code></a>` : `<span class="text-warning small"><i class="bx bx-error"></i> Geofence Offline</span>`;
 
         let novaLinha = `
-            <tr data-id="${idTemporario}" data-entregue="false" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-obs="${obs}" data-link="">
+            <tr data-id="${idTemporario}" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="">
                 <td class="text-center font-weight-bold"><span class="badge bg-label-primary rounded-circle p-2">${count}</span></td>
                 <td>${endereco}</td>
                 <td>${geoCoordHtml}</td>
-                <td>${obs}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-sm btn-icon btn-danger btn-remover-parada" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
                 </td>
@@ -29,7 +27,7 @@ function assineEventosCadastro() {
         `;
 
         $('#tabela-paradas tbody').append(novaLinha);
-        $('#novaParadaEndereco, #novaParadaLat, #novaParadaLng, #novaParadaObs').val('');
+        $('#novaParadaEndereco, #novaParadaLat, #novaParadaLng').val('');
     });
 
     $('#btn-salvar-cadastro').on('click', function () {
@@ -61,10 +59,8 @@ function assineEventosCadastro() {
             payload[`paradas[${index}].Latitude`] = row.attr('data-lat');
             payload[`paradas[${index}].Longitude`] = row.attr('data-lng');
             payload[`paradas[${index}].Link`] = row.attr('data-link');
-            payload[`paradas[${index}].Observacao`] = row.attr('data-obs');
             payload[`paradas[${index}].UnidadeId`] = row.attr('data-unidade-id');
             payload[`paradas[${index}].Ordem`] = index;
-            payload[`paradas[${index}].Entregue`] = row.attr('data-entregue');
         });
 
         // Pacientes
@@ -120,7 +116,7 @@ var modalMarker = null;
 function abrirModalPonto(button) {
     $('#modal-ponto-index').val('');
     $('#modal-ponto-id').val('0');
-    $('#modal-ponto-endereco, #modal-ponto-lat, #modal-ponto-lng, #modal-ponto-obs').val('');
+    $('#modal-ponto-endereco, #modal-ponto-lat, #modal-ponto-lng').val('');
 
     if (button) {
         $('#row-tipo-pesquisa').hide();
@@ -130,7 +126,6 @@ function abrirModalPonto(button) {
         $('#modal-ponto-endereco').val(row.attr('data-endereco'));
         $('#modal-ponto-lat').val(row.attr('data-lat'));
         $('#modal-ponto-lng').val(row.attr('data-lng'));
-        $('#modal-ponto-obs').val(row.attr('data-obs'));
 
         let unidadeId = row.attr('data-unidade-id');
         let tipoPesquisa = row.attr('data-tipo-pesquisa');
@@ -236,8 +231,7 @@ function confirmarPontoModal() {
         'modal-ponto-index': index, 
         'modal-ponto-endereco': endereco, 
         'modal-ponto-lat': lat, 
-        'modal-ponto-lng': lng, 
-        'modal-ponto-obs': obs 
+        'modal-ponto-lng': lng
     } = validacao.dados;
 
     let unidadeId = '';
@@ -254,7 +248,6 @@ function confirmarPontoModal() {
         <td class="text-center font-weight-bold"><span class="badge bg-label-primary rounded-circle p-2 label-ordem">0</span></td>
         <td>${endereco}</td>
         <td>${geoCoordHtml}</td>
-        <td>${obs}</td>
         <td class="text-center">
             <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" onclick="abrirModalPonto(this)"><i class='bx bx-edit'></i></button>
             <button type="button" class="btn btn-sm btn-icon btn-outline-danger" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
@@ -266,13 +259,12 @@ function confirmarPontoModal() {
             .attr('data-endereco', endereco)
             .attr('data-lat', lat)
             .attr('data-lng', lng)
-            .attr('data-obs', obs)
             .attr('data-unidade-id', unidadeId)
             .attr('data-tipo-pesquisa', tipoPesquisa)
             .html(html);
     } else {
         $('#empty-paradas-tr').remove();
-        let novaLinha = `<tr data-id="0" data-entregue="false" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-obs="${obs}" data-link="" data-unidade-id="${unidadeId}" data-tipo-pesquisa="${tipoPesquisa}">${html}</tr>`;
+        let novaLinha = `<tr data-id="0" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="" data-unidade-id="${unidadeId}" data-tipo-pesquisa="${tipoPesquisa}">${html}</tr>`;
         $('#sortable-paradas').append(novaLinha);
     }
 
@@ -446,7 +438,7 @@ function removerLinhaParada(button) {
     $(button).closest('tr').remove();
     recalcularOrdens();
     if ($('#sortable-paradas tr').length === 0) {
-        $('#sortable-paradas').append('<tr id="empty-paradas-tr"><td colspan="7" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>');
+        $('#sortable-paradas').append('<tr id="empty-paradas-tr"><td colspan="5" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>');
     }
 }
 
@@ -594,8 +586,7 @@ function AcionarPreviewDeRota() {
             Id: row.attr('data-id'),
             Endereco: row.attr('data-endereco'),
             Latitude: row.attr('data-lat'),
-            Longitude: row.attr('data-lng'),
-            Observacao: row.attr('data-obs')
+            Longitude: row.attr('data-lng')
         });
     });
 

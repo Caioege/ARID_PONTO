@@ -6,6 +6,9 @@ class ParadaRotaDTO {
   final String? link;
   bool? entregue;
   String? observacao;
+  final String? concluidoEm;
+  final double? latitudeConfirmacao;
+  final double? longitudeConfirmacao;
 
   ParadaRotaDTO({
     required this.id,
@@ -15,6 +18,9 @@ class ParadaRotaDTO {
     this.link,
     this.entregue,
     this.observacao,
+    this.concluidoEm,
+    this.latitudeConfirmacao,
+    this.longitudeConfirmacao,
   });
 
   factory ParadaRotaDTO.fromJson(Map<String, dynamic> json) {
@@ -31,6 +37,13 @@ class ParadaRotaDTO {
       link: json['link'],
       entregue: json['entregue'],
       observacao: json['observacao'],
+      concluidoEm: json['concluidoEm'],
+      latitudeConfirmacao: json['latitudeConfirmacao'] != null
+          ? double.tryParse(json['latitudeConfirmacao'].toString())
+          : null,
+      longitudeConfirmacao: json['longitudeConfirmacao'] != null
+          ? double.tryParse(json['longitudeConfirmacao'].toString())
+          : null,
     );
   }
 

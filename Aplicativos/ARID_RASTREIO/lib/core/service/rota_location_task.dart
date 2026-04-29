@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:arid_rastreio/core/service/rota_background_service.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
+import 'package:arid_rastreio/core/auth/session_manager.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,6 +29,11 @@ class LocationTaskHandler extends TaskHandler {
     await dotenv.load(fileName: '.env');
 
     setupLocator();
+
+    // O Isolate de background não compartilha a memória do Isolate principal.
+    // É necessário carregar a sessão (token) do storage para autenticar as requisições.
+    final session = locator<SessionManager>();
+    await session.carregarSessao();
 
     final rotaExecucaoIdStr = await FlutterForegroundTask.getData(
       key: 'rotaExecucaoId',
@@ -60,6 +67,12 @@ class LocationTaskHandler extends TaskHandler {
               latitude: pos.latitude,
               longitude: pos.longitude,
               dataHora: tz.TZDateTime.now(tz.local),
+              gpsSimulado: pos.isMocked,
+              precisaoEmMetros: pos.accuracy,
+              velocidadeMetrosPorSegundo: pos.speed,
+              direcaoGraus: pos.heading,
+              altitudeMetros: pos.altitude,
+              fonteCaptura: 1,
             );
           } catch (_) {}
 
@@ -77,11 +90,27 @@ class LocationTaskHandler extends TaskHandler {
     if (rotaExecucaoId == null) return;
 
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
-        ),
-      );
+      Position? pos;
+      try {
+        pos = await Geolocator.getLastKnownPosition();
+      } catch (_) {}
+
+      final bool aceitarPosicaoAntiga = kDebugMode;
+      
+      if (pos == null || (DateTime.now().difference(pos.timestamp).inSeconds > 120 && !aceitarPosicaoAntiga)) {
+        try {
+          pos = await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.bestForNavigation,
+              timeLimit: Duration(seconds: 15),
+            ),
+          );
+        } catch (e) {
+          pos ??= await Geolocator.getLastKnownPosition();
+        }
+      }
+
+      if (pos == null) return;
 
       final backgroundService = locator<RotaBackgroundService>();
 
@@ -89,8 +118,16 @@ class LocationTaskHandler extends TaskHandler {
         rotaExecucaoId: rotaExecucaoId,
         latitude: pos.latitude,
         longitude: pos.longitude,
-        dataHora: tz.TZDateTime.now(tz.local),
+        dataHora: DateTime.now(),
+        gpsSimulado: pos.isMocked,
+        precisaoEmMetros: pos.accuracy,
+        velocidadeMetrosPorSegundo: pos.speed,
+        direcaoGraus: pos.heading,
+        altitudeMetros: pos.altitude,
+        fonteCaptura: 1,
       );
+      
+      print('[DEBUG] Background Task: Ponto enviado com sucesso.');
     } catch (_) {
       // catch potential geolocator timeout or service busy
     }
@@ -125,6 +162,8 @@ class LocationTaskHandler extends TaskHandler {
     double velocidadeMaxima = 40.0,
     int maxOldMillis = 5000,
   }) {
+    if (kDebugMode) return true;
+
     if (posicaoAtual.accuracy > maximaPrecisaoEmMetros) {
       return false;
     }

@@ -20,6 +20,11 @@ class ErrorInterceptor extends Interceptor {
 
     // TOKEN EXPIRADO → tenta refresh
     if (response?.statusCode == 401 && !ehRefresh) {
+      // Se já estamos deslogados, não fazemos nada (evita mensagem de expiração ao sair)
+      if (_sessionManager.token == null) {
+        return handler.next(err);
+      }
+
       ehRefresh = true;
 
       final newToken = await _refreshService.refreshToken();
@@ -66,7 +71,7 @@ class ErrorInterceptor extends Interceptor {
         requestOptions: err.requestOptions,
         error: ValidacaoServer(
           sucesso: false, 
-          mensagem: 'Falha: ${err.message ?? err.error ?? "Não foi possível autenticar"}'
+          mensagem: 'Ocorreu um erro inesperado. Tente novamente mais tarde.'
         ),
       ),
     );

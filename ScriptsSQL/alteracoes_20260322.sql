@@ -1,9 +1,9 @@
--- Alterações de Banco de Dados: Sistema de Ponto
+-- Alteracoes de Banco de Dados: Sistema de Ponto
 -- Gerado em: 2026-03-22
--- Descrição: Criação das tabelas do módulo Gestão Mobile (Rotas, Paradas, Localização) e flag na Organização.
+-- Descricao: Criacao das tabelas base do modulo Gestao Mobile (Rotas e Paradas) e flag na Organizacao.
 
--- 1. Habilitando módulo na Organização
-ALTER TABLE `arid_ponto`.`organizacao` 
+-- 1. Habilitando modulo na Organizacao
+ALTER TABLE `arid_ponto`.`organizacao`
 ADD COLUMN `GestaoMobileAtivo` TINYINT NOT NULL DEFAULT 0;
 
 -- 2. Tabela Veiculo
@@ -28,7 +28,8 @@ CREATE TABLE `arid_ponto`.`veiculo` (
     FOREIGN KEY (`OrganizacaoId`)
     REFERENCES `arid_ponto`.`organizacao` (`Id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION
+);
 
 -- 3. Tabela Motorista
 CREATE TABLE `arid_ponto`.`motorista` (
@@ -53,7 +54,8 @@ CREATE TABLE `arid_ponto`.`motorista` (
     FOREIGN KEY (`ServidorId`)
     REFERENCES `arid_ponto`.`servidor` (`Id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION
+);
 
 -- 4. Tabela Rota
 CREATE TABLE `arid_ponto`.`rota` (
@@ -82,7 +84,8 @@ CREATE TABLE `arid_ponto`.`rota` (
     FOREIGN KEY (`VeiculoId`)
     REFERENCES `arid_ponto`.`veiculo` (`Id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION
+);
 
 -- 5. Tabela ParadaRota
 CREATE TABLE `arid_ponto`.`paradarota` (
@@ -93,9 +96,6 @@ CREATE TABLE `arid_ponto`.`paradarota` (
   `Latitude` VARCHAR(50) NULL,
   `Longitude` VARCHAR(50) NULL,
   `Link` VARCHAR(500) NULL,
-  `Entregue` TINYINT NOT NULL DEFAULT 0,
-  `Observacao` VARCHAR(500) NULL,
-  `ConcluidoEm` DATETIME NULL,
   PRIMARY KEY (`Id`),
   INDEX `FK_ParadaRota_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
   INDEX `FK_ParadaRota_Rota_idx` (`RotaId` ASC) VISIBLE,
@@ -108,36 +108,12 @@ CREATE TABLE `arid_ponto`.`paradarota` (
     FOREIGN KEY (`RotaId`)
     REFERENCES `arid_ponto`.`rota` (`Id`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE);
+    ON UPDATE CASCADE
+);
 
--- 6. Tabela LocalizacaoRota
-CREATE TABLE `arid_ponto`.`localizacaorota` (
-  `Id` INT NOT NULL AUTO_INCREMENT,
-  `OrganizacaoId` INT NOT NULL,
-  `RotaId` INT NOT NULL,
-  `Latitude` VARCHAR(50) NOT NULL,
-  `Longitude` VARCHAR(50) NOT NULL,
-  `DataHora` DATETIME NOT NULL,
-  PRIMARY KEY (`Id`),
-  INDEX `FK_LocalizacaoRota_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
-  INDEX `FK_LocalizacaoRota_Rota_idx` (`RotaId` ASC) VISIBLE,
-  CONSTRAINT `FK_LocalizacaoRota_Organizacao`
-    FOREIGN KEY (`OrganizacaoId`)
-    REFERENCES `arid_ponto`.`organizacao` (`Id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LocalizacaoRota_Rota`
-    FOREIGN KEY (`RotaId`)
-    REFERENCES `arid_ponto`.`rota` (`Id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+-- Nota: Os enumeradores de permissao sao definidos em codigo e salvos pela interface.
 
--- Nota: Os Enumeradores de Permissão (eItemDePermissao_Motorista, eItemDePermissao_Veiculo, etc.)
--- são definidos em código (C#) e salvos na tabela `itemdogrupodepermissao` pelo sistema através 
--- da interface de controle de acesso de forma dinâmica.
-
-
--- 7. Tabela Motorista Historico Situação
+-- 6. Tabela MotoristaHistoricoSituacao
 CREATE TABLE `arid_ponto`.`motoristahistoricosituacao` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `OrganizacaoId` INT NOT NULL,
@@ -164,39 +140,8 @@ CREATE TABLE `arid_ponto`.`motoristahistoricosituacao` (
     FOREIGN KEY (`UsuarioId`)
     REFERENCES `arid_ponto`.`usuario` (`Id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON UPDATE NO ACTION
+);
 
--- 8. Tabela Rota Execução
-CREATE TABLE `arid_ponto`.`rotaexecucao` (
-  `Id` INT NOT NULL AUTO_INCREMENT,
-  `OrganizacaoId` INT NOT NULL,
-  `RotaId` INT NOT NULL,
-  `DataHoraInicio` DATETIME NOT NULL,
-  `DataHoraFim` DATETIME NULL,
-  `UsuarioIdInicio` INT NOT NULL,
-  `UsuarioIdFim` INT NULL,
-  PRIMARY KEY (`Id`),
-  INDEX `FK_RotaExecucao_Organizacao_idx` (`OrganizacaoId` ASC) VISIBLE,
-  INDEX `FK_RotaExecucao_Rota_idx` (`RotaId` ASC) VISIBLE,
-  INDEX `FK_RotaExecucao_UsuarioInicio_idx` (`UsuarioIdInicio` ASC) VISIBLE,
-  INDEX `FK_RotaExecucao_UsuarioFim_idx` (`UsuarioIdFim` ASC) VISIBLE,
-  CONSTRAINT `FK_RotaExecucao_Organizacao`
-    FOREIGN KEY (`OrganizacaoId`)
-    REFERENCES `arid_ponto`.`organizacao` (`Id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `FK_RotaExecucao_Rota`
-    FOREIGN KEY (`RotaId`)
-    REFERENCES `arid_ponto`.`rota` (`Id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT `FK_RotaExecucao_UsuarioInicio`
-    FOREIGN KEY (`UsuarioIdInicio`)
-    REFERENCES `arid_ponto`.`usuario` (`Id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `FK_RotaExecucao_UsuarioFim`
-    FOREIGN KEY (`UsuarioIdFim`)
-    REFERENCES `arid_ponto`.`usuario` (`Id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+-- A estrutura operacional de execucao de rotas foi movida para:
+-- ScriptsSQL/alteracoes_20260428_execucao_rotas_motorista_unificada.sql

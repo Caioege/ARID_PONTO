@@ -126,18 +126,18 @@ class ChecklistService {
     }
   }
 
-  Future<void> salvarChecklist({
+  Future<int> salvarChecklist({
     required int rotaId,
     required int veiculoId,
     required List<int> itensMarcados,
   }) async {
     if (_usarMock) {
       await Future.delayed(const Duration(milliseconds: 600));
-      return;
+      return 1;
     }
 
     try {
-      await _client.post(
+      final response = await _client.post(
         '/api/rastreio-app/checklist',
         data: {
           'rotaId': rotaId,
@@ -145,6 +145,8 @@ class ChecklistService {
           'itens': itensMarcados,
         },
       );
+
+      return response.data['data'] as int;
     } on DioException {
       rethrow;
     }

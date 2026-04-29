@@ -1,6 +1,7 @@
 @using AriD.BibliotecaDeClasses.Entidades
 @using AriD.BibliotecaDeClasses.Enumeradores
 @using AriD.BibliotecaDeClasses.Enumeradores.Permissao
+@using AriD.GerenciamentoDePonto.Models
 @using AriD.Servicos.Extensao
 @model Rota
 
@@ -181,7 +182,6 @@
                                                 <th>Ordem</th>
                                                 <th>Endereço/Localização</th>
                                                 <th>Coordenadas GPS</th>
-                                                <th width="15%">Observação</th>
                                                 <th width="80px"></th>
                                             </tr>
                                         </thead>
@@ -190,8 +190,8 @@
                                             {
                                                 foreach(var p in Model.Paradas.OrderBy(x => x.Ordem))
                                                 {
-                                                    <tr data-id="@p.Id" data-entregue="@(p.Entregue ? "true" : "false")"
-                                                        data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link" data-obs="@p.Observacao"
+                                                    <tr data-id="@p.Id"
+                                                        data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link"
                                                         data-unidade-id="@p.UnidadeId" data-tipo-pesquisa="@(p.UnidadeId.HasValue ? $"tipo-{(int)p.Unidade?.Tipo}" : "manual")">
                                                         <td class="text-center cursor-move"><i class="bx bx-menu"></i></td>
                                                         <td class="text-center font-weight-bold">
@@ -210,7 +210,6 @@
                                                                 <span class="text-warning small"><i class="bx bx-error"></i> Geofence Offline</span> 
                                                             }
                                                         </td>
-                                                        <td>@p.Observacao</td>
                                                         <td class="text-center">
                                                             <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" onclick="abrirModalPonto(this)"><i class='bx bx-edit'></i></button>
                                                             <button type="button" class="btn btn-sm btn-icon btn-outline-danger" onclick="removerLinhaParada(this)"><i class='bx bx-trash'></i></button>
@@ -220,7 +219,7 @@
                                             }
                                             else 
                                             {
-                                                <tr id="empty-paradas-tr"><td colspan="7" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>
+                                                <tr id="empty-paradas-tr"><td colspan="5" class="text-center text-muted">Ainda não há paradas registradas na Rota.</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -304,7 +303,7 @@
                                 <label class="form-label">Selecionar Profissional da Rota</label>
                                 <select id="selecao-profissional" class="form-select select2-cadastro" onchange="aoMudarProfissional()">
                                     <option value="">Selecione...</option>
-                                    @foreach (var s in (dynamic)ViewBag.ProfissionaisDisponiveis)
+                                    @foreach (var s in (IEnumerable<ProfissionalDisponivelViewModel>)ViewBag.ProfissionaisDisponiveis)
                                     {
                                         <option value="@s.Id" data-nome="@s.Nome" data-cargo="@s.Cargo" data-crm="@s.CRM" data-especialidade="@s.Especialidade">@s.Nome (@s.Cargo)</option>
                                     }
@@ -462,7 +461,7 @@
             <label class="form-label" id="label-unidade-sistema" for="modal-selecao-unidade">Selecione a Unidade</label>
             <select id="modal-selecao-unidade" class="form-select select2-modal">
                 <option value="">Selecione...</option>
-                @foreach(var u in (dynamic)ViewBag.UnidadesParaModal) {
+                @foreach(var u in (IEnumerable<UnidadeParaModalViewModel>)ViewBag.UnidadesParaModal) {
                     <option value="@u.Id" data-lat="@u.Latitude" data-lng="@u.Longitude" data-end="@u.Endereco" data-tipo="tipo-@((int)u.Tipo)">@u.Nome</option>
                 }
             </select>
@@ -482,8 +481,6 @@
                 <textarea id="modal-ponto-endereco" class="form-control" rows="2"></textarea>
             </div>
             <div class="col-12 mb-3">
-                <label class="form-label" for="modal-ponto-obs">Observação</label>
-                <textarea id="modal-ponto-obs" class="form-control" rows="2" placeholder=""></textarea>
             </div>
         </div>
 

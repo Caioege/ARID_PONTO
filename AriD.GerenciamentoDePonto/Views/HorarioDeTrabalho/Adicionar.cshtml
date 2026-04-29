@@ -29,6 +29,8 @@
     <div class="card-body">
 <form id="formulario-horario-trabalho">
     @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.VigenciaId)
+    @Html.HiddenFor(model => model.VigenciaInicio)
 
     <!-- SEÇÃO 1 E 2: CONFIGURAÇÕES GERAIS E JORNADA -->
     <div class="card mb-4">

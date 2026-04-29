@@ -1,4 +1,4 @@
-﻿using AriD.GerenciamentoDePonto.Helpers;
+using AriD.GerenciamentoDePonto.Helpers;
 using System.Net;
 using System.Text.Json;
 
@@ -31,7 +31,7 @@ public class ExceptionMiddleware
 
         var controllerName = context.GetRouteData()?.Values["controller"]?.ToString()?.ToLower();
 
-        var isAppController = controllerName == "app";
+        var isAppController = controllerName == "app" || controllerName == "rastreioapp";
 
         int statusCode;
         string mensagem;

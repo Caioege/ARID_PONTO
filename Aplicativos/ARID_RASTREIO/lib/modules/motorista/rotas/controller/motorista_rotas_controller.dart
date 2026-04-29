@@ -7,6 +7,7 @@ import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
 import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter/foundation.dart';
 import '../service/motorista_rotas_service.dart';
 
 part 'motorista_rotas_controller.g.dart';
@@ -16,6 +17,70 @@ class MotoristaRotasController = MotoristaRotasControllerBase
 
 abstract class MotoristaRotasControllerBase with Store {
   final MotoristaRotasService _service = MotoristaRotasService();
+
+  LocationSettings _getLocationSettings(LocationAccuracy accuracy, {int seconds = 25}) {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+      return LocationSettings(
+        accuracy: accuracy,
+        timeLimit: Duration(seconds: seconds),
+      );
+    }
+    return AndroidSettings(
+      accuracy: accuracy,
+      timeLimit: Duration(seconds: seconds),
+      forceLocationManager: true,
+    );
+  }
+
+  Future<Position?> _obterPosicaoRobusta({bool lancaErro = true}) async {
+    print('[DEBUG] Controller: Tentando getLastKnownPosition...');
+    Position? pos;
+    try {
+      pos = await Geolocator.getLastKnownPosition();
+    } catch (_) {}
+
+    if (pos != null) {
+      final age = DateTime.now().difference(pos.timestamp);
+      print('[DEBUG] Controller: Última posição tem ${age.inSeconds} segundos de idade.');
+      
+      // No emulador (debug), pontos estáticos ficam "velhos" rápido e o getCurrentPosition
+      // trava esperando sinal real. Por isso, ignoramos a idade se for debug.
+      final bool aceitarPosicaoAntiga = kDebugMode;
+      
+      // Se a posição for antiga, tentamos uma nova, guardando a antiga como fallback
+      if (age.inSeconds > 120 && !aceitarPosicaoAntiga) {
+        print('[DEBUG] Controller: Posição antiga. Tentando atualizar...');
+        try {
+          pos = await Geolocator.getCurrentPosition(
+            locationSettings: _getLocationSettings(LocationAccuracy.high, seconds: 15),
+          );
+        } catch (e) {
+          print('[DEBUG] Controller: Falha ao obter nova posição ($e). Usando a antiga como fallback.');
+          pos = await Geolocator.getLastKnownPosition();
+        }
+      } else if (age.inSeconds > 120 && aceitarPosicaoAntiga) {
+        print('[DEBUG] Controller: Posição antiga aceita por estar em modo Debug (Emulador).');
+      }
+    } else {
+      print('[DEBUG] Controller: Nenhuma posição anterior. Capturando posição atual...');
+      try {
+        pos = await Geolocator.getCurrentPosition(
+          locationSettings: _getLocationSettings(LocationAccuracy.high),
+        );
+      } catch (e) {
+        print('[DEBUG] Controller: Falha total ao capturar posição ($e).');
+      }
+    }
+
+    if (pos == null && lancaErro) {
+       throw Exception('Não foi possível obter a localização. Verifique o GPS.');
+    }
+
+    if (pos != null) {
+      print('[DEBUG] Controller: Posição obtida: ${pos.latitude}, ${pos.longitude}. isMocked: ${pos.isMocked}');
+    }
+    return pos;
+  }
 
   @observable
   RotaExecucaoDTO? rotaAtual;
@@ -30,6 +95,12 @@ abstract class MotoristaRotasControllerBase with Store {
   bool estaPausada = false;
 
   @observable
+  bool recuperandoSessao = false;
+
+  @observable
+  int? checklistExecucaoId;
+
+  @observable
   int? rotaFinalizadaId;
 
   @observable
@@ -37,40 +108,55 @@ abstract class MotoristaRotasControllerBase with Store {
 
   @action
   Future<RotaExecucaoDTO?> obterRotaEmAndamento() async {
-    carregando = true;
+    recuperandoSessao = true;
     try {
       final execucao = await _service.obterRotaEmAndamento();
       if (execucao != null) {
         rotaAtual = execucao;
+        checklistExecucaoId = execucao.checklistExecucaoId;
+
         _carregarParadasEOrigens(execucao);
         rotaIniciada = true;
         estaPausada = execucao.estaPausada;
-        
+
+        // Recuperar estado no ChecklistController
+        if (execucao.veiculoId != null) {
+          await locator<ChecklistController>().restaurarSelecaoSessao(
+            rotaId: execucao.rotaId,
+            veiculoId: execucao.veiculoId!,
+            checklistExecucaoId: execucao.checklistExecucaoId,
+          );
+        }
+
         _enviarLocalizacaoAtual();
       }
       return execucao;
     } finally {
-      carregando = false;
+      recuperandoSessao = false;
     }
   }
 
   Future<void> _enviarLocalizacaoAtual() async {
     if (rotaAtual == null) return;
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.bestForNavigation,
-        ),
-      );
+      final pos = await _obterPosicaoRobusta(lancaErro: false);
+      if (pos == null) return;
 
       await _service.salvarPontoDaRotaBackground(
         rotaExecucaoId: rotaAtual!.id,
         latitude: pos.latitude,
         longitude: pos.longitude,
         dataHora: DateTime.now(),
+        gpsSimulado: pos.isMocked,
+        precisaoEmMetros: pos.accuracy,
+        velocidadeMetrosPorSegundo: pos.speed,
+        direcaoGraus: pos.heading,
+        altitudeMetros: pos.altitude,
+        fonteCaptura: 0,
       );
-    } catch (_) {
-      // Falha silenciosa para não travar o fluxo principal
+    } catch (e, stack) {
+      print('[DEBUG] Falha ao salvar ponto background: $e');
+      print(stack);
     }
   }
 
@@ -78,24 +164,54 @@ abstract class MotoristaRotasControllerBase with Store {
   Future<RotaExecucaoDTO> iniciarRota({
     required int rotaId,
     required int veiculoId,
+    int? checklistId,
   }) async {
+    print('[DEBUG] Controller: iniciarRota iniciado');
     carregando = true;
 
     try {
+      print('[DEBUG] Controller: Verificando se serviço de localização está ativo...');
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      print('[DEBUG] Controller: Serviço ativo? $serviceEnabled');
+      if (!serviceEnabled) {
+        throw Exception(
+          'O serviço de localização (GPS) está desativado. Por favor, ative-o nas configurações do dispositivo.',
+        );
+      }
+
+      print('[DEBUG] Controller: Capturando posição para iniciar rota...');
+      final pos = await _obterPosicaoRobusta(lancaErro: true);
+
+      if (pos!.isMocked && !kDebugMode) {
+        throw Exception(
+          'Simulador de localização detectado. Por favor, desabilite-o para iniciar a rota.',
+        );
+      }
+
+      print('[DEBUG] Controller: Chamando serviço para iniciar rota no servidor...');
       final execucao = await _service.iniciarRota(
         rotaId: rotaId,
         veiculoId: veiculoId,
+        checklistExecucaoId: checklistId,
+        latitudeInicio: pos.latitude,
+        longitudeInicio: pos.longitude,
+        gpsSimulado: pos.isMocked,
       );
+      print('[DEBUG] Controller: Rota iniciada no servidor com sucesso.');
 
       rotaAtual = execucao;
+      checklistExecucaoId = checklistId;
+
       _carregarParadasEOrigens(execucao);
       rotaIniciada = true;
       estaPausada = execucao.estaPausada;
 
+      print('[DEBUG] Controller: Enviando localização inicial em background...');
       _enviarLocalizacaoAtual();
 
       return execucao;
     } finally {
+      print('[DEBUG] Controller: Finalizando estado de carregamento.');
       carregando = false;
     }
   }
@@ -147,11 +263,16 @@ abstract class MotoristaRotasControllerBase with Store {
     parada.salvando = true;
 
     try {
+      // Captura a posição exata no momento da confirmação para salvar junto com a parada
+      final pos = await _obterPosicaoRobusta(lancaErro: false);
+
       await _service.confirmarParada(
         rotaExecucaoId: rotaAtual!.id,
         paradaId: parada.id,
         entregue: parada.entregue,
         observacao: parada.observacao,
+        latitude: pos?.latitude,
+        longitude: pos?.longitude,
       );
 
       parada.confirmada = true;
@@ -218,7 +339,7 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
-      final loc = await Geolocator.getCurrentPosition();
+      final loc = await _obterPosicaoRobusta(lancaErro: false);
       await _service.iniciarPausa(
         rotaExecucaoId: rotaAtual!.id,
         motivo: motivo,
@@ -239,7 +360,7 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
-      final loc = await Geolocator.getCurrentPosition();
+      final loc = await _obterPosicaoRobusta(lancaErro: false);
       await _service.finalizarPausa(
         rotaExecucaoId: rotaAtual!.id,
         latitude: loc?.latitude,

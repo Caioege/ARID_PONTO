@@ -45,95 +45,53 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpPost("autentique")]
         public IActionResult Autentique([FromBody] CredenciaisDTO credenciais)
         {
-            try
-            {
-                var acesso = _servicoDeAplicativo.AutenticarUsuario(credenciais);
-                if (acesso == null)
-                    throw new ApplicationException("Usuário ou senha incorretos.");
+            var acesso = _servicoDeAplicativo.AutenticarUsuario(credenciais);
+            if (acesso == null)
+                throw new ApplicationException("Usuário ou senha incorretos.");
 
-                var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{acesso.OrganizacaoId}", $"{acesso.ServidorId}.png");
+            var caminhoArquivo = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "organizacao", $"{acesso.OrganizacaoId}", $"{acesso.ServidorId}.png");
 
-                FileStream imageFileStream;
+            FileStream imageFileStream;
 
-                if (!Path.Exists(caminhoArquivo))
-                    imageFileStream = System.IO.File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "sem-foto.png"));
-                else
-                    imageFileStream = System.IO.File.OpenRead(caminhoArquivo);
+            if (!Path.Exists(caminhoArquivo))
+                imageFileStream = System.IO.File.OpenRead(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "pessoas", "sem-foto.png"));
+            else
+                imageFileStream = System.IO.File.OpenRead(caminhoArquivo);
 
-                acesso.FotoBase64 = Convert.ToBase64String(
-                    ObterBytesDeFileStream(imageFileStream));
+            acesso.FotoBase64 = Convert.ToBase64String(
+                ObterBytesDeFileStream(imageFileStream));
 
-                return Ok(acesso);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(acesso);
         }
 
         [HttpGet("horarios-trabalho/{servidorId}")]
         public IActionResult ObtenhaHorariosDeTrabalho(int servidorId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaHorariosDoServidor(servidorId));
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaHorariosDoServidor(servidorId));
         }
 
         [HttpGet("eventos/{organizacaoId}")]
         public IActionResult ObtenhaEventos(int organizacaoId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaListaDeEventos(organizacaoId));
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaListaDeEventos(organizacaoId));
         }
 
         [HttpGet("vinculos/{servidorId}")]
         public IActionResult ObtenhaVinculos(int servidorId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaListaDeVinculos(servidorId));
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaListaDeVinculos(servidorId));
         }
 
         [HttpGet("unidade/{vinculoId}")]
         public IActionResult ObtenhaUnidades(int vinculoId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaListaDeLotacoes(vinculoId));
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaListaDeLotacoes(vinculoId));
         }
 
         [HttpGet("justificativas/{organizacaoId}")]
         public IActionResult ObtenhaJustificativas([FromRoute] int organizacaoId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaListaDeJustificativas(organizacaoId));
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaListaDeJustificativas(organizacaoId));
         }
 
         [HttpGet("folha-ponto/{vinculoId}/{unidadeId}/{mesDeReferencia}")]
@@ -176,66 +134,29 @@ namespace AriD.GerenciamentoDePonto.Controllers
         [HttpGet("ultimos-registros-servidor/{servidorId}")]
         public IActionResult ObtenhaUltimosRegistrosDoServidor([FromRoute] int servidorId)
         {
-            try
-            {
-                return Ok(_servicoDeAplicativo.ObtenhaUltimosRegistrosDoServidor(servidorId));
-            }
-            catch (Exception ex)
-            {
-                if (ex is ApplicationException)
-                    return BadRequest(ex.Message);
-
-                return StatusCode(500, "Ocorreu um erro inesperado. Tente novamente mais tarde.");
-            }
+            return Ok(_servicoDeAplicativo.ObtenhaUltimosRegistrosDoServidor(servidorId));
         }
 
         [HttpPost("receptar-ponto")]
         [Consumes("multipart/form-data")]
         public IActionResult ReceptarRegistro([FromForm] PostRegistroDePontoDTO registro)
         {
-            try
-            {
-                _servicoDeAplicativo.ReceptarRegistro(registro, true);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                if (ex is ApplicationException)
-                    return BadRequest(ex.Message);
-
-                return StatusCode(500, "Ocorreu um erro inesperado. Tente novamente mais tarde.");
-            }
+            _servicoDeAplicativo.ReceptarRegistro(registro, true);
+            return Ok();
         }
 
         [HttpPost("registrar-token")]
         public IActionResult RegistrarToken([FromBody] RegistrarTokenDTO registrarToken)
         {
-            try
-            {
-                _servicoDeAplicativo.RegistrarToken(registrarToken);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            _servicoDeAplicativo.RegistrarToken(registrarToken);
+            return Ok();
         }
 
         [HttpPost("alterar-senha")]
         public IActionResult AlterarSenha([FromBody] AlterarSenhaDTO alterarSenha)
         {
-            try
-            {
-                _servicoDeAplicativo.AlterarSenha(alterarSenha.ServidorId, alterarSenha.SenhaAtual, alterarSenha.NovaSenha);
-                return Ok(new { sucesso = true, mensagem = "Senha alterada com sucesso." });
-            }
-            catch (Exception ex)
-            {
-                if (ex is ApplicationException)
-                    return BadRequest(new { message = ex.Message });
-
-                return StatusCode(500, new { message = "Ocorreu um erro ao alterar a senha. Tente novamente mais tarde." });
-            }
+            _servicoDeAplicativo.AlterarSenha(alterarSenha.ServidorId, alterarSenha.SenhaAtual, alterarSenha.NovaSenha);
+            return Ok(new { sucesso = true, mensagem = "Senha alterada com sucesso." });
         }
 
         private byte[] ObterBytesDeFileStream(FileStream fileStream)

@@ -63,3 +63,24 @@ CREATE TABLE BonusCalculado (
     CONSTRAINT FK_BonusCalculado_ConfiguracaoBonus 
         FOREIGN KEY (ConfiguracaoBonusId) REFERENCES ConfiguracaoBonus (Id) ON DELETE CASCADE
 );
+
+
+--- 28/04/2026
+ALTER TABLE `arid_ponto`.`horariodetrabalhodia` 
+DROP FOREIGN KEY `FK_HorarioDeTrabalhoDia_HorarioDeTrabalho`;
+ALTER TABLE `arid_ponto`.`horariodetrabalhodia` 
+CHANGE COLUMN `HorarioDeTrabalhoId` `HorarioDeTrabalhoId` INT NULL DEFAULT NULL ;
+ALTER TABLE `arid_ponto`.`horariodetrabalhodia` 
+ADD CONSTRAINT `FK_HorarioDeTrabalhoDia_HorarioDeTrabalho`
+  FOREIGN KEY (`HorarioDeTrabalhoId`)
+  REFERENCES `arid_ponto`.`horariodetrabalho` (`Id`);
+
+ALTER TABLE `arid_ponto`.`regrahoraextra` 
+DROP FOREIGN KEY `FK_RegraHoraExtra_HorarioDeTrabalho`;
+ALTER TABLE `arid_ponto`.`regrahoraextra` 
+CHANGE COLUMN `HorarioDeTrabalhoId` `HorarioDeTrabalhoId` INT NULL DEFAULT NULL ;
+ALTER TABLE `arid_ponto`.`regrahoraextra` 
+ADD CONSTRAINT `FK_RegraHoraExtra_HorarioDeTrabalho`
+  FOREIGN KEY (`HorarioDeTrabalhoId`)
+  REFERENCES `arid_ponto`.`horariodetrabalho` (`Id`);
+

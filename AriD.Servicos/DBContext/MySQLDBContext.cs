@@ -12,7 +12,7 @@ namespace AriD.Servicos.DBContext
             {
                 var connStringProd = "Server=localhost;User Id=aridponto;Password=aridponto@123;Database=arid_ponto";
                 var connString = "Server=localhost;User Id=root;Password=masterkey;Database=arid_ponto";
-                optionsBuilder.UseMySql(connString, ServerVersion.AutoDetect(connString))  
+                optionsBuilder.UseMySql(connStringProd, ServerVersion.AutoDetect(connStringProd))  
                     .LogTo(Console.WriteLine, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
@@ -85,6 +85,10 @@ namespace AriD.Servicos.DBContext
         public DbSet<RotaOcorrenciaDesvio> RotaOcorrenciaDesvio { get; set; }
         public DbSet<ParadaRota> ParadaRota { get; set; }
         public DbSet<LocalizacaoRota> LocalizacaoRota { get; set; }
+        public DbSet<RotaExecucao> RotaExecucao { get; set; }
+        public DbSet<RotaExecucaoEvento> RotaExecucaoEvento { get; set; }
+        public DbSet<RotaExecucaoPausa> RotaExecucaoPausa { get; set; }
+        public DbSet<RotaExecucaoDesvio> RotaExecucaoDesvio { get; set; }
         public DbSet<Motorista> Motorista { get; set; }
         public DbSet<Veiculo> Veiculo { get; set; }
         public DbSet<MotoristaHistoricoSituacao> MotoristaHistoricoSituacao { get; set; }

@@ -1,8 +1,13 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 String extrairMensagemErro(Object error) {
+  if (error is TimeoutException || error.toString().contains('TimeoutException')) {
+    return 'Não foi possível obter sua localização atual. Verifique se o GPS está ativado e tente novamente em um local aberto.';
+  }
+
   if (error is DioException) {
     final data = error.response?.data;
 
@@ -27,7 +32,12 @@ String extrairMensagemErro(Object error) {
     return error.toString();
   }
 
-  return error.toString();
+  final str = error.toString();
+  if (str.startsWith('Exception: ')) {
+    return str.substring(11); // Remove "Exception: "
+  }
+
+  return str;
 }
 
 int compararNomesNaturais(String a, String b) {

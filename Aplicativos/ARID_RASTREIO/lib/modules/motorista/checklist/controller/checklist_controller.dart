@@ -36,6 +36,9 @@ abstract class ChecklistControllerBase with Store {
   bool checklistSalvo = false;
 
   @observable
+  int? ultimaExecucaoId;
+
+  @observable
   Map<String, List<int>> checklistSnapshots = {};
 
   @computed
@@ -146,11 +149,13 @@ abstract class ChecklistControllerBase with Store {
           .map((i) => i.id)
           .toList();
 
-      await _service.salvarChecklist(
+      final idExec = await _service.salvarChecklist(
         rotaId: rotaSelecionada!.id,
         veiculoId: veiculoSelecionado!.id,
         itensMarcados: itensMarcados,
       );
+
+      ultimaExecucaoId = idExec;
 
       final chave = '${rotaSelecionada!.id}_${veiculoSelecionado!.id}';
       checklistSnapshots[chave] = List.from(itensMarcados);
@@ -214,6 +219,49 @@ abstract class ChecklistControllerBase with Store {
     }
 
     houveInteracao = false;
+  }
+
+  @action
+  Future<void> restaurarSelecaoSessao({
+    required int rotaId,
+    required int veiculoId,
+    int? checklistExecucaoId,
+  }) async {
+    try {
+      // 1. Carrega as rotas se não estiverem carregadas
+      if (rotasFuture == null) {
+        await carregarRotas();
+      }
+
+      // 2. Localiza a rota na lista
+      final rota = rotasFuture?.value?.where((r) => r.id == rotaId).firstOrNull;
+      if (rota != null) {
+        rotaSelecionada = rota;
+
+        // 3. Carrega os veículos daquela rota
+        veiculosFuture =
+            ObservableFuture(_service.obterVeiculosPorRota(rotaId));
+        final veiculos = await veiculosFuture;
+
+        // 4. Localiza o veículo
+        final veiculo = veiculos?.where((v) => v.id == veiculoId).firstOrNull;
+        if (veiculo != null) {
+          veiculoSelecionado = veiculo;
+
+          // Se já temos um checklist salvo nessa sessão
+          checklistSalvo = checklistExecucaoId != null;
+
+          // Marcar todos como checked para efeito visual de "concluído"
+          // (Poderíamos buscar os itens específicos se necessário, mas por agora
+          //  se checklistExecucaoId existe, consideramos pronto)
+          if (checklistSalvo) {
+            for (final item in veiculo.checklist) {
+              item.checked = true;
+            }
+          }
+        }
+      }
+    } catch (_) {}
   }
 
   @action

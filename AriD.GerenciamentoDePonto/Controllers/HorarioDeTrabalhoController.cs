@@ -230,7 +230,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         throw new ApplicationException("Vigência inválida.");
 
                     AplicarCamposVigencia(vm, vig);
-                    _servicoVigencia.Atualizar(vig);
+                    _servicoVigencia.Atualizar(vig, false);
                 }
 
                 var diasAtuais = _servicoDia.ObtenhaLista(d => d.OrganizacaoId == orgId && d.HorarioDeTrabalhoVigenciaId == vm.VigenciaId);
@@ -253,7 +253,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { sucesso = false, mensagem = ex.Message });
+                return Json(new { sucesso = false, mensagem = ex.InnerException?.Message ?? ex.Message });
             }
         }
 

@@ -1,0 +1,3 @@
+-- Script legado substituido.
+-- As colunas e tabelas de execucao de rota foram consolidadas em um desenho novo e unificado:
+-- ScriptsSQL/alteracoes_20260428_execucao_rotas_motorista_unificada.sql

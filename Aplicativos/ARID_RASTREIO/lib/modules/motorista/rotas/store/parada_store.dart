@@ -41,7 +41,11 @@ abstract class ParadaStoreBase with Store {
     controllerObservacao = TextEditingController(text: this.observacao);
 
     controllerObservacao.addListener(() {
-      observacao = controllerObservacao.text;
+      this.observacao = controllerObservacao.text;
     });
+
+    if (this.entregue != null) {
+      confirmada = true;
+    }
   }
 }

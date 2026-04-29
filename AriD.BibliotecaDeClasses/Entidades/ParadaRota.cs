@@ -19,9 +19,5 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? Longitude { get; set; }
         public string? Link { get; set; }
         
-        public bool Entregue { get; set; }
-        public string? Observacao { get; set; }
-
-        public DateTime? ConcluidoEm { get; set; }
     }
 }

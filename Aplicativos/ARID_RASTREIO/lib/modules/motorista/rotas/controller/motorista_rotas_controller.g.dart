@@ -81,6 +81,42 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
     });
   }
 
+  late final _$recuperandoSessaoAtom = Atom(
+    name: 'MotoristaRotasControllerBase.recuperandoSessao',
+    context: context,
+  );
+
+  @override
+  bool get recuperandoSessao {
+    _$recuperandoSessaoAtom.reportRead();
+    return super.recuperandoSessao;
+  }
+
+  @override
+  set recuperandoSessao(bool value) {
+    _$recuperandoSessaoAtom.reportWrite(value, super.recuperandoSessao, () {
+      super.recuperandoSessao = value;
+    });
+  }
+
+  late final _$checklistExecucaoIdAtom = Atom(
+    name: 'MotoristaRotasControllerBase.checklistExecucaoId',
+    context: context,
+  );
+
+  @override
+  int? get checklistExecucaoId {
+    _$checklistExecucaoIdAtom.reportRead();
+    return super.checklistExecucaoId;
+  }
+
+  @override
+  set checklistExecucaoId(int? value) {
+    _$checklistExecucaoIdAtom.reportWrite(value, super.checklistExecucaoId, () {
+      super.checklistExecucaoId = value;
+    });
+  }
+
   late final _$rotaFinalizadaIdAtom = Atom(
     name: 'MotoristaRotasControllerBase.rotaFinalizadaId',
     context: context,
@@ -117,6 +153,18 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
     });
   }
 
+  late final _$obterRotaEmAndamentoAsyncAction = AsyncAction(
+    'MotoristaRotasControllerBase.obterRotaEmAndamento',
+    context: context,
+  );
+
+  @override
+  Future<RotaExecucaoDTO?> obterRotaEmAndamento() {
+    return _$obterRotaEmAndamentoAsyncAction.run(
+      () => super.obterRotaEmAndamento(),
+    );
+  }
+
   late final _$iniciarRotaAsyncAction = AsyncAction(
     'MotoristaRotasControllerBase.iniciarRota',
     context: context,
@@ -126,9 +174,14 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
   Future<RotaExecucaoDTO> iniciarRota({
     required int rotaId,
     required int veiculoId,
+    int? checklistId,
   }) {
     return _$iniciarRotaAsyncAction.run(
-      () => super.iniciarRota(rotaId: rotaId, veiculoId: veiculoId),
+      () => super.iniciarRota(
+        rotaId: rotaId,
+        veiculoId: veiculoId,
+        checklistId: checklistId,
+      ),
     );
   }
 
@@ -219,6 +272,8 @@ rotaAtual: ${rotaAtual},
 carregando: ${carregando},
 rotaIniciada: ${rotaIniciada},
 estaPausada: ${estaPausada},
+recuperandoSessao: ${recuperandoSessao},
+checklistExecucaoId: ${checklistExecucaoId},
 rotaFinalizadaId: ${rotaFinalizadaId},
 paradas: ${paradas}
     ''';

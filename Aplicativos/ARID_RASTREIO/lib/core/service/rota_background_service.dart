@@ -10,12 +10,24 @@ class RotaBackgroundService {
     required double latitude,
     required double longitude,
     required DateTime dataHora,
+    bool? gpsSimulado,
+    double? precisaoEmMetros,
+    double? velocidadeMetrosPorSegundo,
+    double? direcaoGraus,
+    double? altitudeMetros,
+    int? fonteCaptura,
   }) async {
     await _service.salvarPontoDaRotaBackground(
       rotaExecucaoId: rotaExecucaoId,
       latitude: latitude,
       longitude: longitude,
       dataHora: dataHora,
+      gpsSimulado: gpsSimulado,
+      precisaoEmMetros: precisaoEmMetros,
+      velocidadeMetrosPorSegundo: velocidadeMetrosPorSegundo,
+      direcaoGraus: direcaoGraus,
+      altitudeMetros: altitudeMetros,
+      fonteCaptura: fonteCaptura,
     );
   }
 }

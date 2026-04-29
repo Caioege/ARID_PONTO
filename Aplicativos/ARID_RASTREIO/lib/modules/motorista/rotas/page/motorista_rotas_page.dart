@@ -116,52 +116,67 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () async {
-              final confirmar = await showAppDialog(
-                context: context,
-                titulo: 'Iniciar rota',
-                mensagem:
-                    'Deseja iniciar a rota agora?\nA localização inicial será registrada.',
-                tipo: AppDialogType.interrogacao,
-              );
+            onPressed: rotasController.carregando
+                ? null
+                : () async {
+                    if (rotasController.carregando) return;
+                    print('[DEBUG] Botão Iniciar Rota clicado');
 
-              if (confirmar == true) {
-                try {
-                  final RotaExecucaoDTO rotaExecucao = await rotasController
-                      .iniciarRota(
-                        rotaId: checklistController.rotaSelecionada!.id,
-                        veiculoId: checklistController.veiculoSelecionado!.id,
-                      );
-
-                  await solicitarPermissoes();
-
-                  await FlutterForegroundTask.saveData(
-                    key: 'rotaExecucaoId',
-                    value: rotaExecucao.id.toString(),
-                  );
-
-                  await RotaTrackingService.start();
-
-                  if (context.mounted) {
-                    await showAppDialog(
+                    final confirmar = await showAppDialog(
                       context: context,
-                      titulo: 'Rota iniciada',
-                      mensagem: 'A rota foi iniciada com sucesso.',
-                      tipo: AppDialogType.sucesso,
+                      titulo: 'Iniciar rota',
+                      mensagem:
+                          'Deseja iniciar a rota agora?\nA localização inicial será registrada.',
+                      tipo: AppDialogType.interrogacao,
                     );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    await showAppDialog(
-                      context: context,
-                      titulo: 'Atenção',
-                      mensagem: extrairMensagemErro(e),
-                      tipo: AppDialogType.alerta,
-                    );
-                  }
-                }
-              }
-            },
+
+                    if (confirmar == true) {
+                      print('[DEBUG] Confirmação recebida');
+                      try {
+                        print('[DEBUG] Solicitando permissões...');
+                        await solicitarPermissoes();
+                        print('[DEBUG] Permissões solicitadas.');
+
+                        print('[DEBUG] Chamando rotasController.iniciarRota...');
+                        final RotaExecucaoDTO rotaExecucao = await rotasController
+                            .iniciarRota(
+                              rotaId: checklistController.rotaSelecionada!.id,
+                              veiculoId: checklistController.veiculoSelecionado!.id,
+                              checklistId: checklistController.ultimaExecucaoId,
+                            );
+                        print('[DEBUG] rotasController.iniciarRota concluído com sucesso: ID ${rotaExecucao.id}');
+
+                        await FlutterForegroundTask.saveData(
+                          key: 'rotaExecucaoId',
+                          value: rotaExecucao.id.toString(),
+                        );
+
+                        await RotaTrackingService.start();
+                        print('[DEBUG] RotaTrackingService iniciado');
+
+                        if (context.mounted) {
+                          await showAppDialog(
+                            context: context,
+                            titulo: 'Rota iniciada',
+                            mensagem: 'A rota foi iniciada com sucesso.',
+                            tipo: AppDialogType.sucesso,
+                          );
+                        }
+                      } catch (e) {
+                        print('[DEBUG] ERRO ao iniciar rota: $e');
+                        if (context.mounted) {
+                          await showAppDialog(
+                            context: context,
+                            titulo: 'Atenção',
+                            mensagem: extrairMensagemErro(e),
+                            tipo: AppDialogType.alerta,
+                          );
+                        }
+                      }
+                    } else {
+                      print('[DEBUG] Início de rota cancelado pelo usuário');
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.primaryColor,
               padding: const EdgeInsets.symmetric(vertical: 16),

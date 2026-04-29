@@ -182,6 +182,24 @@ mixin _$ChecklistController on ChecklistControllerBase, Store {
     });
   }
 
+  late final _$ultimaExecucaoIdAtom = Atom(
+    name: 'ChecklistControllerBase.ultimaExecucaoId',
+    context: context,
+  );
+
+  @override
+  int? get ultimaExecucaoId {
+    _$ultimaExecucaoIdAtom.reportRead();
+    return super.ultimaExecucaoId;
+  }
+
+  @override
+  set ultimaExecucaoId(int? value) {
+    _$ultimaExecucaoIdAtom.reportWrite(value, super.ultimaExecucaoId, () {
+      super.ultimaExecucaoId = value;
+    });
+  }
+
   late final _$checklistSnapshotsAtom = Atom(
     name: 'ChecklistControllerBase.checklistSnapshots',
     context: context,
@@ -248,6 +266,26 @@ mixin _$ChecklistController on ChecklistControllerBase, Store {
     return _$selecionarRotaAsyncAction.run(() => super.selecionarRota(rota));
   }
 
+  late final _$restaurarSelecaoSessaoAsyncAction = AsyncAction(
+    'ChecklistControllerBase.restaurarSelecaoSessao',
+    context: context,
+  );
+
+  @override
+  Future<void> restaurarSelecaoSessao({
+    required int rotaId,
+    required int veiculoId,
+    int? checklistExecucaoId,
+  }) {
+    return _$restaurarSelecaoSessaoAsyncAction.run(
+      () => super.restaurarSelecaoSessao(
+        rotaId: rotaId,
+        veiculoId: veiculoId,
+        checklistExecucaoId: checklistExecucaoId,
+      ),
+    );
+  }
+
   late final _$ChecklistControllerBaseActionController = ActionController(
     name: 'ChecklistControllerBase',
     context: context,
@@ -299,6 +337,7 @@ rotaSelecionada: ${rotaSelecionada},
 veiculoSelecionado: ${veiculoSelecionado},
 salvando: ${salvando},
 checklistSalvo: ${checklistSalvo},
+ultimaExecucaoId: ${ultimaExecucaoId},
 checklistSnapshots: ${checklistSnapshots},
 houveInteracao: ${houveInteracao},
 temAlteracoesNaoSalvas: ${temAlteracoesNaoSalvas},
