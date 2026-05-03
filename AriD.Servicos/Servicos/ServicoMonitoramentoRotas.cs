@@ -69,7 +69,8 @@ namespace AriD.Servicos.Servicos
                     RotaExecucaoId as ExecucaoId,
                     DataHoraCaptura as DataHora,
                     Latitude,
-                    Longitude
+                    Longitude,
+                    VelocidadeMetrosPorSegundo
                 FROM rotaexecucaolocalizacao
                 WHERE OrganizacaoId = @OrganizacaoId
                   AND RotaExecucaoId IN @ExecucaoIds
@@ -94,6 +95,7 @@ namespace AriD.Servicos.Servicos
                     .ToList();
 
                 var historico = locais.Select(l => new[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
+                var velocidadeMediaKmH = CalcularVelocidadeMediaKmH(locais);
 
                 double[]? ultimaPos = null;
                 if (locais.Any())
@@ -178,6 +180,7 @@ namespace AriD.Servicos.Servicos
                     VeiculoId = exec.VeiculoId,
                     PlacaModelo = $"{exec.Placa} - {exec.Modelo}",
                     TipoVeiculo = exec.TipoVeiculo,
+                    VelocidadeMediaKmH = velocidadeMediaKmH,
                     UltimaLocalizacao = ultimaPos,
                     HistoricoLocalizacoes = historico,
                     UltimaAtualizacao = locais.Any() ? locais.Last().DataHora.ToString("dd/MM/yyyy HH:mm:ss") : exec.DataHoraInicio.ToString("dd/MM/yyyy HH:mm:ss"),
@@ -207,6 +210,19 @@ namespace AriD.Servicos.Servicos
             return double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed)
                 ? parsed
                 : null;
+        }
+
+        private double? CalcularVelocidadeMediaKmH(List<LocalizacaoDapperDTO> locais)
+        {
+            var velocidades = locais
+                .Where(l => l.VelocidadeMetrosPorSegundo.HasValue && l.VelocidadeMetrosPorSegundo.Value > 0)
+                .Select(l => l.VelocidadeMetrosPorSegundo.Value)
+                .ToList();
+
+            if (!velocidades.Any())
+                return null;
+
+            return velocidades.Average() * 3.6;
         }
     }
 }

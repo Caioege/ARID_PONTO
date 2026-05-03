@@ -11,6 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+const Duration _idadeMaximaPosicaoConhecida = Duration(seconds: 60);
+
 @pragma('vm:entry-point')
 void startCallback() {
   FlutterForegroundTask.setTaskHandler(LocationTaskHandler());
@@ -51,7 +53,7 @@ class LocationTaskHandler extends TaskHandler {
         Geolocator.getPositionStream(
           locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.bestForNavigation,
-            distanceFilter: 3,
+            distanceFilter: 2,
           ),
         ).listen((pos) async {
           if (!deveSalvarPosicao(
@@ -90,14 +92,17 @@ class LocationTaskHandler extends TaskHandler {
     if (rotaExecucaoId == null) return;
 
     try {
-      Position? pos;
+      Position? ultimaPosicao;
       try {
-        pos = await Geolocator.getLastKnownPosition();
+        ultimaPosicao = await Geolocator.getLastKnownPosition();
       } catch (_) {}
 
-      final bool aceitarPosicaoAntiga = kDebugMode;
-      
-      if (pos == null || (DateTime.now().difference(pos.timestamp).inSeconds > 120 && !aceitarPosicaoAntiga)) {
+      Position? pos;
+      if (ultimaPosicao != null &&
+          DateTime.now().difference(ultimaPosicao.timestamp) <=
+              _idadeMaximaPosicaoConhecida) {
+        pos = ultimaPosicao;
+      } else {
         try {
           pos = await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
@@ -106,7 +111,9 @@ class LocationTaskHandler extends TaskHandler {
             ),
           );
         } catch (e) {
-          pos ??= await Geolocator.getLastKnownPosition();
+          if (!kDebugMode && ultimaPosicao != null) {
+            pos = ultimaPosicao;
+          }
         }
       }
 
@@ -126,7 +133,7 @@ class LocationTaskHandler extends TaskHandler {
         altitudeMetros: pos.altitude,
         fonteCaptura: 1,
       );
-      
+
       print('[DEBUG] Background Task: Ponto enviado com sucesso.');
     } catch (_) {
       // catch potential geolocator timeout or service busy
@@ -203,4 +210,3 @@ class LocationTaskHandler extends TaskHandler {
     return true;
   }
 }
-

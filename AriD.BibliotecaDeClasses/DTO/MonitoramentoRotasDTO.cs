@@ -28,6 +28,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public DateTime DataHora { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+        public double? VelocidadeMetrosPorSegundo { get; set; }
     }
 
     public class ParadaDapperDTO
@@ -103,6 +104,7 @@ namespace AriD.BibliotecaDeClasses.DTO
         public List<MonitoramentoParadaDTO> Paradas { get; set; }
         public List<MonitoramentoPausaDTO> Pausas { get; set; }
         public int? TipoVeiculo { get; set; }
+        public double? VelocidadeMediaKmH { get; set; }
         public bool Finalizada { get; set; }
         public bool SujeitoADesvio { get; set; }
     }

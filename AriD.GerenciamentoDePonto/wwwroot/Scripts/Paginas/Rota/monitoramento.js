@@ -1,6 +1,6 @@
-let map;
-let allRoutesData = [];
-let routeLayers = {};
+var map = window.monitoramentoRotasMap || null;
+var allRoutesData = window.monitoramentoRotasData || [];
+var routeLayers = window.monitoramentoRotasRouteLayers || {};
 
 $(document).ready(function() {
     if ($.fn.select2) {
@@ -17,7 +17,20 @@ function initMap() {
     let lat = typeof mapLatCentro !== 'undefined' ? mapLatCentro : -15.7942;
     let lon = typeof mapLonCentro !== 'undefined' ? mapLonCentro : -47.8821;
 
+    if (window.monitoramentoRotasInterval) {
+        clearInterval(window.monitoramentoRotasInterval);
+        window.monitoramentoRotasInterval = null;
+    }
+
+    if (map) {
+        map.remove();
+        map = null;
+    }
+    routeLayers = {};
+    window.monitoramentoRotasRouteLayers = routeLayers;
+
     map = L.map('map').setView([lat, lon], 12); // Default to Configured Location
+    window.monitoramentoRotasMap = map;
     
     // Using the standard OpenStreetMap tiles which are more vibrant and colorful
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -27,13 +40,13 @@ function initMap() {
 
     obterDadosMonitoramento();
     // Poll data every 15 seconds for real time map update
-    setInterval(obterDadosMonitoramento, 15000);
+    window.monitoramentoRotasInterval = setInterval(obterDadosMonitoramento, 15000);
     
     // Draw building indicators
     renderizarUnidadesNoMapa();
 }
 
-let markerUnidadesLayers = [];
+var markerUnidadesLayers = [];
 function renderizarUnidadesNoMapa() {
     if (typeof mapUnidades === 'undefined' || !mapUnidades || mapUnidades.length === 0) return;
 
@@ -82,9 +95,10 @@ function obterDadosMonitoramento() {
     $.getJSON(`/Rota/ObterDadosMonitoramento?dataFiltro=${dataFiltro}&exibirFinalizadas=${finalizadas}`, function(response) {
         if (response.sucesso) {
             allRoutesData = response.dados;
+            window.monitoramentoRotasData = allRoutesData;
             
             // Centraliza o mapa se tivermos dados e ainda não tivermos desenhado as rotas
-            if (allRoutesData.length > 0 && Object.keys(routeLayers).length === 0) {
+            if (allRoutesData.length > 0 && allRoutesData[0].ultimaLocalizacao && Object.keys(routeLayers).length === 0) {
                  map.setView(allRoutesData[0].ultimaLocalizacao, 13);
             }
             
@@ -128,6 +142,23 @@ function hexToGrayscale(hex) {
     return `#${grayHex}${grayHex}${grayHex}`;
 }
 
+function deixarCorMaisCinza(hex, intensidade) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+    let gray = Math.round(r * 0.299 + g * 0.587 + b * 0.114);
+    let blend = intensidade || 0.45;
+
+    r = Math.round(r * (1 - blend) + gray * blend);
+    g = Math.round(g * (1 - blend) + gray * blend);
+    b = Math.round(b * (1 - blend) + gray * blend);
+
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
 function renderizarRotasNoMapa() {
     let filtroMotorista = $("#M_FiltroMotorista").val();
     let filtroVeiculo = $("#M_FiltroVeiculo").val();
@@ -146,11 +177,15 @@ function renderizarRotasNoMapa() {
     for (let id in routeLayers) {
         map.removeLayer(routeLayers[id].polyline);
         map.removeLayer(routeLayers[id].marker);
+        if (routeLayers[id].inicio) {
+            map.removeLayer(routeLayers[id].inicio);
+        }
         if (routeLayers[id].paradas) {
             routeLayers[id].paradas.forEach(p => map.removeLayer(p));
         }
     }
     routeLayers = {};
+    window.monitoramentoRotasRouteLayers = routeLayers;
 
     let group = new L.featureGroup();
 
@@ -175,8 +210,8 @@ function renderizarRotasNoMapa() {
         let layerId = rota.execucaoId || (rota.rotaId.toString() + (isFinalizada ? '_fin' : '_act'));
         
         let corViva = getPredefinedColor(rota.rotaId);
-        let cor = isFinalizada ? hexToGrayscale(corViva) : (isPausada ? '#e67e22' : corViva);
-        let lineOpacity = isFinalizada ? 0.5 : (isPausada ? 0.6 : 0.8);
+        let cor = isFinalizada ? deixarCorMaisCinza(corViva, 0.45) : (isPausada ? '#e67e22' : corViva);
+        let lineOpacity = isFinalizada ? 0.62 : (isPausada ? 0.6 : 0.8);
         let lineClass = isFinalizada ? 'route-path' : (isPausada ? 'route-path paused-route' : 'route-path animated-route');
         
         // Polyline drawing the path
@@ -189,6 +224,28 @@ function renderizarRotasNoMapa() {
         }).addTo(map);
 
         // Calcula o "rumo" (heading) para rotacionar o carro na direção correta
+        let inicioMarker = null;
+        if (rota.historicoLocalizacoes && rota.historicoLocalizacoes.length > 0) {
+            let inicioCss = `background: ${corViva}; color: white; border: 2px solid white; border-radius: 50% 50% 50% 0; width: 26px; height: 26px; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.35);`;
+            let inicioIcon = L.divIcon({
+                className: 'custom-inicio-rota-container',
+                html: `<div style="${inicioCss}"><i class="bx bx-play" style="transform: rotate(45deg); font-size: 15px;"></i></div>`,
+                iconSize: [30, 30],
+                iconAnchor: [5, 25]
+            });
+
+            inicioMarker = L.marker(rota.historicoLocalizacoes[0], { icon: inicioIcon, zIndexOffset: 50 }).addTo(map);
+            inicioMarker.bindPopup(`
+                <div style="min-width: 150px; font-size: 0.9em; padding: 4px;">
+                    <h6 style="margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 5px; color: ${corViva};"><strong>Inicio da rota</strong></h6>
+                    <div><strong>Rota:</strong> ${rota.descricao}</div>
+                    <div><strong>Inicio:</strong> ${rota.horaInicio || '--/--/--'}</div>
+                    <div><strong>Motorista:</strong> ${rota.motoristaNome}</div>
+                </div>
+            `, { closeButton: false });
+            group.addLayer(inicioMarker);
+        }
+
         let heading = 0;
         if (rota.historicoLocalizacoes && rota.historicoLocalizacoes.length > 0) {
             let p1 = rota.historicoLocalizacoes[rota.historicoLocalizacoes.length - 1];
@@ -348,6 +405,7 @@ function renderizarRotasNoMapa() {
         let pacienteHtml = rota.nomePaciente ? `<div><strong>Paciente:</strong> <span style="color: #2980b9;">${rota.nomePaciente}</span></div>` : "";
         let medicoHtml = rota.medicoResponsavel ? `<div><strong>Médico Resp.:</strong> ${rota.medicoResponsavel}</div>` : "";
         let dataExecucaoHtml = rota.dataParaExecucao ? `<div><strong>Data Agendada:</strong> ${rota.dataParaExecucao}</div>` : "";
+        let velocidadeMediaHtml = rota.velocidadeMediaKmH !== null && rota.velocidadeMediaKmH !== undefined ? `<div><strong>Vel. media:</strong> ${Number(rota.velocidadeMediaKmH).toFixed(1).replace('.', ',')} km/h</div>` : "";
         let desvioHtml = rota.sujeitoADesvio === true ? `<div style="margin-top: 6px; padding: 4px; background: #ffeaa7; border-left: 3px solid #e17055; color: #d63031; font-weight: bold; font-size: 0.85em; border-radius:3px;"><i class="bx bx-error-circle"></i> ALERTA: Desvio detectado</div>` : "";
 
         let popupContent = `
@@ -360,8 +418,10 @@ function renderizarRotasNoMapa() {
                     <div style="${(rota.nomePaciente || rota.medicoResponsavel) ? "margin-top: 5px; border-top: 1px dashed #ddd; padding-top: 4px;" : ""}">
                         <div><strong>Motorista:</strong> ${rota.motoristaNome}</div>
                         <div><strong>Veículo:</strong> ${rota.placaModelo}</div>
+                        ${velocidadeMediaHtml}
                     </div>
                     <div class="mt-2 text-muted" style="font-size: 0.85em;">
+                        <div><i class="bx bx-play-circle" style="color: #27ae60;"></i> Inicio: <strong>${rota.horaInicio || '--/--/--'}</strong></div>
                         ${tempoLabel} ${rota.ultimaAtualizacao.substring(11, 19)}
                     </div>
                     ${desvioHtml}
@@ -379,8 +439,10 @@ function renderizarRotasNoMapa() {
         routeLayers[layerId] = {
             polyline: pathLine,
             marker: marker,
+            inicio: inicioMarker,
             paradas: paradasMarkers
         };
+        window.monitoramentoRotasRouteLayers = routeLayers;
 
         group.addLayer(marker);
         group.addLayer(pathLine);

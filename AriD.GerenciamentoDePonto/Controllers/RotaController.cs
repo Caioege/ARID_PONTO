@@ -232,21 +232,68 @@ namespace AriD.GerenciamentoDePonto.Controllers
                 original.MedicoResponsavel = rota.MedicoResponsavel;
                 original.Observacao = rota.Observacao;
 
-                // Update paradas (Simple replace pattern)
+                // Update paradas preserving existing IDs because execution history references paradarota.
                 var paradasAtuais = _paradaRotaServico.ObtenhaLista(p => p.RotaId == original.Id);
-                foreach (var p in paradasAtuais) _paradaRotaServico.Remover(p);
-                if (paradas != null)
+                var paradasRecebidas = paradas ?? new List<ParadaRota>();
+                var idsRecebidos = paradasRecebidas.Where(p => p.Id > 0).Select(p => p.Id).ToHashSet();
+                var paradasRemovidas = paradasAtuais.Where(p => !idsRecebidos.Contains(p.Id)).ToList();
+                var idsParadasRemovidas = paradasRemovidas.Select(p => p.Id).ToList();
+
+                if (idsParadasRemovidas.Any())
                 {
-                    foreach (var p in paradas) { p.Id = 0; p.OrganizacaoId = organizacaoId; original.Paradas.Add(p); }
+                    var paradasComHistorico = _rotaExecucaoEventoServico
+                        .ObtenhaLista(ev => ev.ParadaRotaId.HasValue && idsParadasRemovidas.Contains(ev.ParadaRotaId.Value))
+                        .Select(ev => ev.ParadaRotaId.Value)
+                        .Distinct()
+                        .ToList();
+
+                    if (paradasComHistorico.Any())
+                        throw new ApplicationException("Nao e possivel remover pontos da rota que ja possuem historico de execucao. Altere os dados do ponto existente ou crie uma nova rota.");
+                }
+
+                foreach (var paradaRemovida in paradasRemovidas)
+                {
+                    original.Paradas.Remove(paradaRemovida);
+                    _paradaRotaServico.Remover(paradaRemovida, false);
+                }
+
+                foreach (var paradaRecebida in paradasRecebidas)
+                {
+                    if (paradaRecebida.Id > 0)
+                    {
+                        var paradaAtual = paradasAtuais.FirstOrDefault(p => p.Id == paradaRecebida.Id);
+                        if (paradaAtual == null)
+                            continue;
+
+                        paradaAtual.Endereco = paradaRecebida.Endereco;
+                        paradaAtual.Latitude = paradaRecebida.Latitude;
+                        paradaAtual.Longitude = paradaRecebida.Longitude;
+                        paradaAtual.Link = paradaRecebida.Link;
+                        paradaAtual.UnidadeId = paradaRecebida.UnidadeId;
+                        paradaAtual.Ordem = paradaRecebida.Ordem;
+                        paradaAtual.OrganizacaoId = organizacaoId;
+                    }
+                    else
+                    {
+                        paradaRecebida.Id = 0;
+                        paradaRecebida.RotaId = original.Id;
+                        paradaRecebida.OrganizacaoId = organizacaoId;
+                        original.Paradas.Add(paradaRecebida);
+                    }
                 }
 
                 // Update Veiculos
                 var veiculosAtuais = _rotaVeiculoServico.ObtenhaLista(rv => rv.RotaId == original.Id);
-                foreach (var rv in veiculosAtuais) _rotaVeiculoServico.Remover(rv);
-                if (veiculosSelecionados != null)
+                var idsVeiculosSelecionados = veiculosSelecionados?.ToHashSet() ?? new HashSet<int>();
+                foreach (var rv in veiculosAtuais.Where(rv => !idsVeiculosSelecionados.Contains(rv.VeiculoId)).ToList())
                 {
-                    foreach (var vId in veiculosSelecionados) { original.VeiculosDaRota.Add(new RotaVeiculo { VeiculoId = vId, OrganizacaoId = organizacaoId }); }
+                    original.VeiculosDaRota.Remove(rv);
+                    _rotaVeiculoServico.Remover(rv, false);
                 }
+
+                var idsVeiculosAtuais = veiculosAtuais.Select(rv => rv.VeiculoId).ToHashSet();
+                foreach (var vId in idsVeiculosSelecionados.Where(vId => !idsVeiculosAtuais.Contains(vId)))
+                    original.VeiculosDaRota.Add(new RotaVeiculo { RotaId = original.Id, VeiculoId = vId, OrganizacaoId = organizacaoId });
 
                 // Update Pacientes
                 var pacientesAtuais = _rotaPacienteServico.ObtenhaLista(rp => rp.RotaId == original.Id);
