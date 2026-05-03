@@ -1,3 +1,5 @@
+configurarOverlayDeCarregamento();
+
 $(document).ready(function () {
     verificarNotificacoes();
     setInterval(verificarNotificacoes, 300000);
@@ -17,6 +19,14 @@ $(document).ready(function () {
         }
     });
 });
+
+function configurarOverlayDeCarregamento() {
+    if ($.Loading) {
+        $.Loading.setDefaults({
+            zIndex: 2000
+        });
+    }
+}
 
 var AbrirCaixaDeCarregamento = function (mensagem) {
     Swal.fire({

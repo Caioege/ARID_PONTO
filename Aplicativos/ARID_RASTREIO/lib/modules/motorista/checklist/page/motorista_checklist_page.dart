@@ -1,11 +1,12 @@
 import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
+import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto.dart';
+import 'package:arid_rastreio/modules/motorista/checklist/dto/veiculo_checklist_dto.dart';
 import 'package:arid_rastreio/shared/layout/dialogs/app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:mobx/mobx.dart';
 import '../controller/checklist_controller.dart';
-import 'package:arid_rastreio/shared/functions/functions.dart';
 
 class MotoristaChecklistPage extends StatefulWidget {
   const MotoristaChecklistPage({super.key});
@@ -55,29 +56,10 @@ class _MotoristaChecklistPageState extends State<MotoristaChecklistPage> {
           child: Column(
             children: [
               _header(theme),
-              const SizedBox(height: 20),
-              campoSelecao(
-                obrigatorio: true,
-                theme: theme,
-                titulo: 'Rota',
-                valor: controller.rotaSelecionada?.nome,
-                icone: Icons.alt_route,
-                onTap: rotasController.rotaIniciada
-                    ? null
-                    : () => abrirSheet(
-                        context,
-                        theme,
-                        titulo: 'Selecione a rota',
-                        itens: rotas.map((e) => e.descricao).toList(),
-                        selecionadoAtual: controller.rotaSelecionada?.descricao,
-                        onSelecionar: (rSelecionada) {
-                          final rota = rotas.firstWhere(
-                            (r) => r.descricao == rSelecionada,
-                          );
-                          controller.selecionarRota(rota);
-                        },
-                      ),
-              ),
+              const SizedBox(height: 12),
+              _etapasPreparacao(theme),
+              const SizedBox(height: 16),
+              _listaRotasInline(theme, rotas),
               const SizedBox(height: 16),
               if (controller.rotaSelecionada != null)
                 Observer(
@@ -90,36 +72,7 @@ class _MotoristaChecklistPageState extends State<MotoristaChecklistPage> {
 
                     final veiculos = controller.veiculosFuture!.value ?? [];
 
-                    return campoSelecao(
-                      obrigatorio: true,
-                      theme: theme,
-                      titulo: 'Veículo',
-                      valor: controller.veiculoSelecionado?.nome,
-                      icone: Icons.directions_car,
-                      onTap: rotasController.rotaIniciada
-                          ? null
-                          : () => abrirSheet(
-                              context,
-                              theme,
-                              titulo: 'Selecione o veículo',
-                              itens: veiculos
-                                  .map((v) => '${v.nome} • ${v.placa}')
-                                  .toList(),
-                              selecionadoAtual:
-                                  controller.veiculoSelecionado?.nome != null &&
-                                      controller.veiculoSelecionado?.placa !=
-                                          null
-                                  ? '${controller.veiculoSelecionado!.nome} • ${controller.veiculoSelecionado!.placa}'
-                                  : null,
-                              onSelecionar: (rSelecionada) {
-                                final vSelecionado = veiculos.firstWhere(
-                                  (v) =>
-                                      '${v.nome} • ${v.placa}' == rSelecionada,
-                                );
-                                controller.selecionarVeiculo(vSelecionado);
-                              },
-                            ),
-                    );
+                    return _listaVeiculosInline(theme, veiculos);
                   },
                 ),
               if (controller.veiculoSelecionado != null)
@@ -293,6 +246,201 @@ class _MotoristaChecklistPageState extends State<MotoristaChecklistPage> {
     );
   }
 
+  Widget _etapasPreparacao(ThemeData theme) {
+    final rotaOk = controller.rotaSelecionada != null;
+    final veiculoOk = controller.veiculoSelecionado != null;
+    final checklistOk = controller.checklistSalvo;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.primaryColor.withValues(alpha: .12)),
+      ),
+      child: Row(
+        children: [
+          _etapaChip(theme, 'Rota', rotaOk, true),
+          _linhaEtapa(theme, rotaOk),
+          _etapaChip(theme, 'Veiculo', veiculoOk, rotaOk),
+          _linhaEtapa(theme, veiculoOk),
+          _etapaChip(theme, 'Checklist', checklistOk, veiculoOk),
+        ],
+      ),
+    );
+  }
+
+  Widget _linhaEtapa(ThemeData theme, bool ativa) {
+    return Expanded(
+      child: Container(
+        height: 2,
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        color: ativa ? theme.primaryColor : Colors.grey.withValues(alpha: .25),
+      ),
+    );
+  }
+
+  Widget _etapaChip(ThemeData theme, String texto, bool concluida, bool ativa) {
+    final color = concluida
+        ? Colors.green
+        : ativa
+        ? theme.primaryColor
+        : Colors.grey;
+
+    return Column(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: concluida ? .16 : .10),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            concluida ? Icons.check : Icons.circle,
+            color: color,
+            size: concluida ? 18 : 10,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(texto, style: TextStyle(color: color, fontSize: 11)),
+      ],
+    );
+  }
+
+  Widget _listaRotasInline(ThemeData theme, List<RotaChecklistDTO> rotas) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: .06), blurRadius: 8),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.alt_route, color: theme.primaryColor),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Escolha a rota',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          for (final rota in rotas)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: rotasController.rotaIniciada
+                    ? null
+                    : () => controller.selecionarRota(rota),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: controller.rotaSelecionada?.id == rota.id
+                        ? theme.primaryColor.withValues(alpha: .10)
+                        : Colors.grey.withValues(alpha: .05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: controller.rotaSelecionada?.id == rota.id
+                          ? theme.primaryColor
+                          : Colors.grey.withValues(alpha: .18),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          rota.descricao,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      if (controller.rotaSelecionada?.id == rota.id)
+                        Icon(Icons.check_circle, color: theme.primaryColor),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _listaVeiculosInline(
+    ThemeData theme,
+    List<VeiculoChecklistDTO> veiculos,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.directions_car, color: theme.primaryColor),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Escolha o veiculo',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          for (final veiculo in veiculos)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: OutlinedButton(
+                onPressed: rotasController.rotaIniciada
+                    ? null
+                    : () => controller.selecionarVeiculo(veiculo),
+                style: OutlinedButton.styleFrom(
+                  alignment: Alignment.centerLeft,
+                  foregroundColor:
+                      controller.veiculoSelecionado?.id == veiculo.id
+                      ? theme.primaryColor
+                      : Colors.black87,
+                  backgroundColor:
+                      controller.veiculoSelecionado?.id == veiculo.id
+                      ? theme.primaryColor.withValues(alpha: .08)
+                      : Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(child: Text('${veiculo.nome} - ${veiculo.placa}')),
+                    if (controller.veiculoSelecionado?.id == veiculo.id)
+                      const Icon(Icons.check_circle),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _header(ThemeData theme) {
     return Container(
       decoration: BoxDecoration(
@@ -331,4 +479,3 @@ class _MotoristaChecklistPageState extends State<MotoristaChecklistPage> {
     );
   }
 }
-

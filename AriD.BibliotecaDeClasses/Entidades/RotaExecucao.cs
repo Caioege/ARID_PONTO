@@ -38,6 +38,13 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? UltimaLongitude { get; set; }
         public DateTime? UltimaAtualizacaoEm { get; set; }
         public bool GpsSimuladoUltimaLeitura { get; set; }
+        public bool PossuiRegistroOffline { get; set; }
+        public bool ExecucaoOfflineCompleta { get; set; }
+        public DateTime? DataHoraPrimeiroRegistroOffline { get; set; }
+        public DateTime? DataHoraUltimoRegistroOffline { get; set; }
+        public DateTime? DataHoraUltimaComunicacaoApp { get; set; }
+        public string? LocalExecucaoId { get; set; }
+        public string? IdentificadorDispositivo { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime? DataAlteracao { get; set; }
     }

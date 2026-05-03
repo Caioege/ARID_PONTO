@@ -4,6 +4,7 @@ class ParadaRotaDTO {
   final double? latitude;
   final double? longitude;
   final String? link;
+  final String? observacaoCadastro;
   bool? entregue;
   String? observacao;
   final String? concluidoEm;
@@ -16,6 +17,7 @@ class ParadaRotaDTO {
     this.latitude,
     this.longitude,
     this.link,
+    this.observacaoCadastro,
     this.entregue,
     this.observacao,
     this.concluidoEm,
@@ -35,6 +37,7 @@ class ParadaRotaDTO {
           : null,
 
       link: json['link'],
+      observacaoCadastro: json['observacaoCadastro'],
       entregue: json['entregue'],
       observacao: json['observacao'],
       concluidoEm: json['concluidoEm'],

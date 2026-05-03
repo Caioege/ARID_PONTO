@@ -18,6 +18,6 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public string? Link { get; set; }
-        
+        public string? ObservacaoCadastro { get; set; }
     }
 }

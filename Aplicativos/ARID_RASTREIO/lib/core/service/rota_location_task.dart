@@ -20,6 +20,7 @@ void startCallback() {
 
 class LocationTaskHandler extends TaskHandler {
   StreamSubscription<Position>? _positionSub;
+  int _notificationFrame = 0;
 
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
@@ -40,10 +41,28 @@ class LocationTaskHandler extends TaskHandler {
     final rotaExecucaoIdStr = await FlutterForegroundTask.getData(
       key: 'rotaExecucaoId',
     );
+    final localExecucaoId = await FlutterForegroundTask.getData(
+      key: 'localExecucaoId',
+    );
+    final execucaoOfflineStr = await FlutterForegroundTask.getData(
+      key: 'execucaoOffline',
+    );
+    final rotaDescricao = await FlutterForegroundTask.getData(
+      key: 'rotaDescricao',
+    );
 
     final rotaExecucaoId = int.tryParse(rotaExecucaoIdStr ?? '');
+    final execucaoOffline = execucaoOfflineStr == 'true';
+    await _atualizarNotificacao(
+      descricaoRota: rotaDescricao,
+      execucaoOffline: execucaoOffline,
+    );
 
-    if (rotaExecucaoId == null) return;
+    if (!execucaoOffline && rotaExecucaoId == null) return;
+    if (execucaoOffline &&
+        (localExecucaoId == null || localExecucaoId.isEmpty)) {
+      return;
+    }
 
     final backgroundService = locator<RotaBackgroundService>();
 
@@ -66,6 +85,8 @@ class LocationTaskHandler extends TaskHandler {
           try {
             await backgroundService.enviarPonto(
               rotaExecucaoId: rotaExecucaoId,
+              localExecucaoId: localExecucaoId,
+              execucaoOffline: execucaoOffline,
               latitude: pos.latitude,
               longitude: pos.longitude,
               dataHora: tz.TZDateTime.now(tz.local),
@@ -76,7 +97,10 @@ class LocationTaskHandler extends TaskHandler {
               altitudeMetros: pos.altitude,
               fonteCaptura: 1,
             );
-          } catch (_) {}
+          } catch (e, stack) {
+            debugPrint('[DEBUG] Background Task: falha ao salvar ponto: $e');
+            debugPrintStack(stackTrace: stack);
+          }
 
           ultimaPosicaoSalva = pos;
         });
@@ -87,9 +111,27 @@ class LocationTaskHandler extends TaskHandler {
     final rotaExecucaoIdStr = await FlutterForegroundTask.getData(
       key: 'rotaExecucaoId',
     );
+    final localExecucaoId = await FlutterForegroundTask.getData(
+      key: 'localExecucaoId',
+    );
+    final execucaoOfflineStr = await FlutterForegroundTask.getData(
+      key: 'execucaoOffline',
+    );
+    final rotaDescricao = await FlutterForegroundTask.getData(
+      key: 'rotaDescricao',
+    );
 
     final rotaExecucaoId = int.tryParse(rotaExecucaoIdStr ?? '');
-    if (rotaExecucaoId == null) return;
+    final execucaoOffline = execucaoOfflineStr == 'true';
+    if (!execucaoOffline && rotaExecucaoId == null) return;
+    if (execucaoOffline &&
+        (localExecucaoId == null || localExecucaoId.isEmpty)) {
+      return;
+    }
+    await _atualizarNotificacao(
+      descricaoRota: rotaDescricao,
+      execucaoOffline: execucaoOffline,
+    );
 
     try {
       Position? ultimaPosicao;
@@ -123,6 +165,8 @@ class LocationTaskHandler extends TaskHandler {
 
       await backgroundService.enviarPonto(
         rotaExecucaoId: rotaExecucaoId,
+        localExecucaoId: localExecucaoId,
+        execucaoOffline: execucaoOffline,
         latitude: pos.latitude,
         longitude: pos.longitude,
         dataHora: DateTime.now(),
@@ -134,9 +178,10 @@ class LocationTaskHandler extends TaskHandler {
         fonteCaptura: 1,
       );
 
-      print('[DEBUG] Background Task: Ponto enviado com sucesso.');
-    } catch (_) {
-      // catch potential geolocator timeout or service busy
+      debugPrint('[DEBUG] Background Task: Ponto salvo com sucesso.');
+    } catch (e, stack) {
+      debugPrint('[DEBUG] Background Task: falha no evento periodico: $e');
+      debugPrintStack(stackTrace: stack);
     }
   }
 
@@ -148,6 +193,76 @@ class LocationTaskHandler extends TaskHandler {
   @override
   void onNotificationPressed() {
     FlutterForegroundTask.launchApp('/');
+  }
+
+  @override
+  void onNotificationButtonPressed(String id) {
+    if (id == 'abrir_rota') {
+      FlutterForegroundTask.launchApp('/');
+    }
+  }
+
+  @override
+  void onNotificationDismissed() {
+    unawaited(_restaurarNotificacaoSeRotaAtiva());
+  }
+
+  Future<void> _restaurarNotificacaoSeRotaAtiva() async {
+    final rotaExecucaoIdStr = await FlutterForegroundTask.getData(
+      key: 'rotaExecucaoId',
+    );
+    final localExecucaoId = await FlutterForegroundTask.getData(
+      key: 'localExecucaoId',
+    );
+    final execucaoOfflineStr = await FlutterForegroundTask.getData(
+      key: 'execucaoOffline',
+    );
+    final rotaDescricao = await FlutterForegroundTask.getData(
+      key: 'rotaDescricao',
+    );
+
+    final rotaExecucaoId = int.tryParse(rotaExecucaoIdStr ?? '');
+    final execucaoOffline = execucaoOfflineStr == 'true';
+    final rotaOnlineAtiva = !execucaoOffline && rotaExecucaoId != null;
+    final rotaOfflineAtiva =
+        execucaoOffline &&
+        localExecucaoId != null &&
+        localExecucaoId.isNotEmpty;
+
+    if (!rotaOnlineAtiva && !rotaOfflineAtiva) return;
+
+    await _atualizarNotificacao(
+      descricaoRota: rotaDescricao,
+      execucaoOffline: execucaoOffline,
+    );
+  }
+
+  Future<void> _atualizarNotificacao({
+    required String? descricaoRota,
+    required bool execucaoOffline,
+  }) async {
+    const frames = ['.', '..', '...'];
+    final descricao = descricaoRota == null || descricaoRota.trim().isEmpty
+        ? 'Rota atual'
+        : descricaoRota.trim();
+    final status = execucaoOffline
+        ? 'salvando localmente'
+        : 'enviando localização';
+    final progresso = frames[_notificationFrame % frames.length];
+    _notificationFrame++;
+
+    await FlutterForegroundTask.updateService(
+      notificationTitle: 'Rota em execução',
+      notificationText: '$descricao em segundo plano, $status$progresso',
+      notificationButtons: const [
+        NotificationButton(
+          id: 'abrir_rota',
+          text: 'Abrir rota',
+          textColor: Color(0xFF2E7D32),
+        ),
+      ],
+      notificationInitialRoute: '/',
+    );
   }
 
   double distanciaEmMetros(double lat1, double lon1, double lat2, double lon2) {

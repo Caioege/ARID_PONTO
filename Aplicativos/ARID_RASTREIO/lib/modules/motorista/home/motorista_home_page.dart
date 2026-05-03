@@ -1,6 +1,8 @@
 import 'package:arid_rastreio/core/auth/session_manager.dart';
 import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
 import 'package:arid_rastreio/modules/motorista/menu/page/motorista_menu_page.dart';
+import 'package:arid_rastreio/modules/motorista/offline/page/offline_config_page.dart';
+import 'package:arid_rastreio/modules/motorista/offline/widgets/offline_status_banner.dart';
 import 'package:arid_rastreio/modules/motorista/perfil/pages/motorista_perfil_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -27,6 +29,7 @@ class _MotoristaHomePageState extends State<MotoristaHomePage>
   late final List<Widget> _widgetOptions = <Widget>[
     const MotoristaMenuPage(),
     MotoristaPerfilPage(usuario: _session.usuario!),
+    const OfflineConfigPage(),
   ];
 
   @override
@@ -48,16 +51,20 @@ class _MotoristaHomePageState extends State<MotoristaHomePage>
         },
       ),
       drawer: BaseDrawer(),
-      body: Observer(
-        builder: (_) {
-          return Center(
-            child: _widgetOptions.elementAt(
-              locator<DrawerNavegacaoController>().selectedIndex,
-            ),
-          );
-        },
+      body: Stack(
+        children: [
+          Observer(
+            builder: (_) {
+              return Center(
+                child: _widgetOptions.elementAt(
+                  locator<DrawerNavegacaoController>().selectedIndex,
+                ),
+              );
+            },
+          ),
+          const OfflineStatusBanner(),
+        ],
       ),
     );
   }
 }
-

@@ -19,6 +19,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public decimal DistanciaEmMetros { get; set; }
         public DateTime DataHoraDeteccao { get; set; }
         public string? Observacao { get; set; }
+        public bool RegistradoOffline { get; set; }
+        public DateTime? DataHoraRegistroLocal { get; set; }
+        public DateTime? DataHoraSincronizacao { get; set; }
+        public string? IdentificadorDispositivo { get; set; }
+        public string? LocalExecucaoId { get; set; }
+        public string? ClientEventId { get; set; }
         public DateTime DataCriacao { get; set; }
     }
 }

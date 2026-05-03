@@ -1,5 +1,7 @@
 import 'package:arid_rastreio/ioc/service_locator.dart';
+import 'package:arid_rastreio/core/network/connectivity_service.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/store/checklist_item_store.dart';
+import 'package:arid_rastreio/modules/motorista/offline/service/offline_rastreio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:arid_rastreio/core/http/http_client.dart';
@@ -8,6 +10,7 @@ import 'package:arid_rastreio/modules/motorista/checklist/dto/veiculo_checklist_
 
 class ChecklistService {
   final _client = locator<AppHttpClient>().dio;
+  final _offlineService = locator<OfflineRastreioService>();
 
   bool get _usarMock => dotenv.env['USE_FAKE_LOGIN']?.toLowerCase() == 'true';
 
@@ -31,6 +34,10 @@ class ChecklistService {
       ];
     }
 
+    if (!await ConnectivityService.isConnected()) {
+      return _offlineService.listarRotasCache();
+    }
+
     try {
       final response = await _client.get('/api/rastreio-app/rotas');
 
@@ -47,6 +54,8 @@ class ChecklistService {
 
       return retorno;
     } on DioException {
+      final cache = await _offlineService.listarRotasCache();
+      if (cache.isNotEmpty) return cache;
       rethrow;
     }
   }
@@ -103,6 +112,10 @@ class ChecklistService {
       return todos.where((v) => v.rotaId == rotaId).toList();
     }
 
+    if (!await ConnectivityService.isConnected()) {
+      return _offlineService.listarVeiculosCache(rotaId);
+    }
+
     try {
       final response = await _client.get(
         '/api/rastreio-app/veiculos',
@@ -122,6 +135,8 @@ class ChecklistService {
 
       return retorno;
     } on DioException {
+      final cache = await _offlineService.listarVeiculosCache(rotaId);
+      if (cache.isNotEmpty) return cache;
       rethrow;
     }
   }
@@ -136,6 +151,14 @@ class ChecklistService {
       return 1;
     }
 
+    if (!await ConnectivityService.isConnected()) {
+      return _offlineService.salvarChecklistLocal(
+        rotaId: rotaId,
+        veiculoId: veiculoId,
+        itensMarcados: itensMarcados,
+      );
+    }
+
     try {
       final response = await _client.post(
         '/api/rastreio-app/checklist',
@@ -148,8 +171,14 @@ class ChecklistService {
 
       return response.data['data'] as int;
     } on DioException {
+      if (await _offlineService.podeIniciarRotaOffline()) {
+        return _offlineService.salvarChecklistLocal(
+          rotaId: rotaId,
+          veiculoId: veiculoId,
+          itensMarcados: itensMarcados,
+        );
+      }
       rethrow;
     }
   }
 }
-

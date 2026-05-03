@@ -89,6 +89,7 @@ namespace AriD.Servicos.DBContext
         public DbSet<RotaExecucaoEvento> RotaExecucaoEvento { get; set; }
         public DbSet<RotaExecucaoPausa> RotaExecucaoPausa { get; set; }
         public DbSet<RotaExecucaoDesvio> RotaExecucaoDesvio { get; set; }
+        public DbSet<RotaExecucaoSincronizacaoOffline> RotaExecucaoSincronizacaoOffline { get; set; }
         public DbSet<Motorista> Motorista { get; set; }
         public DbSet<Veiculo> Veiculo { get; set; }
         public DbSet<MotoristaHistoricoSituacao> MotoristaHistoricoSituacao { get; set; }

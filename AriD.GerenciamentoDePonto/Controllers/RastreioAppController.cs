@@ -59,6 +59,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
             });
         }
 
+        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+        [HttpGet("conectividade")]
+        public IActionResult Conectividade()
+        {
+            //return StatusCode(500);
+
+            return Ok(new
+            {
+                sucesso = true,
+                dataHoraServidor = DateTime.Now
+            });
+        }
+
         [HttpPost("registrar-token")]
         public IActionResult RegistrarToken([FromBody] RegistrarTokenDTO dto, [FromHeader(Name = "Authorization")] string auth)
         {
@@ -78,6 +91,26 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
             var resultado = _servicoDeRastreio.ObterRotasMotorista(motoristaId);
             return Ok(new { data = resultado });
+        }
+
+        [HttpGet("offline/pacote")]
+        public IActionResult PacoteOffline([FromHeader(Name = "Authorization")] string auth)
+        {
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            var resultado = _servicoDeRastreio.ObterPacoteOfflineMotorista(motoristaId);
+            return Ok(resultado);
+        }
+
+        [HttpPost("offline/sincronizar")]
+        public IActionResult SincronizarOffline([FromBody] SincronizarRotaOfflineDTO dto, [FromHeader(Name = "Authorization")] string auth)
+        {
+            int motoristaId = ObterMotoristaId(auth);
+            if (motoristaId == 0) return Unauthorized();
+
+            var resultado = _servicoDeRastreio.SincronizarRotaOffline(dto, motoristaId);
+            return Ok(resultado);
         }
 
         [HttpGet("rotas-acompanhante")]

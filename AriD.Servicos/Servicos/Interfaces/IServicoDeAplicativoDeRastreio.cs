@@ -10,6 +10,8 @@ namespace AriD.Servicos.Servicos.Interfaces
         void RegistrarToken(int servidorId, string token, string plataforma);
 
         List<RotaCheckListDTO> ObterRotasMotorista(int motoristaId);
+        PacoteOfflineRastreioDTO ObterPacoteOfflineMotorista(int motoristaId);
+        ResultadoSincronizacaoRotaOfflineDTO SincronizarRotaOffline(SincronizarRotaOfflineDTO dto, int motoristaId);
         List<RotaCheckListDTO> ObterRotasAcompanhante(int servidorId);
 
         UltimaLocalizacaoRotaDTO? ObterUltimaLocalizacao(int rotaId);

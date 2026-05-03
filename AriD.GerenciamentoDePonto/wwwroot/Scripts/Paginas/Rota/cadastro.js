@@ -16,7 +16,7 @@ function assineEventosCadastro() {
         let geoCoordHtml = (lat && lng) ? `<a href="https://www.google.com/maps/search/?api=1&query=${lat},${lng}" target="_blank" title="Abrir no Google Maps"><code class="small text-muted">${lat}, ${lng}</code></a>` : `<span class="text-warning small"><i class="bx bx-error"></i> Geofence Offline</span>`;
 
         let novaLinha = `
-            <tr data-id="${idTemporario}" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="">
+            <tr data-id="${idTemporario}" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="" data-observacao-cadastro="">
                 <td class="text-center font-weight-bold"><span class="badge bg-label-primary rounded-circle p-2">${count}</span></td>
                 <td>${endereco}</td>
                 <td>${geoCoordHtml}</td>
@@ -59,6 +59,7 @@ function assineEventosCadastro() {
             payload[`paradas[${index}].Latitude`] = row.attr('data-lat');
             payload[`paradas[${index}].Longitude`] = row.attr('data-lng');
             payload[`paradas[${index}].Link`] = row.attr('data-link');
+            payload[`paradas[${index}].ObservacaoCadastro`] = row.attr('data-observacao-cadastro');
             payload[`paradas[${index}].UnidadeId`] = row.attr('data-unidade-id');
             payload[`paradas[${index}].Ordem`] = index;
         });
@@ -116,7 +117,7 @@ var modalMarker = null;
 function abrirModalPonto(button) {
     $('#modal-ponto-index').val('');
     $('#modal-ponto-id').val('0');
-    $('#modal-ponto-endereco, #modal-ponto-lat, #modal-ponto-lng').val('');
+    $('#modal-ponto-endereco, #modal-ponto-lat, #modal-ponto-lng, #modal-ponto-observacao').val('');
 
     if (button) {
         $('#row-tipo-pesquisa').hide();
@@ -126,6 +127,7 @@ function abrirModalPonto(button) {
         $('#modal-ponto-endereco').val(row.attr('data-endereco'));
         $('#modal-ponto-lat').val(row.attr('data-lat'));
         $('#modal-ponto-lng').val(row.attr('data-lng'));
+        $('#modal-ponto-observacao').val(row.attr('data-observacao-cadastro') || '');
 
         let unidadeId = row.attr('data-unidade-id');
         let tipoPesquisa = row.attr('data-tipo-pesquisa');
@@ -231,7 +233,8 @@ function confirmarPontoModal() {
         'modal-ponto-index': index, 
         'modal-ponto-endereco': endereco, 
         'modal-ponto-lat': lat, 
-        'modal-ponto-lng': lng
+        'modal-ponto-lng': lng,
+        'modal-ponto-observacao': observacaoCadastro = ''
     } = validacao.dados;
 
     let unidadeId = '';
@@ -246,7 +249,7 @@ function confirmarPontoModal() {
     let html = `
         <td class="text-center cursor-move"><i class="bx bx-menu"></i></td>
         <td class="text-center font-weight-bold"><span class="badge bg-label-primary rounded-circle p-2 label-ordem">0</span></td>
-        <td>${endereco}</td>
+        <td>${endereco}${observacaoCadastro ? `<br /><small class="text-muted"><i class="bx bx-note"></i> ${observacaoCadastro}</small>` : ''}</td>
         <td>${geoCoordHtml}</td>
         <td class="text-center">
             <button type="button" class="btn btn-sm btn-icon btn-outline-primary me-1" onclick="abrirModalPonto(this)"><i class='bx bx-edit'></i></button>
@@ -259,12 +262,13 @@ function confirmarPontoModal() {
             .attr('data-endereco', endereco)
             .attr('data-lat', lat)
             .attr('data-lng', lng)
+            .attr('data-observacao-cadastro', observacaoCadastro)
             .attr('data-unidade-id', unidadeId)
             .attr('data-tipo-pesquisa', tipoPesquisa)
             .html(html);
     } else {
         $('#empty-paradas-tr').remove();
-        let novaLinha = `<tr data-id="0" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="" data-unidade-id="${unidadeId}" data-tipo-pesquisa="${tipoPesquisa}">${html}</tr>`;
+        let novaLinha = `<tr data-id="0" data-endereco="${endereco}" data-lat="${lat}" data-lng="${lng}" data-link="" data-observacao-cadastro="${observacaoCadastro}" data-unidade-id="${unidadeId}" data-tipo-pesquisa="${tipoPesquisa}">${html}</tr>`;
         $('#sortable-paradas').append(novaLinha);
     }
 
@@ -458,7 +462,8 @@ function carregarHistoricoExecucoes() {
                 }
                 data.historico.forEach(function (h) {
                     let botaoMapa = h.dataHoraFim ? `<button type="button" class="btn btn-sm btn-icon btn-primary" title="Ver Rota" onclick="visualizarRotaNoMapa(${h.id})"><i class='bx bx-map-alt'></i></button>` : '';
-                    tbody.append(`<tr><td>${h.dataHoraInicio}</td><td>${h.usuarioInicio}</td><td>${h.dataHoraFim || '-'}</td><td>${h.usuarioFim || '-'}</td><td>${botaoMapa}</td></tr>`);
+                    let auditoria = montarBadgeOfflineHistorico(h);
+                    tbody.append(`<tr><td>${h.dataHoraInicio}</td><td>${h.usuarioInicio}</td><td>${h.dataHoraFim || '-'}</td><td>${h.usuarioFim || '-'}</td><td>${auditoria}</td><td>${botaoMapa}</td></tr>`);
                 });
             }
         }
@@ -467,6 +472,16 @@ function carregarHistoricoExecucoes() {
 
 var historicoMap = null;
 var historicoLayers = [];
+var historicoAtual = null;
+
+function montarBadgeOfflineHistorico(h) {
+    if (!h.possuiRegistroOffline) return '<span class="text-muted">Online</span>';
+    let classe = h.execucaoOfflineCompleta ? 'bg-label-danger' : 'bg-label-warning';
+    let detalhe = h.dataHoraPrimeiroRegistroOffline && h.dataHoraUltimoRegistroOffline
+        ? ` title="${h.dataHoraPrimeiroRegistroOffline} - ${h.dataHoraUltimoRegistroOffline}"`
+        : '';
+    return `<span class="badge ${classe}"${detalhe}>${h.classificacaoOffline}</span>`;
+}
 
 function visualizarRotaNoMapa(execucaoId) {
     $('#tabela-execucoes-container').fadeOut('fast', function () {
@@ -491,6 +506,10 @@ function visualizarRotaNoMapa(execucaoId) {
                 function (res) {
                     if (res.sucesso && res.dados.length > 0) {
                         let rota = res.dados[0];
+                        historicoAtual = rota;
+                        $('#filtro-historico-offline').val('todos');
+                        renderizarHistoricoAtual();
+                        return;
                         let hexBase = "#34495e";
                         let svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(`
                             <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
@@ -525,6 +544,176 @@ function visualizarRotaNoMapa(execucaoId) {
             );
         });
     });
+}
+
+function renderizarHistoricoAtual() {
+    if (!historicoMap || !historicoAtual) return;
+
+    historicoLayers.forEach(l => historicoMap.removeLayer(l));
+    historicoLayers = [];
+
+    let rota = historicoAtual;
+    let filtro = $('#filtro-historico-offline').val() || 'todos';
+    let pontosDetalhados = rota.historicoLocalizacoesDetalhado || [];
+    let pontosFiltrados = pontosDetalhados.filter(p => {
+        if (filtro === 'offline') return p.registradoOffline === true;
+        if (filtro === 'online') return p.registradoOffline !== true;
+        return true;
+    });
+    let pontos = pontosFiltrados.map(p => [p.latitude, p.longitude]);
+
+    let hexBase = '#34495e';
+    let offlineColor = '#f39c12';
+    let pathLine = null;
+
+    $('#historico-offline-badge').html(montarResumoOfflineExecucao(rota));
+    $('#historico-offline-detalhes').html(montarDetalhesAuditoriaOffline(rota, filtro));
+
+    if (pontos.length > 1) {
+        pathLine = L.polyline(pontos, {
+            color: filtro === 'offline' ? offlineColor : hexBase,
+            weight: 5,
+            opacity: 0.82,
+            dashArray: filtro === 'offline' ? '8, 8' : null
+        }).addTo(historicoMap);
+        historicoLayers.push(pathLine);
+    }
+
+    if (filtro === 'todos') {
+        let segmentosOffline = montarSegmentosPorTipo(pontosDetalhados, true);
+        segmentosOffline.forEach(seg => {
+            if (seg.length < 2) return;
+            let layer = L.polyline(seg, {
+                color: offlineColor,
+                weight: 6,
+                opacity: 0.9,
+                dashArray: '8, 8'
+            }).addTo(historicoMap);
+            historicoLayers.push(layer);
+        });
+    }
+
+    pontosFiltrados.forEach(p => {
+        if (p.registradoOffline !== true) return;
+        let marker = L.circleMarker([p.latitude, p.longitude], {
+            radius: 5,
+            color: '#fff',
+            weight: 2,
+            fillColor: offlineColor,
+            fillOpacity: 1
+        }).addTo(historicoMap);
+        marker.bindPopup(montarPopupLocalizacaoOffline(p), { closeButton: false });
+        historicoLayers.push(marker);
+    });
+
+    let ultimaLocalizacao = pontos.length > 0 ? pontos[pontos.length - 1] : rota.ultimaLocalizacao;
+    if (ultimaLocalizacao) {
+        let svgUrl = "data:image/svg+xml;utf8," + encodeURIComponent(`
+            <svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" fill="${hexBase}" stroke="#fff" stroke-width="2"/>
+                <text x="12" y="15" fill="#fff" font-size="10" font-family="Arial" font-weight="bold" text-anchor="middle">F</text>
+            </svg>
+        `);
+        let endIcon = L.icon({ iconUrl: svgUrl, iconSize: [28, 28], iconAnchor: [14, 14] });
+        let markerFinal = L.marker(ultimaLocalizacao, { icon: endIcon }).addTo(historicoMap);
+        historicoLayers.push(markerFinal);
+    }
+
+    if (rota.paradas) {
+        rota.paradas
+            .filter(p => filtro === 'todos' || (filtro === 'offline' ? p.registradoOffline === true : p.registradoOffline !== true))
+            .forEach((p, idx) => {
+                let paradaColor = p.registradoOffline ? offlineColor : (p.entregue ? '#2ecc71' : '#e74c3c');
+                let paradaCss = `border: 2px solid #ccc; background: ${paradaColor}; color: #fff; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 18px; font-weight: bold; font-size: 11px;`;
+                let paradaIcon = L.divIcon({ className: '', html: `<div style="${paradaCss}">P${idx + 1}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+                let pMarker = L.marker([p.latitude, p.longitude], { icon: paradaIcon }).addTo(historicoMap);
+                let offlineInfo = p.registradoOffline ? `<br/><small><strong>Offline:</strong> ${p.dataHoraRegistroLocal || '-'}</small>` : '';
+                pMarker.bindPopup(`<h6>${p.nome}</h6>${p.entregue ? 'Entregue' : 'Pend.'}${offlineInfo}`);
+                historicoLayers.push(pMarker);
+            });
+    }
+
+    if (pathLine) {
+        historicoMap.fitBounds(pathLine.getBounds(), { padding: [20, 20] });
+    } else if (pontos.length === 1) {
+        historicoMap.setView(pontos[0], 15);
+    }
+}
+
+function montarSegmentosPorTipo(pontos, offline) {
+    let segmentos = [];
+    let atual = [];
+
+    pontos.forEach(p => {
+        if ((p.registradoOffline === true) === offline) {
+            atual.push([p.latitude, p.longitude]);
+            return;
+        }
+
+        if (atual.length > 0) {
+            segmentos.push(atual);
+            atual = [];
+        }
+    });
+
+    if (atual.length > 0) segmentos.push(atual);
+    return segmentos;
+}
+
+function montarResumoOfflineExecucao(rota) {
+    if (!rota.possuiRegistroOffline) {
+        return '<span class="badge bg-label-success">Rota executada online</span>';
+    }
+
+    let classe = rota.execucaoOfflineCompleta ? 'bg-label-danger' : 'bg-label-warning';
+    let datas = rota.dataHoraPrimeiroRegistroOffline && rota.dataHoraUltimoRegistroOffline
+        ? `<small class="text-muted ms-2">${rota.dataHoraPrimeiroRegistroOffline} - ${rota.dataHoraUltimoRegistroOffline}</small>`
+        : '';
+
+    return `<span class="badge ${classe}">${rota.classificacaoOffline}</span>${datas}`;
+}
+
+function montarDetalhesAuditoriaOffline(rota, filtro) {
+    if (!rota.possuiRegistroOffline) return '';
+
+    let eventos = (rota.eventosAuditoria || []).filter(e => filtro === 'todos' || (filtro === 'offline' ? e.registradoOffline === true : e.registradoOffline !== true));
+    let pausas = (rota.pausasAuditoria || []).filter(p => filtro === 'todos' || (filtro === 'offline' ? p.registradoOffline === true : p.registradoOffline !== true));
+    let pontosOffline = (rota.historicoLocalizacoesDetalhado || []).filter(p => p.registradoOffline === true).length;
+
+    let linhasEventos = eventos.map(e => {
+        let origem = e.registradoOffline ? '<span class="badge bg-label-warning">offline</span>' : '<span class="badge bg-label-secondary">online</span>';
+        return `<li>${origem} ${e.dataHora} - evento ${e.tipoEvento}${e.clientEventId ? ` <small class="text-muted">(${e.clientEventId})</small>` : ''}</li>`;
+    }).join('');
+
+    let linhasPausas = pausas.map(p => {
+        let origem = p.registradoOffline ? '<span class="badge bg-label-warning">offline</span>' : '<span class="badge bg-label-secondary">online</span>';
+        return `<li>${origem} ${p.dataHoraInicio}${p.dataHoraFim ? ` ate ${p.dataHoraFim}` : ''} - ${p.motivo || 'Pausa'}</li>`;
+    }).join('');
+
+    return `
+        <div class="alert alert-light border py-2 mb-0">
+            <div class="d-flex flex-wrap gap-2 mb-1">
+                <span><strong>Pontos GPS offline:</strong> ${pontosOffline}</span>
+                ${rota.localExecucaoId ? `<span><strong>Execucao local:</strong> ${rota.localExecucaoId}</span>` : ''}
+                ${rota.identificadorDispositivo ? `<span><strong>Dispositivo:</strong> ${rota.identificadorDispositivo}</span>` : ''}
+            </div>
+            <div class="small" style="max-height: 120px; overflow-y: auto;">
+                ${linhasEventos ? `<strong>Eventos:</strong><ul class="mb-1">${linhasEventos}</ul>` : ''}
+                ${linhasPausas ? `<strong>Pausas:</strong><ul class="mb-0">${linhasPausas}</ul>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function montarPopupLocalizacaoOffline(p) {
+    return `
+        <div style="min-width: 180px; font-size: 0.9em;">
+            <strong>Localizacao offline</strong><br/>
+            <small>Captura local: ${p.dataHoraRegistroLocal || p.dataHora || '-'}</small><br/>
+            <small>Sincronizacao: ${p.dataHoraSincronizacao || '-'}</small><br/>
+            ${p.clientEventId ? `<small>Evento: ${p.clientEventId}</small>` : ''}
+        </div>
+    `;
 }
 
 function voltarParaHistorico() {

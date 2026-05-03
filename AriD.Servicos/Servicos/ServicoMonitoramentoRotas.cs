@@ -37,7 +37,10 @@ namespace AriD.Servicos.Servicos
                     re.VeiculoId,
                     v.Placa,
                     v.Modelo,
-                    v.TipoVeiculo
+                    v.TipoVeiculo,
+                    re.PossuiRegistroOffline,
+                    re.ExecucaoOfflineCompleta,
+                    re.DataHoraUltimaComunicacaoApp
                 FROM rotaexecucao re
                 INNER JOIN rota r ON r.Id = re.RotaId
                 INNER JOIN motorista m ON m.Id = re.MotoristaId
@@ -70,7 +73,12 @@ namespace AriD.Servicos.Servicos
                     DataHoraCaptura as DataHora,
                     Latitude,
                     Longitude,
-                    VelocidadeMetrosPorSegundo
+                    VelocidadeMetrosPorSegundo,
+                    RegistradoOffline,
+                    DataHoraRegistroLocal,
+                    DataHoraSincronizacao,
+                    IdentificadorDispositivo,
+                    ClientEventId
                 FROM rotaexecucaolocalizacao
                 WHERE OrganizacaoId = @OrganizacaoId
                   AND RotaExecucaoId IN @ExecucaoIds
@@ -95,6 +103,17 @@ namespace AriD.Servicos.Servicos
                     .ToList();
 
                 var historico = locais.Select(l => new[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
+                var historicoDetalhado = locais.Select(l => new MonitoramentoLocalizacaoDTO
+                {
+                    Latitude = ParseCoord(l.Latitude),
+                    Longitude = ParseCoord(l.Longitude),
+                    DataHora = l.DataHora.ToString("dd/MM/yyyy HH:mm:ss"),
+                    RegistradoOffline = l.RegistradoOffline,
+                    DataHoraRegistroLocal = l.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                    DataHoraSincronizacao = l.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                    IdentificadorDispositivo = l.IdentificadorDispositivo,
+                    ClientEventId = l.ClientEventId
+                }).ToList();
                 var velocidadeMediaKmH = CalcularVelocidadeMediaKmH(locais);
 
                 double[]? ultimaPos = null;
@@ -111,7 +130,12 @@ namespace AriD.Servicos.Servicos
                         COALESCE(ev.Latitude, p.Latitude) as Latitude,
                         COALESCE(ev.Longitude, p.Longitude) as Longitude,
                         ev.Entregue,
-                        ev.DataHoraEvento as ConcluidoEm
+                        ev.DataHoraEvento as ConcluidoEm,
+                        ev.RegistradoOffline,
+                        ev.DataHoraRegistroLocal,
+                        ev.DataHoraSincronizacao,
+                        ev.IdentificadorDispositivo,
+                        ev.ClientEventId
                     FROM paradarota p
                     LEFT JOIN rotaexecucaoevento ev ON ev.Id = (
                         SELECT ev2.Id
@@ -140,15 +164,26 @@ namespace AriD.Servicos.Servicos
                         Latitude = ParseCoord(p.Latitude),
                         Longitude = ParseCoord(p.Longitude),
                         Entregue = p.Entregue ?? false,
-                        ConcluidoEm = p.ConcluidoEm != null ? ((DateTime)p.ConcluidoEm).ToString("dd/MM/yy HH:mm") : null
+                        ConcluidoEm = p.ConcluidoEm != null ? ((DateTime)p.ConcluidoEm).ToString("dd/MM/yy HH:mm") : null,
+                        RegistradoOffline = p.RegistradoOffline,
+                        DataHoraRegistroLocal = p.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraSincronizacao = p.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        IdentificadorDispositivo = p.IdentificadorDispositivo,
+                        ClientEventId = p.ClientEventId
                     }).ToList();
+
+                if (ultimaPos == null && paradas.Any())
+                {
+                    ultimaPos = new[] { paradas.First().Latitude, paradas.First().Longitude };
+                }
 
                 var sofreuDesvio = _repositorio.ConsultaDapper<int>(
                     "SELECT COUNT(1) FROM rotaexecucaodesvio WHERE RotaExecucaoId = @ExecId",
                     new { ExecId = exec.ExecucaoId }).FirstOrDefault() > 0;
 
                 var queryPausas = @"
-                    SELECT Motivo, DataHoraInicio, DataHoraFim, LatitudeInicio, LongitudeInicio, LatitudeFim, LongitudeFim
+                    SELECT Motivo, DataHoraInicio, DataHoraFim, LatitudeInicio, LongitudeInicio, LatitudeFim, LongitudeFim,
+                           RegistradoOffline, DataHoraRegistroLocal, DataHoraSincronizacao, IdentificadorDispositivo, ClientEventId
                     FROM rotaexecucaopausa
                     WHERE RotaExecucaoId = @ExecId
                     ORDER BY DataHoraInicio";
@@ -162,8 +197,17 @@ namespace AriD.Servicos.Servicos
                         LatInicio = TryParseNullableCoord(p.LatitudeInicio),
                         LngInicio = TryParseNullableCoord(p.LongitudeInicio),
                         LatFim = TryParseNullableCoord(p.LatitudeFim),
-                        LngFim = TryParseNullableCoord(p.LongitudeFim)
+                        LngFim = TryParseNullableCoord(p.LongitudeFim),
+                        RegistradoOffline = p.RegistradoOffline,
+                        DataHoraRegistroLocal = p.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraSincronizacao = p.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        IdentificadorDispositivo = p.IdentificadorDispositivo,
+                        ClientEventId = p.ClientEventId
                     }).ToList();
+
+                var referenciaComunicacao = exec.DataHoraUltimaComunicacaoApp ?? (locais.Any() ? locais.Last().DataHora : exec.DataHoraInicio);
+                var minutosSemComunicacao = (int)Math.Floor((DateTime.Now - referenciaComunicacao).TotalMinutes);
+                var possivelmenteOffline = exec.Status is 1 or 2 && minutosSemComunicacao >= 5;
 
                 resultado.Add(new MonitoramentoRotaDTO
                 {
@@ -183,11 +227,18 @@ namespace AriD.Servicos.Servicos
                     VelocidadeMediaKmH = velocidadeMediaKmH,
                     UltimaLocalizacao = ultimaPos,
                     HistoricoLocalizacoes = historico,
+                    HistoricoLocalizacoesDetalhado = historicoDetalhado,
                     UltimaAtualizacao = locais.Any() ? locais.Last().DataHora.ToString("dd/MM/yyyy HH:mm:ss") : exec.DataHoraInicio.ToString("dd/MM/yyyy HH:mm:ss"),
                     Paradas = paradas,
                     Pausas = pausas,
                     Finalizada = exec.DataHoraFim.HasValue,
-                    SujeitoADesvio = sofreuDesvio
+                    SujeitoADesvio = sofreuDesvio,
+                    PossuiRegistroOffline = exec.PossuiRegistroOffline,
+                    ExecucaoOfflineCompleta = exec.ExecucaoOfflineCompleta,
+                    ClassificacaoOffline = ObterClassificacaoOffline(exec.PossuiRegistroOffline, exec.ExecucaoOfflineCompleta),
+                    PossivelmenteOffline = possivelmenteOffline,
+                    MinutosSemComunicacao = minutosSemComunicacao < 0 ? 0 : minutosSemComunicacao,
+                    UltimaComunicacaoApp = referenciaComunicacao.ToString("dd/MM/yyyy HH:mm:ss")
                 });
             }
 
@@ -223,6 +274,14 @@ namespace AriD.Servicos.Servicos
                 return null;
 
             return velocidades.Average() * 3.6;
+        }
+
+        private string ObterClassificacaoOffline(bool possuiRegistroOffline, bool execucaoOfflineCompleta)
+        {
+            if (!possuiRegistroOffline) return "";
+            return execucaoOfflineCompleta
+                ? "Rota executada completamente offline"
+                : "Rota executada parcialmente offline";
         }
     }
 }

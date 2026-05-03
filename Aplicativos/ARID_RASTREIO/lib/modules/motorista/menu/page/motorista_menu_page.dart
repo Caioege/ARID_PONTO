@@ -56,14 +56,23 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
           key: 'rotaExecucaoId',
           value: execucao.id.toString(),
         );
+        await FlutterForegroundTask.saveData(
+          key: 'execucaoOffline',
+          value: 'false',
+        );
+        await FlutterForegroundTask.saveData(key: 'localExecucaoId', value: '');
 
-        await RotaTrackingService.start();
+        await RotaTrackingService.start(
+          descricaoRota: execucao.descricao,
+          execucaoOffline: execucao.execucaoOffline,
+        );
 
         if (mounted) {
           showAppDialog(
             context: context,
             titulo: 'Sessão Restaurada',
-            mensagem: 'Você possui uma rota em andamento bloqueada. Não feche o aplicativo.',
+            mensagem:
+                'Você possui uma rota em andamento bloqueada. Não feche o aplicativo.',
             tipo: AppDialogType.alerta,
           );
         }
@@ -225,4 +234,3 @@ class _BottomNavPillItem extends StatelessWidget {
     );
   }
 }
-

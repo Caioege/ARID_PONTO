@@ -6,6 +6,7 @@ using AriD.BibliotecaDeClasses.Entidades;
 using AriD.BibliotecaDeClasses.Enumeradores;
 using AriD.Servicos.Repositorios.Interfaces;
 using AriD.Servicos.Servicos.Interfaces;
+using Dapper;
 
 namespace AriD.Servicos.Servicos
 {
@@ -145,6 +146,210 @@ namespace AriD.Servicos.Servicos
                 }).ToList();
         }
 
+        public PacoteOfflineRastreioDTO ObterPacoteOfflineMotorista(int motoristaId)
+        {
+            var geradoEm = DateTime.Now;
+            var validoAte = geradoEm.AddDays(3);
+
+            var sql = @"
+                SELECT
+                    r.Id,
+                    CONCAT('RT-', LPAD(r.Id, 3, '0')) as Codigo,
+                    r.Descricao as Nome,
+                    r.Descricao,
+                    r.Recorrente,
+                    r.DataParaExecucao,
+                    r.DataInicio,
+                    r.DataFim,
+                    r.DiasSemana,
+                    r.PermitePausa,
+                    r.QuantidadePausas,
+                    r.UnidadeOrigemId,
+                    r.UnidadeDestinoId,
+                    uo.Nome as NomeUnidadeOrigem,
+                    ud.Nome as NomeUnidadeDestino,
+                    uo.Latitude as OrigemLatitudeRota,
+                    uo.Longitude as OrigemLongitudeRota,
+                    ud.Latitude as DestinoLatitudeRota,
+                    ud.Longitude as DestinoLongitudeRota
+                FROM rota r
+                LEFT JOIN unidadeorganizacional uo ON uo.Id = r.UnidadeOrigemId
+                LEFT JOIN unidadeorganizacional ud ON ud.Id = r.UnidadeDestinoId
+                WHERE r.Situacao = 1
+                  AND (r.MotoristaId = @MotoristaId OR r.MotoristaSecundarioId = @MotoristaId)";
+
+            var rotasBase = _repositorioRota.ConsultaDapper<RotaOfflineConsultaDTO>(sql, new { @MotoristaId = motoristaId }).ToList();
+            var rotasValidas = rotasBase.Where(r => RotaPodeExecutarNoPeriodo(r, geradoEm.Date, validoAte.Date)).ToList();
+
+            var pacote = new PacoteOfflineRastreioDTO
+            {
+                DataHoraGeracao = geradoEm,
+                ValidoAte = validoAte,
+                ValidadeEmDias = 3
+            };
+
+            foreach (var rota in rotasValidas)
+            {
+                pacote.Rotas.Add(new RotaOfflineDTO
+                {
+                    Id = rota.Id,
+                    Codigo = rota.Codigo,
+                    Nome = rota.Nome,
+                    Descricao = rota.Recorrente ? $"{rota.Descricao} (Recorrente)" : $"{rota.Descricao} (Planejada para {rota.DataParaExecucao:dd/MM/yyyy})",
+                    PermitePausa = Convert.ToBoolean(rota.PermitePausa),
+                    QuantidadePausas = Convert.ToInt32(rota.QuantidadePausas),
+                    UnidadeOrigemId = rota.UnidadeOrigemId,
+                    UnidadeDestinoId = rota.UnidadeDestinoId,
+                    NomeUnidadeOrigem = rota.NomeUnidadeOrigem,
+                    NomeUnidadeDestino = rota.NomeUnidadeDestino,
+                    OrigemLatitudeRota = rota.OrigemLatitudeRota,
+                    OrigemLongitudeRota = rota.OrigemLongitudeRota,
+                    DestinoLatitudeRota = rota.DestinoLatitudeRota,
+                    DestinoLongitudeRota = rota.DestinoLongitudeRota,
+                    Veiculos = ObterVeiculosChecklist(rota.Id),
+                    Paradas = ObterParadasOffline(rota.Id)
+                });
+            }
+
+            return pacote;
+        }
+
+        public ResultadoSincronizacaoRotaOfflineDTO SincronizarRotaOffline(SincronizarRotaOfflineDTO dto, int motoristaId)
+        {
+            if (dto == null)
+                throw new ApplicationException("Payload de sincronizacao offline nao informado.");
+
+            if (string.IsNullOrWhiteSpace(dto.LocalExecucaoId))
+                throw new ApplicationException("LocalExecucaoId nao informado.");
+
+            var agora = DateTime.Now;
+            dto.IdentificadorDispositivo = string.IsNullOrWhiteSpace(dto.IdentificadorDispositivo)
+                ? null
+                : dto.IdentificadorDispositivo.Trim();
+
+            using var conn = _repositorioExecucao.MySQLConn();
+            conn.Open();
+            using var transaction = conn.BeginTransaction();
+
+            try
+            {
+                var rota = conn.QueryFirstOrDefault<RotaSincronizacaoOfflineLookupDTO>(
+                    @"SELECT Id, OrganizacaoId, UnidadeOrigemId, UnidadeDestinoId
+                      FROM rota
+                      WHERE Id = @RotaId",
+                    new { dto.RotaId },
+                    transaction);
+
+                if (rota == null)
+                    throw new ApplicationException("Rota informada na sincronizacao offline nao existe.");
+
+                var execucaoId = conn.QueryFirstOrDefault<int?>(
+                    "SELECT Id FROM rotaexecucao WHERE LocalExecucaoId = @LocalExecucaoId LIMIT 1",
+                    new { dto.LocalExecucaoId },
+                    transaction);
+
+                if (!execucaoId.HasValue)
+                {
+                    var execucaoAtiva = conn.QueryFirstOrDefault<int?>(
+                        @"SELECT Id
+                          FROM rotaexecucao
+                          WHERE MotoristaId = @MotoristaId
+                            AND Status IN (@StatusExecucaoEmAndamento, @StatusExecucaoPausada)
+                            AND COALESCE(LocalExecucaoId, '') <> @LocalExecucaoId
+                          LIMIT 1",
+                        new
+                        {
+                            MotoristaId = motoristaId,
+                            StatusExecucaoEmAndamento,
+                            StatusExecucaoPausada,
+                            dto.LocalExecucaoId
+                        },
+                        transaction);
+
+                    if (execucaoAtiva.HasValue)
+                        throw new ApplicationException("O motorista possui outra rota em andamento no servidor. A sincronizacao automatica foi bloqueada para auditoria.");
+
+                    var checklistExecucaoId = CriarChecklistOfflineSeNecessario(conn, transaction, dto, motoristaId, rota.OrganizacaoId, agora);
+                    var statusInicial = dto.DataHoraFimLocal.HasValue ? StatusExecucaoFinalizada : StatusExecucaoEmAndamento;
+
+                    execucaoId = conn.QuerySingle<int>(
+                        @"INSERT INTO rotaexecucao
+                            (OrganizacaoId, RotaId, MotoristaId, VeiculoId, ChecklistExecucaoId, Status,
+                             DataHoraInicio, DataHoraFim, UsuarioIdInicio, UsuarioIdFim, ObservacaoInicio, ObservacaoFim,
+                             UltimaLatitude, UltimaLongitude, UltimaAtualizacaoEm, GpsSimuladoUltimaLeitura,
+                             PossuiRegistroOffline, ExecucaoOfflineCompleta, DataHoraPrimeiroRegistroOffline,
+                             DataHoraUltimoRegistroOffline, DataHoraUltimaComunicacaoApp, LocalExecucaoId,
+                             IdentificadorDispositivo, DataCriacao, DataAlteracao)
+                          VALUES
+                            (@OrganizacaoId, @RotaId, @MotoristaId, @VeiculoId, @ChecklistExecucaoId, @Status,
+                             @DataHoraInicio, @DataHoraFim, NULL, NULL, @ObservacaoInicio, @ObservacaoFim,
+                             @UltimaLatitude, @UltimaLongitude, @UltimaAtualizacaoEm, @GpsSimulado,
+                             1, @ExecucaoOfflineCompleta, @PrimeiroOffline, @UltimoOffline, @Comunicacao,
+                             @LocalExecucaoId, @IdentificadorDispositivo, @Agora, @Agora);
+                          SELECT LAST_INSERT_ID();",
+                        new
+                        {
+                            rota.OrganizacaoId,
+                            dto.RotaId,
+                            MotoristaId = motoristaId,
+                            dto.VeiculoId,
+                            ChecklistExecucaoId = checklistExecucaoId,
+                            Status = statusInicial,
+                            DataHoraInicio = dto.DataHoraInicioLocal,
+                            DataHoraFim = dto.DataHoraFimLocal,
+                            dto.ObservacaoInicio,
+                            dto.ObservacaoFim,
+                            UltimaLatitude = ObterUltimaLatitude(dto),
+                            UltimaLongitude = ObterUltimaLongitude(dto),
+                            UltimaAtualizacaoEm = ObterUltimaDataHora(dto),
+                            GpsSimulado = ObterUltimoGpsSimulado(dto),
+                            ExecucaoOfflineCompleta = dto.DataHoraFimLocal.HasValue,
+                            PrimeiroOffline = ObterPrimeiroRegistroOffline(dto),
+                            UltimoOffline = ObterUltimoRegistroOffline(dto),
+                            Comunicacao = agora,
+                            dto.LocalExecucaoId,
+                            dto.IdentificadorDispositivo,
+                            Agora = agora
+                        },
+                        transaction);
+
+                    RegistrarSincronizacaoOffline(conn, transaction, rota.OrganizacaoId, execucaoId.Value, dto.LocalExecucaoId, $"{dto.LocalExecucaoId}_inicio", "inicio_rota", dto.IdentificadorDispositivo, dto.DataHoraInicioLocal, agora);
+                }
+                else
+                {
+                    conn.Execute(
+                        @"UPDATE rotaexecucao
+                          SET DataHoraUltimaComunicacaoApp = @Agora,
+                              IdentificadorDispositivo = COALESCE(IdentificadorDispositivo, @IdentificadorDispositivo),
+                              DataAlteracao = @Agora
+                          WHERE Id = @ExecucaoId",
+                        new { Agora = agora, dto.IdentificadorDispositivo, ExecucaoId = execucaoId.Value },
+                        transaction);
+                }
+
+                SalvarEventosOffline(conn, transaction, dto, execucaoId.Value, rota, agora);
+                SalvarLocalizacoesOffline(conn, transaction, dto, execucaoId.Value, rota.OrganizacaoId, motoristaId, agora);
+                SalvarPausasOffline(conn, transaction, dto, execucaoId.Value, rota.OrganizacaoId, agora);
+                AtualizarResumoOfflineExecucao(conn, transaction, dto, execucaoId.Value, agora);
+
+                transaction.Commit();
+
+                return new ResultadoSincronizacaoRotaOfflineDTO
+                {
+                    Sucesso = true,
+                    RotaExecucaoId = execucaoId.Value,
+                    LocalExecucaoId = dto.LocalExecucaoId,
+                    Mensagem = "Sincronizacao offline recebida com sucesso.",
+                    DataHoraSincronizacao = agora
+                };
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
         public List<RotaCheckListDTO> ObterRotasAcompanhante(int servidorId)
         {
             var sql = @"
@@ -274,9 +479,9 @@ namespace AriD.Servicos.Servicos
                 throw new ApplicationException("Esta rota ja esta em execucao.");
 
             var sqlInsert = @"INSERT INTO rotaexecucao
-                                (OrganizacaoId, RotaId, MotoristaId, VeiculoId, ChecklistExecucaoId, Status, DataHoraInicio, UsuarioIdInicio, ObservacaoInicio, UltimaLatitude, UltimaLongitude, UltimaAtualizacaoEm, GpsSimuladoUltimaLeitura)
+                                (OrganizacaoId, RotaId, MotoristaId, VeiculoId, ChecklistExecucaoId, Status, DataHoraInicio, UsuarioIdInicio, ObservacaoInicio, UltimaLatitude, UltimaLongitude, UltimaAtualizacaoEm, GpsSimuladoUltimaLeitura, DataHoraUltimaComunicacaoApp)
                               VALUES
-                                ((SELECT OrganizacaoId FROM rota WHERE Id = @RotaId), @RotaId, @MotoristaId, @VeiculoId, @ChecklistId, @Status, @Agora, NULL, @ObsInicio, @Lat, @Lon, NULL, @GpsSimulado);
+                                ((SELECT OrganizacaoId FROM rota WHERE Id = @RotaId), @RotaId, @MotoristaId, @VeiculoId, @ChecklistId, @Status, @Agora, NULL, @ObsInicio, @Lat, @Lon, @Agora, @GpsSimulado, @Agora);
                               SELECT LAST_INSERT_ID();";
 
             var agora = DateTime.Now;
@@ -328,7 +533,9 @@ namespace AriD.Servicos.Servicos
                 SELECT e.Id, e.RotaId, e.Status, e.VeiculoId, e.ChecklistExecucaoId, e.DataHoraInicio,
                        r.Descricao, r.PermitePausa, r.QuantidadePausas,
                        r.UnidadeOrigemId, r.UnidadeDestinoId,
-                       uo.Nome as NomeUnidadeOrigem, ud.Nome as NomeUnidadeDestino
+                       uo.Nome as NomeUnidadeOrigem, ud.Nome as NomeUnidadeDestino,
+                       uo.Latitude as OrigemLatitudeRota, uo.Longitude as OrigemLongitudeRota,
+                       ud.Latitude as DestinoLatitudeRota, ud.Longitude as DestinoLongitudeRota
                 FROM rotaexecucao e
                 INNER JOIN rota r ON r.Id = e.RotaId
                 LEFT JOIN unidadeorganizacional uo ON uo.Id = r.UnidadeOrigemId
@@ -346,13 +553,18 @@ namespace AriD.Servicos.Servicos
             var origem = _repositorioEvento.ConsultaDapper<RotaExecucaoEventoResumoDTO>(sqlOrigem, new { @ExecId = execucaoId, @TipoEvento = TipoEventoOrigem }).FirstOrDefault();
             var destino = _repositorioEvento.ConsultaDapper<RotaExecucaoEventoResumoDTO>(sqlOrigem, new { @ExecId = execucaoId, @TipoEvento = TipoEventoDestino }).FirstOrDefault();
 
-            var sqlParadas = @"
+            var campoObservacaoCadastro = ColunaExiste("paradarota", "ObservacaoCadastro")
+                ? "p.ObservacaoCadastro"
+                : "NULL as ObservacaoCadastro";
+
+            var sqlParadas = $@"
                 SELECT
                     p.Id,
                     p.Endereco,
                     p.Latitude,
                     p.Longitude,
                     p.Link,
+                    {campoObservacaoCadastro},
                     ev.Entregue,
                     ev.Observacao,
                     ev.DataHoraEvento as ConcluidoEm,
@@ -401,12 +613,16 @@ namespace AriD.Servicos.Servicos
                 QuantidadePausasRealizadas = quantidadePausas,
                 EstaPausada = estaPausada,
                 NomeUnidadeOrigem = execucao.NomeUnidadeOrigem,
+                OrigemLatitudeRota = execucao.OrigemLatitudeRota,
+                OrigemLongitudeRota = execucao.OrigemLongitudeRota,
                 OrigemEntregue = origem?.Entregue == null ? null : Convert.ToBoolean(origem.Entregue),
                 OrigemObservacao = origem?.Observacao,
                 OrigemConcluidaEm = origem?.DataHoraEvento != null ? ((DateTime)origem.DataHoraEvento).ToString("yyyy-MM-ddTHH:mm:ss") : null,
                 OrigemLatitude = origem?.Latitude,
                 OrigemLongitude = origem?.Longitude,
                 NomeUnidadeDestino = execucao.NomeUnidadeDestino,
+                DestinoLatitudeRota = execucao.DestinoLatitudeRota,
+                DestinoLongitudeRota = execucao.DestinoLongitudeRota,
                 DestinoEntregue = destino?.Entregue == null ? null : Convert.ToBoolean(destino.Entregue),
                 DestinoObservacao = destino?.Observacao,
                 DestinoConcluidoEm = destino?.DataHoraEvento != null ? ((DateTime)destino.DataHoraEvento).ToString("yyyy-MM-ddTHH:mm:ss") : null,
@@ -434,6 +650,7 @@ namespace AriD.Servicos.Servicos
                         SET Status = @StatusFinalizada,
                             DataHoraFim = @Agora,
                             ObservacaoFim = @Obs,
+                            DataHoraUltimaComunicacaoApp = @Agora,
                             DataAlteracao = @Agora
                         WHERE Id = @Id";
             _repositorioExecucao.ExecutarComando(sql, new
@@ -512,7 +729,7 @@ namespace AriD.Servicos.Servicos
                 @GpsSimuladoInicio = execucao.GpsSimuladoUltimaLeitura
             });
 
-            _repositorioExecucao.ExecutarComando("UPDATE rotaexecucao SET Status = @Status, DataAlteracao = @Agora WHERE Id = @Id", new
+            _repositorioExecucao.ExecutarComando("UPDATE rotaexecucao SET Status = @Status, DataHoraUltimaComunicacaoApp = @Agora, DataAlteracao = @Agora WHERE Id = @Id", new
             {
                 @Status = StatusExecucaoPausada,
                 @Agora = DateTime.Now,
@@ -552,7 +769,7 @@ namespace AriD.Servicos.Servicos
                 @Id = pausaId
             });
 
-            _repositorioExecucao.ExecutarComando("UPDATE rotaexecucao SET Status = @Status, DataAlteracao = @Agora WHERE Id = @Id", new
+            _repositorioExecucao.ExecutarComando("UPDATE rotaexecucao SET Status = @Status, DataHoraUltimaComunicacaoApp = @Agora, DataAlteracao = @Agora WHERE Id = @Id", new
             {
                 @Status = StatusExecucaoEmAndamento,
                 @Agora = DateTime.Now,
@@ -621,6 +838,7 @@ namespace AriD.Servicos.Servicos
                                   UltimaLongitude = @Lon,
                                   UltimaAtualizacaoEm = @Data,
                                   GpsSimuladoUltimaLeitura = @Mock,
+                                  DataHoraUltimaComunicacaoApp = @Agora,
                                   DataAlteracao = @Agora
                               WHERE Id = @Id";
             _repositorioExecucao.ExecutarComando(sqlUpdate, new
@@ -706,6 +924,14 @@ namespace AriD.Servicos.Servicos
                 @GpsSimulado = gpsSimulado,
                 @DataHoraEvento = dataHoraEvento
             });
+
+            _repositorioExecucao.ExecutarComando(
+                "UPDATE rotaexecucao SET DataHoraUltimaComunicacaoApp = @Agora, DataAlteracao = @Agora WHERE Id = @Id",
+                new
+                {
+                    Id = rotaExecucaoId,
+                    Agora = DateTime.Now
+                });
         }
 
         private void ValidarChecklistParaInicio(IniciarRotaAppDTO dto, int motoristaId)
@@ -752,10 +978,448 @@ namespace AriD.Servicos.Servicos
             return execucao;
         }
 
+        private int? CriarChecklistOfflineSeNecessario(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, SincronizarRotaOfflineDTO dto, int motoristaId, int organizacaoId, DateTime agora)
+        {
+            if (dto.ChecklistExecucaoId.HasValue && dto.ChecklistExecucaoId.Value > 0)
+                return dto.ChecklistExecucaoId.Value;
+
+            if (dto.ItensChecklist == null || !dto.ItensChecklist.Any())
+                return null;
+
+            var checklistExecucaoId = conn.QuerySingle<int>(
+                @"INSERT INTO checklistexecucao (OrganizacaoId, VeiculoId, MotoristaId, RotaId, DataHora)
+                  VALUES (@OrganizacaoId, @VeiculoId, @MotoristaId, @RotaId, @DataHora);
+                  SELECT LAST_INSERT_ID();",
+                new
+                {
+                    OrganizacaoId = organizacaoId,
+                    dto.VeiculoId,
+                    MotoristaId = motoristaId,
+                    dto.RotaId,
+                    DataHora = dto.DataHoraInicioLocal
+                },
+                transaction);
+
+            foreach (var itemId in dto.ItensChecklist.Distinct())
+            {
+                conn.Execute(
+                    "INSERT INTO checklistexecucaoitem (ChecklistExecucaoId, ChecklistItemId, Marcado) VALUES (@ChecklistExecucaoId, @ItemId, 1)",
+                    new { ChecklistExecucaoId = checklistExecucaoId, ItemId = itemId },
+                    transaction);
+            }
+
+            return checklistExecucaoId;
+        }
+
+        private void SalvarEventosOffline(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, SincronizarRotaOfflineDTO dto, int execucaoId, RotaSincronizacaoOfflineLookupDTO rota, DateTime agora)
+        {
+            var eventos = dto.Eventos
+                .Where(e => !string.IsNullOrWhiteSpace(e.ClientEventId))
+                .OrderBy(e => e.DataHoraEvento)
+                .ToList();
+
+            foreach (var evento in eventos)
+            {
+                if (SincronizacaoJaRegistrada(conn, transaction, dto.LocalExecucaoId, evento.ClientEventId, "evento"))
+                    continue;
+
+                var unidadeId = evento.UnidadeId;
+                if (!unidadeId.HasValue && evento.TipoEvento == TipoEventoOrigem)
+                    unidadeId = rota.UnidadeOrigemId;
+                if (!unidadeId.HasValue && evento.TipoEvento == TipoEventoDestino)
+                    unidadeId = rota.UnidadeDestinoId;
+
+                var sequencia = conn.QueryFirst<int>(
+                    "SELECT COALESCE(MAX(Sequencia), 0) + 1 FROM rotaexecucaoevento WHERE RotaExecucaoId = @ExecucaoId",
+                    new { ExecucaoId = execucaoId },
+                    transaction);
+
+                conn.Execute(
+                    @"INSERT INTO rotaexecucaoevento
+                        (OrganizacaoId, RotaExecucaoId, ParadaRotaId, UnidadeId, Sequencia, TipoEvento, StatusEvento,
+                         Entregue, Observacao, Latitude, Longitude, GpsSimulado, DataHoraEvento, RegistradoOffline,
+                         DataHoraRegistroLocal, DataHoraSincronizacao, IdentificadorDispositivo, LocalExecucaoId,
+                         ClientEventId, UsuarioIdRegistro, DataCriacao)
+                      VALUES
+                        (@OrganizacaoId, @ExecucaoId, @ParadaRotaId, @UnidadeId, @Sequencia, @TipoEvento, @StatusEvento,
+                         @Entregue, @Observacao, @Latitude, @Longitude, @GpsSimulado, @DataHoraEvento, 1,
+                         @DataHoraRegistroLocal, @DataHoraSincronizacao, @IdentificadorDispositivo, @LocalExecucaoId,
+                         @ClientEventId, NULL, @Agora)",
+                    new
+                    {
+                        rota.OrganizacaoId,
+                        ExecucaoId = execucaoId,
+                        evento.ParadaRotaId,
+                        UnidadeId = unidadeId,
+                        Sequencia = sequencia,
+                        evento.TipoEvento,
+                        StatusEvento = evento.Entregue.HasValue ? 1 : (int?)null,
+                        evento.Entregue,
+                        evento.Observacao,
+                        evento.Latitude,
+                        evento.Longitude,
+                        evento.GpsSimulado,
+                        evento.DataHoraEvento,
+                        DataHoraRegistroLocal = evento.DataHoraRegistroLocal == default ? evento.DataHoraEvento : evento.DataHoraRegistroLocal,
+                        DataHoraSincronizacao = agora,
+                        IdentificadorDispositivo = evento.IdentificadorDispositivo ?? dto.IdentificadorDispositivo,
+                        dto.LocalExecucaoId,
+                        evento.ClientEventId,
+                        Agora = agora
+                    },
+                    transaction);
+
+                RegistrarSincronizacaoOffline(conn, transaction, rota.OrganizacaoId, execucaoId, dto.LocalExecucaoId, evento.ClientEventId, "evento", evento.IdentificadorDispositivo ?? dto.IdentificadorDispositivo, evento.DataHoraRegistroLocal == default ? evento.DataHoraEvento : evento.DataHoraRegistroLocal, agora);
+            }
+
+            if (dto.DataHoraFimLocal.HasValue && !SincronizacaoJaRegistrada(conn, transaction, dto.LocalExecucaoId, $"{dto.LocalExecucaoId}_fim", "fim_rota"))
+            {
+                var sequencia = conn.QueryFirst<int>(
+                    "SELECT COALESCE(MAX(Sequencia), 0) + 1 FROM rotaexecucaoevento WHERE RotaExecucaoId = @ExecucaoId",
+                    new { ExecucaoId = execucaoId },
+                    transaction);
+
+                conn.Execute(
+                    @"INSERT INTO rotaexecucaoevento
+                        (OrganizacaoId, RotaExecucaoId, Sequencia, TipoEvento, StatusEvento, Entregue, Observacao,
+                         Latitude, Longitude, GpsSimulado, DataHoraEvento, RegistradoOffline, DataHoraRegistroLocal,
+                         DataHoraSincronizacao, IdentificadorDispositivo, LocalExecucaoId, ClientEventId, UsuarioIdRegistro, DataCriacao)
+                      VALUES
+                        (@OrganizacaoId, @ExecucaoId, @Sequencia, @TipoEvento, 1, 1, @Observacao, @Latitude, @Longitude,
+                         @GpsSimulado, @DataHoraEvento, 1, @DataHoraRegistroLocal, @DataHoraSincronizacao,
+                         @IdentificadorDispositivo, @LocalExecucaoId, @ClientEventId, NULL, @Agora)",
+                    new
+                    {
+                        rota.OrganizacaoId,
+                        ExecucaoId = execucaoId,
+                        Sequencia = sequencia,
+                        TipoEvento = TipoEventoFimRota,
+                        Observacao = dto.ObservacaoFim,
+                        Latitude = ObterUltimaLatitude(dto),
+                        Longitude = ObterUltimaLongitude(dto),
+                        GpsSimulado = ObterUltimoGpsSimulado(dto),
+                        DataHoraEvento = dto.DataHoraFimLocal.Value,
+                        DataHoraRegistroLocal = dto.DataHoraFimLocal.Value,
+                        DataHoraSincronizacao = agora,
+                        dto.IdentificadorDispositivo,
+                        dto.LocalExecucaoId,
+                        ClientEventId = $"{dto.LocalExecucaoId}_fim",
+                        Agora = agora
+                    },
+                    transaction);
+
+                RegistrarSincronizacaoOffline(conn, transaction, rota.OrganizacaoId, execucaoId, dto.LocalExecucaoId, $"{dto.LocalExecucaoId}_fim", "fim_rota", dto.IdentificadorDispositivo, dto.DataHoraFimLocal.Value, agora);
+            }
+        }
+
+        private void SalvarLocalizacoesOffline(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, SincronizarRotaOfflineDTO dto, int execucaoId, int organizacaoId, int motoristaId, DateTime agora)
+        {
+            foreach (var localizacao in dto.Localizacoes.Where(l => !string.IsNullOrWhiteSpace(l.ClientEventId)).OrderBy(l => l.DataHora))
+            {
+                if (SincronizacaoJaRegistrada(conn, transaction, dto.LocalExecucaoId, localizacao.ClientEventId, "localizacao"))
+                    continue;
+
+                conn.Execute(
+                    @"INSERT INTO rotaexecucaolocalizacao
+                        (OrganizacaoId, RotaExecucaoId, Latitude, Longitude, PrecisaoEmMetros, VelocidadeMetrosPorSegundo,
+                         DirecaoGraus, AltitudeMetros, GpsSimulado, FonteCaptura, DataHoraCaptura, RegistradoOffline,
+                         DataHoraRegistroLocal, DataHoraSincronizacao, IdentificadorDispositivo, LocalExecucaoId,
+                         ClientEventId, DataCriacao)
+                      VALUES
+                        (@OrganizacaoId, @ExecucaoId, @Latitude, @Longitude, @PrecisaoEmMetros, @VelocidadeMetrosPorSegundo,
+                         @DirecaoGraus, @AltitudeMetros, @GpsSimulado, @FonteCaptura, @DataHoraCaptura, 1,
+                         @DataHoraRegistroLocal, @DataHoraSincronizacao, @IdentificadorDispositivo, @LocalExecucaoId,
+                         @ClientEventId, @Agora)",
+                    new
+                    {
+                        OrganizacaoId = organizacaoId,
+                        ExecucaoId = execucaoId,
+                        localizacao.Latitude,
+                        localizacao.Longitude,
+                        localizacao.PrecisaoEmMetros,
+                        localizacao.VelocidadeMetrosPorSegundo,
+                        localizacao.DirecaoGraus,
+                        localizacao.AltitudeMetros,
+                        localizacao.GpsSimulado,
+                        FonteCaptura = localizacao.FonteCaptura ?? 0,
+                        DataHoraCaptura = localizacao.DataHora,
+                        DataHoraRegistroLocal = localizacao.DataHoraRegistroLocal == default ? localizacao.DataHora : localizacao.DataHoraRegistroLocal,
+                        DataHoraSincronizacao = agora,
+                        IdentificadorDispositivo = localizacao.IdentificadorDispositivo ?? dto.IdentificadorDispositivo,
+                        dto.LocalExecucaoId,
+                        localizacao.ClientEventId,
+                        Agora = agora
+                    },
+                    transaction);
+
+                conn.Execute(
+                    @"UPDATE rotaexecucao
+                      SET UltimaLatitude = @Latitude,
+                          UltimaLongitude = @Longitude,
+                          UltimaAtualizacaoEm = @DataHora,
+                          GpsSimuladoUltimaLeitura = @GpsSimulado,
+                          DataHoraUltimaComunicacaoApp = @Agora,
+                          DataAlteracao = @Agora
+                      WHERE Id = @ExecucaoId",
+                    new
+                    {
+                        localizacao.Latitude,
+                        localizacao.Longitude,
+                        localizacao.DataHora,
+                        localizacao.GpsSimulado,
+                        Agora = agora,
+                        ExecucaoId = execucaoId
+                    },
+                    transaction);
+
+                RegistrarSincronizacaoOffline(conn, transaction, organizacaoId, execucaoId, dto.LocalExecucaoId, localizacao.ClientEventId, "localizacao", localizacao.IdentificadorDispositivo ?? dto.IdentificadorDispositivo, localizacao.DataHoraRegistroLocal == default ? localizacao.DataHora : localizacao.DataHoraRegistroLocal, agora);
+            }
+        }
+
+        private void SalvarPausasOffline(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, SincronizarRotaOfflineDTO dto, int execucaoId, int organizacaoId, DateTime agora)
+        {
+            foreach (var pausa in dto.Pausas.Where(p => !string.IsNullOrWhiteSpace(p.ClientEventId)).OrderBy(p => p.DataHoraInicio))
+            {
+                if (SincronizacaoJaRegistrada(conn, transaction, dto.LocalExecucaoId, pausa.ClientEventId, "pausa"))
+                {
+                    if (pausa.DataHoraFim.HasValue && !SincronizacaoJaRegistrada(conn, transaction, dto.LocalExecucaoId, $"{pausa.ClientEventId}_fim", "pausa_fim"))
+                    {
+                        conn.Execute(
+                            @"UPDATE rotaexecucaopausa
+                              SET DataHoraFim = @DataHoraFim,
+                                  LatitudeFim = @LatitudeFim,
+                                  LongitudeFim = @LongitudeFim,
+                                  GpsSimuladoFim = @GpsSimuladoFim,
+                                  DataHoraSincronizacao = @DataHoraSincronizacao
+                              WHERE RotaExecucaoId = @ExecucaoId
+                                AND ClientEventId = @ClientEventId",
+                            new
+                            {
+                                pausa.DataHoraFim,
+                                pausa.LatitudeFim,
+                                pausa.LongitudeFim,
+                                pausa.GpsSimuladoFim,
+                                DataHoraSincronizacao = agora,
+                                ExecucaoId = execucaoId,
+                                pausa.ClientEventId
+                            },
+                            transaction);
+
+                        RegistrarSincronizacaoOffline(conn, transaction, organizacaoId, execucaoId, dto.LocalExecucaoId, $"{pausa.ClientEventId}_fim", "pausa_fim", pausa.IdentificadorDispositivo ?? dto.IdentificadorDispositivo, pausa.DataHoraFim.Value, agora);
+                    }
+                    continue;
+                }
+
+                conn.Execute(
+                    @"INSERT INTO rotaexecucaopausa
+                        (OrganizacaoId, RotaExecucaoId, Motivo, DataHoraInicio, LatitudeInicio, LongitudeInicio,
+                         GpsSimuladoInicio, DataHoraFim, LatitudeFim, LongitudeFim, GpsSimuladoFim, RegistradoOffline,
+                         DataHoraRegistroLocal, DataHoraSincronizacao, IdentificadorDispositivo, LocalExecucaoId,
+                         ClientEventId, UsuarioIdRegistro, DataCriacao)
+                      VALUES
+                        (@OrganizacaoId, @ExecucaoId, @Motivo, @DataHoraInicio, @LatitudeInicio, @LongitudeInicio,
+                         @GpsSimuladoInicio, @DataHoraFim, @LatitudeFim, @LongitudeFim, @GpsSimuladoFim, 1,
+                         @DataHoraRegistroLocal, @DataHoraSincronizacao, @IdentificadorDispositivo, @LocalExecucaoId,
+                         @ClientEventId, NULL, @Agora)",
+                    new
+                    {
+                        OrganizacaoId = organizacaoId,
+                        ExecucaoId = execucaoId,
+                        Motivo = string.IsNullOrWhiteSpace(pausa.Motivo) ? "Pausa informada pelo app offline" : pausa.Motivo,
+                        pausa.DataHoraInicio,
+                        pausa.LatitudeInicio,
+                        pausa.LongitudeInicio,
+                        pausa.GpsSimuladoInicio,
+                        pausa.DataHoraFim,
+                        pausa.LatitudeFim,
+                        pausa.LongitudeFim,
+                        pausa.GpsSimuladoFim,
+                        DataHoraRegistroLocal = pausa.DataHoraRegistroLocal == default ? pausa.DataHoraInicio : pausa.DataHoraRegistroLocal,
+                        DataHoraSincronizacao = agora,
+                        IdentificadorDispositivo = pausa.IdentificadorDispositivo ?? dto.IdentificadorDispositivo,
+                        dto.LocalExecucaoId,
+                        pausa.ClientEventId,
+                        Agora = agora
+                    },
+                    transaction);
+
+                RegistrarSincronizacaoOffline(conn, transaction, organizacaoId, execucaoId, dto.LocalExecucaoId, pausa.ClientEventId, "pausa", pausa.IdentificadorDispositivo ?? dto.IdentificadorDispositivo, pausa.DataHoraRegistroLocal == default ? pausa.DataHoraInicio : pausa.DataHoraRegistroLocal, agora);
+                if (pausa.DataHoraFim.HasValue)
+                    RegistrarSincronizacaoOffline(conn, transaction, organizacaoId, execucaoId, dto.LocalExecucaoId, $"{pausa.ClientEventId}_fim", "pausa_fim", pausa.IdentificadorDispositivo ?? dto.IdentificadorDispositivo, pausa.DataHoraFim.Value, agora);
+            }
+        }
+
+        private void AtualizarResumoOfflineExecucao(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, SincronizarRotaOfflineDTO dto, int execucaoId, DateTime agora)
+        {
+            conn.Execute(
+                @"UPDATE rotaexecucao
+                  SET Status = CASE WHEN @DataHoraFimLocal IS NOT NULL THEN @StatusFinalizada ELSE Status END,
+                      DataHoraFim = COALESCE(@DataHoraFimLocal, DataHoraFim),
+                      ObservacaoFim = COALESCE(@ObservacaoFim, ObservacaoFim),
+                      PossuiRegistroOffline = 1,
+                      ExecucaoOfflineCompleta = CASE WHEN @DataHoraFimLocal IS NOT NULL THEN 1 ELSE ExecucaoOfflineCompleta END,
+                      DataHoraPrimeiroRegistroOffline = CASE
+                          WHEN DataHoraPrimeiroRegistroOffline IS NULL THEN @PrimeiroOffline
+                          WHEN @PrimeiroOffline IS NULL THEN DataHoraPrimeiroRegistroOffline
+                          WHEN @PrimeiroOffline < DataHoraPrimeiroRegistroOffline THEN @PrimeiroOffline
+                          ELSE DataHoraPrimeiroRegistroOffline END,
+                      DataHoraUltimoRegistroOffline = CASE
+                          WHEN DataHoraUltimoRegistroOffline IS NULL THEN @UltimoOffline
+                          WHEN @UltimoOffline IS NULL THEN DataHoraUltimoRegistroOffline
+                          WHEN @UltimoOffline > DataHoraUltimoRegistroOffline THEN @UltimoOffline
+                          ELSE DataHoraUltimoRegistroOffline END,
+                      DataHoraUltimaComunicacaoApp = @Agora,
+                      DataAlteracao = @Agora
+                  WHERE Id = @ExecucaoId",
+                new
+                {
+                    dto.DataHoraFimLocal,
+                    StatusFinalizada = StatusExecucaoFinalizada,
+                    dto.ObservacaoFim,
+                    PrimeiroOffline = ObterPrimeiroRegistroOffline(dto),
+                    UltimoOffline = ObterUltimoRegistroOffline(dto),
+                    Agora = agora,
+                    ExecucaoId = execucaoId
+                },
+                transaction);
+        }
+
+        private bool SincronizacaoJaRegistrada(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, string localExecucaoId, string clientEventId, string tipoRegistro)
+        {
+            return conn.QueryFirst<int>(
+                @"SELECT COUNT(1)
+                  FROM rotaexecucaosincronizacaooffline
+                  WHERE LocalExecucaoId = @LocalExecucaoId
+                    AND ClientEventId = @ClientEventId
+                    AND TipoRegistro = @TipoRegistro",
+                new { LocalExecucaoId = localExecucaoId, ClientEventId = clientEventId, TipoRegistro = tipoRegistro },
+                transaction) > 0;
+        }
+
+        private void RegistrarSincronizacaoOffline(System.Data.IDbConnection conn, System.Data.IDbTransaction transaction, int organizacaoId, int execucaoId, string localExecucaoId, string clientEventId, string tipoRegistro, string? identificadorDispositivo, DateTime? dataHoraRegistroLocal, DateTime dataHoraSincronizacao)
+        {
+            if (SincronizacaoJaRegistrada(conn, transaction, localExecucaoId, clientEventId, tipoRegistro))
+                return;
+
+            conn.Execute(
+                @"INSERT INTO rotaexecucaosincronizacaooffline
+                    (OrganizacaoId, RotaExecucaoId, LocalExecucaoId, ClientEventId, TipoRegistro,
+                     IdentificadorDispositivo, DataHoraRegistroLocal, DataHoraSincronizacao, DataCriacao)
+                  VALUES
+                    (@OrganizacaoId, @ExecucaoId, @LocalExecucaoId, @ClientEventId, @TipoRegistro,
+                     @IdentificadorDispositivo, @DataHoraRegistroLocal, @DataHoraSincronizacao, @DataHoraSincronizacao)",
+                new
+                {
+                    OrganizacaoId = organizacaoId,
+                    ExecucaoId = execucaoId,
+                    LocalExecucaoId = localExecucaoId,
+                    ClientEventId = clientEventId,
+                    TipoRegistro = tipoRegistro,
+                    IdentificadorDispositivo = identificadorDispositivo,
+                    DataHoraRegistroLocal = dataHoraRegistroLocal,
+                    DataHoraSincronizacao = dataHoraSincronizacao
+                },
+                transaction);
+        }
+
+        private DateTime? ObterPrimeiroRegistroOffline(SincronizarRotaOfflineDTO dto)
+        {
+            var datas = new List<DateTime> { dto.DataHoraInicioLocal };
+            datas.AddRange(dto.Eventos.Select(e => e.DataHoraEvento));
+            datas.AddRange(dto.Localizacoes.Select(l => l.DataHora));
+            datas.AddRange(dto.Pausas.Select(p => p.DataHoraInicio));
+            if (dto.DataHoraFimLocal.HasValue) datas.Add(dto.DataHoraFimLocal.Value);
+            return datas.Any() ? datas.Min() : null;
+        }
+
+        private DateTime? ObterUltimoRegistroOffline(SincronizarRotaOfflineDTO dto)
+        {
+            var datas = new List<DateTime> { dto.DataHoraInicioLocal };
+            datas.AddRange(dto.Eventos.Select(e => e.DataHoraEvento));
+            datas.AddRange(dto.Localizacoes.Select(l => l.DataHora));
+            datas.AddRange(dto.Pausas.Select(p => p.DataHoraFim ?? p.DataHoraInicio));
+            if (dto.DataHoraFimLocal.HasValue) datas.Add(dto.DataHoraFimLocal.Value);
+            return datas.Any() ? datas.Max() : null;
+        }
+
+        private DateTime? ObterUltimaDataHora(SincronizarRotaOfflineDTO dto)
+        {
+            return dto.Localizacoes.Any()
+                ? dto.Localizacoes.Max(l => l.DataHora)
+                : dto.DataHoraFimLocal ?? dto.DataHoraInicioLocal;
+        }
+
+        private string? ObterUltimaLatitude(SincronizarRotaOfflineDTO dto)
+        {
+            return dto.Localizacoes.OrderBy(l => l.DataHora).LastOrDefault()?.Latitude ?? dto.LatitudeInicio;
+        }
+
+        private string? ObterUltimaLongitude(SincronizarRotaOfflineDTO dto)
+        {
+            return dto.Localizacoes.OrderBy(l => l.DataHora).LastOrDefault()?.Longitude ?? dto.LongitudeInicio;
+        }
+
+        private bool ObterUltimoGpsSimulado(SincronizarRotaOfflineDTO dto)
+        {
+            return dto.Localizacoes.OrderBy(l => l.DataHora).LastOrDefault()?.GpsSimulado ?? dto.GpsSimuladoInicio;
+        }
+
         private string ObterSomenteNumeros(string texto)
         {
             if (string.IsNullOrEmpty(texto)) return "";
             return new string(texto.Where(char.IsDigit).ToArray());
+        }
+
+        private List<ParadaRotaDTO> ObterParadasOffline(int rotaId)
+        {
+            var campoObservacaoCadastro = ColunaExiste("paradarota", "ObservacaoCadastro")
+                ? "ObservacaoCadastro"
+                : "NULL as ObservacaoCadastro";
+
+            var sql = @"
+                SELECT Id, Endereco, Latitude, Longitude, Link, " + campoObservacaoCadastro + @"
+                FROM paradarota
+                WHERE RotaId = @RotaId
+                ORDER BY Ordem ASC, Id ASC";
+
+            return _repositorioParada.ConsultaDapper<ParadaRotaDTO>(sql, new { @RotaId = rotaId }).ToList();
+        }
+
+        private bool ColunaExiste(string tabela, string coluna)
+        {
+            var sql = @"
+                SELECT COUNT(1)
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = @Tabela
+                  AND COLUMN_NAME = @Coluna";
+
+            return _repositorioParada
+                .ConsultaDapper<int>(sql, new { @Tabela = tabela, @Coluna = coluna })
+                .FirstOrDefault() > 0;
+        }
+
+        private bool RotaPodeExecutarNoPeriodo(RotaOfflineConsultaDTO rota, DateTime inicio, DateTime fim)
+        {
+            if (!rota.Recorrente)
+                return rota.DataParaExecucao != null &&
+                       rota.DataParaExecucao.Value.Date >= inicio &&
+                       rota.DataParaExecucao.Value.Date <= fim;
+
+            if (rota.DataInicio != null && rota.DataInicio.Value.Date > fim) return false;
+            if (rota.DataFim != null && rota.DataFim.Value.Date < inicio) return false;
+
+            if (!rota.DiasSemana.HasValue) return false;
+
+            var data = inicio;
+            var dias = (eFlagDiaSemana)rota.DiasSemana.Value;
+            while (data <= fim)
+            {
+                if (dias.HasFlag(ObterFlagHoje(data))) return true;
+                data = data.AddDays(1);
+            }
+
+            return false;
         }
 
         private eFlagDiaSemana ObterFlagHoje(DateTime date)
@@ -771,6 +1435,37 @@ namespace AriD.Servicos.Servicos
                 DayOfWeek.Saturday => eFlagDiaSemana.Sabado,
                 _ => eFlagDiaSemana.Nenhum
             };
+        }
+
+        private class RotaOfflineConsultaDTO
+        {
+            public int Id { get; set; }
+            public string Codigo { get; set; }
+            public string Nome { get; set; }
+            public string Descricao { get; set; }
+            public bool Recorrente { get; set; }
+            public DateTime? DataParaExecucao { get; set; }
+            public DateTime? DataInicio { get; set; }
+            public DateTime? DataFim { get; set; }
+            public int? DiasSemana { get; set; }
+            public bool PermitePausa { get; set; }
+            public int QuantidadePausas { get; set; }
+            public int? UnidadeOrigemId { get; set; }
+            public int? UnidadeDestinoId { get; set; }
+            public string? NomeUnidadeOrigem { get; set; }
+            public string? NomeUnidadeDestino { get; set; }
+            public string? OrigemLatitudeRota { get; set; }
+            public string? OrigemLongitudeRota { get; set; }
+            public string? DestinoLatitudeRota { get; set; }
+            public string? DestinoLongitudeRota { get; set; }
+        }
+
+        private class RotaSincronizacaoOfflineLookupDTO
+        {
+            public int Id { get; set; }
+            public int OrganizacaoId { get; set; }
+            public int? UnidadeOrigemId { get; set; }
+            public int? UnidadeDestinoId { get; set; }
         }
     }
 }

@@ -1,6 +1,8 @@
 import 'package:arid_rastreio/ioc/service_locator.dart';
+import 'package:arid_rastreio/core/network/connectivity_service.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto.dart';
+import 'package:arid_rastreio/modules/motorista/offline/service/offline_rastreio_service.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/encerrar_parada_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
@@ -19,6 +21,8 @@ abstract class MotoristaRotasControllerBase with Store {
   static const Duration _idadeMaximaPosicaoConhecida = Duration(seconds: 60);
 
   final MotoristaRotasService _service = MotoristaRotasService();
+  final OfflineRastreioService _offlineService =
+      locator<OfflineRastreioService>();
 
   LocationSettings _getLocationSettings(
     LocationAccuracy accuracy, {
@@ -214,6 +218,7 @@ abstract class MotoristaRotasControllerBase with Store {
 
   Future<void> _enviarLocalizacaoAtual() async {
     if (rotaAtual == null) return;
+    if (rotaAtual!.execucaoOffline) return;
     try {
       final pos = await _obterPosicaoAtualizada(lancaErro: false);
       if (pos == null) return;
@@ -269,14 +274,24 @@ abstract class MotoristaRotasControllerBase with Store {
       print(
         '[DEBUG] Controller: Chamando serviço para iniciar rota no servidor...',
       );
-      final execucao = await _service.iniciarRota(
-        rotaId: rotaId,
-        veiculoId: veiculoId,
-        checklistExecucaoId: checklistId,
-        latitudeInicio: pos.latitude,
-        longitudeInicio: pos.longitude,
-        gpsSimulado: pos.isMocked,
-      );
+      final conectado = await ConnectivityService.isConnected();
+      final execucao = conectado
+          ? await _service.iniciarRota(
+              rotaId: rotaId,
+              veiculoId: veiculoId,
+              checklistExecucaoId: checklistId,
+              latitudeInicio: pos.latitude,
+              longitudeInicio: pos.longitude,
+              gpsSimulado: pos.isMocked,
+            )
+          : await _offlineService.iniciarExecucaoLocal(
+              rotaId: rotaId,
+              veiculoId: veiculoId,
+              checklistExecucaoId: checklistId,
+              latitudeInicio: pos.latitude,
+              longitudeInicio: pos.longitude,
+              gpsSimulado: pos.isMocked,
+            );
       print('[DEBUG] Controller: Rota iniciada no servidor com sucesso.');
 
       rotaAtual = execucao;
@@ -306,6 +321,8 @@ abstract class MotoristaRotasControllerBase with Store {
         ParadaStore(
           id: -1,
           endereco: execucao.nomeUnidadeOrigem!,
+          latitude: execucao.origemLatitudeRota,
+          longitude: execucao.origemLongitudeRota,
           entregue: execucao.origemEntregue,
           observacao: execucao.origemObservacao ?? '',
         ),
@@ -320,6 +337,7 @@ abstract class MotoristaRotasControllerBase with Store {
           latitude: p.latitude,
           longitude: p.longitude,
           link: p.link,
+          observacaoCadastro: p.observacaoCadastro,
           entregue: p.entregue,
           observacao: p.observacao ?? '',
         ),
@@ -331,6 +349,8 @@ abstract class MotoristaRotasControllerBase with Store {
         ParadaStore(
           id: -2,
           endereco: execucao.nomeUnidadeDestino!,
+          latitude: execucao.destinoLatitudeRota,
+          longitude: execucao.destinoLongitudeRota,
           entregue: execucao.destinoEntregue,
           observacao: execucao.destinoObservacao ?? '',
         ),
@@ -348,14 +368,25 @@ abstract class MotoristaRotasControllerBase with Store {
       // Captura a posição exata no momento da confirmação para salvar junto com a parada
       final pos = await _obterPosicaoAtualizada(lancaErro: false);
 
-      await _service.confirmarParada(
-        rotaExecucaoId: rotaAtual!.id,
-        paradaId: parada.id,
-        entregue: parada.entregue,
-        observacao: parada.observacao,
-        latitude: pos?.latitude,
-        longitude: pos?.longitude,
-      );
+      if (rotaAtual!.execucaoOffline) {
+        await _offlineService.registrarEventoParadaLocal(
+          localExecucaoId: rotaAtual!.localExecucaoId!,
+          paradaId: parada.id,
+          entregue: parada.entregue,
+          observacao: parada.observacao,
+          latitude: pos?.latitude,
+          longitude: pos?.longitude,
+        );
+      } else {
+        await _service.confirmarParada(
+          rotaExecucaoId: rotaAtual!.id,
+          paradaId: parada.id,
+          entregue: parada.entregue,
+          observacao: parada.observacao,
+          latitude: pos?.latitude,
+          longitude: pos?.longitude,
+        );
+      }
 
       parada.confirmada = true;
       _enviarLocalizacaoAtual();
@@ -381,18 +412,25 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
-      await _service.encerrarRota(
-        rotaExecucaoId: rotaAtual!.id,
-        paradas: paradas
-            .map(
-              (p) => EncerrarParadaDTO(
-                id: p.id,
-                entregue: p.entregue,
-                observacao: p.observacao,
-              ),
-            )
-            .toList(),
-      );
+      if (rotaAtual!.execucaoOffline) {
+        await _offlineService.encerrarExecucaoLocal(
+          localExecucaoId: rotaAtual!.localExecucaoId!,
+          observacao: null,
+        );
+      } else {
+        await _service.encerrarRota(
+          rotaExecucaoId: rotaAtual!.id,
+          paradas: paradas
+              .map(
+                (p) => EncerrarParadaDTO(
+                  id: p.id,
+                  entregue: p.entregue,
+                  observacao: p.observacao,
+                ),
+              )
+              .toList(),
+        );
+      }
 
       final checklistController = locator<ChecklistController>();
 
@@ -422,12 +460,21 @@ abstract class MotoristaRotasControllerBase with Store {
 
     try {
       final loc = await _obterPosicaoAtualizada(lancaErro: false);
-      await _service.iniciarPausa(
-        rotaExecucaoId: rotaAtual!.id,
-        motivo: motivo,
-        latitude: loc?.latitude,
-        longitude: loc?.longitude,
-      );
+      if (rotaAtual!.execucaoOffline) {
+        await _offlineService.iniciarPausaLocal(
+          localExecucaoId: rotaAtual!.localExecucaoId!,
+          motivo: motivo,
+          latitude: loc?.latitude,
+          longitude: loc?.longitude,
+        );
+      } else {
+        await _service.iniciarPausa(
+          rotaExecucaoId: rotaAtual!.id,
+          motivo: motivo,
+          latitude: loc?.latitude,
+          longitude: loc?.longitude,
+        );
+      }
 
       await RotaTrackingService.stop();
       estaPausada = true;
@@ -443,13 +490,24 @@ abstract class MotoristaRotasControllerBase with Store {
 
     try {
       final loc = await _obterPosicaoAtualizada(lancaErro: false);
-      await _service.finalizarPausa(
-        rotaExecucaoId: rotaAtual!.id,
-        latitude: loc?.latitude,
-        longitude: loc?.longitude,
-      );
+      if (rotaAtual!.execucaoOffline) {
+        await _offlineService.finalizarPausaLocal(
+          localExecucaoId: rotaAtual!.localExecucaoId!,
+          latitude: loc?.latitude,
+          longitude: loc?.longitude,
+        );
+      } else {
+        await _service.finalizarPausa(
+          rotaExecucaoId: rotaAtual!.id,
+          latitude: loc?.latitude,
+          longitude: loc?.longitude,
+        );
+      }
 
-      await RotaTrackingService.start();
+      await RotaTrackingService.start(
+        descricaoRota: rotaAtual?.descricao,
+        execucaoOffline: rotaAtual?.execucaoOffline ?? false,
+      );
       estaPausada = false;
     } finally {
       carregando = false;

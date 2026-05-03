@@ -11,6 +11,7 @@ abstract class ParadaStoreBase with Store {
   final double? latitude;
   final double? longitude;
   final String? link;
+  final String? observacaoCadastro;
 
   @observable
   bool? entregue;
@@ -32,6 +33,7 @@ abstract class ParadaStoreBase with Store {
     this.latitude,
     this.longitude,
     this.link,
+    this.observacaoCadastro,
     this.entregue,
     String? observacao,
   }) {
@@ -44,7 +46,7 @@ abstract class ParadaStoreBase with Store {
       this.observacao = controllerObservacao.text;
     });
 
-    if (this.entregue != null) {
+    if (entregue != null) {
       confirmada = true;
     }
   }

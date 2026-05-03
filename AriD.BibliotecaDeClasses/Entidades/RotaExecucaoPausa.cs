@@ -19,6 +19,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public string? LatitudeFim { get; set; }
         public string? LongitudeFim { get; set; }
         public bool GpsSimuladoFim { get; set; }
+        public bool RegistradoOffline { get; set; }
+        public DateTime? DataHoraRegistroLocal { get; set; }
+        public DateTime? DataHoraSincronizacao { get; set; }
+        public string? IdentificadorDispositivo { get; set; }
+        public string? LocalExecucaoId { get; set; }
+        public string? ClientEventId { get; set; }
         public int? UsuarioIdRegistro { get; set; }
         [ForeignKey(nameof(UsuarioIdRegistro))]
         public virtual Usuario? UsuarioRegistro { get; set; }

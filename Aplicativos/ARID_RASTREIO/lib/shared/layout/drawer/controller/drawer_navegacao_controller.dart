@@ -24,6 +24,7 @@ abstract class DrawerNavegacaoControllerBase with Store {
     menusSuperiorDisponiveis = <DrawerMenuItem>[
       DrawerMenuItem(0, 'Início', Icons.home),
       DrawerMenuItem(1, 'Perfil', Icons.person),
+      DrawerMenuItem(2, 'Offline', Icons.cloud_off),
     ];
   }
 
@@ -33,4 +34,3 @@ abstract class DrawerNavegacaoControllerBase with Store {
     menusSuperiorDisponiveis = <DrawerMenuItem>[];
   }
 }
-

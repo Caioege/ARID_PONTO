@@ -96,6 +96,7 @@ function obterDadosMonitoramento() {
         if (response.sucesso) {
             allRoutesData = response.dados;
             window.monitoramentoRotasData = allRoutesData;
+            atualizarContadorPossivelmenteOffline(allRoutesData);
             
             // Centraliza o mapa se tivermos dados e ainda não tivermos desenhado as rotas
             if (allRoutesData.length > 0 && allRoutesData[0].ultimaLocalizacao && Object.keys(routeLayers).length === 0) {
@@ -109,6 +110,23 @@ function obterDadosMonitoramento() {
             console.error("Erro ao buscar dados de monitoramento:", response.mensagem);
         }
     });
+}
+
+function atualizarContadorPossivelmenteOffline(rotas) {
+    let total = (rotas || []).filter(r => r.possivelmenteOffline === true).length;
+    let $contador = $("#contador-possivelmente-offline");
+    let $texto = $("#contador-possivelmente-offline-texto");
+
+    if (!$contador.length || !$texto.length) return;
+
+    if (total <= 0) {
+        $contador.hide();
+        $texto.text("0 rotas possivelmente offline");
+        return;
+    }
+
+    $texto.text(total === 1 ? "1 rota possivelmente offline" : `${total} rotas possivelmente offline`);
+    $contador.css("display", "flex");
 }
 
 function aplicarFiltrosMap() {
@@ -183,6 +201,9 @@ function renderizarRotasNoMapa() {
         if (routeLayers[id].paradas) {
             routeLayers[id].paradas.forEach(p => map.removeLayer(p));
         }
+        if (routeLayers[id].offlineSegments) {
+            routeLayers[id].offlineSegments.forEach(p => map.removeLayer(p));
+        }
     }
     routeLayers = {};
     window.monitoramentoRotasRouteLayers = routeLayers;
@@ -198,6 +219,11 @@ function renderizarRotasNoMapa() {
 
     dadosFiltrados.forEach(rota => {
         let isFinalizada = (rota.finalizada === true || String(rota.finalizada).toLowerCase() === 'true');
+        let isPossivelmenteOffline = rota.possivelmenteOffline === true;
+
+        if (!rota.ultimaLocalizacao) {
+            return;
+        }
         
         let isPausada = false;
         if (!isFinalizada && rota.pausas && rota.pausas.length > 0) {
@@ -210,9 +236,9 @@ function renderizarRotasNoMapa() {
         let layerId = rota.execucaoId || (rota.rotaId.toString() + (isFinalizada ? '_fin' : '_act'));
         
         let corViva = getPredefinedColor(rota.rotaId);
-        let cor = isFinalizada ? deixarCorMaisCinza(corViva, 0.45) : (isPausada ? '#e67e22' : corViva);
-        let lineOpacity = isFinalizada ? 0.62 : (isPausada ? 0.6 : 0.8);
-        let lineClass = isFinalizada ? 'route-path' : (isPausada ? 'route-path paused-route' : 'route-path animated-route');
+        let cor = isPossivelmenteOffline ? '#d63031' : (isFinalizada ? deixarCorMaisCinza(corViva, 0.45) : (isPausada ? '#e67e22' : corViva));
+        let lineOpacity = isPossivelmenteOffline ? 0.95 : (isFinalizada ? 0.62 : (isPausada ? 0.6 : 0.8));
+        let lineClass = isPossivelmenteOffline ? 'route-path possivelmente-offline-route' : (rota.possuiRegistroOffline ? 'route-path offline-route' : (isFinalizada ? 'route-path' : (isPausada ? 'route-path paused-route' : 'route-path animated-route')));
         
         // Polyline drawing the path
         let pathLine = L.polyline(rota.historicoLocalizacoes, {
@@ -222,6 +248,20 @@ function renderizarRotasNoMapa() {
             smoothFactor: 1,
             className: lineClass
         }).addTo(map);
+
+        let offlineSegments = [];
+        if (rota.historicoLocalizacoesDetalhado && rota.historicoLocalizacoesDetalhado.length > 1) {
+            montarSegmentosOfflineMonitoramento(rota.historicoLocalizacoesDetalhado).forEach(seg => {
+                if (seg.length < 2) return;
+                let offlineLine = L.polyline(seg, {
+                    color: '#f39c12',
+                    weight: 6,
+                    opacity: 0.9,
+                    dashArray: '8, 8'
+                }).addTo(map);
+                offlineSegments.push(offlineLine);
+            });
+        }
 
         // Calcula o "rumo" (heading) para rotacionar o carro na direção correta
         let inicioMarker = null;
@@ -261,8 +301,8 @@ function renderizarRotasNoMapa() {
         }
 
         // SVG Dinâmico baseado no tipo de veículo
-        let strokeColor = isFinalizada ? "#999" : "white";
-        let shadowColor = isFinalizada ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.5)";
+        let strokeColor = isPossivelmenteOffline ? "#fff3cd" : (isFinalizada ? "#999" : "white");
+        let shadowColor = isPossivelmenteOffline ? "rgba(214,48,49,0.65)" : (isFinalizada ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.5)");
         let opacityCar = isFinalizada ? "0.7" : "1";
         
         let innerSvg = "";
@@ -314,18 +354,21 @@ function renderizarRotasNoMapa() {
         }
 
         let carSvg = `
-            <div style="transform: rotate(${heading}deg); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 4px 6px ${shadowColor}); opacity: ${opacityCar};">
-                <svg viewBox="0 0 24 24" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
-                    ${innerSvg}
-                </svg>
+            <div style="position: relative; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; ${isPossivelmenteOffline ? 'border: 3px solid #f39c12; border-radius: 50%; background: rgba(255,243,205,0.92);' : ''}">
+                ${isPossivelmenteOffline ? '<span style="position:absolute; right:-4px; top:-4px; width:14px; height:14px; border-radius:50%; background:#d63031; border:2px solid #fff;"></span>' : ''}
+                <div style="transform: rotate(${heading}deg); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0px 4px 6px ${shadowColor}); opacity: ${opacityCar};">
+                    <svg viewBox="0 0 24 24" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+                        ${innerSvg}
+                    </svg>
+                </div>
             </div>
         `;
 
         let customIcon = L.divIcon({
             className: 'custom-car-icon',
             html: carSvg,
-            iconSize: [36, 36],
-            iconAnchor: [18, 18]
+            iconSize: [46, 46],
+            iconAnchor: [23, 23]
         });
 
         let marker = L.marker(rota.ultimaLocalizacao, { icon: customIcon }).addTo(map);
@@ -407,6 +450,12 @@ function renderizarRotasNoMapa() {
         let dataExecucaoHtml = rota.dataParaExecucao ? `<div><strong>Data Agendada:</strong> ${rota.dataParaExecucao}</div>` : "";
         let velocidadeMediaHtml = rota.velocidadeMediaKmH !== null && rota.velocidadeMediaKmH !== undefined ? `<div><strong>Vel. media:</strong> ${Number(rota.velocidadeMediaKmH).toFixed(1).replace('.', ',')} km/h</div>` : "";
         let desvioHtml = rota.sujeitoADesvio === true ? `<div style="margin-top: 6px; padding: 4px; background: #ffeaa7; border-left: 3px solid #e17055; color: #d63031; font-weight: bold; font-size: 0.85em; border-radius:3px;"><i class="bx bx-error-circle"></i> ALERTA: Desvio detectado</div>` : "";
+        let possivelmenteOfflineHtml = isPossivelmenteOffline
+            ? `<div style="margin-top: 6px; padding: 4px; background: #fff3cd; border-left: 3px solid #f39c12; color: #7a4b00; font-weight: bold; font-size: 0.85em; border-radius:3px;"><i class="bx bx-wifi-off"></i> Possivelmente offline<br><small>Sem comunicacao ha ${rota.minutosSemComunicacao || 0} min. Ultima comunicacao: ${rota.ultimaComunicacaoApp || '--/--/--'}</small></div>`
+            : "";
+        let offlineHtml = rota.possuiRegistroOffline === true
+            ? `<div style="margin-top: 6px; padding: 4px; background: ${rota.execucaoOfflineCompleta ? '#ffe5e5' : '#fff4d6'}; border-left: 3px solid #f39c12; color: #7a4b00; font-weight: bold; font-size: 0.85em; border-radius:3px;"><i class="bx bx-cloud-off"></i> ${rota.classificacaoOffline}</div>`
+            : "";
 
         let popupContent = `
             <div class="popup-content" style="min-width: 200px;">
@@ -425,6 +474,8 @@ function renderizarRotasNoMapa() {
                         ${tempoLabel} ${rota.ultimaAtualizacao.substring(11, 19)}
                     </div>
                     ${desvioHtml}
+                    ${possivelmenteOfflineHtml}
+                    ${offlineHtml}
                 </div>
                 ${pausasListHtml}
                 ${paradasListHtml}
@@ -440,7 +491,8 @@ function renderizarRotasNoMapa() {
             polyline: pathLine,
             marker: marker,
             inicio: inicioMarker,
-            paradas: paradasMarkers
+            paradas: paradasMarkers,
+            offlineSegments: offlineSegments
         };
         window.monitoramentoRotasRouteLayers = routeLayers;
 
@@ -453,6 +505,26 @@ function renderizarRotasNoMapa() {
         // If we are applying filter manually and want to adjust the camera, we could: 
         // map.fitBounds(group.getBounds(), { padding: [50, 50] });
     }
+}
+
+function montarSegmentosOfflineMonitoramento(pontos) {
+    let segmentos = [];
+    let atual = [];
+
+    pontos.forEach(p => {
+        if (p.registradoOffline === true) {
+            atual.push([p.latitude, p.longitude]);
+            return;
+        }
+
+        if (atual.length > 0) {
+            segmentos.push(atual);
+            atual = [];
+        }
+    });
+
+    if (atual.length > 0) segmentos.push(atual);
+    return segmentos;
 }
 
 function toggleFiltros() {

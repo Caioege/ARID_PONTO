@@ -37,10 +37,17 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string Descricao { get; set; }
         public bool PermitePausa { get; set; }
         public int QuantidadePausas { get; set; }
+        public bool PossuiRegistroOffline { get; set; }
+        public bool ExecucaoOfflineCompleta { get; set; }
+        public DateTime? DataHoraUltimaComunicacaoApp { get; set; }
         public int? UnidadeOrigemId { get; set; }
         public int? UnidadeDestinoId { get; set; }
         public string? NomeUnidadeOrigem { get; set; }
         public string? NomeUnidadeDestino { get; set; }
+        public string? OrigemLatitudeRota { get; set; }
+        public string? OrigemLongitudeRota { get; set; }
+        public string? DestinoLatitudeRota { get; set; }
+        public string? DestinoLongitudeRota { get; set; }
     }
 
     public class RotaExecucaoEventoResumoDTO
@@ -50,6 +57,7 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public DateTime? DataHoraEvento { get; set; }
+        public bool RegistradoOffline { get; set; }
     }
 
     public class RotaExecucaoPermissaoPausaDTO
@@ -74,6 +82,9 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string? UltimaLatitude { get; set; }
         public string? UltimaLongitude { get; set; }
         public bool GpsSimuladoUltimaLeitura { get; set; }
+        public bool PossuiRegistroOffline { get; set; }
+        public bool ExecucaoOfflineCompleta { get; set; }
+        public DateTime? DataHoraUltimaComunicacaoApp { get; set; }
         public int? UnidadeOrigemId { get; set; }
         public int? UnidadeDestinoId { get; set; }
     }
@@ -84,12 +95,19 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public int RotaId { get; set; }
         public string Descricao { get; set; }
         public bool EmAndamento { get; set; }
+        public bool PossuiRegistroOffline { get; set; }
+        public bool ExecucaoOfflineCompleta { get; set; }
+        public DateTime? DataHoraUltimaComunicacaoApp { get; set; }
+        public DateTime? DataHoraPrimeiroRegistroOffline { get; set; }
+        public DateTime? DataHoraUltimoRegistroOffline { get; set; }
         
         public bool PermitePausa { get; set; }
         public int QuantidadePausas { get; set; }
         public int QuantidadePausasRealizadas { get; set; }
         public bool EstaPausada { get; set; }
         public string? NomeUnidadeOrigem { get; set; }
+        public string? OrigemLatitudeRota { get; set; }
+        public string? OrigemLongitudeRota { get; set; }
         public bool? OrigemEntregue { get; set; }
         public string? OrigemObservacao { get; set; }
         public string? OrigemConcluidaEm { get; set; }
@@ -97,6 +115,8 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string? OrigemLongitude { get; set; }
         
         public string? NomeUnidadeDestino { get; set; }
+        public string? DestinoLatitudeRota { get; set; }
+        public string? DestinoLongitudeRota { get; set; }
         public bool? DestinoEntregue { get; set; }
         public string? DestinoObservacao { get; set; }
         public string? DestinoConcluidoEm { get; set; }

@@ -19,6 +19,12 @@ namespace AriD.BibliotecaDeClasses.Entidades
         public bool GpsSimulado { get; set; }
         public int FonteCaptura { get; set; }
         public DateTime DataHoraCaptura { get; set; }
+        public bool RegistradoOffline { get; set; }
+        public DateTime? DataHoraRegistroLocal { get; set; }
+        public DateTime? DataHoraSincronizacao { get; set; }
+        public string? IdentificadorDispositivo { get; set; }
+        public string? LocalExecucaoId { get; set; }
+        public string? ClientEventId { get; set; }
         public DateTime DataCriacao { get; set; }
     }
 }

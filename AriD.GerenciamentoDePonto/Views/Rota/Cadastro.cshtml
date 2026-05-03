@@ -191,7 +191,7 @@
                                                 foreach(var p in Model.Paradas.OrderBy(x => x.Ordem))
                                                 {
                                                     <tr data-id="@p.Id"
-                                                        data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link"
+                                                        data-endereco="@p.Endereco" data-lat="@p.Latitude" data-lng="@p.Longitude" data-link="@p.Link" data-observacao-cadastro="@p.ObservacaoCadastro"
                                                         data-unidade-id="@p.UnidadeId" data-tipo-pesquisa="@(p.UnidadeId.HasValue ? $"tipo-{(int)p.Unidade?.Tipo}" : "manual")">
                                                         <td class="text-center cursor-move"><i class="bx bx-menu"></i></td>
                                                         <td class="text-center font-weight-bold">
@@ -199,6 +199,7 @@
                                                         </td>
                                                         <td>
                                                             @p.Endereco
+                                                            @if(!string.IsNullOrWhiteSpace(p.ObservacaoCadastro)){ <br /><small class="text-muted"><i class="bx bx-note"></i> @p.ObservacaoCadastro</small> }
                                                             @if(!string.IsNullOrEmpty(p.Link)){ <br /><a target="_blank" href="@p.Link" style="color: #0000ffb5; text-decoration: underline;">Ext Link</a> }
                                                         </td>
                                                         <td>
@@ -363,23 +364,33 @@
                                             <th>Usr. Início</th>
                                             <th>Fim</th>
                                             <th>Usr. Fim</th>
+                                            <th>Auditoria</th>
                                             <th width="100px">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td colspan="5" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
+                                        <tr><td colspan="6" class="text-center"><i class="bx bx-loader bx-spin"></i> Carregando...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                             
                             <div id="map-historico-container" style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
                                     <h6 class="mb-0 text-primary"><i class="bx bx-map"></i> Rota Analisada pelo Histórico</h6>
+                                    <div id="historico-offline-badge"></div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <select id="filtro-historico-offline" class="form-select form-select-sm" onchange="renderizarHistoricoAtual()">
+                                            <option value="todos">Mostrar tudo</option>
+                                            <option value="offline">Mostrar somente registros offline</option>
+                                            <option value="online">Mostrar somente registros online</option>
+                                        </select>
                                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="voltarParaHistorico()">
                                         <i class="bx bx-arrow-back"></i> Voltar p/ Lista
                                     </button>
+                                    </div>
                                 </div>
                                 <div id="map-historico" style="height: 350px; width: 100%; border-radius: 8px; border: 1px solid #ddd;"></div>
+                                <div id="historico-offline-detalhes" class="mt-2"></div>
                             </div>
                         </div>
                     }
@@ -481,6 +492,8 @@
                 <textarea id="modal-ponto-endereco" class="form-control" rows="2"></textarea>
             </div>
             <div class="col-12 mb-3">
+                <label class="form-label" for="modal-ponto-observacao">Observacao para o motorista</label>
+                <textarea id="modal-ponto-observacao" class="form-control" rows="2" placeholder="Instrucao ou referencia que deve aparecer no aplicativo"></textarea>
             </div>
         </div>
 

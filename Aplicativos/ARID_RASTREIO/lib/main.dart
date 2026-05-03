@@ -13,11 +13,15 @@ Future<void> main() async {
 
   FlutterForegroundTask.init(
     androidNotificationOptions: AndroidNotificationOptions(
-      channelId: 'rota_channel_id',
-      channelName: 'Rastreamento de Rota',
-      channelDescription: 'Envio de localização em segundo plano',
+      channelId: 'rota_execucao_channel_id',
+      channelName: 'Rota em execução',
+      channelDescription:
+          'Notificação fixa exibida enquanto uma rota está em execução.',
       channelImportance: NotificationChannelImportance.LOW,
       priority: NotificationPriority.LOW,
+      showWhen: true,
+      showBadge: true,
+      onlyAlertOnce: true,
     ),
     iosNotificationOptions: const IOSNotificationOptions(
       showNotification: true,
@@ -35,4 +39,3 @@ Future<void> main() async {
 
   runApp(const AppWidget());
 }
-

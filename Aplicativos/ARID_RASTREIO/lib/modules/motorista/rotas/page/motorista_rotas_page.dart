@@ -2,6 +2,7 @@ import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
 import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
 import 'package:arid_rastreio/shared/layout/dialogs/app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -137,21 +138,37 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                         await solicitarPermissoes();
                         print('[DEBUG] Permissões solicitadas.');
 
-                        print('[DEBUG] Chamando rotasController.iniciarRota...');
-                        final RotaExecucaoDTO rotaExecucao = await rotasController
-                            .iniciarRota(
+                        print(
+                          '[DEBUG] Chamando rotasController.iniciarRota...',
+                        );
+                        final RotaExecucaoDTO rotaExecucao =
+                            await rotasController.iniciarRota(
                               rotaId: checklistController.rotaSelecionada!.id,
-                              veiculoId: checklistController.veiculoSelecionado!.id,
+                              veiculoId:
+                                  checklistController.veiculoSelecionado!.id,
                               checklistId: checklistController.ultimaExecucaoId,
                             );
-                        print('[DEBUG] rotasController.iniciarRota concluído com sucesso: ID ${rotaExecucao.id}');
+                        print(
+                          '[DEBUG] rotasController.iniciarRota concluído com sucesso: ID ${rotaExecucao.id}',
+                        );
 
                         await FlutterForegroundTask.saveData(
                           key: 'rotaExecucaoId',
                           value: rotaExecucao.id.toString(),
                         );
+                        await FlutterForegroundTask.saveData(
+                          key: 'execucaoOffline',
+                          value: rotaExecucao.execucaoOffline.toString(),
+                        );
+                        await FlutterForegroundTask.saveData(
+                          key: 'localExecucaoId',
+                          value: rotaExecucao.localExecucaoId ?? '',
+                        );
 
-                        await RotaTrackingService.start();
+                        await RotaTrackingService.start(
+                          descricaoRota: rotaExecucao.descricao,
+                          execucaoOffline: rotaExecucao.execucaoOffline,
+                        );
                         print('[DEBUG] RotaTrackingService iniciado');
 
                         if (context.mounted) {
@@ -317,8 +334,13 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Fazer Pausa', style: TextStyle(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            'Fazer Pausa',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -337,7 +359,10 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -368,9 +393,13 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
     return Column(
       children: [
         _cardResumoRota(theme),
-        const SizedBox(height: 20),
-        _cardParadas(theme),
-        
+        const SizedBox(height: 12),
+        _statusExecucao(theme),
+        const SizedBox(height: 12),
+        _botaoRotaCompleta(theme),
+        const SizedBox(height: 16),
+        _timelineParadas(theme),
+
         if (rotasController.rotaAtual?.permitePausa == true) ...[
           const SizedBox(height: 24),
           Observer(
@@ -385,43 +414,66 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                         showAppDialog(
                           context: context,
                           titulo: 'Pausa Finalizada',
-                          mensagem: 'Rota retomada. Registro de localização ativo.',
+                          mensagem:
+                              'Rota retomada. Registro de localização ativo.',
                           tipo: AppDialogType.sucesso,
                         );
                       }
                     },
-                    icon: const Icon(Icons.play_circle_fill, color: Colors.white),
-                    label: const Text('Finalizar Pausa (Retomar)', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                    icon: const Icon(
+                      Icons.play_circle_fill,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Finalizar Pausa (Retomar)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       padding: const EdgeInsets.symmetric(vertical: 22),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       elevation: 4,
                     ),
                   ),
                 );
               } else {
-                final limiteOk = rotasController.rotaAtual!.quantidadePausasRealizadas < rotasController.rotaAtual!.quantidadePausas;
+                final limiteOk =
+                    rotasController.rotaAtual!.quantidadePausasRealizadas <
+                    rotasController.rotaAtual!.quantidadePausas;
                 return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: limiteOk 
-                        ? () => _dialogoPausa() 
+                    onPressed: limiteOk
+                        ? () => _dialogoPausa()
                         : () => showAppDialog(
-                              context: context, 
-                              titulo: 'Atenção', 
-                              mensagem: 'O limite de pausas desta rota já foi atingido!', 
-                              tipo: AppDialogType.alerta,
-                            ),
-                    icon: const Icon(Icons.pause_circle_filled, color: Colors.white),
+                            context: context,
+                            titulo: 'Atenção',
+                            mensagem:
+                                'O limite de pausas desta rota já foi atingido!',
+                            tipo: AppDialogType.alerta,
+                          ),
+                    icon: const Icon(
+                      Icons.pause_circle_filled,
+                      color: Colors.white,
+                    ),
                     label: Text(
-                      limiteOk ? 'Fazer Pausa' : 'Limite de Pausas Atingido', 
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+                      limiteOk ? 'Fazer Pausa' : 'Limite de Pausas Atingido',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: limiteOk ? Colors.orange : Colors.grey,
                       padding: const EdgeInsets.symmetric(vertical: 22),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       elevation: 4,
                     ),
                   ),
@@ -467,6 +519,157 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
           ),
         ),
       ],
+    );
+  }
+
+  ParadaStore? get _proximaParada {
+    for (final parada in rotasController.paradas) {
+      if (!parada.confirmada) return parada;
+    }
+    return null;
+  }
+
+  String _statusParada(ParadaStore parada) {
+    if (parada.entregue == true) return 'Concluida';
+    if (parada.entregue == false) return 'Nao realizada';
+    return 'Pendente';
+  }
+
+  Color _corStatusParada(ParadaStore parada, ThemeData theme) {
+    if (parada.entregue == true) return Colors.green;
+    if (parada.entregue == false) return Colors.red;
+    return Colors.orange;
+  }
+
+  Uri? _uriRotaCompleta() {
+    final pontos = rotasController.paradas
+        .where((p) => p.latitude != null && p.longitude != null)
+        .map((p) => '${p.latitude},${p.longitude}')
+        .toList();
+
+    if (pontos.length < 2) return null;
+
+    final origem = pontos.first;
+    final destino = pontos.last;
+    final intermediarios = pontos.length > 2
+        ? pontos.sublist(1, pontos.length - 1).join('|')
+        : null;
+
+    return Uri.https('www.google.com', '/maps/dir/', {
+      'api': '1',
+      'origin': origem,
+      'destination': destino,
+      if (intermediarios != null && intermediarios.isNotEmpty)
+        'waypoints': intermediarios,
+      'travelmode': 'driving',
+    });
+  }
+
+  Widget _statusExecucao(ThemeData theme) {
+    final proxima = _proximaParada;
+    final total = rotasController.paradas.length;
+    final concluidas = rotasController.paradas
+        .where((p) => p.confirmada)
+        .length;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.primaryColor.withValues(alpha: .15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.navigation, color: theme.primaryColor),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Rota em andamento',
+                  style: TextStyle(
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: .12),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Text(
+                  'GPS ativo',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            proxima?.endereco ?? 'Todas as paradas foram tratadas.',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            proxima == null
+                ? 'Confira e encerre a rota quando estiver pronto.'
+                : 'Proxima acao da viagem',
+            style: TextStyle(color: Colors.grey[700]),
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: total == 0 ? 0 : concluidas / total,
+              minHeight: 8,
+              backgroundColor: Colors.grey.withValues(alpha: .18),
+              valueColor: AlwaysStoppedAnimation(theme.primaryColor),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '$concluidas de $total pontos tratados',
+            style: TextStyle(color: Colors.grey[700], fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _botaoRotaCompleta(ThemeData theme) {
+    final uri = _uriRotaCompleta();
+
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: uri == null
+            ? null
+            : () async {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              },
+        icon: const Icon(Icons.map),
+        label: const Text('Abrir caminho completo no Google Maps'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: theme.primaryColor,
+          backgroundColor: theme.primaryColor.withValues(alpha: .08),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
     );
   }
 
@@ -516,6 +719,318 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
     );
   }
 
+  Widget _timelineParadas(ThemeData theme) {
+    return Observer(
+      builder: (_) {
+        if (rotasController.paradas.isEmpty) {
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Text('Nenhum ponto cadastrado para esta rota.'),
+          );
+        }
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: .08),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.route, color: theme.primaryColor),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Pontos da rota',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              for (var i = 0; i < rotasController.paradas.length; i++)
+                _paradaTimelineItem(
+                  theme,
+                  rotasController.paradas[i],
+                  i,
+                  i == rotasController.paradas.length - 1,
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _paradaTimelineItem(
+    ThemeData theme,
+    ParadaStore parada,
+    int index,
+    bool ultima,
+  ) {
+    return Observer(
+      builder: (_) {
+        final ativa = _proximaParada?.id == parada.id;
+        final corStatus = _corStatusParada(parada, theme);
+
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: ativa
+                          ? theme.primaryColor
+                          : corStatus.withValues(alpha: .14),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      parada.confirmada
+                          ? Icons.check
+                          : ativa
+                          ? Icons.navigation
+                          : Icons.more_horiz,
+                      size: 18,
+                      color: ativa ? Colors.white : corStatus,
+                    ),
+                  ),
+                  if (!ultima)
+                    Expanded(
+                      child: Container(
+                        width: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        color: Colors.grey.withValues(alpha: .25),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: ultima ? 0 : 12),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: ativa
+                        ? theme.primaryColor.withValues(alpha: .08)
+                        : Colors.grey.withValues(alpha: .04),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: ativa
+                          ? theme.primaryColor.withValues(alpha: .35)
+                          : Colors.grey.withValues(alpha: .18),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              parada.endereco,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: corStatus.withValues(alpha: .12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              _statusParada(parada),
+                              style: TextStyle(
+                                color: corStatus,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if ((parada.observacaoCadastro ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.withValues(alpha: .14),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.info_outline,
+                                color: Colors.orange,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  parada.observacaoCadastro!,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 10),
+                      if (parada.latitude != null && parada.longitude != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: () async {
+                              final url =
+                                  'https://www.google.com/maps/search/?api=1&query=${parada.latitude},${parada.longitude}';
+
+                              await launchUrl(
+                                Uri.parse(url),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                            icon: const Icon(Icons.place, size: 18),
+                            label: const Text('Abrir ponto no Maps'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: theme.primaryColor,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<bool?>(
+                        value: parada.entregue,
+                        decoration: InputDecoration(
+                          labelText: 'Parada realizada?',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          isDense: true,
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: true, child: Text('Sim')),
+                          DropdownMenuItem(value: false, child: Text('Nao')),
+                        ],
+                        onChanged: parada.confirmada
+                            ? null
+                            : (value) {
+                                rotasController.atualizarEntrega(parada, value);
+                              },
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: parada.controllerObservacao,
+                        minLines: 2,
+                        maxLines: 3,
+                        enabled: !parada.confirmada,
+                        decoration: InputDecoration(
+                          labelText: 'Observacao da execucao',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: parada.salvando
+                              ? null
+                              : () async {
+                                  if (parada.entregue == null) {
+                                    await showAppDialog(
+                                      context: context,
+                                      titulo: 'Atencao',
+                                      mensagem:
+                                          'Selecione se a parada foi realizada.',
+                                    );
+                                    return;
+                                  }
+
+                                  await rotasController.confirmarParada(parada);
+
+                                  if (context.mounted) {
+                                    await showAppDialog(
+                                      context: context,
+                                      titulo: 'Ponto da Rota',
+                                      mensagem: 'Registro feito com sucesso.',
+                                      tipo: AppDialogType.sucesso,
+                                    );
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: parada.confirmada
+                                ? Colors.green
+                                : theme.primaryColor,
+                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: parada.salvando
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  parada.confirmada
+                                      ? 'Confirmada'
+                                      : ativa
+                                      ? 'Registrar este ponto'
+                                      : 'Salvar ponto',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ignore: unused_element
   Widget _cardParadas(ThemeData theme) {
     return Container(
       decoration: BoxDecoration(
@@ -589,7 +1104,10 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
                               children: [
                                 if (parada.observacao.isNotEmpty)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 4.0, bottom: 2.0),
+                                    padding: const EdgeInsets.only(
+                                      top: 4.0,
+                                      bottom: 2.0,
+                                    ),
                                     child: Text(
                                       'Obs: ${parada.observacao}',
                                       style: TextStyle(
@@ -914,4 +1432,3 @@ class _MotoristaRotasPageState extends State<MotoristaRotasPage> {
     }
   }
 }
-

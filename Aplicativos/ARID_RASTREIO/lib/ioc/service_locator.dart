@@ -1,8 +1,11 @@
 import 'package:arid_rastreio/core/service/rota_background_service.dart';
+import 'package:arid_rastreio/core/storage/offline_database.dart';
 import 'package:arid_rastreio/modules/login/services/login_service.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/service/checklist_service.dart';
 import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
+import 'package:arid_rastreio/modules/motorista/offline/repository/offline_rastreio_repository.dart';
+import 'package:arid_rastreio/modules/motorista/offline/service/offline_rastreio_service.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/service/motorista_rotas_service.dart';
 import 'package:arid_rastreio/modules/motorista/splash/controller/motorista_splash_controller.dart';
@@ -23,6 +26,16 @@ void setupLocator() {
     locator.registerLazySingleton<AppHttpClient>(() => AppHttpClient());
   }
 
+  if (!locator.isRegistered<OfflineDatabase>()) {
+    locator.registerLazySingleton<OfflineDatabase>(() => OfflineDatabase());
+  }
+
+  if (!locator.isRegistered<OfflineRastreioRepository>()) {
+    locator.registerLazySingleton<OfflineRastreioRepository>(
+      () => OfflineRastreioRepository(locator<OfflineDatabase>()),
+    );
+  }
+
   // SERVICES
   if (!locator.isRegistered<LoginService>()) {
     locator.registerLazySingleton<LoginService>(() => LoginService());
@@ -40,7 +53,16 @@ void setupLocator() {
 
   if (!locator.isRegistered<RotaBackgroundService>()) {
     locator.registerLazySingleton<RotaBackgroundService>(
-      () => RotaBackgroundService(locator<MotoristaRotasService>()),
+      () => RotaBackgroundService(
+        locator<MotoristaRotasService>(),
+        locator<OfflineRastreioService>(),
+      ),
+    );
+  }
+
+  if (!locator.isRegistered<OfflineRastreioService>()) {
+    locator.registerLazySingleton<OfflineRastreioService>(
+      () => OfflineRastreioService(locator<OfflineRastreioRepository>()),
     );
   }
 
@@ -75,4 +97,3 @@ void setupLocator() {
     );
   }
 }
-

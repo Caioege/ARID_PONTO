@@ -8,10 +8,12 @@ namespace AriD.BibliotecaDeClasses.DTO.Aplicativo.RotaApp
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
         public string? Link { get; set; }
+        public string? ObservacaoCadastro { get; set; }
         public bool? Entregue { get; set; }
         public string? Observacao { get; set; }
         public string? ConcluidoEm { get; set; }
         public string? LatitudeConfirmacao { get; set; }
         public string? LongitudeConfirmacao { get; set; }
+        public bool RegistradoOffline { get; set; }
     }
 }

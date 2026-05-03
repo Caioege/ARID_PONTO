@@ -24,6 +24,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
         private readonly IServico<ParadaRota> _paradaRotaServico;
         private readonly IServico<RotaExecucao> _rotaExecucaoServico;
         private readonly IServico<RotaExecucaoEvento> _rotaExecucaoEventoServico;
+        private readonly IServico<RotaExecucaoPausa> _rotaExecucaoPausaServico;
         private readonly IServico<LocalizacaoRota> _localizacaoRotaServico;
         private readonly IServico<Organizacao> _organizacaoServico;
         private readonly IServicoMonitoramentoRotas _servicoMonitoramentoRotas;
@@ -42,6 +43,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             IServico<ParadaRota> paradaRotaServico,
             IServico<RotaExecucao> rotaExecucaoServico,
             IServico<RotaExecucaoEvento> rotaExecucaoEventoServico,
+            IServico<RotaExecucaoPausa> rotaExecucaoPausaServico,
             IServico<LocalizacaoRota> localizacaoRotaServico,
             IServico<Organizacao> organizacaoServico,
             IServicoMonitoramentoRotas servicoMonitoramentoRotas,
@@ -59,6 +61,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
             _paradaRotaServico = paradaRotaServico;
             _rotaExecucaoServico = rotaExecucaoServico;
             _rotaExecucaoEventoServico = rotaExecucaoEventoServico;
+            _rotaExecucaoPausaServico = rotaExecucaoPausaServico;
             _localizacaoRotaServico = localizacaoRotaServico;
             _organizacaoServico = organizacaoServico;
             _servicoMonitoramentoRotas = servicoMonitoramentoRotas;
@@ -269,6 +272,7 @@ namespace AriD.GerenciamentoDePonto.Controllers
                         paradaAtual.Latitude = paradaRecebida.Latitude;
                         paradaAtual.Longitude = paradaRecebida.Longitude;
                         paradaAtual.Link = paradaRecebida.Link;
+                        paradaAtual.ObservacaoCadastro = paradaRecebida.ObservacaoCadastro;
                         paradaAtual.UnidadeId = paradaRecebida.UnidadeId;
                         paradaAtual.Ordem = paradaRecebida.Ordem;
                         paradaAtual.OrganizacaoId = organizacaoId;
@@ -324,7 +328,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     DataHoraInicio = h.DataHoraInicio.ToString("dd/MM/yyyy HH:mm"),
                     DataHoraFim = h.DataHoraFim.HasValue ? h.DataHoraFim.Value.ToString("dd/MM/yyyy HH:mm") : "Em andamento",
                     UsuarioInicio = h.UsuarioInicio?.NomeDaPessoa ?? "-",
-                    UsuarioFim = h.UsuarioFim?.NomeDaPessoa ?? "-"
+                    UsuarioFim = h.UsuarioFim?.NomeDaPessoa ?? "-",
+                    PossuiRegistroOffline = h.PossuiRegistroOffline,
+                    ExecucaoOfflineCompleta = h.ExecucaoOfflineCompleta,
+                    ClassificacaoOffline = ObterClassificacaoOffline(h.PossuiRegistroOffline, h.ExecucaoOfflineCompleta),
+                    DataHoraPrimeiroRegistroOffline = h.DataHoraPrimeiroRegistroOffline.HasValue ? h.DataHoraPrimeiroRegistroOffline.Value.ToString("dd/MM/yyyy HH:mm") : null,
+                    DataHoraUltimoRegistroOffline = h.DataHoraUltimoRegistroOffline.HasValue ? h.DataHoraUltimoRegistroOffline.Value.ToString("dd/MM/yyyy HH:mm") : null,
+                    LocalExecucaoId = h.LocalExecucaoId,
+                    IdentificadorDispositivo = h.IdentificadorDispositivo
                 });
             return Json(new { sucesso = true, historico = historico });
         }
@@ -418,6 +429,14 @@ namespace AriD.GerenciamentoDePonto.Controllers
         {
             if (string.IsNullOrEmpty(valor)) return 0;
             return double.Parse(valor.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private string ObterClassificacaoOffline(bool possuiRegistroOffline, bool execucaoOfflineCompleta)
+        {
+            if (!possuiRegistroOffline) return "";
+            return execucaoOfflineCompleta
+                ? "Rota executada completamente offline"
+                : "Rota executada parcialmente offline";
         }
 
         [HttpGet]
@@ -551,6 +570,17 @@ namespace AriD.GerenciamentoDePonto.Controllers
 
                 double[] ultimaPos = null;
                 var historico = localizacoes.Select(l => new double[] { ParseCoord(l.Latitude), ParseCoord(l.Longitude) }).ToList();
+                var historicoDetalhado = localizacoes.Select(l => new
+                {
+                    Latitude = ParseCoord(l.Latitude),
+                    Longitude = ParseCoord(l.Longitude),
+                    DataHora = l.DataHoraCaptura.ToString("dd/MM/yyyy HH:mm:ss"),
+                    l.RegistradoOffline,
+                    DataHoraRegistroLocal = l.DataHoraRegistroLocal.HasValue ? l.DataHoraRegistroLocal.Value.ToString("dd/MM/yyyy HH:mm:ss") : null,
+                    DataHoraSincronizacao = l.DataHoraSincronizacao.HasValue ? l.DataHoraSincronizacao.Value.ToString("dd/MM/yyyy HH:mm:ss") : null,
+                    l.IdentificadorDispositivo,
+                    l.ClientEventId
+                }).ToList();
                 string ultimaAtualizacao = exec.DataHoraInicio.ToString("dd/MM/yyyy HH:mm:ss");
 
                 if (localizacoes.Any())
@@ -592,10 +622,49 @@ namespace AriD.GerenciamentoDePonto.Controllers
                             Entregue = evento?.Entregue ?? false,
                             ConcluidoEm = (evento?.DataHoraEvento).HasValue
                                 ? evento.DataHoraEvento.ToString("dd/MM/yy HH:mm")
-                                : null
+                                : null,
+                            RegistradoOffline = evento?.RegistradoOffline ?? false,
+                            DataHoraRegistroLocal = evento?.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                            DataHoraSincronizacao = evento?.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                            IdentificadorDispositivo = evento?.IdentificadorDispositivo,
+                            ClientEventId = evento?.ClientEventId
                         };
                     })
                     .Where(p => p != null)
+                    .ToList();
+
+                var eventosAuditoria = _rotaExecucaoEventoServico.ObtenhaLista(ev => ev.RotaExecucaoId == exec.Id)
+                    .OrderBy(ev => ev.DataHoraEvento)
+                    .Select(ev => new
+                    {
+                        ev.TipoEvento,
+                        ev.ParadaRotaId,
+                        ev.UnidadeId,
+                        ev.Observacao,
+                        ev.RegistradoOffline,
+                        DataHora = ev.DataHoraEvento.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraRegistroLocal = ev.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraSincronizacao = ev.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        ev.IdentificadorDispositivo,
+                        ev.LocalExecucaoId,
+                        ev.ClientEventId
+                    })
+                    .ToList();
+
+                var pausasAuditoria = _rotaExecucaoPausaServico.ObtenhaLista(p => p.RotaExecucaoId == exec.Id)
+                    .OrderBy(p => p.DataHoraInicio)
+                    .Select(p => new
+                    {
+                        p.Motivo,
+                        DataHoraInicio = p.DataHoraInicio.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraFim = p.DataHoraFim?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        p.RegistradoOffline,
+                        DataHoraRegistroLocal = p.DataHoraRegistroLocal?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        DataHoraSincronizacao = p.DataHoraSincronizacao?.ToString("dd/MM/yyyy HH:mm:ss"),
+                        p.IdentificadorDispositivo,
+                        p.LocalExecucaoId,
+                        p.ClientEventId
+                    })
                     .ToList();
 
                 var resultado = new
@@ -608,9 +677,19 @@ namespace AriD.GerenciamentoDePonto.Controllers
                     PlacaModelo = exec.Veiculo != null ? $"{exec.Veiculo.Placa} - {exec.Veiculo.Modelo}" : "",
                     UltimaLocalizacao = ultimaPos,
                     HistoricoLocalizacoes = historico,
+                    HistoricoLocalizacoesDetalhado = historicoDetalhado,
                     UltimaAtualizacao = ultimaAtualizacao,
                     Paradas = paradasArray,
-                    Finalizada = exec.DataHoraFim.HasValue
+                    EventosAuditoria = eventosAuditoria,
+                    PausasAuditoria = pausasAuditoria,
+                    Finalizada = exec.DataHoraFim.HasValue,
+                    PossuiRegistroOffline = exec.PossuiRegistroOffline,
+                    ExecucaoOfflineCompleta = exec.ExecucaoOfflineCompleta,
+                    ClassificacaoOffline = ObterClassificacaoOffline(exec.PossuiRegistroOffline, exec.ExecucaoOfflineCompleta),
+                    DataHoraPrimeiroRegistroOffline = exec.DataHoraPrimeiroRegistroOffline?.ToString("dd/MM/yyyy HH:mm:ss"),
+                    DataHoraUltimoRegistroOffline = exec.DataHoraUltimoRegistroOffline?.ToString("dd/MM/yyyy HH:mm:ss"),
+                    exec.LocalExecucaoId,
+                    exec.IdentificadorDispositivo
                 };
 
                 return Json(new { sucesso = true, dados = new[] { resultado } });
