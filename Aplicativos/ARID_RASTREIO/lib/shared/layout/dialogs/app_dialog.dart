@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-enum AppDialogType { sucesso, alerta, interrogacao }
+enum AppDialogType { sucesso, alerta, interrogacao, informacao }
 
 Future<bool?> showAppDialog({
   required BuildContext context,
@@ -33,6 +33,12 @@ Future<bool?> showAppDialog({
       cor = Colors.orange;
       lottieAsset = 'assets/json/interrogacao.json';
       icon = Icons.question_mark;
+      break;
+
+    case AppDialogType.informacao:
+      cor = Colors.blue;
+      lottieAsset = null;
+      icon = Icons.info_outline;
       break;
   }
 

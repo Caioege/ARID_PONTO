@@ -1,0 +1,179 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@model ManutencaoVeiculo
+
+<div class="modal fade" id="modal-manutencao" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content border-top border-primary border-3">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-0"><i class='bx bx-wrench'></i> Registro de Manutenção</h5>
+                    <small class="text-muted">Preencha somente o que for útil para acompanhar o serviço.</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-manutencao">
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.VeiculoId)
+                    @Html.HiddenFor(m => m.OrganizacaoId)
+
+                    <div class="maintenance-form-section">
+                        <h6>Dados principais</h6>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <label class="form-label obrigatorio" for="DataManutencao">Data do registro</label>
+                                <input type="date" id="DataManutencao" name="DataManutencao" class="form-control" value="@Model.DataManutencao.ToString("yyyy-MM-dd")" required onchange="validarDataManutencao()" />
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <label class="form-label obrigatorio" for="Situacao">Situação</label>
+                                @Html.EnumDropDownListFor(m => m.Situacao, new { @class = "form-select", id = "Situacao" })
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <label class="form-label" for="Categoria">Categoria</label>
+                                <input type="text" id="Categoria" name="Categoria" class="form-control" value="@Model.Categoria" maxlength="80" placeholder="Preventiva, corretiva, revisão..." />
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <label class="form-label" for="DataAgendamento">Data agendada</label>
+                                <input type="date" id="DataAgendamento" name="DataAgendamento" class="form-control" value="@(Model.DataAgendamento?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label obrigatorio" for="Descricao">Serviço / Tipo de manutenção</label>
+                                <input type="text" id="Descricao" name="Descricao" class="form-control" value="@Model.Descricao" maxlength="100" placeholder="Ex.: troca de óleo, pneus, freios, revisão elétrica" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="maintenance-form-section">
+                        <h6>Execução do serviço</h6>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="LocalExecucaoServico">Local de execução</label>
+                                <input type="text" id="LocalExecucaoServico" name="LocalExecucaoServico" class="form-control" value="@Model.LocalExecucaoServico" maxlength="150" placeholder="Oficina, garagem, fornecedor..." />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="Fornecedor">Fornecedor / Oficina</label>
+                                <input type="text" id="Fornecedor" name="Fornecedor" class="form-control" value="@Model.Fornecedor" maxlength="150" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="ResponsavelServico">Responsável pelo serviço</label>
+                                <input type="text" id="ResponsavelServico" name="ResponsavelServico" class="form-control" value="@Model.ResponsavelServico" maxlength="120" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="ContatoFornecedor">Contato</label>
+                                <input type="text" id="ContatoFornecedor" name="ContatoFornecedor" class="form-control" value="@Model.ContatoFornecedor" maxlength="80" placeholder="Telefone, WhatsApp ou e-mail" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="NumeroDocumento">Documento / OS / Nota</label>
+                                <input type="text" id="NumeroDocumento" name="NumeroDocumento" class="form-control" value="@Model.NumeroDocumento" maxlength="80" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="DataConclusao">Data de conclusão</label>
+                                <input type="date" id="DataConclusao" name="DataConclusao" class="form-control" value="@(Model.DataConclusao?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="maintenance-form-section">
+                        <h6>Quilometragem e próximos vencimentos</h6>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="KmNaManutencao">Km no registro</label>
+                                <input type="number" id="KmNaManutencao" name="KmNaManutencao" class="form-control" value="@Model.KmNaManutencao" min="0" step="1" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label for="KmProximaManutencao" class="form-label">Km da próxima manutenção</label>
+                                <input type="number" id="KmProximaManutencao" name="KmProximaManutencao" class="form-control" value="@Model.KmProximaManutencao" min="0" step="1" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label for="DataVencimentoManutencao" class="form-label">Próxima data / vencimento</label>
+                                <input type="date" id="DataVencimentoManutencao" name="DataVencimentoManutencao" class="form-control" value="@(Model.DataVencimentoManutencao?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="GarantiaAte">Garantia até</label>
+                                <input type="date" id="GarantiaAte" name="GarantiaAte" class="form-control" value="@(Model.GarantiaAte?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="maintenance-form-section">
+                        <h6>Custos</h6>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="CustoPrevisto">Custo previsto</label>
+                                <input type="number" id="CustoPrevisto" name="CustoPrevisto" class="form-control" value="@(Model.CustoPrevisto?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))" min="0" step="0.01" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="ValorMaximoAutorizado">Valor máximo autorizado</label>
+                                <input type="number" id="ValorMaximoAutorizado" name="ValorMaximoAutorizado" class="form-control" value="@(Model.ValorMaximoAutorizado?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))" min="0" step="0.01" />
+                            </div>
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <label class="form-label" for="ValorTotalGasto">Valor total gasto</label>
+                                <input type="number" id="ValorTotalGasto" name="ValorTotalGasto" class="form-control" value="@(Model.ValorTotalGasto?.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture))" min="0" step="0.01" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="maintenance-form-section mb-0">
+                        <h6>Observações</h6>
+                        <textarea id="Observacao" name="Observacao" class="form-control" rows="3" placeholder="Peças trocadas, motivo da manutenção, restrições, pendências, orientação para próxima revisão...">@Model.Observacao</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarManutencao()">Gravar Registro</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .maintenance-form-section {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+    }
+
+    .maintenance-form-section h6 {
+        font-size: .82rem;
+        font-weight: 900;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+</style>
+
+<script>
+    function validarDataManutencao() {
+        const dataInput = document.getElementById('DataManutencao');
+        const situacaoSelect = document.getElementById('Situacao');
+
+        if (!dataInput.value) return;
+
+        const dataSelecionada = new Date(dataInput.value + 'T00:00:00');
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        if (dataSelecionada > hoje) {
+            situacaoSelect.value = "0";
+            situacaoSelect.disabled = true;
+
+            if (!document.getElementById('hidden-situacao')) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.id = 'hidden-situacao';
+                hidden.name = 'Situacao';
+                hidden.value = '0';
+                dataInput.form.appendChild(hidden);
+            }
+        } else {
+            situacaoSelect.disabled = false;
+            const hidden = document.getElementById('hidden-situacao');
+            if (hidden) hidden.remove();
+        }
+    }
+
+    validarDataManutencao();
+</script>

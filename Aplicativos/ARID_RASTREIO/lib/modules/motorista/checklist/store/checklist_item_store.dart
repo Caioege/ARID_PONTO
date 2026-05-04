@@ -26,4 +26,8 @@ extension ChecklistItemStoreMapper on ChecklistItemStore {
       checked: json['checked'] ?? false,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'descricao': descricao, 'checked': checked};
+  }
 }

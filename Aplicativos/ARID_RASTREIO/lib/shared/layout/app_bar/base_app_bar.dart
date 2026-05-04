@@ -37,10 +37,15 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
       title:
           title ??
-          Image.asset(
-            'assets/images/smart-car.png',
-            height: 26,
-            color: colors.onPrimary,
+          Container(
+            height: 36,
+            width: 36,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: colors.onPrimary,
+              shape: BoxShape.circle,
+            ),
+            child: Image.asset('assets/images/app-icon-rastreio.png'),
           ),
       actions: [
         Padding(
@@ -59,4 +64,3 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
-

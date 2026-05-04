@@ -106,4 +106,38 @@ class RotaExecucaoDTO {
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'rotaId': rotaId,
+      'descricao': descricao,
+      'emAndamento': emAndamento,
+      'permitePausa': permitePausa,
+      'quantidadePausas': quantidadePausas,
+      'quantidadePausasRealizadas': quantidadePausasRealizadas,
+      'estaPausada': estaPausada,
+      'nomeUnidadeOrigem': nomeUnidadeOrigem,
+      'origemLatitudeRota': origemLatitudeRota,
+      'origemLongitudeRota': origemLongitudeRota,
+      'origemEntregue': origemEntregue,
+      'origemObservacao': origemObservacao,
+      'origemConcluidaEm': origemConcluidaEm,
+      'origemLatitude': origemLatitude,
+      'origemLongitude': origemLongitude,
+      'nomeUnidadeDestino': nomeUnidadeDestino,
+      'destinoLatitudeRota': destinoLatitudeRota,
+      'destinoLongitudeRota': destinoLongitudeRota,
+      'destinoEntregue': destinoEntregue,
+      'destinoObservacao': destinoObservacao,
+      'destinoConcluidoEm': destinoConcluidoEm,
+      'destinoLatitude': destinoLatitude,
+      'destinoLongitude': destinoLongitude,
+      'veiculoId': veiculoId,
+      'checklistExecucaoId': checklistExecucaoId,
+      'execucaoOffline': execucaoOffline,
+      'localExecucaoId': localExecucaoId,
+      'paradas': paradas.map((p) => p.toJson()).toList(),
+    };
+  }
 }

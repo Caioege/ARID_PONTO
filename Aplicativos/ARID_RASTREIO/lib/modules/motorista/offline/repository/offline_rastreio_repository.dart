@@ -6,6 +6,7 @@ import 'package:arid_rastreio/modules/motorista/checklist/dto/veiculo_checklist_
 import 'package:arid_rastreio/modules/motorista/checklist/store/checklist_item_store.dart';
 import 'package:arid_rastreio/modules/motorista/offline/dto/pacote_offline_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/parada_rota_dto.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/dto/presenca_rota_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -35,6 +36,11 @@ class OfflineRastreioRepository {
           'descricao': rota.descricao,
           'permite_pausa': rota.permitePausa ? 1 : 0,
           'quantidade_pausas': rota.quantidadePausas,
+          'permite_iniciar_sem_paciente_acompanhante':
+              rota.permiteIniciarSemPacienteAcompanhante ? 1 : 0,
+          'permite_iniciar_sem_profissional': rota.permiteIniciarSemProfissional
+              ? 1
+              : 0,
           'unidade_origem_id': rota.unidadeOrigemId,
           'unidade_destino_id': rota.unidadeDestinoId,
           'nome_unidade_origem': rota.nomeUnidadeOrigem,
@@ -43,6 +49,15 @@ class OfflineRastreioRepository {
           'origem_longitude_rota': rota.origemLongitudeRota,
           'destino_latitude_rota': rota.destinoLatitudeRota,
           'destino_longitude_rota': rota.destinoLongitudeRota,
+          'pacientes_json': jsonEncode(
+            rota.pacientes.map((p) => p.toJson()).toList(),
+          ),
+          'profissionais_json': jsonEncode(
+            rota.profissionais.map((p) => p.toJson()).toList(),
+          ),
+          'pacientes_disponiveis_json': jsonEncode(
+            rota.pacientesDisponiveis.map((p) => p.toJson()).toList(),
+          ),
           'baixado_em': baixadoEm,
           'valido_ate': validoAte,
         });
@@ -124,6 +139,19 @@ class OfflineRastreioRepository {
             codigo: row['codigo'] as String,
             nome: row['nome'] as String,
             descricao: row['descricao'] as String,
+            permiteIniciarSemPacienteAcompanhante:
+                row['permite_iniciar_sem_paciente_acompanhante'] != 0,
+            permiteIniciarSemProfissional:
+                row['permite_iniciar_sem_profissional'] != 0,
+            pacientes: _decodeLista(
+              row['pacientes_json'],
+            ).map((e) => RotaPacienteDTO.fromJson(e)).toList(),
+            profissionais: _decodeLista(
+              row['profissionais_json'],
+            ).map((e) => RotaProfissionalDTO.fromJson(e)).toList(),
+            pacientesDisponiveis: _decodeLista(
+              row['pacientes_disponiveis_json'],
+            ).map((e) => PacienteDisponivelDTO.fromJson(e)).toList(),
           ),
         )
         .toList();
@@ -205,6 +233,8 @@ class OfflineRastreioRepository {
     double? latitudeInicio,
     double? longitudeInicio,
     bool gpsSimulado = false,
+    List<PresencaPacienteRotaDTO> pacientesPresenca = const [],
+    List<PresencaProfissionalRotaDTO> profissionaisPresenca = const [],
   }) async {
     if (!await pacoteValido()) {
       throw Exception('Pacote offline vencido ou indisponível.');
@@ -236,6 +266,12 @@ class OfflineRastreioRepository {
       'latitude_inicio': latitudeInicio,
       'longitude_inicio': longitudeInicio,
       'gps_simulado_inicio': gpsSimulado ? 1 : 0,
+      'pacientes_presenca_json': jsonEncode(
+        pacientesPresenca.map((p) => p.toJson()).toList(),
+      ),
+      'profissionais_presenca_json': jsonEncode(
+        profissionaisPresenca.map((p) => p.toJson()).toList(),
+      ),
       'criado_em': agora.toIso8601String(),
       'atualizado_em': agora.toIso8601String(),
     });
@@ -253,6 +289,10 @@ class OfflineRastreioRepository {
         'latitudeInicio': latitudeInicio,
         'longitudeInicio': longitudeInicio,
         'gpsSimuladoInicio': gpsSimulado,
+        'pacientesPresenca': pacientesPresenca.map((p) => p.toJson()).toList(),
+        'profissionaisPresenca': profissionaisPresenca
+            .map((p) => p.toJson())
+            .toList(),
       },
     );
 
@@ -614,6 +654,10 @@ class OfflineRastreioRepository {
         'gpsSimuladoInicio': _inteiroComoBool(execucao['gps_simulado_inicio']),
         'observacaoInicio': execucao['observacao_inicio'],
         'observacaoFim': execucao['observacao_fim'],
+        'pacientesPresenca': _decodeLista(execucao['pacientes_presenca_json']),
+        'profissionaisPresenca': _decodeLista(
+          execucao['profissionais_presenca_json'],
+        ),
         'eventos': eventos.map(_eventoParaPayload).toList(),
         'localizacoes': localizacoes.map(_localizacaoParaPayload).toList(),
         'pausas': pausas.map(_pausaParaPayload).toList(),
@@ -759,6 +803,13 @@ class OfflineRastreioRepository {
       'payload': jsonEncode(payload),
       'criado_em': DateTime.now().toIso8601String(),
     });
+  }
+
+  List<Map<String, dynamic>> _decodeLista(Object? valor) {
+    if (valor == null || valor.toString().isEmpty) return [];
+    final decoded = jsonDecode(valor.toString());
+    if (decoded is! List) return [];
+    return decoded.map((e) => Map<String, dynamic>.from(e as Map)).toList();
   }
 
   int _tipoEventoPorParada(int paradaId) {

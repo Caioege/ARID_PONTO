@@ -1,0 +1,276 @@
+.campo-invalido {
+    border: solid 1px red !important;
+    background: #ff00000d !important;
+}
+
+.pagination>li {
+    border: solid 2px #e4e6e8 !important;
+    padding: 5px !important;
+    background: white !important;
+    border-radius: 5px !important;
+    min-width: 30px !important;
+    text-align: center !important;
+}
+
+.pagination>li.disabled>a {
+    color: gray !important;
+}
+
+.pagination>li:hover {
+    background-color: gray !important;
+    cursor: pointer;
+}
+
+.pagination>li>a:hover {
+    color: white !important;
+    background-color: none !important;
+    background: none !important;
+}
+
+.pagination>li.disabled>a:hover,
+.pagination>li.disabled:hover {
+    cursor: not-allowed !important;
+}
+
+.pagination>li.active {
+    background-color: #66b2e3 !important;
+    color: white !important;
+}
+
+.pagination>li.active>a {
+    background-color: none !important;
+    background: none !important;
+}
+
+.row {
+    margin-bottom: 5px;
+}
+
+.obrigatorio::after {
+    content: ' *';
+    color: red;
+}
+
+.swal2-toast {
+    margin-right: 8px;
+    margin-bottom: 10px;
+}
+
+.swal2-container {
+    z-index: 1100 !important;
+}
+
+.monitor-chat-toast-popup {
+    width: min(420px, calc(100vw - 32px)) !important;
+    padding: 14px 16px !important;
+    cursor: pointer;
+}
+
+.monitor-chat-toast-html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+.monitor-chat-toast-content {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    text-align: left;
+}
+
+.monitor-chat-toast-icon {
+    width: 38px;
+    height: 38px;
+    border: 2px solid #7dd3fc;
+    border-radius: 50%;
+    color: #0284c7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.monitor-chat-toast-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    line-height: 1.35;
+}
+
+.monitor-chat-toast-text strong {
+    color: #4b5563;
+    font-size: .92rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.monitor-chat-toast-text span {
+    color: #4b5563;
+    font-size: .84rem;
+    overflow-wrap: anywhere;
+}
+
+.monitor-chat-toast-text small {
+    color: #6b7280;
+    font-size: .78rem;
+}
+
+.select2-container {
+    z-index: 700 !important;
+}
+
+.select2 {
+    width: -webkit-fill-available !important;
+}
+
+.select2-selection__arrow {
+    top: 5px !important;
+}
+
+.select2-selection {
+    font-size: 0.9375rem !important;
+    font-weight: 400 !important;
+    line-height: 1.375 !important;
+    color: #384551 !important;
+    min-height: 38px !important;
+    padding-top: 3px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ced1d5 !important;
+}
+
+.form-select:hover {
+    cursor: pointer;
+}
+
+.input-group .btn {
+    z-index: unset !important;
+}
+
+.campo-invalido {
+    border: 1px solid red;
+    background-color: #ffe6e6;
+}
+
+/* ===================================================
+   WebGrid — Layout responsivo: cards em telas mobile
+   =================================================== */
+@media (max-width: 768px) {
+    .webgrid-table thead {
+        display: none;
+    }
+
+    .webgrid-table,
+    .webgrid-table tbody,
+    .webgrid-table tr,
+    .webgrid-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .webgrid-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        background: #ffffff;
+    }
+
+    .webgrid-table td {
+        display: flex;
+        justify-content: flex-start;
+        padding: 0.55rem 0.85rem;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: right;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .webgrid-table td:last-child {
+        border-bottom: none;
+    }
+
+    .webgrid-table td::before {
+        content: attr(data-label) ": ";
+        font-weight: 600;
+        color: #5a6a7a;
+        flex-shrink: 0;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .webgrid-table td:last-child {
+        justify-content: flex-end;
+    }
+
+    .webgrid-table td:last-child::before {
+        display: none;
+    }
+}
+
+/* ===================================================
+   Custom Tabs (Nav Pills) — Standardized Style
+   =================================================== */
+.custom-nav-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    padding-bottom: 0;
+}
+
+.custom-nav-pills .nav-item {
+    width: 160px;
+    flex-grow: 0;
+}
+
+.custom-nav-pills .nav-link {
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+    border: 1px solid #d9dee3;
+    background-color: #f5f5f9;
+    color: #697a8d;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 4px;
+    line-height: 1.1;
+    transition: all 0.2s ease;
+}
+
+.custom-nav-pills .nav-link i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+    margin-right: 0 !important;
+}
+
+.custom-nav-pills .nav-link.active {
+    background-color: #606060 !important;
+    border-color: #606060 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 8px rgba(105, 108, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.custom-nav-pills .nav-link.active i {
+    color: #fff !important;
+}
+
+.custom-nav-pills .nav-link:hover:not(.active) {
+    background-color: #e1e4e8;
+    border-color: #cdd2d8;
+}

@@ -1,5 +1,7 @@
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/encerrar_parada_dto.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/dto/presenca_rota_dto.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_chat_mensagem_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:arid_rastreio/core/http/http_client.dart';
@@ -17,6 +19,8 @@ class MotoristaRotasService {
     double? latitudeInicio,
     double? longitudeInicio,
     bool gpsSimulado = false,
+    List<PresencaPacienteRotaDTO> pacientesPresenca = const [],
+    List<PresencaProfissionalRotaDTO> profissionaisPresenca = const [],
   }) async {
     if (_usarMock) {
       await Future.delayed(const Duration(milliseconds: 600));
@@ -50,9 +54,15 @@ class MotoristaRotasService {
         'rotaId': rotaId,
         'veiculoId': veiculoId,
         'checklistExecucaoId': checklistExecucaoId,
-        if (latitudeInicio != null) 'latitudeInicio': latitudeInicio.toStringAsFixed(6),
-        if (longitudeInicio != null) 'longitudeInicio': longitudeInicio.toStringAsFixed(6),
+        if (latitudeInicio != null)
+          'latitudeInicio': latitudeInicio.toStringAsFixed(6),
+        if (longitudeInicio != null)
+          'longitudeInicio': longitudeInicio.toStringAsFixed(6),
         'gpsSimulado': gpsSimulado,
+        'pacientesPresenca': pacientesPresenca.map((p) => p.toJson()).toList(),
+        'profissionaisPresenca': profissionaisPresenca
+            .map((p) => p.toJson())
+            .toList(),
       },
     );
 
@@ -69,6 +79,37 @@ class MotoristaRotasService {
     if (response.data == null || response.data == '') return null;
 
     return RotaExecucaoDTO.fromJson(response.data);
+  }
+
+  Future<RotaExecucaoDTO?> obterRotaFinalizadaDoDia(int rotaId) async {
+    if (_usarMock) {
+      return null;
+    }
+
+    final response = await _client.get(
+      '/api/rastreio-app/rotas/finalizada-do-dia',
+      queryParameters: {'rotaId': rotaId},
+    );
+
+    if (response.data == null || response.data == '') return null;
+
+    return RotaExecucaoDTO.fromJson(response.data);
+  }
+
+  Future<List<Map<String, dynamic>>> obterTrajetoExecucao(
+    int rotaExecucaoId,
+  ) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return [];
+    }
+
+    final response = await _client.get(
+      '/api/rastreio-app/rotas/trajeto-execucao',
+      queryParameters: {'rotaExecucaoId': rotaExecucaoId},
+    );
+
+    return List<Map<String, dynamic>>.from(response.data['data']);
   }
 
   Future<void> encerrarRota({
@@ -188,12 +229,72 @@ class MotoristaRotasService {
         'dataHora': dataHora.toIso8601String(),
         'gpsSimulado': gpsSimulado ?? false,
         if (precisaoEmMetros != null) 'precisaoEmMetros': precisaoEmMetros,
-        if (velocidadeMetrosPorSegundo != null) 'velocidadeMetrosPorSegundo': velocidadeMetrosPorSegundo,
+        if (velocidadeMetrosPorSegundo != null)
+          'velocidadeMetrosPorSegundo': velocidadeMetrosPorSegundo,
         if (direcaoGraus != null) 'direcaoGraus': direcaoGraus,
         if (altitudeMetros != null) 'altitudeMetros': altitudeMetros,
         if (fonteCaptura != null) 'fonteCaptura': fonteCaptura,
       },
     );
   }
-}
 
+  Future<RotaChatResumoDTO> obterChatRota(int rotaExecucaoId) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return RotaChatResumoDTO(
+        rotaExecucaoId: rotaExecucaoId,
+        rotaId: 0,
+        rotaDescricao: 'Rota mock',
+        finalizada: false,
+        mensagens: [
+          RotaChatMensagemDTO(
+            id: 1,
+            rotaExecucaoId: rotaExecucaoId,
+            origem: 1,
+            origemDescricao: 'Sistema',
+            remetenteNome: 'Operador',
+            mensagem: 'Mensagem de teste do sistema.',
+            dataHoraEnvioFormatada: '03/05/2026 10:00',
+          ),
+        ],
+      );
+    }
+
+    final response = await _client.get(
+      '/api/rastreio-app/rotas/chat',
+      queryParameters: {'rotaExecucaoId': rotaExecucaoId},
+    );
+
+    return RotaChatResumoDTO.fromJson(Map<String, dynamic>.from(response.data));
+  }
+
+  Future<int> obterQuantidadeChatNaoLida(int rotaExecucaoId) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      return 0;
+    }
+
+    final response = await _client.get(
+      '/api/rastreio-app/rotas/chat/nao-lidas',
+      queryParameters: {'rotaExecucaoId': rotaExecucaoId},
+    );
+
+    final data = Map<String, dynamic>.from(response.data);
+    return data['quantidade'] ?? 0;
+  }
+
+  Future<void> enviarMensagemChatRota({
+    required int rotaExecucaoId,
+    required String mensagem,
+  }) async {
+    if (_usarMock) {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return;
+    }
+
+    await _client.post(
+      '/api/rastreio-app/rotas/chat',
+      data: {'rotaExecucaoId': rotaExecucaoId, 'mensagem': mensagem},
+    );
+  }
+}

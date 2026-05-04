@@ -1,4 +1,5 @@
 import 'package:arid_rastreio/modules/acompanhante/service/acompanhante_service.dart';
+import 'package:arid_rastreio/core/widgets/rastreio_tile_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,8 +9,8 @@ class RotaTrajetoPage extends StatefulWidget {
   final String rotaNome;
 
   const RotaTrajetoPage({
-    super.key, 
-    required this.rotaId, 
+    super.key,
+    required this.rotaId,
     required this.rotaNome,
   });
 
@@ -33,10 +34,14 @@ class _RotaTrajetoPageState extends State<RotaTrajetoPage> {
     try {
       final dados = await _service.obterTrajeto(widget.rotaId, DateTime.now());
       setState(() {
-        _pontos = dados.map((p) => LatLng(
-          double.parse(p['latitude'].toString()), 
-          double.parse(p['longitude'].toString())
-        )).toList();
+        _pontos = dados
+            .map(
+              (p) => LatLng(
+                double.parse(p['latitude'].toString()),
+                double.parse(p['longitude'].toString()),
+              ),
+            )
+            .toList();
         _loading = false;
       });
     } catch (e) {
@@ -47,12 +52,10 @@ class _RotaTrajetoPageState extends State<RotaTrajetoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Histórico: ${widget.rotaNome}'),
-      ),
-      body: _loading 
-        ? const Center(child: CircularProgressIndicator())
-        : _pontos.isEmpty
+      appBar: AppBar(title: Text('Histórico: ${widget.rotaNome}')),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _pontos.isEmpty
           ? const Center(child: Text('Nenhum trajeto registrado para hoje.'))
           : FlutterMap(
               options: MapOptions(
@@ -60,9 +63,7 @@ class _RotaTrajetoPageState extends State<RotaTrajetoPage> {
                 initialZoom: 14.0,
               ),
               children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                ),
+                const RastreioTileLayer(),
                 PolylineLayer(
                   polylines: [
                     Polyline(

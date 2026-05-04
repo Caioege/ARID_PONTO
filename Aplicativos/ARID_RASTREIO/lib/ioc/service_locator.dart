@@ -1,4 +1,5 @@
 import 'package:arid_rastreio/core/service/rota_background_service.dart';
+import 'package:arid_rastreio/core/service/push_registration_service.dart';
 import 'package:arid_rastreio/core/storage/offline_database.dart';
 import 'package:arid_rastreio/modules/login/services/login_service.dart';
 import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
@@ -7,6 +8,7 @@ import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_c
 import 'package:arid_rastreio/modules/motorista/offline/repository/offline_rastreio_repository.dart';
 import 'package:arid_rastreio/modules/motorista/offline/service/offline_rastreio_service.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/service/rota_sessao_cache_service.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/service/motorista_rotas_service.dart';
 import 'package:arid_rastreio/modules/motorista/splash/controller/motorista_splash_controller.dart';
 import 'package:get_it/get_it.dart';
@@ -51,12 +53,24 @@ void setupLocator() {
     );
   }
 
+  if (!locator.isRegistered<RotaSessaoCacheService>()) {
+    locator.registerLazySingleton<RotaSessaoCacheService>(
+      () => RotaSessaoCacheService(),
+    );
+  }
+
   if (!locator.isRegistered<RotaBackgroundService>()) {
     locator.registerLazySingleton<RotaBackgroundService>(
       () => RotaBackgroundService(
         locator<MotoristaRotasService>(),
         locator<OfflineRastreioService>(),
       ),
+    );
+  }
+
+  if (!locator.isRegistered<PushRegistrationService>()) {
+    locator.registerLazySingleton<PushRegistrationService>(
+      () => PushRegistrationService(),
     );
   }
 

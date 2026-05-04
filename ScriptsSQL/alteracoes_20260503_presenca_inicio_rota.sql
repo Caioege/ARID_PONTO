@@ -1,0 +1,26 @@
+-- Registro do manifesto de presença no início da execução da rota.
+CREATE TABLE IF NOT EXISTS rotaexecucaopresenca (
+    Id INT NOT NULL AUTO_INCREMENT,
+    OrganizacaoId INT NOT NULL,
+    RotaExecucaoId INT NOT NULL,
+    RotaId INT NOT NULL,
+    TipoParticipante TINYINT NOT NULL COMMENT '1 = Paciente, 2 = Acompanhante, 3 = Profissional',
+    PacienteId INT NULL,
+    ServidorId INT NULL,
+    Nome VARCHAR(255) NULL,
+    Documento VARCHAR(20) NULL,
+    Telefone VARCHAR(20) NULL,
+    Presente BOOLEAN NOT NULL DEFAULT 0,
+    CriadoPeloApp BOOLEAN NOT NULL DEFAULT 0,
+    DataHoraRegistro DATETIME NOT NULL,
+    PRIMARY KEY (Id),
+    INDEX IX_rotaexecucaopresenca_execucao (RotaExecucaoId, TipoParticipante),
+    INDEX IX_rotaexecucaopresenca_rota (RotaId),
+    INDEX IX_rotaexecucaopresenca_paciente (PacienteId),
+    INDEX IX_rotaexecucaopresenca_servidor (ServidorId),
+    CONSTRAINT FK_rotaexecucaopresenca_execucao FOREIGN KEY (RotaExecucaoId) REFERENCES rotaexecucao(Id),
+    CONSTRAINT FK_rotaexecucaopresenca_rota FOREIGN KEY (RotaId) REFERENCES rota(Id),
+    CONSTRAINT FK_rotaexecucaopresenca_paciente FOREIGN KEY (PacienteId) REFERENCES paciente(Id),
+    CONSTRAINT FK_rotaexecucaopresenca_servidor FOREIGN KEY (ServidorId) REFERENCES servidor(Id),
+    CONSTRAINT FK_rotaexecucaopresenca_organizacao FOREIGN KEY (OrganizacaoId) REFERENCES organizacao(Id)
+);

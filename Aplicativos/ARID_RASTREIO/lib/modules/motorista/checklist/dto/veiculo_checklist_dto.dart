@@ -36,5 +36,16 @@ class VeiculoChecklistDTO {
           .toList(),
     );
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'rotaId': rotaId,
+      'nome': nome,
+      'placa': placa,
+      'modelo': modelo,
+      'cor': cor,
+      'checklist': checklist.map((item) => item.toJson()).toList(),
+    };
+  }
+}

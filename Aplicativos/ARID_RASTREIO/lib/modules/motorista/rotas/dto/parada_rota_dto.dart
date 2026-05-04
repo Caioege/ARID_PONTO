@@ -50,6 +50,22 @@ class ParadaRotaDTO {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'endereco': endereco,
+      'latitude': latitude,
+      'longitude': longitude,
+      'link': link,
+      'observacaoCadastro': observacaoCadastro,
+      'entregue': entregue,
+      'observacao': observacao,
+      'concluidoEm': concluidoEm,
+      'latitudeConfirmacao': latitudeConfirmacao,
+      'longitudeConfirmacao': longitudeConfirmacao,
+    };
+  }
+
   Map<String, dynamic> toJsonEncerramento() {
     return {'paradaId': id, 'entregue': entregue, 'observacao': observacao};
   }

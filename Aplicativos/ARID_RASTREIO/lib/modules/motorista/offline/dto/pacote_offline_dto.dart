@@ -1,4 +1,5 @@
 import 'package:arid_rastreio/modules/motorista/checklist/store/checklist_item_store.dart';
+import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto.dart';
 
 class PacoteOfflineDTO {
   final DateTime dataHoraGeracao;
@@ -34,6 +35,8 @@ class RotaOfflineDTO {
   final String descricao;
   final bool permitePausa;
   final int quantidadePausas;
+  final bool permiteIniciarSemPacienteAcompanhante;
+  final bool permiteIniciarSemProfissional;
   final int? unidadeOrigemId;
   final int? unidadeDestinoId;
   final String? nomeUnidadeOrigem;
@@ -44,6 +47,9 @@ class RotaOfflineDTO {
   final double? destinoLongitudeRota;
   final List<VeiculoOfflineDTO> veiculos;
   final List<ParadaOfflineDTO> paradas;
+  final List<RotaPacienteDTO> pacientes;
+  final List<RotaProfissionalDTO> profissionais;
+  final List<PacienteDisponivelDTO> pacientesDisponiveis;
 
   RotaOfflineDTO({
     required this.id,
@@ -52,6 +58,8 @@ class RotaOfflineDTO {
     required this.descricao,
     required this.permitePausa,
     required this.quantidadePausas,
+    this.permiteIniciarSemPacienteAcompanhante = true,
+    this.permiteIniciarSemProfissional = true,
     this.unidadeOrigemId,
     this.unidadeDestinoId,
     this.nomeUnidadeOrigem,
@@ -62,6 +70,9 @@ class RotaOfflineDTO {
     this.destinoLongitudeRota,
     required this.veiculos,
     required this.paradas,
+    this.pacientes = const [],
+    this.profissionais = const [],
+    this.pacientesDisponiveis = const [],
   });
 
   factory RotaOfflineDTO.fromJson(Map<String, dynamic> json) {
@@ -72,6 +83,10 @@ class RotaOfflineDTO {
       descricao: json['descricao'],
       permitePausa: json['permitePausa'] ?? false,
       quantidadePausas: json['quantidadePausas'] ?? 0,
+      permiteIniciarSemPacienteAcompanhante:
+          json['permiteIniciarSemPacienteAcompanhante'] ?? true,
+      permiteIniciarSemProfissional:
+          json['permiteIniciarSemProfissional'] ?? true,
       unidadeOrigemId: json['unidadeOrigemId'],
       unidadeDestinoId: json['unidadeDestinoId'],
       nomeUnidadeOrigem: json['nomeUnidadeOrigem'],
@@ -98,6 +113,23 @@ class RotaOfflineDTO {
           .map(
             (item) =>
                 ParadaOfflineDTO.fromJson(Map<String, dynamic>.from(item)),
+          )
+          .toList(),
+      pacientes: ((json['pacientes'] ?? []) as List)
+          .map(
+            (item) => RotaPacienteDTO.fromJson(Map<String, dynamic>.from(item)),
+          )
+          .toList(),
+      profissionais: ((json['profissionais'] ?? []) as List)
+          .map(
+            (item) =>
+                RotaProfissionalDTO.fromJson(Map<String, dynamic>.from(item)),
+          )
+          .toList(),
+      pacientesDisponiveis: ((json['pacientesDisponiveis'] ?? []) as List)
+          .map(
+            (item) =>
+                PacienteDisponivelDTO.fromJson(Map<String, dynamic>.from(item)),
           )
           .toList(),
     );

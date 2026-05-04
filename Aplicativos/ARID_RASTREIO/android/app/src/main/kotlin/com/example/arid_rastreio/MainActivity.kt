@@ -1,4 +1,4 @@
-package com.example.arid_rastreio
+package br.com.arid.arid_rastreio
 
 import io.flutter.embedding.android.FlutterActivity
 

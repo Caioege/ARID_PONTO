@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 class OfflineDatabase {
   static const _databaseName = 'arid_rastreio_offline.db';
-  static const _databaseVersion = 2;
+  static const _databaseVersion = 4;
 
   Database? _database;
 
@@ -40,6 +40,8 @@ class OfflineDatabase {
         descricao TEXT NOT NULL,
         permite_pausa INTEGER NOT NULL DEFAULT 0,
         quantidade_pausas INTEGER NOT NULL DEFAULT 0,
+        permite_iniciar_sem_paciente_acompanhante INTEGER NOT NULL DEFAULT 1,
+        permite_iniciar_sem_profissional INTEGER NOT NULL DEFAULT 1,
         unidade_origem_id INTEGER NULL,
         unidade_destino_id INTEGER NULL,
         nome_unidade_origem TEXT NULL,
@@ -48,6 +50,9 @@ class OfflineDatabase {
         origem_longitude_rota REAL NULL,
         destino_latitude_rota REAL NULL,
         destino_longitude_rota REAL NULL,
+        pacientes_json TEXT NULL,
+        profissionais_json TEXT NULL,
+        pacientes_disponiveis_json TEXT NULL,
         baixado_em TEXT NOT NULL,
         valido_ate TEXT NOT NULL
       )
@@ -106,6 +111,8 @@ class OfflineDatabase {
         gps_simulado_inicio INTEGER NOT NULL DEFAULT 0,
         observacao_inicio TEXT NULL,
         observacao_fim TEXT NULL,
+        pacientes_presenca_json TEXT NULL,
+        profissionais_presenca_json TEXT NULL,
         rota_execucao_id INTEGER NULL,
         sincronizado_em TEXT NULL,
         erro_sincronizacao TEXT NULL,
@@ -218,6 +225,52 @@ class OfflineDatabase {
         'offline_route_stop_cache',
         'observacao_cadastro',
         'TEXT NULL',
+      );
+    }
+    if (oldVersion < 3) {
+      await _addColumnIfMissing(
+        db,
+        'offline_route_cache',
+        'pacientes_json',
+        'TEXT NULL',
+      );
+      await _addColumnIfMissing(
+        db,
+        'offline_route_cache',
+        'profissionais_json',
+        'TEXT NULL',
+      );
+      await _addColumnIfMissing(
+        db,
+        'offline_route_cache',
+        'pacientes_disponiveis_json',
+        'TEXT NULL',
+      );
+      await _addColumnIfMissing(
+        db,
+        'offline_execucao',
+        'pacientes_presenca_json',
+        'TEXT NULL',
+      );
+      await _addColumnIfMissing(
+        db,
+        'offline_execucao',
+        'profissionais_presenca_json',
+        'TEXT NULL',
+      );
+    }
+    if (oldVersion < 4) {
+      await _addColumnIfMissing(
+        db,
+        'offline_route_cache',
+        'permite_iniciar_sem_paciente_acompanhante',
+        'INTEGER NOT NULL DEFAULT 1',
+      );
+      await _addColumnIfMissing(
+        db,
+        'offline_route_cache',
+        'permite_iniciar_sem_profissional',
+        'INTEGER NOT NULL DEFAULT 1',
       );
     }
   }

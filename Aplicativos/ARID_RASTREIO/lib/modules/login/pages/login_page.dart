@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/shared/constants.dart';
 import 'package:arid_rastreio/core/storage/shared_preferences_util.dart';
+import 'package:arid_rastreio/core/service/push_registration_service.dart';
 import 'package:arid_rastreio/core/auth/session_manager.dart';
 
 // ignore_for_file: use_build_context_synchronously
@@ -138,8 +139,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Future<void> logar() async {
     FocusScope.of(context).unfocus();
 
-    if (_usuarioController.text.isEmpty || (_tipoAcesso == 'motorista' && _senhaController.text.isEmpty)) {
-      setState(() => mensagemErro = _tipoAcesso == 'motorista' ? 'Informe usuário e senha' : 'Informe seu CPF');
+    if (_usuarioController.text.isEmpty ||
+        (_tipoAcesso == 'motorista' && _senhaController.text.isEmpty)) {
+      setState(
+        () => mensagemErro = _tipoAcesso == 'motorista'
+            ? 'Informe usuário e senha'
+            : 'Informe seu CPF',
+      );
       _shakeController.forward(from: 0);
       return;
     }
@@ -191,6 +197,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       token: retornoLogin!.token,
       usuario: retornoLogin!.usuario,
     );
+
+    await locator<PushRegistrationService>().registrarTokenSeDisponivel();
 
     context.go('/motorista/splash');
   }
@@ -259,7 +267,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             child: Padding(
                               padding: const EdgeInsets.all(15),
                               child: Image.asset(
-                                'assets/images/route.png',
+                                'assets/images/app-icon-rastreio.png',
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -307,7 +315,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                   child: _RoleTabItem(
                                     label: 'Motorista',
                                     isActive: _tipoAcesso == 'motorista',
-                                    onTap: () => setState(() => _tipoAcesso = 'motorista'),
+                                    onTap: () => setState(
+                                      () => _tipoAcesso = 'motorista',
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 12),
@@ -315,7 +325,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                   child: _RoleTabItem(
                                     label: 'Acompanhante',
                                     isActive: _tipoAcesso == 'acompanhante',
-                                    onTap: () => setState(() => _tipoAcesso = 'acompanhante'),
+                                    onTap: () => setState(
+                                      () => _tipoAcesso = 'acompanhante',
+                                    ),
                                   ),
                                 ),
                               ],
@@ -370,6 +382,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 offset: _buttonOffset,
                               ),
                             ),
+                            const SizedBox(height: 18),
+                            Opacity(
+                              opacity: 0.78,
+                              child: Image.asset(
+                                'assets/images/logo-arid-tecnologia.png',
+                                height: 28,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -418,14 +439,18 @@ class _RoleTabItem extends StatelessWidget {
           color: isActive ? colors.primary : colors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isActive ? colors.primary : colors.outline.withValues(alpha: 0.3),
+            color: isActive
+                ? colors.primary
+                : colors.outline.withValues(alpha: 0.3),
           ),
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              color: isActive ? Colors.white : colors.onSurface.withValues(alpha: 0.7),
+              color: isActive
+                  ? Colors.white
+                  : colors.onSurface.withValues(alpha: 0.7),
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
               fontSize: 13,
             ),
@@ -435,5 +460,3 @@ class _RoleTabItem extends StatelessWidget {
     );
   }
 }
-
-

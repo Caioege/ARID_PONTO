@@ -5,6 +5,7 @@ import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto
 import 'package:arid_rastreio/modules/motorista/checklist/dto/veiculo_checklist_dto.dart';
 import 'package:arid_rastreio/modules/motorista/offline/dto/pacote_offline_dto.dart';
 import 'package:arid_rastreio/modules/motorista/offline/repository/offline_rastreio_repository.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/dto/presenca_rota_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
 
 class OfflineRastreioService {
@@ -118,6 +119,8 @@ class OfflineRastreioService {
     double? latitudeInicio,
     double? longitudeInicio,
     bool gpsSimulado = false,
+    List<PresencaPacienteRotaDTO> pacientesPresenca = const [],
+    List<PresencaProfissionalRotaDTO> profissionaisPresenca = const [],
   }) {
     return _repository.iniciarExecucaoLocal(
       rotaId: rotaId,
@@ -126,6 +129,8 @@ class OfflineRastreioService {
       latitudeInicio: latitudeInicio,
       longitudeInicio: longitudeInicio,
       gpsSimulado: gpsSimulado,
+      pacientesPresenca: pacientesPresenca,
+      profissionaisPresenca: profissionaisPresenca,
     );
   }
 

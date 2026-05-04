@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:arid_rastreio/modules/motorista/home/motorista_home_page.dart';
 import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +22,11 @@ class BaseDrawerState extends State<BaseDrawer> {
   late final drawerController = locator<DrawerNavegacaoController>();
   late final sessionManager = locator<SessionManager>();
   late final unidadeMenuController = locator<MotoristaMenuController>();
-  late IconData icone;
   late String nome;
   late String perfil;
 
   @override
   void initState() {
-    icone = Icons.directions_bus;
     nome = sessionManager.usuario!.nome;
     perfil = 'Motorista';
 
@@ -49,12 +49,14 @@ class BaseDrawerState extends State<BaseDrawer> {
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(14),
+                  height: 82,
+                  width: 82,
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.15),
                   ),
-                  child: Icon(icone, size: 48, color: Colors.white),
+                  child: _avatarServidor(colors),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -167,5 +169,28 @@ class BaseDrawerState extends State<BaseDrawer> {
       ),
     );
   }
-}
 
+  Widget _avatarServidor(ColorScheme colors) {
+    final foto = sessionManager.usuario?.foto;
+    final possuiFoto = foto != null && foto.isNotEmpty;
+
+    if (!possuiFoto) {
+      return CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(Icons.person, size: 42, color: colors.primary),
+      );
+    }
+
+    try {
+      return CircleAvatar(
+        backgroundColor: Colors.white,
+        backgroundImage: MemoryImage(base64Decode(foto)),
+      );
+    } catch (_) {
+      return CircleAvatar(
+        backgroundColor: Colors.white,
+        child: Icon(Icons.person, size: 42, color: colors.primary),
+      );
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783489591437",
+    "project_id": "arid-rastreio",
+    "storage_bucket": "arid-rastreio.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783489591437:android:653717ca982398d2b85ac4",
+        "android_client_info": {
+          "package_name": "br.com.arid.arid_rastreio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbDwSE1UNd-t3JiW0kos8trqeTgc1FDy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

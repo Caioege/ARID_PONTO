@@ -4,9 +4,11 @@ import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_c
 import 'package:arid_rastreio/modules/motorista/checklist/dto/rota_checklist_dto.dart';
 import 'package:arid_rastreio/modules/motorista/offline/service/offline_rastreio_service.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/rota_execucao_dto.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/dto/presenca_rota_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/dto/encerrar_parada_dto.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/store/parada_store.dart';
 import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
+import 'package:arid_rastreio/modules/motorista/rotas/service/rota_sessao_cache_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +23,8 @@ abstract class MotoristaRotasControllerBase with Store {
   static const Duration _idadeMaximaPosicaoConhecida = Duration(seconds: 60);
 
   final MotoristaRotasService _service = MotoristaRotasService();
+  final RotaSessaoCacheService _cacheService =
+      locator<RotaSessaoCacheService>();
   final OfflineRastreioService _offlineService =
       locator<OfflineRastreioService>();
 
@@ -190,14 +194,27 @@ abstract class MotoristaRotasControllerBase with Store {
   Future<RotaExecucaoDTO?> obterRotaEmAndamento() async {
     recuperandoSessao = true;
     try {
+      final cache = await _cacheService.obter();
+      if (cache != null) {
+        _aplicarExecucao(cache.execucao);
+
+        if (cache.rotaChecklist != null && cache.veiculoChecklist != null) {
+          locator<ChecklistController>().restaurarSelecaoLocal(
+            rota: cache.rotaChecklist!,
+            veiculo: cache.veiculoChecklist!,
+            checklistExecucaoId: cache.checklistExecucaoId,
+            itensMarcados: cache.itensMarcados,
+          );
+        }
+
+        recuperandoSessao = false;
+        _validarSessaoComServidorEmSegundoPlano();
+        return cache.execucao;
+      }
+
       final execucao = await _service.obterRotaEmAndamento();
       if (execucao != null) {
-        rotaAtual = execucao;
-        checklistExecucaoId = execucao.checklistExecucaoId;
-
-        _carregarParadasEOrigens(execucao);
-        rotaIniciada = true;
-        estaPausada = execucao.estaPausada;
+        _aplicarExecucao(execucao);
 
         // Recuperar estado no ChecklistController
         if (execucao.veiculoId != null) {
@@ -208,12 +225,64 @@ abstract class MotoristaRotasControllerBase with Store {
           );
         }
 
+        await salvarCacheSessaoAtual();
         _enviarLocalizacaoAtual();
       }
       return execucao;
     } finally {
       recuperandoSessao = false;
     }
+  }
+
+  void _aplicarExecucao(RotaExecucaoDTO execucao) {
+    rotaAtual = execucao;
+    checklistExecucaoId = execucao.checklistExecucaoId;
+    _carregarParadasEOrigens(execucao);
+    rotaIniciada = execucao.emAndamento;
+    estaPausada = execucao.estaPausada;
+  }
+
+  Future<void> _validarSessaoComServidorEmSegundoPlano() async {
+    try {
+      if (rotaAtual?.execucaoOffline == true) return;
+      if (!await ConnectivityService.isConnected()) return;
+
+      final execucao = await _service.obterRotaEmAndamento();
+      if (execucao == null) {
+        await _cacheService.limpar();
+        limpar();
+        locator<ChecklistController>().limpar();
+        return;
+      }
+
+      _aplicarExecucao(execucao);
+
+      if (execucao.veiculoId != null) {
+        await locator<ChecklistController>().restaurarSelecaoSessao(
+          rotaId: execucao.rotaId,
+          veiculoId: execucao.veiculoId!,
+          checklistExecucaoId: execucao.checklistExecucaoId,
+        );
+      }
+
+      await salvarCacheSessaoAtual();
+      _enviarLocalizacaoAtual();
+    } catch (_) {}
+  }
+
+  Future<void> salvarCacheSessaoAtual() async {
+    final execucao = rotaAtual;
+    if (execucao == null) return;
+    if (!execucao.emAndamento) return;
+
+    final checklistController = locator<ChecklistController>();
+    await _cacheService.salvar(
+      execucao: execucao,
+      rotaChecklist: checklistController.rotaSelecionada,
+      veiculoChecklist: checklistController.veiculoSelecionado,
+      checklistExecucaoId:
+          checklistController.ultimaExecucaoId ?? execucao.checklistExecucaoId,
+    );
   }
 
   Future<void> _enviarLocalizacaoAtual() async {
@@ -246,6 +315,8 @@ abstract class MotoristaRotasControllerBase with Store {
     required int rotaId,
     required int veiculoId,
     int? checklistId,
+    List<PresencaPacienteRotaDTO> pacientesPresenca = const [],
+    List<PresencaProfissionalRotaDTO> profissionaisPresenca = const [],
   }) async {
     print('[DEBUG] Controller: iniciarRota iniciado');
     carregando = true;
@@ -283,6 +354,8 @@ abstract class MotoristaRotasControllerBase with Store {
               latitudeInicio: pos.latitude,
               longitudeInicio: pos.longitude,
               gpsSimulado: pos.isMocked,
+              pacientesPresenca: pacientesPresenca,
+              profissionaisPresenca: profissionaisPresenca,
             )
           : await _offlineService.iniciarExecucaoLocal(
               rotaId: rotaId,
@@ -291,6 +364,8 @@ abstract class MotoristaRotasControllerBase with Store {
               latitudeInicio: pos.latitude,
               longitudeInicio: pos.longitude,
               gpsSimulado: pos.isMocked,
+              pacientesPresenca: pacientesPresenca,
+              profissionaisPresenca: profissionaisPresenca,
             );
       print('[DEBUG] Controller: Rota iniciada no servidor com sucesso.');
 
@@ -300,6 +375,7 @@ abstract class MotoristaRotasControllerBase with Store {
       _carregarParadasEOrigens(execucao);
       rotaIniciada = true;
       estaPausada = execucao.estaPausada;
+      await salvarCacheSessaoAtual();
 
       print(
         '[DEBUG] Controller: Enviando localização inicial em background...',
@@ -361,6 +437,7 @@ abstract class MotoristaRotasControllerBase with Store {
   @action
   Future<void> confirmarParada(ParadaStore parada) async {
     if (rotaAtual == null) return;
+    if (!rotaAtual!.emAndamento) return;
 
     parada.salvando = true;
 
@@ -389,6 +466,7 @@ abstract class MotoristaRotasControllerBase with Store {
       }
 
       parada.confirmada = true;
+      await salvarCacheSessaoAtual();
       _enviarLocalizacaoAtual();
     } finally {
       parada.salvando = false;
@@ -412,6 +490,7 @@ abstract class MotoristaRotasControllerBase with Store {
     carregando = true;
 
     try {
+      final rotaEncerradaId = rotaAtual!.rotaId;
       if (rotaAtual!.execucaoOffline) {
         await _offlineService.encerrarExecucaoLocal(
           localExecucaoId: rotaAtual!.localExecucaoId!,
@@ -441,13 +520,57 @@ abstract class MotoristaRotasControllerBase with Store {
           nome: checklistController.rotaSelecionada!.nome,
           descricao: checklistController.rotaSelecionada!.descricao,
           rotaFinalizada: true,
+          rotaExecucaoFinalizadaId: rotaAtual?.execucaoOffline == true
+              ? null
+              : rotaAtual?.id,
+          permiteIniciarSemPacienteAcompanhante: checklistController
+              .rotaSelecionada!
+              .permiteIniciarSemPacienteAcompanhante,
+          permiteIniciarSemProfissional: checklistController
+              .rotaSelecionada!
+              .permiteIniciarSemProfissional,
         );
       }
 
       rotaIniciada = false;
-      rotaFinalizadaId = rotaAtual?.rotaId;
-      rotaAtual = null;
-      paradas.clear();
+      await _cacheService.limpar();
+
+      if (rotaAtual?.execucaoOffline == true) {
+        rotaFinalizadaId = rotaEncerradaId;
+        rotaAtual = null;
+        paradas.clear();
+        return;
+      }
+
+      final execucaoFinalizada = await _service.obterRotaFinalizadaDoDia(
+        rotaEncerradaId,
+      );
+
+      if (execucaoFinalizada != null) {
+        _aplicarExecucao(execucaoFinalizada);
+        rotaFinalizadaId = rotaEncerradaId;
+      } else {
+        rotaFinalizadaId = rotaEncerradaId;
+        rotaAtual = null;
+        paradas.clear();
+      }
+    } finally {
+      carregando = false;
+    }
+  }
+
+  @action
+  Future<void> carregarExecucaoFinalizadaDoDia(int rotaId) async {
+    carregando = true;
+
+    try {
+      final execucao = await _service.obterRotaFinalizadaDoDia(rotaId);
+      if (execucao == null) {
+        throw Exception('Nenhuma execução finalizada encontrada para hoje.');
+      }
+
+      _aplicarExecucao(execucao);
+      rotaFinalizadaId = rotaId;
     } finally {
       carregando = false;
     }
@@ -478,6 +601,7 @@ abstract class MotoristaRotasControllerBase with Store {
 
       await RotaTrackingService.stop();
       estaPausada = true;
+      await salvarCacheSessaoAtual();
     } finally {
       carregando = false;
     }
@@ -509,6 +633,7 @@ abstract class MotoristaRotasControllerBase with Store {
         execucaoOffline: rotaAtual?.execucaoOffline ?? false,
       );
       estaPausada = false;
+      await salvarCacheSessaoAtual();
     } finally {
       carregando = false;
     }
@@ -520,5 +645,6 @@ abstract class MotoristaRotasControllerBase with Store {
     rotaIniciada = false;
     rotaFinalizadaId = null;
     paradas.clear();
+    _cacheService.limpar();
   }
 }

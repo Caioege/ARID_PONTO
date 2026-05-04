@@ -1,14 +1,11 @@
-import 'package:arid_rastreio/modules/motorista/checklist/controller/checklist_controller.dart';
-import 'package:arid_rastreio/modules/motorista/checklist/page/motorista_checklist_page.dart';
+import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
+import 'package:arid_rastreio/ioc/service_locator.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/controller/motorista_rotas_controller.dart';
 import 'package:arid_rastreio/modules/motorista/rotas/page/motorista_rotas_page.dart';
 import 'package:arid_rastreio/shared/layout/dialogs/app_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:arid_rastreio/ioc/service_locator.dart';
-import 'package:arid_rastreio/modules/motorista/menu/controller/motorista_menu_controller.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:arid_rastreio/core/service/rota_tracking_service.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class MotoristaMenuPage extends StatefulWidget {
   const MotoristaMenuPage({super.key});
@@ -19,15 +16,8 @@ class MotoristaMenuPage extends StatefulWidget {
 
 class _MotoristaMenuPageState extends State<MotoristaMenuPage>
     with SingleTickerProviderStateMixin {
-  final controller = locator<MotoristaMenuController>();
-
   late final AnimationController _pageController;
   late final Animation<double> _fadeAnimation;
-
-  final List<Widget> _pages = const [
-    MotoristaChecklistPage(),
-    MotoristaRotasPage(),
-  ];
 
   @override
   void initState() {
@@ -35,7 +25,7 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
 
     _pageController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 280),
     );
 
     _fadeAnimation = CurvedAnimation(
@@ -50,17 +40,18 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
       final execucao = await rotasCtl.obterRotaEmAndamento();
 
       if (execucao != null) {
-        controller.mudarIndex(1);
-
         await FlutterForegroundTask.saveData(
           key: 'rotaExecucaoId',
           value: execucao.id.toString(),
         );
         await FlutterForegroundTask.saveData(
           key: 'execucaoOffline',
-          value: 'false',
+          value: execucao.execucaoOffline.toString(),
         );
-        await FlutterForegroundTask.saveData(key: 'localExecucaoId', value: '');
+        await FlutterForegroundTask.saveData(
+          key: 'localExecucaoId',
+          value: execucao.localExecucaoId ?? '',
+        );
 
         await RotaTrackingService.start(
           descricaoRota: execucao.descricao,
@@ -70,9 +61,9 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
         if (mounted) {
           showAppDialog(
             context: context,
-            titulo: 'Sessão Restaurada',
+            titulo: 'Sessão restaurada',
             mensagem:
-                'Você possui uma rota em andamento bloqueada. Não feche o aplicativo.',
+                'Você possui uma rota em andamento. Acompanhe e registre os pontos nesta tela.',
             tipo: AppDialogType.alerta,
           );
         }
@@ -88,8 +79,7 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+    final colors = Theme.of(context).colorScheme;
     final rotasController = locator<MotoristaRotasController>();
 
     return Observer(
@@ -100,59 +90,7 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
               opacity: _fadeAnimation,
               child: Scaffold(
                 backgroundColor: colors.surface,
-                body: _pages.elementAt(controller.selectedindex),
-                bottomNavigationBar: SafeArea(
-                  top: false,
-                  child: Container(
-                    height: 68,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: colors.primary,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, -4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _BottomNavPillItem(
-                          icon: Icons.checklist_rounded,
-                          label: 'Checklist',
-                          selected: controller.selectedindex == 0,
-                          onTap: () => controller.mudarIndex(0),
-                          color: colors.primary,
-                        ),
-                        _BottomNavPillItem(
-                          icon: Icons.alt_route_rounded,
-                          label: 'Rotas',
-                          selected: controller.selectedindex == 1,
-                          onTap: () {
-                            final checklistController =
-                                locator<ChecklistController>();
-
-                            if (checklistController.temAlteracoesNaoSalvas) {
-                              showAppDialog(
-                                context: context,
-                                titulo: 'Alterações não salvas',
-                                mensagem:
-                                    'Existem alterações no checklist que ainda não foram salvas. Salve antes de acessar as rotas.',
-                                tipo: AppDialogType.alerta,
-                              );
-                              return;
-                            }
-
-                            controller.mudarIndex(1);
-                          },
-                          color: colors.primary,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                body: const SafeArea(child: MotoristaRotasPage()),
               ),
             ),
             if (rotasController.recuperandoSessao)
@@ -168,8 +106,8 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
                         'Restaurando sua sessão...',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -179,58 +117,6 @@ class _MotoristaMenuPageState extends State<MotoristaMenuPage>
           ],
         );
       },
-    );
-  }
-}
-
-class _BottomNavPillItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  final Color color;
-
-  const _BottomNavPillItem({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(24),
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-        padding: selected
-            ? const EdgeInsets.symmetric(horizontal: 18, vertical: 10)
-            : const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: selected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 22, color: selected ? color : Colors.white),
-            if (selected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }

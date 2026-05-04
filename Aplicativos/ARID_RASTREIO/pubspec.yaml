@@ -41,6 +41,7 @@ dependencies:
   dio: ^5.9.1
   connectivity_plus: ^7.0.0
   device_info_plus: ^12.3.0
+  firebase_core: ^4.3.0
   firebase_messaging: ^16.1.1
   shared_preferences: ^2.5.4
   sqflite: ^2.4.1
@@ -88,6 +89,8 @@ flutter:
 
   assets:
     - .env
+    - assets/images/app-icon-rastreio.png
+    - assets/images/logo-arid-tecnologia.png
     - assets/images/bus.png
     - assets/images/smart-car.png
     - assets/images/route.png

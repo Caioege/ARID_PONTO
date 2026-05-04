@@ -25,6 +25,8 @@ No app do motorista, acesse o menu `Offline`.
 
 Sempre que o servidor de rastreio estiver inacessível, o app exibe a indicação `OFFLINE` no topo das telas do motorista. Se houver uma rota ativa, o detalhe informa que os registros serão salvos localmente. Quando a conexão voltar, o app tenta enviar as pendências e mantém a indicação de pendência se a sincronização falhar.
 
+Na indicação `OFFLINE`, o usuário pode tocar no ícone de ajuda para consultar um resumo do funcionamento offline, incluindo o que fica salvo localmente e o que depende de sincronização.
+
 A tela `Offline` também exibe o estado `Aplicativo online` ou `Aplicativo offline`. Esse estado não depende apenas do Wi-Fi ou da rede móvel do Android: o app tenta comunicar com o backend e considera offline quando o servidor de rastreio não responde.
 
 ## por que
@@ -96,6 +98,7 @@ O modo offline preserva a operação do motorista e, ao mesmo tempo, mantém ras
 - Rota removida ou desativada depois do download pode exigir conferência administrativa na sincronização.
 - O volume de pontos GPS pode crescer em rotas longas sem conexão; por isso a tela `Offline` deve ser monitorada quando houver muitas pendências.
 - A sincronização automática depende de o app ser aberto novamente ou recuperar conexão durante a execução.
+- O chat da rota depende de internet e comunicação com o servidor. O botão permanece visível na rota, mas exibe aviso de indisponibilidade quando o app está offline.
 - `Possivelmente offline` não prova que a rota foi executada offline. É apenas um alerta de falta de comunicação recente.
 
 ## fluxo de suporte

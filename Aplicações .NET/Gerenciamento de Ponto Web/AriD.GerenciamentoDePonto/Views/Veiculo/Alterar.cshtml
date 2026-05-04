@@ -1,0 +1,279 @@
+@using AriD.BibliotecaDeClasses.Entidades
+@using AriD.Servicos.Extensao
+@model Veiculo
+
+@{
+    var historico = ViewBag.HistoricoManutencao as List<ManutencaoVeiculo>;
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Gerenciar Veículo: <span class="text-primary">@Model.Placa - @Model.Modelo</span></h5>
+            </div>
+            <div class="card-body">
+                <div class="nav-align-top mb-6">
+                    <ul class="nav nav-pills custom-nav-pills mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#tab-dados" aria-controls="tab-dados" aria-selected="true">
+                                <i class="tf-icons bx bx-car"></i>
+                                DADOS GERAIS
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-checklist" aria-controls="tab-checklist" aria-selected="false" tabindex="-1">
+                                <i class="tf-icons bx bx-check-shield"></i>
+                                CHECKLIST
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#tab-manutencao" aria-controls="tab-manutencao" aria-selected="false" tabindex="-1">
+                                <i class="tf-icons bx bx-wrench"></i>
+                                MANUTENÇÕES
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="border rounded p-4 shadow-sm" style="background-color: #fff; border-color: #d9dee3 !important;">
+                    <div class="tab-content" style="padding: 0 !important; box-shadow: none;">
+                        <!-- Aba Dados Gerais -->
+                        <div class="tab-pane fade show active" id="tab-dados" role="tabpanel">
+                            <form id="formulario-veiculo">
+                                @Html.HiddenFor(model => model.Id)
+                                @Html.HiddenFor(model => model.OrganizacaoId)
+
+                                <div class="row mt-2">
+                                    <div class="col col-lg-3 col-md-6">
+                                        <label class="form-label obrigatorio" for="Placa">Placa</label>
+                                        @Html.TextBoxFor(model => model.Placa, new { @class = "form-control placa", @maxlength = "10", style = "text-transform: uppercase;" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-6">
+                                        <label class="form-label obrigatorio" for="Status">Status</label>
+                                        @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-select" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-6">
+                                        <label class="form-label obrigatorio" for="TipoCombustivel">Combustível</label>
+                                        @Html.EnumDropDownListFor(model => model.TipoCombustivel, new { @class = "form-select" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-6">
+                                        <label class="form-label obrigatorio" for="VencimentoLicenciamento">Licenciamento</label>
+                                        @Html.TextBoxFor(model => model.VencimentoLicenciamento, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col col-lg-4 col-md-4">
+                                        <label class="form-label obrigatorio" for="Marca">Marca</label>
+                                        @Html.TextBoxFor(model => model.Marca, new { @class = "form-control" })
+                                    </div>
+                                    <div class="col col-lg-4 col-md-4">
+                                        <label class="form-label obrigatorio" for="Modelo">Modelo</label>
+                                        @Html.TextBoxFor(model => model.Modelo, new { @class = "form-control" })
+                                    </div>
+                                    <div class="col col-lg-4 col-md-4">
+                                        <label class="form-label obrigatorio" for="TipoVeiculo">Tipo de Veículo</label>
+                                        @Html.DropDownListFor(model => model.TipoVeiculo, ViewBag.TiposVeiculo as SelectList, new { @class = "form-select" })
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col col-lg-3 col-md-3">
+                                        <label class="form-label obrigatorio" for="QuilometragemAtual">Km Atual</label>
+                                        @Html.TextBoxFor(model => model.QuilometragemAtual, new { @class = "form-control", type = "number" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-3">
+                                        <label class="form-label obrigatorio" for="Cor">Cor</label>
+                                        @Html.EnumDropDownListFor(model => model.Cor, new { @class = "form-select" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-3">
+                                        <label class="form-label obrigatorio" for="AnoFabricacao">Ano Fab.</label>
+                                        @Html.TextBoxFor(model => model.AnoFabricacao, new { @class = "form-control", type = "number" })
+                                    </div>
+                                    <div class="col col-lg-3 col-md-3">
+                                        <label class="form-label obrigatorio" for="AnoModelo">Ano Mod.</label>
+                                        @Html.TextBoxFor(model => model.AnoModelo, new { @class = "form-control", type = "number" })
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-secondary" onclick="CarregarPagina('/Veiculo/Index')">
+                                        <i class='bx bxs-left-arrow-circle'></i> Voltar
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="btn-salvar">
+                                        <i class='bx bxs-save'></i> Salvar Alterações
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Aba Checklist -->
+                        <div class="tab-pane fade" id="tab-checklist" role="tabpanel">
+                            <div class="p-3">
+                                <h6 class="fw-bold"><i class='bx bx-list-check'></i> Itens de Verificação Obrigatória</h6>
+                                <p class="text-muted small">Adicione os itens que o motorista deve conferir antes de realizar viagens com este veículo.</p>
+                                
+                                <div class="row mb-3">
+                                    <div class="col col-md-10">
+                                        <input type="text" id="novo-item-checklist" class="form-control" placeholder="Ex: Pressão dos pneus, Nível do óleo, Freios..." />
+                                    </div>
+                                    <div class="col col-md-2">
+                                        <button type="button" class="btn btn-primary w-100" onclick="adicionarItemChecklist()">
+                                            <i class='bx bx-plus'></i> Adicionar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="lista-checklist" class="list-group list-group-flush border rounded">
+                                    <div class="p-4 text-center text-muted">Aguarde, carregando itens...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Aba Manutenção -->
+                        <div class="tab-pane fade" id="tab-manutencao" role="tabpanel">
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <h6 class="fw-bold mb-0"><i class='bx bx-history'></i> Registro de Serviços e Manutenções</h6>
+                                        <p class="text-muted small mb-0">Controle preventivo e corretivo da frota.</p>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="abrirModalManutencao(0)">
+                                        <i class='bx bx-plus-circle'></i> Registrar Manutenção
+                                    </button>
+                                </div>
+
+                                <div class="d-none">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Descrição</th>
+                                                <th>KM</th>
+                                                <th>Prox. Manut.</th>
+                                                <th>Custo</th>
+                                                <th class="text-center">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (historico != null && historico.Any())
+                                            {
+                                                foreach (var m in historico)
+                                                {
+                                                    <tr>
+                                                        <td>@m.DataManutencao.ToString("dd/MM/yyyy")</td>
+                                                        <td>@m.Descricao</td>
+                                                        <td>@m.KmNaManutencao.ToString("N0")</td>
+                                                        <td>@(m.KmProximaManutencao?.ToString("N0") ?? "-")</td>
+                                                        <td class="text-center">
+                                                            <button class="btn btn-sm btn-icon btn-outline-secondary" onclick="abrirModalManutencao(@m.Id)">
+                                                                <i class="bx bx-show"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-4 text-muted">Nenhuma manutenção registrada até o momento.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="vehicle-maintenance-grid">
+                                    @if (historico != null && historico.Any())
+                                    {
+                                        foreach (var m in historico)
+                                        {
+                                            var valor = m.ValorTotalGasto ?? m.CustoPrevisto;
+                                            <div class="vehicle-maintenance-card">
+                                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                                    <div>
+                                                        <strong>@m.Descricao</strong>
+                                                        <span>@(m.Categoria ?? "Manutenção") · @m.Situacao.DescricaoDoEnumerador()</span>
+                                                    </div>
+                                                    <div class="d-flex gap-1">
+                                                        <button class="btn btn-sm btn-icon btn-outline-secondary" onclick="abrirModalManutencao(@m.Id)" title="Ver manutenção">
+                                                            <i class="bx bx-show"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-icon btn-outline-danger" onclick="removerManutencao(@m.Id)" title="Remover">
+                                                            <i class="bx bx-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="vehicle-maintenance-meta">
+                                                    <span><i class="bx bx-calendar"></i> @m.DataManutencao.ToString("dd/MM/yyyy")</span>
+                                                    <span><i class="bx bx-tachometer"></i> @m.KmNaManutencao.ToString("N0") km</span>
+                                                    <span><i class="bx bx-calendar-exclamation"></i> Próx.: @(m.DataVencimentoManutencao?.ToString("dd/MM/yyyy") ?? "-") / @(m.KmProximaManutencao?.ToString("N0") ?? "-") km</span>
+                                                    <span><i class="bx bx-map"></i> @(m.LocalExecucaoServico ?? m.Fornecedor ?? "Local não informado")</span>
+                                                    <span><i class="bx bx-money"></i> @(valor.HasValue ? valor.Value.ToString("C") : "Sem valor")</span>
+                                                    <span><i class="bx bx-receipt"></i> @(m.NumeroDocumento ?? "Sem documento")</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="vehicle-maintenance-empty">Nenhuma manutenção registrada até o momento.</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="div-modal-suplementar"></div>
+
+<style>
+    .vehicle-maintenance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: 12px;
+    }
+
+    .vehicle-maintenance-card,
+    .vehicle-maintenance-empty {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px;
+        background: #fff;
+    }
+
+    .vehicle-maintenance-empty {
+        grid-column: 1 / -1;
+        color: #64748b;
+        text-align: center;
+    }
+
+    .vehicle-maintenance-card strong {
+        display: block;
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .vehicle-maintenance-card span {
+        display: block;
+        color: #64748b;
+        font-size: .84rem;
+    }
+
+    .vehicle-maintenance-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px 12px;
+        margin-top: 12px;
+    }
+
+    .vehicle-maintenance-meta span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+</style>
+
+<script src="/Scripts/Paginas/Veiculo/cadastro.js?t=@DateTime.Now.Ticks"></script>

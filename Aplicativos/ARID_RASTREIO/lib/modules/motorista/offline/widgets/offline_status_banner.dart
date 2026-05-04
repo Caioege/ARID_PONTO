@@ -128,6 +128,7 @@ class _OfflineStatusBannerState extends State<OfflineStatusBanner> {
                 ? 'Registros salvos localmente'
                 : 'Sem comunicação com o servidor',
             backgroundColor: Colors.red.shade700,
+            onHelpPressed: _exibirAjudaOffline,
           );
         }
 
@@ -144,6 +145,16 @@ class _OfflineStatusBannerState extends State<OfflineStatusBanner> {
       },
     );
   }
+
+  Future<void> _exibirAjudaOffline() async {
+    await showAppDialog(
+      context: context,
+      titulo: 'Funcionamento offline',
+      mensagem:
+          'Quando o aplicativo fica offline, os registros da rota, eventos, pausas e localizações continuam sendo salvos neste aparelho. Assim que a conexão com a internet e com o servidor voltar, o aplicativo tenta sincronizar automaticamente os dados pendentes.\n\nO chat depende de conexão com a internet para enviar, receber e atualizar mensagens. Por isso, ele não fica disponível durante o funcionamento offline.',
+      tipo: AppDialogType.informacao,
+    );
+  }
 }
 
 class _Banner extends StatelessWidget {
@@ -151,12 +162,14 @@ class _Banner extends StatelessWidget {
   final String label;
   final String detail;
   final Color backgroundColor;
+  final VoidCallback? onHelpPressed;
 
   const _Banner({
     required this.icon,
     required this.label,
     required this.detail,
     required this.backgroundColor,
+    this.onHelpPressed,
   });
 
   @override
@@ -201,6 +214,21 @@ class _Banner extends StatelessWidget {
                   style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
+              if (onHelpPressed != null) ...[
+                const SizedBox(width: 8),
+                InkWell(
+                  onTap: onHelpPressed,
+                  borderRadius: BorderRadius.circular(999),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(
+                      Icons.help_outline,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

@@ -221,6 +221,31 @@ abstract class ChecklistControllerBase with Store {
     houveInteracao = false;
   }
 
+  void restaurarSelecaoLocal({
+    required RotaChecklistDTO rota,
+    required VeiculoChecklistDTO veiculo,
+    int? checklistExecucaoId,
+    List<int> itensMarcados = const [],
+  }) {
+    rotaSelecionada = rota;
+    veiculoSelecionado = veiculo;
+    ultimaExecucaoId = checklistExecucaoId;
+    checklistSalvo = checklistExecucaoId != null;
+
+    final chave = '${rota.id}_${veiculo.id}';
+    checklistSnapshots[chave] = List.from(itensMarcados);
+
+    for (final item in veiculo.checklist) {
+      item.checked = itensMarcados.isNotEmpty
+          ? itensMarcados.contains(item.id)
+          : checklistSalvo;
+    }
+
+    veiculosFuture = ObservableFuture.value([veiculo]);
+    houveInteracao = false;
+    erroProcessamento = null;
+  }
+
   @action
   Future<void> restaurarSelecaoSessao({
     required int rotaId,
@@ -239,8 +264,9 @@ abstract class ChecklistControllerBase with Store {
         rotaSelecionada = rota;
 
         // 3. Carrega os veículos daquela rota
-        veiculosFuture =
-            ObservableFuture(_service.obterVeiculosPorRota(rotaId));
+        veiculosFuture = ObservableFuture(
+          _service.obterVeiculosPorRota(rotaId),
+        );
         final veiculos = await veiculosFuture;
 
         // 4. Localiza o veículo
@@ -275,4 +301,3 @@ abstract class ChecklistControllerBase with Store {
     erroProcessamento = null;
   }
 }
-

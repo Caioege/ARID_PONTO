@@ -175,12 +175,16 @@ mixin _$MotoristaRotasController on MotoristaRotasControllerBase, Store {
     required int rotaId,
     required int veiculoId,
     int? checklistId,
+    List<PresencaPacienteRotaDTO> pacientesPresenca = const [],
+    List<PresencaProfissionalRotaDTO> profissionaisPresenca = const [],
   }) {
     return _$iniciarRotaAsyncAction.run(
       () => super.iniciarRota(
         rotaId: rotaId,
         veiculoId: veiculoId,
         checklistId: checklistId,
+        pacientesPresenca: pacientesPresenca,
+        profissionaisPresenca: profissionaisPresenca,
       ),
     );
   }
